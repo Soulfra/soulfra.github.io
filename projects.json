@@ -1,27 +1,1027 @@
 {
-  "generated_at": "2025-09-12T21:09:14.809Z",
-  "total_repositories": 17,
-  "public_repositories": 6,
+  "generated_at": "2025-09-12T21:46:52.180Z",
+  "total_repositories": 115,
+  "public_repositories": 108,
+  "private_repositories": 7,
   "languages": {
-    "JavaScript": 7,
-    "TypeScript": 3,
-    "HTML": 2
+    "JavaScript": 23,
+    "Go": 7,
+    "Python": 5,
+    "TypeScript": 4,
+    "HTML": 2,
+    "Jupyter Notebook": 1
   },
   "project_types": {
-    "tools": 1,
+    "tools": 15,
+    "libraries": 9,
     "demos": 1,
-    "libraries": 0,
-    "apps": 1,
-    "other": 14
+    "apis": 4,
+    "ai": 11,
+    "web": 8,
+    "other": 67
   },
+  "recent_activity": [
+    {
+      "name": "ai-automation-mfhd6103",
+      "created": "2025-09-12T21:43:06Z",
+      "language": "Python"
+    },
+    {
+      "name": "backend-security-mfhd5wqf",
+      "created": "2025-09-12T21:43:01Z",
+      "language": "Go"
+    },
+    {
+      "name": "go-ai-mfhd5rx4",
+      "created": "2025-09-12T21:42:55Z",
+      "language": "Go"
+    },
+    {
+      "name": "ts-automation-mfhd5nfg",
+      "created": "2025-09-12T21:42:49Z"
+    },
+    {
+      "name": "ai-gaming-mfhd5j4n",
+      "created": "2025-09-12T21:42:43Z",
+      "language": "Python"
+    },
+    {
+      "name": "web-data-mfhd5etg",
+      "created": "2025-09-12T21:42:38Z"
+    },
+    {
+      "name": "fast-devtools-mfhd5b1c",
+      "created": "2025-09-12T21:42:33Z"
+    },
+    {
+      "name": "api-data-mfhd55nq",
+      "created": "2025-09-12T21:42:26Z",
+      "language": "Go"
+    },
+    {
+      "name": "ml-devtools-mfhd512m",
+      "created": "2025-09-12T21:42:20Z",
+      "language": "Python"
+    },
+    {
+      "name": "framework-crypto-mfhd4vpe",
+      "created": "2025-09-12T21:42:14Z",
+      "language": "JavaScript"
+    }
+  ],
   "repositories": [
+    {
+      "name": "ai-automation-mfhd6103",
+      "description": "Professional python toolkit for automation systems",
+      "url": "https://github.com/Soulfra/ai-automation-mfhd6103",
+      "language": "Python",
+      "topics": [],
+      "created": "2025-09-12T21:43:06Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "backend-security-mfhd5wqf",
+      "description": "Efficient go utilities for security workflows",
+      "url": "https://github.com/Soulfra/backend-security-mfhd5wqf",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:43:01Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "go-ai-mfhd5rx4",
+      "description": "Professional go toolkit for ai systems",
+      "url": "https://github.com/Soulfra/go-ai-mfhd5rx4",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:42:55Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ts-automation-mfhd5nfg",
+      "description": "Professional typescript toolkit for automation systems",
+      "url": "https://github.com/Soulfra/ts-automation-mfhd5nfg",
+      "topics": [],
+      "created": "2025-09-12T21:42:49Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ai-gaming-mfhd5j4n",
+      "description": "Efficient python utilities for gaming workflows",
+      "url": "https://github.com/Soulfra/ai-gaming-mfhd5j4n",
+      "language": "Python",
+      "topics": [],
+      "created": "2025-09-12T21:42:43Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "web-data-mfhd5etg",
+      "description": "Professional typescript toolkit for data systems",
+      "url": "https://github.com/Soulfra/web-data-mfhd5etg",
+      "topics": [],
+      "created": "2025-09-12T21:42:38Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "fast-devtools-mfhd5b1c",
+      "description": "Advanced rust framework for devtools projects",
+      "url": "https://github.com/Soulfra/fast-devtools-mfhd5b1c",
+      "topics": [],
+      "created": "2025-09-12T21:42:33Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "api-data-mfhd55nq",
+      "description": "High-performance go library for data development",
+      "url": "https://github.com/Soulfra/api-data-mfhd55nq",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:42:26Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ml-devtools-mfhd512m",
+      "description": "Professional python toolkit for devtools systems",
+      "url": "https://github.com/Soulfra/ml-devtools-mfhd512m",
+      "language": "Python",
+      "topics": [],
+      "created": "2025-09-12T21:42:20Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "framework-crypto-mfhd4vpe",
+      "description": "Professional typescript toolkit for crypto systems",
+      "url": "https://github.com/Soulfra/framework-crypto-mfhd4vpe",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:42:14Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "backend-automation-mfhd4qy5",
+      "description": "Professional go toolkit for automation systems",
+      "url": "https://github.com/Soulfra/backend-automation-mfhd4qy5",
+      "topics": [],
+      "created": "2025-09-12T21:42:07Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust-gaming-mfhd4mrb",
+      "description": "A modern rust gaming solution for scalable applications",
+      "url": "https://github.com/Soulfra/rust-gaming-mfhd4mrb",
+      "topics": [],
+      "created": "2025-09-12T21:42:02Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-ai-mfhd4hud",
+      "description": "High-performance javascript library for ai development",
+      "url": "https://github.com/Soulfra/util-ai-mfhd4hud",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:41:55Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust-iot-mfhd4ed8",
+      "description": "High-performance rust library for iot development",
+      "url": "https://github.com/Soulfra/rust-iot-mfhd4ed8",
+      "topics": [],
+      "created": "2025-09-12T21:41:50Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "data-ai-mfhd4afs",
+      "description": "Advanced python framework for ai projects",
+      "url": "https://github.com/Soulfra/data-ai-mfhd4afs",
+      "topics": [],
+      "created": "2025-09-12T21:41:45Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust-gaming-mfhd46yt",
+      "description": "Advanced rust framework for gaming projects",
+      "url": "https://github.com/Soulfra/rust-gaming-mfhd46yt",
+      "topics": [],
+      "created": "2025-09-12T21:41:41Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "core-data-mfhd43ih",
+      "description": "High-performance rust library for data development",
+      "url": "https://github.com/Soulfra/core-data-mfhd43ih",
+      "topics": [],
+      "created": "2025-09-12T21:41:37Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-iot-mfhd3zjd",
+      "description": "Advanced javascript framework for iot projects",
+      "url": "https://github.com/Soulfra/tool-iot-mfhd3zjd",
+      "topics": [],
+      "created": "2025-09-12T21:41:31Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "js-crypto-mfhd3utl",
+      "description": "Professional javascript toolkit for crypto systems",
+      "url": "https://github.com/Soulfra/js-crypto-mfhd3utl",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:41:25Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "js-automation-mfhd3qpj",
+      "description": "Advanced javascript framework for automation projects",
+      "url": "https://github.com/Soulfra/js-automation-mfhd3qpj",
+      "topics": [],
+      "created": "2025-09-12T21:41:20Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "go-security-mfhd3mgl",
+      "description": "Professional go toolkit for security systems",
+      "url": "https://github.com/Soulfra/go-security-mfhd3mgl",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:41:14Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-mobile-mfhd3i6k",
+      "description": "A modern javascript mobile solution for scalable applications",
+      "url": "https://github.com/Soulfra/util-mobile-mfhd3i6k",
+      "topics": [],
+      "created": "2025-09-12T21:41:09Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ui-crypto-mfhd3dwq",
+      "description": "Advanced typescript framework for crypto projects",
+      "url": "https://github.com/Soulfra/ui-crypto-mfhd3dwq",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:41:03Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "fast-web-mfhd3aj0",
+      "description": "High-performance rust library for web development",
+      "url": "https://github.com/Soulfra/fast-web-mfhd3aj0",
+      "topics": [],
+      "created": "2025-09-12T21:40:59Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-gaming-mfhd362w",
+      "description": "High-performance javascript library for gaming development",
+      "url": "https://github.com/Soulfra/lib-gaming-mfhd362w",
+      "topics": [],
+      "created": "2025-09-12T21:40:53Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ui-crypto-mfhd321w",
+      "description": "High-performance typescript library for crypto development",
+      "url": "https://github.com/Soulfra/ui-crypto-mfhd321w",
+      "topics": [],
+      "created": "2025-09-12T21:40:48Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "service-web-mfhd2y2d",
+      "description": "A modern go web solution for scalable applications",
+      "url": "https://github.com/Soulfra/service-web-mfhd2y2d",
+      "topics": [],
+      "created": "2025-09-12T21:40:43Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-gaming-mfhd2u1n",
+      "description": "Efficient python utilities for gaming workflows",
+      "url": "https://github.com/Soulfra/py-gaming-mfhd2u1n",
+      "topics": [],
+      "created": "2025-09-12T21:40:37Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ts-iot-mfhd2piu",
+      "description": "Advanced typescript framework for iot projects",
+      "url": "https://github.com/Soulfra/ts-iot-mfhd2piu",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:40:32Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ts-crypto-mfhd2ku6",
+      "description": "Professional typescript toolkit for crypto systems",
+      "url": "https://github.com/Soulfra/ts-crypto-mfhd2ku6",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:40:26Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-mobile-mfhd2ge1",
+      "description": "Advanced javascript framework for mobile projects",
+      "url": "https://github.com/Soulfra/util-mobile-mfhd2ge1",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:40:20Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "backend-crypto-mfhd2cfo",
+      "description": "Advanced go framework for crypto projects",
+      "url": "https://github.com/Soulfra/backend-crypto-mfhd2cfo",
+      "topics": [],
+      "created": "2025-09-12T21:40:15Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-ai-mfhd28ax",
+      "description": "A modern javascript ai solution for scalable applications",
+      "url": "https://github.com/Soulfra/tool-ai-mfhd28ax",
+      "topics": [],
+      "created": "2025-09-12T21:40:09Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "framework-crypto-mfhd23v8",
+      "description": "High-performance typescript library for crypto development",
+      "url": "https://github.com/Soulfra/framework-crypto-mfhd23v8",
+      "topics": [],
+      "created": "2025-09-12T21:40:04Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-crypto-mfhd1zxv",
+      "description": "Advanced javascript framework for crypto projects",
+      "url": "https://github.com/Soulfra/lib-crypto-mfhd1zxv",
+      "topics": [],
+      "created": "2025-09-12T21:39:58Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-mobile-mfhd1vq9",
+      "description": "Efficient javascript utilities for mobile workflows",
+      "url": "https://github.com/Soulfra/tool-mobile-mfhd1vq9",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:39:53Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-gaming-mfhd1rro",
+      "description": "Professional javascript toolkit for gaming systems",
+      "url": "https://github.com/Soulfra/lib-gaming-mfhd1rro",
+      "topics": [],
+      "created": "2025-09-12T21:39:48Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-security-mfhd1np9",
+      "description": "High-performance javascript library for security development",
+      "url": "https://github.com/Soulfra/util-security-mfhd1np9",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:39:43Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "fast-data-mfhd1kk4",
+      "description": "High-performance rust library for data development",
+      "url": "https://github.com/Soulfra/fast-data-mfhd1kk4",
+      "topics": [],
+      "created": "2025-09-12T21:39:38Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-iot-mfhd1g6s",
+      "description": "Professional javascript toolkit for iot systems",
+      "url": "https://github.com/Soulfra/lib-iot-mfhd1g6s",
+      "topics": [],
+      "created": "2025-09-12T21:39:33Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-web-mfhd1bxo",
+      "description": "Professional javascript toolkit for web systems",
+      "url": "https://github.com/Soulfra/tool-web-mfhd1bxo",
+      "topics": [],
+      "created": "2025-09-12T21:39:28Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "go-devtools-mfhd17sv",
+      "description": "A modern go devtools solution for scalable applications",
+      "url": "https://github.com/Soulfra/go-devtools-mfhd17sv",
+      "topics": [],
+      "created": "2025-09-12T21:39:22Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-mobile-mfhd13yv",
+      "description": "Professional javascript toolkit for mobile systems",
+      "url": "https://github.com/Soulfra/tool-mobile-mfhd13yv",
+      "topics": [],
+      "created": "2025-09-12T21:39:17Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ui-security-mfhd0zyp",
+      "description": "Advanced typescript framework for security projects",
+      "url": "https://github.com/Soulfra/ui-security-mfhd0zyp",
+      "topics": [],
+      "created": "2025-09-12T21:39:12Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "api-ai-mfhd0vy8",
+      "description": "Professional go toolkit for ai systems",
+      "url": "https://github.com/Soulfra/api-ai-mfhd0vy8",
+      "topics": [],
+      "created": "2025-09-12T21:39:07Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "web-crypto-mfhd0s2e",
+      "description": "Efficient typescript utilities for crypto workflows",
+      "url": "https://github.com/Soulfra/web-crypto-mfhd0s2e",
+      "topics": [],
+      "created": "2025-09-12T21:39:01Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-data-mfhd0o7m",
+      "description": "A modern javascript data solution for scalable applications",
+      "url": "https://github.com/Soulfra/util-data-mfhd0o7m",
+      "topics": [],
+      "created": "2025-09-12T21:38:56Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-iot-mfhd0k49",
+      "description": "High-performance python library for iot development",
+      "url": "https://github.com/Soulfra/py-iot-mfhd0k49",
+      "topics": [],
+      "created": "2025-09-12T21:38:51Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust-automation-mfhd0gyd",
+      "description": "A modern rust automation solution for scalable applications",
+      "url": "https://github.com/Soulfra/rust-automation-mfhd0gyd",
+      "topics": [],
+      "created": "2025-09-12T21:38:47Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "web-automation-mfhd0csl",
+      "description": "Advanced typescript framework for automation projects",
+      "url": "https://github.com/Soulfra/web-automation-mfhd0csl",
+      "topics": [],
+      "created": "2025-09-12T21:38:42Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "data-mobile-mfhd08x5",
+      "description": "Professional python toolkit for mobile systems",
+      "url": "https://github.com/Soulfra/data-mobile-mfhd08x5",
+      "topics": [],
+      "created": "2025-09-12T21:38:37Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-data-mfhd054r",
+      "description": "High-performance javascript library for data development",
+      "url": "https://github.com/Soulfra/tool-data-mfhd054r",
+      "topics": [],
+      "created": "2025-09-12T21:38:32Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "data-security-mfhd00iq",
+      "description": "A modern python security solution for scalable applications",
+      "url": "https://github.com/Soulfra/data-security-mfhd00iq",
+      "language": "Python",
+      "topics": [],
+      "created": "2025-09-12T21:38:26Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-data-mfhczwgj",
+      "description": "High-performance javascript library for data development",
+      "url": "https://github.com/Soulfra/lib-data-mfhczwgj",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:38:20Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-devtools-mfhczsei",
+      "description": "Efficient javascript utilities for devtools workflows",
+      "url": "https://github.com/Soulfra/lib-devtools-mfhczsei",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:38:15Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-web-mfhczo8p",
+      "description": "Professional javascript toolkit for web systems",
+      "url": "https://github.com/Soulfra/lib-web-mfhczo8p",
+      "topics": [],
+      "created": "2025-09-12T21:38:10Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ai-data-mfhczjk3",
+      "description": "A modern python data solution for scalable applications",
+      "url": "https://github.com/Soulfra/ai-data-mfhczjk3",
+      "topics": [],
+      "created": "2025-09-12T21:38:04Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-security-mfhczfm1",
+      "description": "Advanced javascript framework for security projects",
+      "url": "https://github.com/Soulfra/tool-security-mfhczfm1",
+      "topics": [],
+      "created": "2025-09-12T21:37:59Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-security-mfhczbla",
+      "description": "Advanced python framework for security projects",
+      "url": "https://github.com/Soulfra/py-security-mfhczbla",
+      "topics": [],
+      "created": "2025-09-12T21:37:53Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "tool-devtools-mfhcz7lm",
+      "description": "Professional javascript toolkit for devtools systems",
+      "url": "https://github.com/Soulfra/tool-devtools-mfhcz7lm",
+      "topics": [],
+      "created": "2025-09-12T21:37:48Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "core-iot-mfhcz489",
+      "description": "Professional rust toolkit for iot systems",
+      "url": "https://github.com/Soulfra/core-iot-mfhcz489",
+      "topics": [],
+      "created": "2025-09-12T21:37:44Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-web-mfhcz02i",
+      "description": "A modern javascript web solution for scalable applications",
+      "url": "https://github.com/Soulfra/util-web-mfhcz02i",
+      "topics": [],
+      "created": "2025-09-12T21:37:39Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-automation-mfhcyvl5",
+      "description": "Professional javascript toolkit for automation systems",
+      "url": "https://github.com/Soulfra/lib-automation-mfhcyvl5",
+      "topics": [],
+      "created": "2025-09-12T21:37:33Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "sys-security-mfhcys6o",
+      "description": "Efficient rust utilities for security workflows",
+      "url": "https://github.com/Soulfra/sys-security-mfhcys6o",
+      "topics": [],
+      "created": "2025-09-12T21:37:28Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ts-gaming-mfhcyni5",
+      "description": "High-performance typescript library for gaming development",
+      "url": "https://github.com/Soulfra/ts-gaming-mfhcyni5",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:37:22Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "core-gaming-mfhcyk8y",
+      "description": "Professional rust toolkit for gaming systems",
+      "url": "https://github.com/Soulfra/core-gaming-mfhcyk8y",
+      "topics": [],
+      "created": "2025-09-12T21:37:18Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-crypto-mfhcygcm",
+      "description": "Efficient python utilities for crypto workflows",
+      "url": "https://github.com/Soulfra/py-crypto-mfhcygcm",
+      "topics": [],
+      "created": "2025-09-12T21:37:13Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ts-crypto-mfhcyc8n",
+      "description": "Professional typescript toolkit for crypto systems",
+      "url": "https://github.com/Soulfra/ts-crypto-mfhcyc8n",
+      "topics": [],
+      "created": "2025-09-12T21:37:08Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "backend-ai-mfhcy8a7",
+      "description": "High-performance go library for ai development",
+      "url": "https://github.com/Soulfra/backend-ai-mfhcy8a7",
+      "topics": [],
+      "created": "2025-09-12T21:37:03Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib-devtools-mfhcy4d6",
+      "description": "A modern javascript devtools solution for scalable applications",
+      "url": "https://github.com/Soulfra/lib-devtools-mfhcy4d6",
+      "topics": [],
+      "created": "2025-09-12T21:36:57Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-devtools-mfhcy03m",
+      "description": "High-performance python library for devtools development",
+      "url": "https://github.com/Soulfra/py-devtools-mfhcy03m",
+      "language": "Python",
+      "topics": [],
+      "created": "2025-09-12T21:36:52Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "sys-iot-mfhcxwse",
+      "description": "Professional rust toolkit for iot systems",
+      "url": "https://github.com/Soulfra/sys-iot-mfhcxwse",
+      "topics": [],
+      "created": "2025-09-12T21:36:48Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust-mobile-mfhcxtbq",
+      "description": "Advanced rust framework for mobile projects",
+      "url": "https://github.com/Soulfra/rust-mobile-mfhcxtbq",
+      "topics": [],
+      "created": "2025-09-12T21:36:43Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util-mobile-mfhcxox9",
+      "description": "Advanced javascript framework for mobile projects",
+      "url": "https://github.com/Soulfra/util-mobile-mfhcxox9",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:36:37Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "ml-web-mfhcxkw6",
+      "description": "Professional python toolkit for web systems",
+      "url": "https://github.com/Soulfra/ml-web-mfhcxkw6",
+      "topics": [],
+      "created": "2025-09-12T21:36:32Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "api-iot-mfhcxfqh",
+      "description": "High-performance go library for iot development",
+      "url": "https://github.com/Soulfra/api-iot-mfhcxfqh",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:36:26Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "backend-mobile-mfhcxblw",
+      "description": "A modern go mobile solution for scalable applications",
+      "url": "https://github.com/Soulfra/backend-mobile-mfhcxblw",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:36:20Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py-security-mfhcx7n1",
+      "description": "Professional python toolkit for security systems",
+      "url": "https://github.com/Soulfra/py-security-mfhcx7n1",
+      "topics": [],
+      "created": "2025-09-12T21:36:15Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "api-web-mfhcx30x",
+      "description": "Advanced go framework for web projects",
+      "url": "https://github.com/Soulfra/api-web-mfhcx30x",
+      "language": "Go",
+      "topics": [],
+      "created": "2025-09-12T21:36:09Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "web-data-mfhcwym4",
+      "description": "Advanced typescript framework for data projects",
+      "url": "https://github.com/Soulfra/web-data-mfhcwym4",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:36:03Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "py_computer_vision_1",
+      "description": "A lightweight rust library for processing and analyzing images",
+      "url": "https://github.com/Soulfra/py_computer_vision_1",
+      "topics": [],
+      "created": "2025-09-12T21:33:50Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "node_cloud_computing_1",
+      "description": "A modern rust library for scaling applications in the cloud",
+      "url": "https://github.com/Soulfra/node_cloud_computing_1",
+      "topics": [],
+      "created": "2025-09-12T21:33:18Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "node_cybersecurity_1",
+      "description": "A flexible go library for securing applications and data",
+      "url": "https://github.com/Soulfra/node_cybersecurity_1",
+      "topics": [],
+      "created": "2025-09-12T21:32:46Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib_web_development_1",
+      "description": "A powerful typescript library for building modern web applications",
+      "url": "https://github.com/Soulfra/lib_web_development_1",
+      "topics": [],
+      "created": "2025-09-12T21:32:13Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "rust_computer_vision_1",
+      "description": "A powerful javascript library for processing and analyzing images",
+      "url": "https://github.com/Soulfra/rust_computer_vision_1",
+      "topics": [],
+      "created": "2025-09-12T21:31:41Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "Soulfra-cookbook",
+      "description": "Code recipes and tutorials",
+      "url": "https://github.com/Soulfra/Soulfra-cookbook",
+      "topics": [],
+      "created": "2025-09-12T21:25:26Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "example_computer_vision_10",
+      "description": "Demo application showcasing image recognition",
+      "url": "https://github.com/Soulfra/example_computer_vision_10",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:25:21Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "util_cybersecurity_9",
+      "description": "CLI tool for secure built with java",
+      "url": "https://github.com/Soulfra/util_cybersecurity_9",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:25:17Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "node_machine_learning_8",
+      "description": "A modern java library for training and deploying ML models",
+      "url": "https://github.com/Soulfra/node_machine_learning_8",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:25:12Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "server_robotics_7",
+      "description": "RESTful API for robotics",
+      "url": "https://github.com/Soulfra/server_robotics_7",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:25:08Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "base_cloud_computing_6",
+      "description": "Lightweight scaling applications in the cloud framework in python",
+      "url": "https://github.com/Soulfra/base_cloud_computing_6",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:25:03Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "proto_computer_vision_5",
+      "description": "Experimental image recognition implementation",
+      "url": "https://github.com/Soulfra/proto_computer_vision_5",
+      "language": "Jupyter Notebook",
+      "topics": [],
+      "created": "2025-09-12T21:24:58Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "guide_cloud_computing_4",
+      "description": "Step-by-step tutorial on cloud-computing",
+      "url": "https://github.com/Soulfra/guide_cloud_computing_4",
+      "language": "TypeScript",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:24:52Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "example_cloud_computing_3",
+      "description": "Demo application showcasing containerization",
+      "url": "https://github.com/Soulfra/example_cloud_computing_3",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:24:46Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "helper_nlp_2",
+      "description": "CLI tool for parse built with typescript",
+      "url": "https://github.com/Soulfra/helper_nlp_2",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:24:42Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "node_game_development_1",
+      "description": "A powerful c++ library for creating interactive games",
+      "url": "https://github.com/Soulfra/node_game_development_1",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:24:38Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "lib_computer_vision_1",
+      "description": "A modern c++ library for processing and analyzing images",
+      "url": "https://github.com/Soulfra/lib_computer_vision_1",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T21:21:19Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "soulfra.github.io",
+      "description": "Professional Portfolio - Software Engineer & AI Developer",
+      "url": "https://github.com/Soulfra/soulfra.github.io",
+      "topics": [],
+      "created": "2025-09-12T21:09:12Z",
+      "is_private": false,
+      "stargazer_count": 0
+    },
     {
       "name": "demo_game_development_3",
       "description": "Demo application showcasing 3D graphics",
       "url": "https://github.com/Soulfra/demo_game_development_3",
       "topics": [],
       "created": "2025-09-12T21:03:17Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "tool_web_development_2",
@@ -33,7 +1033,8 @@
         null
       ],
       "created": "2025-09-12T21:03:13Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "rust_web_development_1",
@@ -46,7 +1047,8 @@
         null
       ],
       "created": "2025-09-12T21:03:09Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "rust_cybersecurity_1",
@@ -55,7 +1057,8 @@
       "language": "TypeScript",
       "topics": [],
       "created": "2025-09-12T20:58:33Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "portfolio-generator",
@@ -64,7 +1067,8 @@
       "language": "JavaScript",
       "topics": [],
       "created": "2025-09-12T20:54:21Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "ai-website-builder",
@@ -84,7 +1088,37 @@
         null
       ],
       "created": "2025-09-04T11:59:48Z",
-      "is_private": false
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "HowWasTheVibe2",
+      "description": "",
+      "url": "https://github.com/Soulfra/HowWasTheVibe2",
+      "language": "TypeScript",
+      "topics": [],
+      "created": "2025-07-01T00:39:56Z",
+      "is_private": true,
+      "stargazer_count": 0
+    },
+    {
+      "name": "howwasthevibe",
+      "description": "",
+      "url": "https://github.com/Soulfra/howwasthevibe",
+      "topics": [],
+      "created": "2025-07-01T00:21:07Z",
+      "is_private": true,
+      "stargazer_count": 0
+    },
+    {
+      "name": "AI-OS-Ripping-Desktop",
+      "description": "",
+      "url": "https://github.com/Soulfra/AI-OS-Ripping-Desktop",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-29T19:47:56Z",
+      "is_private": true,
+      "stargazer_count": 0
     },
     {
       "name": "finishthisidea",
@@ -100,42 +1134,8 @@
         null
       ],
       "created": "2025-06-27T20:35:13Z",
-      "is_private": true
-    },
-    {
-      "name": "HowWasTheVibe2",
-      "description": "",
-      "url": "https://github.com/Soulfra/HowWasTheVibe2",
-      "language": "TypeScript",
-      "topics": [],
-      "created": "2025-07-01T00:39:56Z",
-      "is_private": true
-    },
-    {
-      "name": "howwasthevibe",
-      "description": "",
-      "url": "https://github.com/Soulfra/howwasthevibe",
-      "topics": [],
-      "created": "2025-07-01T00:21:07Z",
-      "is_private": true
-    },
-    {
-      "name": "AI-OS-Ripping-Desktop",
-      "description": "",
-      "url": "https://github.com/Soulfra/AI-OS-Ripping-Desktop",
-      "language": "JavaScript",
-      "topics": [],
-      "created": "2025-06-29T19:47:56Z",
-      "is_private": true
-    },
-    {
-      "name": "clarity-engine-kernel-slate",
-      "description": "",
-      "url": "https://github.com/Soulfra/clarity-engine-kernel-slate",
-      "language": "JavaScript",
-      "topics": [],
-      "created": "2025-06-07T13:49:33Z",
-      "is_private": true
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "ai-kernel",
@@ -144,7 +1144,8 @@
       "language": "JavaScript",
       "topics": [],
       "created": "2025-06-08T13:04:33Z",
-      "is_private": true
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "engine-documentation",
@@ -152,7 +1153,18 @@
       "url": "https://github.com/Soulfra/engine-documentation",
       "topics": [],
       "created": "2025-06-08T12:49:59Z",
-      "is_private": true
+      "is_private": true,
+      "stargazer_count": 0
+    },
+    {
+      "name": "clarity-engine-kernel-slate",
+      "description": "",
+      "url": "https://github.com/Soulfra/clarity-engine-kernel-slate",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-07T13:49:33Z",
+      "is_private": true,
+      "stargazer_count": 0
     },
     {
       "name": "clarity-engine",
@@ -161,7 +1173,17 @@
       "language": "JavaScript",
       "topics": [],
       "created": "2025-06-02T12:53:53Z",
-      "is_private": true
+      "is_private": false,
+      "stargazer_count": 0
+    },
+    {
+      "name": "cringeproof-app",
+      "description": "Cringeproof rewrites your texts with confidence and clarity.",
+      "url": "https://github.com/Soulfra/cringeproof-app",
+      "topics": [],
+      "created": "2025-05-31T15:31:20Z",
+      "is_private": true,
+      "stargazer_count": 0
     },
     {
       "name": "cringeproof",
@@ -170,15 +1192,8 @@
       "language": "HTML",
       "topics": [],
       "created": "2025-05-30T18:45:04Z",
-      "is_private": true
-    },
-    {
-      "name": "cringeproof-app",
-      "description": "Cringeproof rewrites your texts with confidence and clarity.",
-      "url": "https://github.com/Soulfra/cringeproof-app",
-      "topics": [],
-      "created": "2025-05-31T15:31:20Z",
-      "is_private": true
+      "is_private": false,
+      "stargazer_count": 0
     },
     {
       "name": "calctl",
@@ -187,7 +1202,8 @@
       "language": "JavaScript",
       "topics": [],
       "created": "2025-05-10T12:54:06Z",
-      "is_private": true
+      "is_private": true,
+      "stargazer_count": 0
     }
   ]
 }

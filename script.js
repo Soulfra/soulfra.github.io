@@ -1,7 +1,7 @@
-// Portfolio Website JavaScript
+// Fixed Portfolio Website JavaScript - Dynamic Loading
 document.addEventListener('DOMContentLoaded', function() {
-    // Load project data
-    loadProjects();
+    // Load projects dynamically
+    loadProjectsDynamically();
     loadSkills();
     
     // Setup event listeners
@@ -11,322 +11,187 @@ document.addEventListener('DOMContentLoaded', function() {
     setupScrollEffects();
 });
 
-// Project data (loaded from GitHub API)
-const projectsData = [
-  {
-    "createdAt": "2025-09-12T21:03:17Z",
-    "description": "Demo application showcasing 3D graphics",
-    "isPrivate": false,
-    "name": "demo_game_development_3",
-    "primaryLanguage": null,
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/demo_game_development_3"
-  },
-  {
-    "createdAt": "2025-09-12T21:03:13Z",
-    "description": "CLI tool for build built with javascript",
-    "isPrivate": false,
-    "name": "tool_web_development_2",
-    "primaryLanguage": null,
-    "repositoryTopics": [
-      {
-        "name": "javascript"
-      },
-      {
-        "name": "tool"
-      },
-      {
-        "name": "web-development"
-      }
-    ],
-    "url": "https://github.com/Soulfra/tool_web_development_2"
-  },
-  {
-    "createdAt": "2025-09-12T21:03:09Z",
-    "description": "A flexible rust library for building modern web applications",
-    "isPrivate": false,
-    "name": "rust_web_development_1",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": [
-      {
-        "name": "library"
-      },
-      {
-        "name": "rust"
-      },
-      {
-        "name": "web-development"
-      }
-    ],
-    "url": "https://github.com/Soulfra/rust_web_development_1"
-  },
-  {
-    "createdAt": "2025-09-12T20:58:33Z",
-    "description": "A robust typescript library for securing applications and data",
-    "isPrivate": false,
-    "name": "rust_cybersecurity_1",
-    "primaryLanguage": {
-      "name": "TypeScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/rust_cybersecurity_1"
-  },
-  {
-    "createdAt": "2025-09-12T20:54:21Z",
-    "description": "Complete GitHub portfolio generation system - Create 100+ repos like tom-doerr with puppet screen preview",
-    "isPrivate": false,
-    "name": "portfolio-generator",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/portfolio-generator"
-  },
-  {
-    "createdAt": "2025-09-04T11:59:48Z",
-    "description": "Build real websites using natural language - no coding required",
-    "isPrivate": false,
-    "name": "ai-website-builder",
-    "primaryLanguage": {
-      "name": "HTML"
-    },
-    "repositoryTopics": [
-      {
-        "name": "ai"
-      },
-      {
-        "name": "natural-language"
-      },
-      {
-        "name": "no-code"
-      },
-      {
-        "name": "ollama"
-      },
-      {
-        "name": "website-builder"
-      },
-      {
-        "name": "anthropic"
-      },
-      {
-        "name": "javascript"
-      },
-      {
-        "name": "nodejs"
-      },
-      {
-        "name": "openai"
-      },
-      {
-        "name": "web-development"
-      }
-    ],
-    "url": "https://github.com/Soulfra/ai-website-builder"
-  },
-  {
-    "createdAt": "2025-06-27T20:35:13Z",
-    "description": "Document Generator - Transform any document into a working MVP in under 30 minutes using AI-powered code generation, template matching, and automated deployment",
-    "isPrivate": true,
-    "name": "finishthisidea",
-    "primaryLanguage": {
-      "name": "TypeScript"
-    },
-    "repositoryTopics": [
-      {
-        "name": "ai"
-      },
-      {
-        "name": "docker"
-      },
-      {
-        "name": "document-generator"
-      },
-      {
-        "name": "kubernetes"
-      },
-      {
-        "name": "mvp"
-      },
-      {
-        "name": "typescript"
-      }
-    ],
-    "url": "https://github.com/Soulfra/finishthisidea"
-  },
-  {
-    "createdAt": "2025-07-01T00:39:56Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "HowWasTheVibe2",
-    "primaryLanguage": {
-      "name": "TypeScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/HowWasTheVibe2"
-  },
-  {
-    "createdAt": "2025-07-01T00:21:07Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "howwasthevibe",
-    "primaryLanguage": null,
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/howwasthevibe"
-  },
-  {
-    "createdAt": "2025-06-29T19:47:56Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "AI-OS-Ripping-Desktop",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/AI-OS-Ripping-Desktop"
-  },
-  {
-    "createdAt": "2025-06-07T13:49:33Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "clarity-engine-kernel-slate",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/clarity-engine-kernel-slate"
-  },
-  {
-    "createdAt": "2025-06-08T13:04:33Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "ai-kernel",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/ai-kernel"
-  },
-  {
-    "createdAt": "2025-06-08T12:49:59Z",
-    "description": "engine",
-    "isPrivate": true,
-    "name": "engine-documentation",
-    "primaryLanguage": null,
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/engine-documentation"
-  },
-  {
-    "createdAt": "2025-06-02T12:53:53Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "clarity-engine",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/clarity-engine"
-  },
-  {
-    "createdAt": "2025-05-30T18:45:04Z",
-    "description": "Rewrite your tone with confidence and clarity.",
-    "isPrivate": true,
-    "name": "cringeproof",
-    "primaryLanguage": {
-      "name": "HTML"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/cringeproof"
-  },
-  {
-    "createdAt": "2025-05-31T15:31:20Z",
-    "description": "Cringeproof rewrites your texts with confidence and clarity.",
-    "isPrivate": true,
-    "name": "cringeproof-app",
-    "primaryLanguage": null,
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/cringeproof-app"
-  },
-  {
-    "createdAt": "2025-05-10T12:54:06Z",
-    "description": "",
-    "isPrivate": true,
-    "name": "calctl",
-    "primaryLanguage": {
-      "name": "JavaScript"
-    },
-    "repositoryTopics": null,
-    "url": "https://github.com/Soulfra/calctl"
-  }
-];
+let allRepositories = [];
 
-function loadProjects() {
-    const projectsGrid = document.getElementById('projects-grid');
+async function loadProjectsDynamically() {
+    console.log('🔄 Loading repositories dynamically...');
     
-    projectsData.forEach(repo => {
-        if (repo.name === 'soulfra.github.io') return; // Skip portfolio repo
+    try {
+        // Load from projects.json (updated with real data)
+        const response = await fetch('./projects.json');
+        const data = await response.json();
         
-        const card = createProjectCard(repo);
-        projectsGrid.appendChild(card);
-    });
+        allRepositories = data.repositories;
+        
+        console.log(`✅ Loaded ${allRepositories.length} repositories`);
+        
+        // Update stats
+        updateStats(data);
+        
+        // Create project cards
+        createAllProjectCards();
+        
+    } catch (error) {
+        console.error('❌ Failed to load repositories:', error);
+        
+        // Fallback: Show placeholder message
+        const projectsGrid = document.getElementById('projects-grid');
+        if (projectsGrid) {
+            projectsGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                    <h3>Loading repositories...</h3>
+                    <p>If this message persists, please visit <a href="https://github.com/Soulfra">GitHub directly</a></p>
+                </div>
+            `;
+        }
+    }
 }
 
-function createProjectCard(repo) {
+function updateStats(data) {
+    // Update repository count
+    const repoCountEl = document.getElementById('repo-count');
+    if (repoCountEl) {
+        animateCounter('repo-count', data.total_repositories);
+    }
+    
+    // Update other stats
+    const languageCount = Object.keys(data.languages || {}).length;
+    const statsElements = document.querySelectorAll('.stat-number');
+    
+    if (statsElements.length >= 2) {
+        statsElements[1].textContent = languageCount;
+    }
+}
+
+function createAllProjectCards() {
+    const projectsGrid = document.getElementById('projects-grid');
+    if (!projectsGrid) return;
+    
+    // Clear existing content
+    projectsGrid.innerHTML = '';
+    
+    // Sort repositories by creation date (newest first)
+    const sortedRepos = allRepositories
+        .filter(repo => repo.name !== 'soulfra.github.io') // Skip portfolio repo itself
+        .sort((a, b) => new Date(b.created) - new Date(a.created));
+    
+    console.log(`📋 Creating cards for ${sortedRepos.length} repositories`);
+    
+    sortedRepos.forEach((repo, index) => {
+        const card = createProjectCard(repo, index);
+        projectsGrid.appendChild(card);
+    });
+    
+    console.log(`✅ Created ${sortedRepos.length} project cards`);
+}
+
+function createProjectCard(repo, index) {
     const card = document.createElement('div');
     card.className = 'project-card';
-    card.dataset.language = repo.primaryLanguage?.name?.toLowerCase() || '';
-    card.dataset.topics = (repo.repositoryTopics?.map(t => t.topic?.name) || []).join(' ').toLowerCase();
+    card.dataset.language = repo.language?.toLowerCase() || '';
+    
+    const topics = repo.topics || [];
+    card.dataset.topics = topics.join(' ').toLowerCase();
     
     const projectType = determineProjectType(repo);
-    const iconColor = getLanguageColor(repo.primaryLanguage?.name);
+    const iconColor = getLanguageColor(repo.language);
+    
+    // Create status indicator for private repos
+    const statusBadge = repo.is_private ? 
+        '<span class="private-badge">Private</span>' : 
+        '<span class="public-badge">Public</span>';
+    
+    // Create star count if available
+    const starCount = repo.stargazerCount ? 
+        `<span class="star-count">⭐ ${repo.stargazerCount}</span>` : '';
     
     card.innerHTML = `
         <div class="project-header">
             <div class="project-icon" style="background: ${iconColor}">
                 <i class="${getProjectIcon(projectType)}"></i>
             </div>
-            <h3 class="project-title">${repo.name.replace(/_/g, ' ').replace(/-/g, ' ')}</h3>
+            <h3 class="project-title">${formatRepoName(repo.name)}</h3>
+            ${statusBadge}
         </div>
         
         <p class="project-description">
-            ${repo.description || 'No description available'}
+            ${repo.description || 'Professional software project with modern architecture and best practices'}
         </p>
         
         <div class="project-topics">
-            ${(repo.repositoryTopics?.map(t => t.topic?.name) || []).map(topic => 
+            ${topics.map(topic => 
                 `<span class="topic-tag">${topic}</span>`
             ).join('')}
-            ${repo.primaryLanguage ? 
-                `<span class="topic-tag">${repo.primaryLanguage.name}</span>` : ''
+            ${repo.language ? 
+                `<span class="topic-tag primary">${repo.language}</span>` : ''
             }
+        </div>
+        
+        <div class="project-meta">
+            <span class="created-date">Created: ${formatDate(repo.created)}</span>
+            ${starCount}
         </div>
         
         <div class="project-links">
             <a href="${repo.url}" class="project-link primary" target="_blank">
                 <i class="fab fa-github"></i> View Code
             </a>
-            ${repo.name.includes('demo') || repo.name.includes('app') ? 
-                `<a href="https://${repo.name}.netlify.app" class="project-link secondary" target="_blank">
+            ${shouldShowDemo(repo) ? 
+                `<a href="${generateDemoUrl(repo)}" class="project-link secondary" target="_blank">
                     <i class="fas fa-external-link-alt"></i> Live Demo
                 </a>` : ''
             }
         </div>
     `;
     
+    // Add entrance animation
+    card.style.animationDelay = `${Math.min(index * 0.1, 2)}s`;
+    
     return card;
+}
+
+function formatRepoName(name) {
+    return name
+        .replace(/[-_]/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short' 
+    });
+}
+
+function shouldShowDemo(repo) {
+    const name = repo.name.toLowerCase();
+    const desc = (repo.description || '').toLowerCase();
+    
+    return name.includes('demo') || 
+           name.includes('app') || 
+           name.includes('web') ||
+           desc.includes('demo') ||
+           repo.language === 'HTML';
+}
+
+function generateDemoUrl(repo) {
+    const repoName = repo.name;
+    
+    // Try GitHub Pages first
+    return `https://soulfra.github.io/${repoName}`;
 }
 
 function determineProjectType(repo) {
     const name = repo.name.toLowerCase();
     const description = (repo.description || '').toLowerCase();
-    const topics = (repo.repositoryTopics?.map(t => t.topic?.name) || []).join(' ').toLowerCase();
+    const topics = (repo.topics || []).join(' ').toLowerCase();
     
-    if (name.includes('tool') || topics.includes('cli')) return 'tool';
+    if (name.includes('tool') || name.includes('cli') || topics.includes('tool')) return 'tool';
     if (name.includes('demo') || topics.includes('demo')) return 'demo';
     if (name.includes('api') || topics.includes('api')) return 'api';
     if (name.includes('lib') || topics.includes('library')) return 'library';
+    if (name.includes('ai') || name.includes('ml') || topics.includes('ai')) return 'ai';
     if (description.includes('tutorial') || topics.includes('tutorial')) return 'tutorial';
     
     return 'project';
@@ -338,6 +203,7 @@ function getProjectIcon(type) {
         demo: 'fas fa-play-circle',
         api: 'fas fa-server',
         library: 'fas fa-book',
+        ai: 'fas fa-robot',
         tutorial: 'fas fa-graduation-cap',
         project: 'fas fa-code'
     };
@@ -356,25 +222,35 @@ function getLanguageColor(language) {
         HTML: '#e34c26',
         CSS: '#563d7c',
         Vue: '#4FC08D',
-        React: '#61DAFB'
+        React: '#61DAFB',
+        PHP: '#777bb4',
+        Ruby: '#701516',
+        Swift: '#ffac45',
+        Kotlin: '#f18e33'
     };
     return colors[language] || '#666';
 }
 
 function loadSkills() {
     const skillsGrid = document.getElementById('skills-grid');
+    if (!skillsGrid) return;
+    
     const languages = {};
     
-    // Count languages from repositories
-    projectsData.forEach(repo => {
-        if (repo.primaryLanguage) {
-            const lang = repo.primaryLanguage.name;
-            languages[lang] = (languages[lang] || 0) + 1;
+    // Count languages from all repositories
+    allRepositories.forEach(repo => {
+        if (repo.language && !repo.is_private) { // Only count public repos for skills
+            languages[repo.language] = (languages[repo.language] || 0) + 1;
         }
     });
     
+    // Sort by usage count
+    const sortedLanguages = Object.entries(languages)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 12); // Show top 12 languages
+    
     // Create skill items
-    Object.entries(languages).forEach(([lang, count]) => {
+    sortedLanguages.forEach(([lang, count]) => {
         const skill = document.createElement('div');
         skill.className = 'skill-item';
         skill.innerHTML = `
@@ -399,13 +275,18 @@ function getLanguageIcon(language) {
         HTML: 'fab fa-html5',
         CSS: 'fab fa-css3-alt',
         Vue: 'fab fa-vuejs',
-        React: 'fab fa-react'
+        React: 'fab fa-react',
+        PHP: 'fab fa-php',
+        Ruby: 'fas fa-gem',
+        Swift: 'fab fa-swift'
     };
     return icons[language] || 'fas fa-code';
 }
 
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
+    
     const currentTheme = localStorage.getItem('theme') || 'light';
     
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -421,12 +302,13 @@ function setupThemeToggle() {
 
 function updateThemeIcon(theme) {
     const icon = document.querySelector('#theme-toggle i');
-    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    if (icon) {
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
 }
 
 function setupProjectFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -435,48 +317,70 @@ function setupProjectFilters() {
             btn.classList.add('active');
             
             // Filter projects
-            const filter = btn.dataset.filter;
-            projectCards.forEach(card => {
-                if (filter === 'all') {
-                    card.style.display = 'block';
-                } else if (filter === 'ai') {
-                    card.style.display = card.dataset.topics.includes('ai') || 
-                                         card.dataset.topics.includes('ml') || 
-                                         card.dataset.topics.includes('machine-learning') ? 'block' : 'none';
-                } else if (filter === 'web') {
-                    card.style.display = card.dataset.language.includes('javascript') || 
-                                         card.dataset.language.includes('typescript') || 
-                                         card.dataset.language.includes('html') ? 'block' : 'none';
-                } else if (filter === 'tools') {
-                    card.style.display = card.dataset.topics.includes('cli') || 
-                                         card.querySelector('.project-title').textContent.toLowerCase().includes('tool') ? 'block' : 'none';
-                } else if (filter === 'libraries') {
-                    card.style.display = card.dataset.topics.includes('library') || 
-                                         card.querySelector('.project-title').textContent.toLowerCase().includes('lib') ? 'block' : 'none';
-                }
-            });
+            filterProjects(btn.dataset.filter);
         });
     });
 }
 
+function filterProjects(filter) {
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    projectCards.forEach(card => {
+        let shouldShow = false;
+        
+        if (filter === 'all') {
+            shouldShow = true;
+        } else if (filter === 'ai') {
+            shouldShow = card.dataset.topics.includes('ai') || 
+                        card.dataset.topics.includes('ml') || 
+                        card.dataset.topics.includes('machine-learning') ||
+                        card.querySelector('.project-title').textContent.toLowerCase().includes('ai');
+        } else if (filter === 'web') {
+            shouldShow = card.dataset.language.includes('javascript') || 
+                        card.dataset.language.includes('typescript') || 
+                        card.dataset.language.includes('html') ||
+                        card.dataset.topics.includes('web');
+        } else if (filter === 'tools') {
+            shouldShow = card.dataset.topics.includes('tool') || 
+                        card.querySelector('.project-title').textContent.toLowerCase().includes('tool');
+        } else if (filter === 'libraries') {
+            shouldShow = card.dataset.topics.includes('library') || 
+                        card.querySelector('.project-title').textContent.toLowerCase().includes('lib');
+        }
+        
+        card.style.display = shouldShow ? 'block' : 'none';
+    });
+    
+    // Update counts
+    const visibleCount = document.querySelectorAll('.project-card[style="display: block"], .project-card:not([style*="display: none"])').length;
+    console.log(`📊 Filtered to ${visibleCount} projects`);
+}
+
 function setupProjectSearch() {
     const searchInput = document.getElementById('project-search');
-    const projectCards = document.querySelectorAll('.project-card');
+    if (!searchInput) return;
     
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
+        const projectCards = document.querySelectorAll('.project-card');
         
         projectCards.forEach(card => {
             const title = card.querySelector('.project-title').textContent.toLowerCase();
             const description = card.querySelector('.project-description').textContent.toLowerCase();
             const topics = card.dataset.topics;
+            const language = card.dataset.language;
             
-            if (title.includes(query) || description.includes(query) || topics.includes(query)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+            const matches = title.includes(query) || 
+                          description.includes(query) || 
+                          topics.includes(query) ||
+                          language.includes(query);
+            
+            card.style.display = matches ? 'block' : 'none';
         });
+        
+        // Update search results count
+        const visibleCount = document.querySelectorAll('.project-card[style="display: block"], .project-card:not([style*="display: none"])').length;
+        console.log(`🔍 Search results: ${visibleCount} projects`);
     });
 }
 
@@ -485,18 +389,20 @@ function setupScrollEffects() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
-    
-    // Update repo count with animation
-    animateCounter('repo-count', 17);
 }
 
 function animateCounter(elementId, targetValue) {
     const element = document.getElementById(elementId);
+    if (!element) return;
+    
     const duration = 2000;
     const startTime = performance.now();
     
@@ -514,3 +420,8 @@ function animateCounter(elementId, targetValue) {
     
     requestAnimationFrame(updateCounter);
 }
+
+// Initialize console message
+console.log('🎨 Portfolio website loaded successfully!');
+console.log('📊 Features: Dynamic loading, search, filtering, themes');
+console.log('🔗 GitHub: https://github.com/Soulfra');
