@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra - Software Engineer & AI Developer</title>
+    <meta name="description" content="Professional portfolio of Soulfra - Software Engineer specializing in AI, web development, and innovative solutions.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Soulfra - Software Engineer & AI Developer">
+    <meta property="og:description" content="Professional portfolio showcasing innovative software solutions and AI development projects.">
+    <meta property="og:image" content="https://github.com/Soulfra.png">
+    <meta property="og:url" content="https://soulfra.github.io">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="https://github.com/Soulfra.png" alt="Soulfra" class="avatar">
+                <h1>Soulfra</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#projects">Projects</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Software Engineer & AI Developer</h2>
+            <p>Building innovative solutions with cutting-edge technology</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" id="repo-count">17</span>
+                    <span class="stat-label">Repositories</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Languages</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Project Types</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2>Featured Projects</h2>
+            
+            <!-- Project Filters -->
+            <div class="project-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="ai">AI/ML</button>
+                <button class="filter-btn" data-filter="web">Web Dev</button>
+                <button class="filter-btn" data-filter="tools">Tools</button>
+                <button class="filter-btn" data-filter="libraries">Libraries</button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="project-search" placeholder="Search projects...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid" id="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills">
+        <div class="container">
+            <h2>Technologies & Skills</h2>
+            <div class="skills-grid" id="skills-grid">
+                <!-- Skills will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Software engineer with a passion for AI development and innovative solutions. Experienced in full-stack development, machine learning, and building scalable applications.</p>
+                    <p>I enjoy creating tools that solve real-world problems and exploring the intersection of technology and creativity.</p>
+                    
+                    <div class="highlights">
+                        <div class="highlight">
+                            <i class="fas fa-robot"></i>
+                            <h3>AI Development</h3>
+                            <p>Specialized in machine learning, AI-powered applications, and intelligent automation systems.</p>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-code"></i>
+                            <h3>Full Stack Development</h3>
+                            <p>Proficient in modern web technologies, cloud services, and scalable architecture design.</p>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-tools"></i>
+                            <h3>Tool Creation</h3>
+                            <p>Building developer tools and utilities that improve productivity and streamline workflows.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <div class="contact-links">
+                <a href="https://github.com/Soulfra" class="contact-link">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="mailto:contact@soulfra.dev" class="contact-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
+                <a href="https://linkedin.com/in/soulfra" class="contact-link">
+                    <i class="fab fa-linkedin"></i>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Soulfra. Built with passion and modern web technologies.</p>
+            <p>
+                <a href="https://github.com/Soulfra/portfolio-generator">
+                    Generated with Portfolio Generator
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

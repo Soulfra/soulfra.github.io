@@ -1,0 +1,193 @@
+{
+  "generated_at": "2025-09-12T21:09:14.809Z",
+  "total_repositories": 17,
+  "public_repositories": 6,
+  "languages": {
+    "JavaScript": 7,
+    "TypeScript": 3,
+    "HTML": 2
+  },
+  "project_types": {
+    "tools": 1,
+    "demos": 1,
+    "libraries": 0,
+    "apps": 1,
+    "other": 14
+  },
+  "repositories": [
+    {
+      "name": "demo_game_development_3",
+      "description": "Demo application showcasing 3D graphics",
+      "url": "https://github.com/Soulfra/demo_game_development_3",
+      "topics": [],
+      "created": "2025-09-12T21:03:17Z",
+      "is_private": false
+    },
+    {
+      "name": "tool_web_development_2",
+      "description": "CLI tool for build built with javascript",
+      "url": "https://github.com/Soulfra/tool_web_development_2",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:03:13Z",
+      "is_private": false
+    },
+    {
+      "name": "rust_web_development_1",
+      "description": "A flexible rust library for building modern web applications",
+      "url": "https://github.com/Soulfra/rust_web_development_1",
+      "language": "JavaScript",
+      "topics": [
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-12T21:03:09Z",
+      "is_private": false
+    },
+    {
+      "name": "rust_cybersecurity_1",
+      "description": "A robust typescript library for securing applications and data",
+      "url": "https://github.com/Soulfra/rust_cybersecurity_1",
+      "language": "TypeScript",
+      "topics": [],
+      "created": "2025-09-12T20:58:33Z",
+      "is_private": false
+    },
+    {
+      "name": "portfolio-generator",
+      "description": "Complete GitHub portfolio generation system - Create 100+ repos like tom-doerr with puppet screen preview",
+      "url": "https://github.com/Soulfra/portfolio-generator",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-09-12T20:54:21Z",
+      "is_private": false
+    },
+    {
+      "name": "ai-website-builder",
+      "description": "Build real websites using natural language - no coding required",
+      "url": "https://github.com/Soulfra/ai-website-builder",
+      "language": "HTML",
+      "topics": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "created": "2025-09-04T11:59:48Z",
+      "is_private": false
+    },
+    {
+      "name": "finishthisidea",
+      "description": "Document Generator - Transform any document into a working MVP in under 30 minutes using AI-powered code generation, template matching, and automated deployment",
+      "url": "https://github.com/Soulfra/finishthisidea",
+      "language": "TypeScript",
+      "topics": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "created": "2025-06-27T20:35:13Z",
+      "is_private": true
+    },
+    {
+      "name": "HowWasTheVibe2",
+      "description": "",
+      "url": "https://github.com/Soulfra/HowWasTheVibe2",
+      "language": "TypeScript",
+      "topics": [],
+      "created": "2025-07-01T00:39:56Z",
+      "is_private": true
+    },
+    {
+      "name": "howwasthevibe",
+      "description": "",
+      "url": "https://github.com/Soulfra/howwasthevibe",
+      "topics": [],
+      "created": "2025-07-01T00:21:07Z",
+      "is_private": true
+    },
+    {
+      "name": "AI-OS-Ripping-Desktop",
+      "description": "",
+      "url": "https://github.com/Soulfra/AI-OS-Ripping-Desktop",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-29T19:47:56Z",
+      "is_private": true
+    },
+    {
+      "name": "clarity-engine-kernel-slate",
+      "description": "",
+      "url": "https://github.com/Soulfra/clarity-engine-kernel-slate",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-07T13:49:33Z",
+      "is_private": true
+    },
+    {
+      "name": "ai-kernel",
+      "description": "",
+      "url": "https://github.com/Soulfra/ai-kernel",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-08T13:04:33Z",
+      "is_private": true
+    },
+    {
+      "name": "engine-documentation",
+      "description": "engine",
+      "url": "https://github.com/Soulfra/engine-documentation",
+      "topics": [],
+      "created": "2025-06-08T12:49:59Z",
+      "is_private": true
+    },
+    {
+      "name": "clarity-engine",
+      "description": "",
+      "url": "https://github.com/Soulfra/clarity-engine",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-06-02T12:53:53Z",
+      "is_private": true
+    },
+    {
+      "name": "cringeproof",
+      "description": "Rewrite your tone with confidence and clarity.",
+      "url": "https://github.com/Soulfra/cringeproof",
+      "language": "HTML",
+      "topics": [],
+      "created": "2025-05-30T18:45:04Z",
+      "is_private": true
+    },
+    {
+      "name": "cringeproof-app",
+      "description": "Cringeproof rewrites your texts with confidence and clarity.",
+      "url": "https://github.com/Soulfra/cringeproof-app",
+      "topics": [],
+      "created": "2025-05-31T15:31:20Z",
+      "is_private": true
+    },
+    {
+      "name": "calctl",
+      "description": "",
+      "url": "https://github.com/Soulfra/calctl",
+      "language": "JavaScript",
+      "topics": [],
+      "created": "2025-05-10T12:54:06Z",
+      "is_private": true
+    }
+  ]
+}
