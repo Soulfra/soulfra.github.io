@@ -3,160 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soulfra - Software Engineer & AI Developer</title>
-    <meta name="description" content="Professional portfolio of Soulfra - Software Engineer specializing in AI, web development, and innovative solutions.">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Soulfra - Software Engineer & AI Developer">
-    <meta property="og:description" content="Professional portfolio showcasing innovative software solutions and AI development projects.">
-    <meta property="og:image" content="https://github.com/Soulfra.png">
-    <meta property="og:url" content="https://soulfra.github.io">
-    
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Soulfra TV Remote Portfolio</title>
+    <link rel="stylesheet" href="tv-remote.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">
-                <img src="https://github.com/Soulfra.png" alt="Soulfra" class="avatar">
-                <h1>Soulfra</h1>
-            </div>
-            <div class="nav-links">
-                <a href="#projects">Projects</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <button class="theme-toggle" id="theme-toggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Software Engineer & AI Developer</h2>
-            <p>Building innovative solutions with cutting-edge technology</p>
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" id="repo-count">115</span>
-                    <span class="stat-label">Repositories</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">6</span>
-                    <span class="stat-label">Languages</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">Project Types</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section class="projects" id="projects">
-        <div class="container">
-            <h2>Featured Projects</h2>
-            
-            <!-- Project Filters -->
-            <div class="project-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="ai">AI/ML</button>
-                <button class="filter-btn" data-filter="web">Web Dev</button>
-                <button class="filter-btn" data-filter="tools">Tools</button>
-                <button class="filter-btn" data-filter="libraries">Libraries</button>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="search-container">
-                <input type="text" id="project-search" placeholder="Search projects...">
-                <i class="fas fa-search"></i>
-            </div>
-
-            <!-- Projects Grid -->
-            <div class="projects-grid" id="projects-grid">
-                <!-- Projects will be loaded here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="skills">
-        <div class="container">
-            <h2>Technologies & Skills</h2>
-            <div class="skills-grid" id="skills-grid">
-                <!-- Skills will be loaded here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2>About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Software engineer with a passion for AI development and innovative solutions. Experienced in full-stack development, machine learning, and building scalable applications.</p>
-                    <p>I enjoy creating tools that solve real-world problems and exploring the intersection of technology and creativity.</p>
-                    
-                    <div class="highlights">
-                        <div class="highlight">
-                            <i class="fas fa-robot"></i>
-                            <h3>AI Development</h3>
-                            <p>Specialized in machine learning, AI-powered applications, and intelligent automation systems.</p>
+    <div class="tv-container">
+        <!-- TV Screen (Preview Panel) -->
+        <div class="tv-screen">
+            <div class="screen-bezel">
+                <div class="screen-content" id="screen-content">
+                    <div class="welcome-screen">
+                        <div class="logo">
+                            <i class="fas fa-tv"></i>
+                            <h1>Soulfra TV</h1>
                         </div>
-                        <div class="highlight">
-                            <i class="fas fa-code"></i>
-                            <h3>Full Stack Development</h3>
-                            <p>Proficient in modern web technologies, cloud services, and scalable architecture design.</p>
+                        <p>Professional Developer Portfolio</p>
+                        <div class="stats">
+                            <div class="stat">
+                                <span class="number">50</span>
+                                <span class="label">Channels</span>
+                            </div>
+                            <div class="stat">
+                                <span class="number">3</span>
+                                <span class="label">Languages</span>
+                            </div>
                         </div>
-                        <div class="highlight">
-                            <i class="fas fa-tools"></i>
-                            <h3>Tool Creation</h3>
-                            <p>Building developer tools and utilities that improve productivity and streamline workflows.</p>
-                        </div>
+                        <p class="instruction">Use the remote to browse channels →</p>
                     </div>
                 </div>
+                
+                <!-- Channel Display -->
+                <div class="channel-display">
+                    <span class="channel-number" id="channel-number">--</span>
+                    <span class="channel-name" id="channel-name">Select Channel</span>
+                </div>
+                
+                <!-- Signal Indicator -->
+                <div class="signal-indicator">
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar active"></div>
+                </div>
             </div>
         </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2>Get In Touch</h2>
-            <div class="contact-links">
-                <a href="https://github.com/Soulfra" class="contact-link">
-                    <i class="fab fa-github"></i>
-                    <span>GitHub</span>
-                </a>
-                <a href="mailto:contact@soulfra.dev" class="contact-link">
-                    <i class="fas fa-envelope"></i>
-                    <span>Email</span>
-                </a>
-                <a href="https://linkedin.com/in/soulfra" class="contact-link">
-                    <i class="fab fa-linkedin"></i>
-                    <span>LinkedIn</span>
-                </a>
+        
+        <!-- TV Remote Control -->
+        <div class="remote-control">
+            <div class="remote-body">
+                <!-- Remote Header -->
+                <div class="remote-header">
+                    <div class="remote-brand">SOULFRA</div>
+                    <div class="remote-model">DEV-2024</div>
+                </div>
+                
+                <!-- Power Button -->
+                <div class="power-section">
+                    <button class="power-btn" id="power-btn">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+                
+                <!-- Channel Controls -->
+                <div class="channel-section">
+                    <div class="channel-controls">
+                        <button class="channel-btn" id="ch-up">
+                            <i class="fas fa-chevron-up"></i>
+                            <span>CH+</span>
+                        </button>
+                        <button class="channel-btn" id="ch-down">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>CH-</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Volume Controls -->
+                    <div class="volume-controls">
+                        <button class="volume-btn" id="vol-up">
+                            <i class="fas fa-volume-up"></i>
+                            <span>VOL+</span>
+                        </button>
+                        <button class="volume-btn" id="vol-down">
+                            <i class="fas fa-volume-down"></i>
+                            <span>VOL-</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Navigation Pad -->
+                <div class="nav-section">
+                    <div class="nav-pad">
+                        <button class="nav-btn up" id="nav-up">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button class="nav-btn left" id="nav-left">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-btn center" id="nav-center">
+                            <span>OK</span>
+                        </button>
+                        <button class="nav-btn right" id="nav-right">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="nav-btn down" id="nav-down">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Number Pad -->
+                <div class="number-section">
+                    <div class="number-grid">
+                        <button class="number-btn" data-number="1">1</button>
+                        <button class="number-btn" data-number="2">2</button>
+                        <button class="number-btn" data-number="3">3</button>
+                        <button class="number-btn" data-number="4">4</button>
+                        <button class="number-btn" data-number="5">5</button>
+                        <button class="number-btn" data-number="6">6</button>
+                        <button class="number-btn" data-number="7">7</button>
+                        <button class="number-btn" data-number="8">8</button>
+                        <button class="number-btn" data-number="9">9</button>
+                        <button class="number-btn" data-number="0">0</button>
+                    </div>
+                </div>
+                
+                <!-- Function Buttons -->
+                <div class="function-section">
+                    <button class="function-btn" id="menu-btn">
+                        <i class="fas fa-bars"></i>
+                        <span>MENU</span>
+                    </button>
+                    <button class="function-btn" id="info-btn">
+                        <i class="fas fa-info"></i>
+                        <span>INFO</span>
+                    </button>
+                    <button class="function-btn" id="guide-btn">
+                        <i class="fas fa-list"></i>
+                        <span>GUIDE</span>
+                    </button>
+                    <button class="function-btn" id="source-btn">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>SOURCE</span>
+                    </button>
+                </div>
+                
+                <!-- Playback Controls -->
+                <div class="playback-section">
+                    <button class="playback-btn" id="prev-btn">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="playback-btn" id="play-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="playback-btn" id="pause-btn">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="playback-btn" id="next-btn">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                
+                <!-- Color Buttons -->
+                <div class="color-section">
+                    <button class="color-btn red" data-filter="web"></button>
+                    <button class="color-btn green" data-filter="ai"></button>
+                    <button class="color-btn yellow" data-filter="tools"></button>
+                    <button class="color-btn blue" data-filter="libs"></button>
+                </div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Soulfra. Built with passion and modern web technologies.</p>
-            <p>
-                <a href="https://github.com/Soulfra/portfolio-generator">
-                    Generated with Portfolio Generator
-                </a>
-            </p>
+        
+        <!-- Channel Guide Overlay -->
+        <div class="channel-guide" id="channel-guide">
+            <div class="guide-header">
+                <h3>Channel Guide</h3>
+                <button class="close-guide" id="close-guide">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="guide-content">
+                <div class="channel-list" id="channel-list">
+                    <!-- Channels populated by JavaScript -->
+                </div>
+            </div>
         </div>
-    </footer>
-
-    <script src="script.js"></script>
+    </div>
+    
+    <script src="tv-remote.js"></script>
 </body>
 </html>
