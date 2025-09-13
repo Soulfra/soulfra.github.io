@@ -3,193 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soulfra TV Remote Portfolio</title>
-    <link rel="stylesheet" href="tv-remote.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Soulfra TV - Pair Your Remote</title>
+    <link rel="stylesheet" href="qr-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
 <body>
-    <div class="tv-container">
-        <!-- TV Screen (Preview Panel) -->
-        <div class="tv-screen">
-            <div class="screen-bezel">
-                <div class="screen-content" id="screen-content">
-                    <div class="welcome-screen">
-                        <div class="logo">
-                            <i class="fas fa-tv"></i>
-                            <h1>Soulfra TV</h1>
-                        </div>
-                        <p>Professional Developer Portfolio</p>
-                        <div class="stats">
-                            <div class="stat">
-                                <span class="number">50</span>
-                                <span class="label">Channels</span>
-                            </div>
-                            <div class="stat">
-                                <span class="number">3</span>
-                                <span class="label">Languages</span>
-                            </div>
-                        </div>
-                        <p class="instruction">Use the remote to browse channels →</p>
+    <div class="tv-display">
+        <div class="tv-screen" id="tv-screen">
+            <!-- Initial Pairing Screen -->
+            <div class="pairing-screen" id="pairing-screen">
+                <div class="tv-header">
+                    <h1>📺 Soulfra TV</h1>
+                    <p>Professional Developer Portfolio System</p>
+                </div>
+                
+                <div class="qr-container">
+                    <div class="qr-frame">
+                        <canvas id="qr-code"></canvas>
+                    </div>
+                    <div class="pairing-instructions">
+                        <h2>Scan to Connect Remote</h2>
+                        <p>Use your phone camera to scan the QR code</p>
+                        <p class="session-id">Session: <span id="session-id">...</span></p>
                     </div>
                 </div>
                 
-                <!-- Channel Display -->
-                <div class="channel-display">
-                    <span class="channel-number" id="channel-number">--</span>
-                    <span class="channel-name" id="channel-name">Select Channel</span>
-                </div>
-                
-                <!-- Signal Indicator -->
-                <div class="signal-indicator">
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar active"></div>
+                <div class="connection-status">
+                    <div class="status-indicator" id="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Waiting for remote...</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- TV Remote Control -->
-        <div class="remote-control">
-            <div class="remote-body">
-                <!-- Remote Header -->
-                <div class="remote-header">
-                    <div class="remote-brand">SOULFRA</div>
-                    <div class="remote-model">DEV-2024</div>
-                </div>
-                
-                <!-- Power Button -->
-                <div class="power-section">
-                    <button class="power-btn" id="power-btn">
-                        <i class="fas fa-power-off"></i>
-                    </button>
-                </div>
-                
-                <!-- Channel Controls -->
-                <div class="channel-section">
-                    <div class="channel-controls">
-                        <button class="channel-btn" id="ch-up">
-                            <i class="fas fa-chevron-up"></i>
-                            <span>CH+</span>
-                        </button>
-                        <button class="channel-btn" id="ch-down">
-                            <i class="fas fa-chevron-down"></i>
-                            <span>CH-</span>
-                        </button>
+            
+            <!-- Connected Content Display -->
+            <div class="content-display" id="content-display" style="display: none;">
+                <div class="content-header">
+                    <div class="channel-info">
+                        <span class="channel-number" id="current-channel">1</span>
+                        <span class="channel-name" id="current-name">Welcome</span>
                     </div>
-                    
-                    <!-- Volume Controls -->
-                    <div class="volume-controls">
-                        <button class="volume-btn" id="vol-up">
-                            <i class="fas fa-volume-up"></i>
-                            <span>VOL+</span>
-                        </button>
-                        <button class="volume-btn" id="vol-down">
-                            <i class="fas fa-volume-down"></i>
-                            <span>VOL-</span>
-                        </button>
+                    <div class="connection-info">
+                        <span class="connected-device" id="connected-device">📱 Remote Connected</span>
                     </div>
                 </div>
                 
-                <!-- Navigation Pad -->
-                <div class="nav-section">
-                    <div class="nav-pad">
-                        <button class="nav-btn up" id="nav-up">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <button class="nav-btn left" id="nav-left">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="nav-btn center" id="nav-center">
-                            <span>OK</span>
-                        </button>
-                        <button class="nav-btn right" id="nav-right">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <button class="nav-btn down" id="nav-down">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
+                <div class="content-area" id="content-area">
+                    <!-- Dynamic content controlled by mobile remote -->
+                </div>
+                
+                <!-- AI Agent Status -->
+                <div class="agent-status" id="agent-status">
+                    <div class="agent-indicator">
+                        <span class="agent-icon">🤖</span>
+                        <span class="agent-text">AI Agent: <span id="agent-state">Inactive</span></span>
                     </div>
-                </div>
-                
-                <!-- Number Pad -->
-                <div class="number-section">
-                    <div class="number-grid">
-                        <button class="number-btn" data-number="1">1</button>
-                        <button class="number-btn" data-number="2">2</button>
-                        <button class="number-btn" data-number="3">3</button>
-                        <button class="number-btn" data-number="4">4</button>
-                        <button class="number-btn" data-number="5">5</button>
-                        <button class="number-btn" data-number="6">6</button>
-                        <button class="number-btn" data-number="7">7</button>
-                        <button class="number-btn" data-number="8">8</button>
-                        <button class="number-btn" data-number="9">9</button>
-                        <button class="number-btn" data-number="0">0</button>
-                    </div>
-                </div>
-                
-                <!-- Function Buttons -->
-                <div class="function-section">
-                    <button class="function-btn" id="menu-btn">
-                        <i class="fas fa-bars"></i>
-                        <span>MENU</span>
-                    </button>
-                    <button class="function-btn" id="info-btn">
-                        <i class="fas fa-info"></i>
-                        <span>INFO</span>
-                    </button>
-                    <button class="function-btn" id="guide-btn">
-                        <i class="fas fa-list"></i>
-                        <span>GUIDE</span>
-                    </button>
-                    <button class="function-btn" id="source-btn">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>SOURCE</span>
-                    </button>
-                </div>
-                
-                <!-- Playback Controls -->
-                <div class="playback-section">
-                    <button class="playback-btn" id="prev-btn">
-                        <i class="fas fa-backward"></i>
-                    </button>
-                    <button class="playback-btn" id="play-btn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="playback-btn" id="pause-btn">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button class="playback-btn" id="next-btn">
-                        <i class="fas fa-forward"></i>
-                    </button>
-                </div>
-                
-                <!-- Color Buttons -->
-                <div class="color-section">
-                    <button class="color-btn red" data-filter="web"></button>
-                    <button class="color-btn green" data-filter="ai"></button>
-                    <button class="color-btn yellow" data-filter="tools"></button>
-                    <button class="color-btn blue" data-filter="libs"></button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Channel Guide Overlay -->
-        <div class="channel-guide" id="channel-guide">
-            <div class="guide-header">
-                <h3>Channel Guide</h3>
-                <button class="close-guide" id="close-guide">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="guide-content">
-                <div class="channel-list" id="channel-list">
-                    <!-- Channels populated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
     
-    <script src="tv-remote.js"></script>
+    <script src="tv-display.js"></script>
 </body>
 </html>

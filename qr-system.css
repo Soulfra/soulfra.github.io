@@ -1,0 +1,204 @@
+/* QR Remote System Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000;
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.tv-display {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+}
+
+.tv-screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #000;
+}
+
+/* Pairing Screen */
+.pairing-screen {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.tv-header {
+    margin-bottom: 40px;
+}
+
+.tv-header h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #007bff, #00c9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tv-header p {
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.qr-container {
+    margin-bottom: 40px;
+}
+
+.qr-frame {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 123, 255, 0.3);
+    margin-bottom: 30px;
+}
+
+#qr-code {
+    display: block;
+}
+
+.pairing-instructions h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #00c9ff;
+}
+
+.pairing-instructions p {
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.session-id {
+    font-family: monospace;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.connection-status {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff9500;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.connected {
+    background: #00c851;
+    animation: none;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+/* Content Display */
+.content-display {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.channel-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.channel-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #00c9ff;
+    background: rgba(0, 123, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.channel-name {
+    font-size: 1.5rem;
+}
+
+.connected-device {
+    color: #00c851;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content-area {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.agent-status {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.agent-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.agent-icon {
+    font-size: 1.5rem;
+}
+
+#agent-state {
+    color: #666;
+}
+
+#agent-state.active {
+    color: #00c851;
+}

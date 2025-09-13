@@ -1,0 +1,277 @@
+/* Mobile Remote Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a1a;
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.remote-app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Status Bar */
+.status-bar {
+    background: #000;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-icon {
+    font-size: 1.2rem;
+}
+
+#connection-status {
+    color: #ff9500;
+}
+
+#connection-status.connected {
+    color: #00c851;
+}
+
+.session-info {
+    font-size: 0.8rem;
+    color: #666;
+    font-family: monospace;
+}
+
+/* Remote Interface */
+.remote-interface {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Power Button */
+.power-section {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.power-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ff4757, #ff3742);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    transition: all 0.2s;
+}
+
+.power-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
+}
+
+/* Navigation Pad */
+.nav-pad {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 5px;
+}
+
+.nav-btn {
+    background: #333;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-btn:active {
+    background: #555;
+    transform: scale(0.95);
+}
+
+.nav-btn.up { grid-column: 2; grid-row: 1; }
+.nav-btn.left { grid-column: 1; grid-row: 2; }
+.nav-btn.center { 
+    grid-column: 2; 
+    grid-row: 2; 
+    background: #007bff;
+    font-weight: bold;
+}
+.nav-btn.right { grid-column: 3; grid-row: 2; }
+.nav-btn.down { grid-column: 2; grid-row: 3; }
+
+/* Channel Controls */
+.channel-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2a2a2a;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.control-btn {
+    background: #444;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.control-btn:active {
+    background: #666;
+    transform: scale(0.95);
+}
+
+.btn-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.btn-icon {
+    font-size: 1.5rem;
+}
+
+.channel-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #00c9ff;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* AI Section */
+.ai-section {
+    margin: 20px 0;
+}
+
+.ai-toggle {
+    width: 100%;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 15px;
+    padding: 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ai-toggle.active {
+    background: #003d00;
+    border-color: #00c851;
+}
+
+.ai-icon {
+    font-size: 1.5rem;
+}
+
+.ai-status {
+    background: #666;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.ai-status.active {
+    background: #00c851;
+    color: #000;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.action-btn {
+    background: #2a2a2a;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn:active {
+    background: #444;
+    transform: scale(0.95);
+}
+
+.action-icon {
+    font-size: 1.5rem;
+}
+
+.action-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Gesture Area */
+.gesture-area {
+    flex: 1;
+    background: #222;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 0.9rem;
+    min-height: 100px;
+    cursor: pointer;
+}
+
+/* Haptic Feedback */
+@supports (vibrate) {
+    button:active {
+        /* Trigger haptic feedback on button press */
+    }
+}

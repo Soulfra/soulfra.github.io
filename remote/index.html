@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Soulfra Remote Control</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="mobile-remote.css">
+</head>
+<body>
+    <div class="remote-app">
+        <!-- Connection Status Bar -->
+        <div class="status-bar">
+            <div class="connection-status">
+                <span class="status-icon">📱</span>
+                <span class="status-text" id="connection-status">Connecting...</span>
+            </div>
+            <div class="session-info" id="session-info">
+                Session: <span id="session-display">...</span>
+            </div>
+        </div>
+        
+        <!-- Remote Control Interface -->
+        <div class="remote-interface">
+            <!-- Power Section -->
+            <div class="power-section">
+                <button class="power-btn" id="power-btn">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Navigation Pad -->
+            <div class="nav-pad">
+                <button class="nav-btn up" id="nav-up">▲</button>
+                <button class="nav-btn left" id="nav-left">◄</button>
+                <button class="nav-btn center" id="nav-center">OK</button>
+                <button class="nav-btn right" id="nav-right">►</button>
+                <button class="nav-btn down" id="nav-down">▼</button>
+            </div>
+            
+            <!-- Channel Controls -->
+            <div class="channel-controls">
+                <button class="control-btn" id="ch-down">
+                    <span class="btn-label">CH</span>
+                    <span class="btn-icon">−</span>
+                </button>
+                <div class="channel-display">
+                    <span id="current-channel">1</span>
+                </div>
+                <button class="control-btn" id="ch-up">
+                    <span class="btn-label">CH</span>
+                    <span class="btn-icon">+</span>
+                </button>
+            </div>
+            
+            <!-- AI Agent Toggle -->
+            <div class="ai-section">
+                <button class="ai-toggle" id="ai-toggle">
+                    <span class="ai-icon">🤖</span>
+                    <span class="ai-label">AI Agent</span>
+                    <span class="ai-status" id="ai-status">OFF</span>
+                </button>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="action-btn" id="screen-capture">
+                    <span class="action-icon">📹</span>
+                    <span class="action-label">Capture</span>
+                </button>
+                <button class="action-btn" id="workflow-save">
+                    <span class="action-icon">💾</span>
+                    <span class="action-label">Save</span>
+                </button>
+                <button class="action-btn" id="node-sync">
+                    <span class="action-icon">🔄</span>
+                    <span class="action-label">Sync</span>
+                </button>
+            </div>
+            
+            <!-- Gesture Area -->
+            <div class="gesture-area" id="gesture-area">
+                <p>Swipe here for gestures</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="mobile-remote.js"></script>
+</body>
+</html>

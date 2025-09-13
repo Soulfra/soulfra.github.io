@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra AI Agent</title>
+    <link rel="stylesheet" href="agent.css">
+</head>
+<body>
+    <div class="agent-interface">
+        <div class="agent-header">
+            <h1>🤖 AI Screen Watcher Agent</h1>
+            <p>Learns workflows and automates repetitive tasks</p>
+        </div>
+        
+        <div class="agent-status">
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text" id="agent-status">Inactive</span>
+            </div>
+        </div>
+        
+        <div class="capture-controls">
+            <button class="capture-btn" id="start-capture">
+                <span class="btn-icon">📹</span>
+                <span class="btn-text">Start Screen Capture</span>
+            </button>
+        </div>
+        
+        <div class="workflow-section">
+            <h2>Detected Workflows</h2>
+            <div class="workflow-list" id="workflow-list">
+                <p class="empty-state">No workflows detected yet. Start screen capture to begin.</p>
+            </div>
+        </div>
+        
+        <div class="node-section">
+            <h2>Connected Nodes</h2>
+            <div class="node-list" id="node-list">
+                <div class="node-item">
+                    <span class="node-icon">💻</span>
+                    <span class="node-name">Local Machine</span>
+                    <span class="node-status">Connected</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <button class="action-btn" id="save-workflow">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">Save Workflow</span>
+            </button>
+            <button class="action-btn" id="distribute-workflow">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">Distribute to Nodes</span>
+            </button>
+            <button class="action-btn" id="replay-workflow">
+                <span class="btn-icon">▶️</span>
+                <span class="btn-text">Replay Workflow</span>
+            </button>
+        </div>
+    </div>
+    
+    <script src="agent.js"></script>
+</body>
+</html>
