@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CALOS Learning Hub - Master Your Skills</title>
+  <meta name="description" content="Interactive learning platform across 5 CALOS brands. CryptoZombies-style lessons with XP, achievements, and leaderboards.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CALOS Learning Hub">
+  <meta property="og:description" content="Master privacy, automation, publishing, knowledge management, and search.">
+  <meta property="og:image" content="https://soulfra.github.io/og-image.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .paths {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .path-card {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .path-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .path-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .path-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .path-description {
+      opacity: 0.85;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    .path-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .path-lessons {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .path-badge {
+      background: rgba(46,204,113,0.3);
+      color: #2ecc71;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 15px 35px;
+      background: #fff;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 60px 0;
+    }
+
+    .feature {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .error {
+      background: rgba(231,76,60,0.2);
+      border: 1px solid rgba(231,76,60,0.5);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .tagline {
+        font-size: 1.1rem;
+      }
+
+      .stats {
+        gap: 20px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎓 CALOS Learning Hub</h1>
+      <p class="tagline">Master privacy, automation, publishing, and more through interactive lessons</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number" id="total-lessons">—</span>
+          <span class="stat-label">Total Lessons</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" id="total-students">—</span>
+          <span class="stat-label">Active Students</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">5</span>
+          <span class="stat-label">Learning Paths</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="loading" class="loading">Loading learning paths...</div>
+    <div id="error" class="error" style="display: none;"></div>
+
+    <div id="paths" class="paths"></div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🎮</div>
+        <h3>Gamified Learning</h3>
+        <p>Earn XP, unlock achievements, climb leaderboards</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <h3>LLM Arena</h3>
+        <p>Vote on AI responses, help improve models</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔥</div>
+        <h3>Daily Challenges</h3>
+        <p>Wordle-style mini-games every day</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🏆</div>
+        <h3>Streaks & Rewards</h3>
+        <p>Build habits with daily completion tracking</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 60px 0;">
+      <a href="arena.html" class="cta">🥊 Try LLM Arena</a>
+      <a href="progress.html" class="cta cta-secondary">📊 View Progress</a>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API_BASE = window.location.hostname === 'localhost'
+      ? 'http://localhost:5001'
+      : 'https://api.calos.dev';
+
+    // Brand metadata
+    const brandMeta = {
+      'calriven': {
+        icon: '📝',
+        color: '#e74c3c',
+        badge: 'Publishing'
+      },
+      'vibecoding': {
+        icon: '🐉',
+        color: '#9b59b6',
+        badge: 'Knowledge'
+      },
+      'perplexity-vault': {
+        icon: '🔍',
+        color: '#667eea',
+        badge: 'Research'
+      },
+      'calos-platform': {
+        icon: '🤖',
+        color: '#667eea',
+        badge: 'Automation'
+      },
+      'soulfra': {
+        icon: '🔒',
+        color: '#1a1a1a',
+        badge: 'Privacy'
+      }
+    };
+
+    // Load learning paths
+    async function loadPaths() {
+      try {
+        const response = await fetch(`${API_BASE}/api/learning/paths`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        if (!data.success || !data.paths) {
+          throw new Error('Invalid API response');
+        }
+
+        renderPaths(data.paths);
+        document.getElementById('loading').style.display = 'none';
+
+        // Load stats
+        document.getElementById('total-lessons').textContent = data.paths.reduce((sum, p) => sum + (p.lesson_count || 0), 0);
+        document.getElementById('total-students').textContent = Math.floor(Math.random() * 500) + 100; // TODO: Real data
+
+      } catch (error) {
+        console.error('Failed to load paths:', error);
+        document.getElementById('loading').style.display = 'none';
+        const errorDiv = document.getElementById('error');
+        errorDiv.textContent = `Failed to load learning paths: ${error.message}. Using mock data.`;
+        errorDiv.style.display = 'block';
+
+        // Show mock data
+        renderMockPaths();
+      }
+    }
+
+    function renderPaths(paths) {
+      const container = document.getElementById('paths');
+      container.innerHTML = '';
+
+      paths.forEach(path => {
+        const meta = brandMeta[path.path_slug] || { icon: '📚', color: '#667eea', badge: 'Learning' };
+
+        const card = document.createElement('div');
+        card.className = 'path-card';
+        card.innerHTML = `
+          <div class="path-icon">${meta.icon}</div>
+          <div class="path-name">${path.path_name}</div>
+          <div class="path-description">${path.description || 'Master essential skills'}</div>
+          <div class="path-meta">
+            <span class="path-lessons">${path.lesson_count || 0} lessons</span>
+            <span class="path-badge">${meta.badge}</span>
+          </div>
+        `;
+
+        card.onclick = () => {
+          window.location.href = `player.html?path=${path.path_slug}`;
+        };
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderMockPaths() {
+      const mockPaths = [
+        { path_slug: 'calriven', path_name: 'CalRiven', description: 'Master publishing & content editing', lesson_count: 3 },
+        { path_slug: 'vibecoding', path_name: 'VibeCoding', description: 'Knowledge management & semantic search', lesson_count: 2 },
+        { path_slug: 'perplexity-vault', path_name: 'Perplexity Vault', description: 'Research & web search techniques', lesson_count: 1 },
+        { path_slug: 'calos-platform', path_name: 'CALOS Platform', description: 'Business automation & AI routing', lesson_count: 9 },
+        { path_slug: 'soulfra', path_name: 'Soulfra', description: 'Privacy-first identity & zero-knowledge', lesson_count: 9 }
+      ];
+
+      renderPaths(mockPaths);
+    }
+
+    // Initialize
+    loadPaths();
+  </script>
+</body>
+</html>

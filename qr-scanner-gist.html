@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Scan QR - CalOS (Serverless)</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .serverless-badge {
+      display: inline-block;
+      background: rgba(46,204,113,0.3);
+      color: #2ecc71;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    .scanner-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .scanner-box {
+      background: rgba(255,255,255,0.1);
+      border: 2px dashed rgba(255,255,255,0.5);
+      border-radius: 20px;
+      width: 280px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .scanner-icon {
+      font-size: 4rem;
+      opacity: 0.7;
+    }
+
+    .status {
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin: 15px 0;
+      text-align: center;
+      max-width: 350px;
+    }
+
+    .status.waiting {
+      background: rgba(241,196,15,0.3);
+      color: #f1c40f;
+    }
+
+    .status.success {
+      background: rgba(46,204,113,0.3);
+      color: #2ecc71;
+    }
+
+    .status.error {
+      background: rgba(231,76,60,0.3);
+      color: #e74c3c;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    button {
+      width: calc(100% - 40px);
+      max-width: 400px;
+      padding: 16px 24px;
+      background: #fff;
+      color: #667eea;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin: 10px 20px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .instructions {
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px;
+      max-width: 400px;
+    }
+
+    .instructions ul {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    .instructions li {
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .instructions li::before {
+      content: "✓";
+      color: #2ecc71;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tech-note {
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px;
+      max-width: 400px;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .tech-note strong {
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔒 CalOS Login</h1>
+    <p>Scan QR code from your desktop</p>
+    <div class="serverless-badge">✨ Serverless</div>
+  </div>
+
+  <div class="scanner-container">
+    <!-- Processing State (QR data from URL) -->
+    <div id="processingState">
+      <div class="spinner"></div>
+      <div class="status waiting">
+        Verifying login with GitHub Gist...
+      </div>
+      <div class="tech-note">
+        <strong>🔐 How it works:</strong><br>
+        • Reading encrypted session from Gist<br>
+        • Creating verification Gist<br>
+        • No backend server needed<br>
+        • All data encrypted end-to-end
+      </div>
+    </div>
+
+    <!-- Success State -->
+    <div id="successState" class="hidden">
+      <div class="scanner-box" style="border-color: #2ecc71;">
+        <div style="font-size: 5rem;">✓</div>
+      </div>
+      <div class="status success">
+        Login Successful!
+      </div>
+      <p style="opacity: 0.9; margin-top: 10px;">Your desktop is now logged in</p>
+      <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 10px;">This page will close automatically...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden">
+      <div class="scanner-box" style="border-color: #e74c3c;">
+        <div style="font-size: 5rem;">✗</div>
+      </div>
+      <div class="status error" id="errorMessage"></div>
+      <button id="retryBtn">Try Again</button>
+    </div>
+  </div>
+
+  <!-- CalOS Identity Tracker -->
+  <script src="identity-tracker.js"></script>
+
+  <!-- GitHub Gist Auth Library -->
+  <script src="github-gist-auth.js"></script>
+
+  <script>
+    let gistAuth = null;
+
+    // Show/hide states
+    function showState(state) {
+      document.getElementById('processingState').classList.add('hidden');
+      document.getElementById('successState').classList.add('hidden');
+      document.getElementById('errorState').classList.add('hidden');
+      document.getElementById(state + 'State').classList.remove('hidden');
+    }
+
+    // Parse QR code data from URL
+    function getQRData() {
+      // Check if we have QR payload in URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const qrData = urlParams.get('qr');
+
+      if (qrData) {
+        try {
+          return JSON.parse(decodeURIComponent(qrData));
+        } catch (error) {
+          console.error('[Scanner] Invalid QR data in URL:', error);
+          return null;
+        }
+      }
+
+      // Check if we have hash fragment (from QR scan)
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        try {
+          return JSON.parse(decodeURIComponent(hash));
+        } catch (error) {
+          console.error('[Scanner] Invalid QR data in hash:', error);
+          return null;
+        }
+      }
+
+      return null;
+    }
+
+    // Handle QR code verification
+    async function verifyQRCode() {
+      try {
+        // Get QR payload
+        const qrData = getQRData();
+
+        if (!qrData) {
+          throw new Error('No QR code data found. Please scan the QR code again.');
+        }
+
+        // Validate QR payload
+        if (qrData.type !== 'calos-qr-login') {
+          throw new Error('Invalid QR code type');
+        }
+
+        if (!qrData.gistId || !qrData.key) {
+          throw new Error('Invalid QR code - missing required data');
+        }
+
+        // Check if expired
+        if (Date.now() > qrData.expiresAt) {
+          throw new Error('QR code has expired. Please generate a new one.');
+        }
+
+        console.log('[Scanner] Processing QR code:', {
+          gistId: qrData.gistId,
+          expiresAt: new Date(qrData.expiresAt).toISOString()
+        });
+
+        // Initialize Gist auth
+        gistAuth = new GitHubGistAuth();
+
+        // Get phone fingerprint
+        const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
+        const userId = localStorage.getItem('calos_user_id') || fingerprint;
+
+        // Verify session with GitHub Gist
+        const result = await gistAuth.verifySession(
+          qrData.gistId,
+          qrData.key,
+          fingerprint,
+          userId
+        );
+
+        if (result.success) {
+          // Success!
+          showState('success');
+
+          // Store user ID for future logins
+          localStorage.setItem('calos_user_id', userId);
+
+          console.log('[Scanner] Verification successful:', result);
+
+          // Auto-close after 3 seconds
+          setTimeout(() => {
+            window.close();
+          }, 3000);
+        } else {
+          throw new Error('Verification failed');
+        }
+
+      } catch (error) {
+        console.error('[Scanner] Verification error:', error);
+        showError(error.message || 'Failed to verify QR code');
+      }
+    }
+
+    // Show error
+    function showError(message) {
+      document.getElementById('errorMessage').textContent = message;
+      showState('error');
+    }
+
+    // Event listeners
+    document.getElementById('retryBtn').addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    // Auto-verify on page load
+    window.addEventListener('load', () => {
+      // Check if we have QR data
+      const qrData = getQRData();
+
+      if (qrData) {
+        // Wait for identity tracker to load
+        setTimeout(verifyQRCode, 500);
+      } else {
+        // No QR data - show error
+        showError('No QR code data found. Please scan the QR code on your desktop to continue.');
+      }
+    });
+  </script>
+</body>
+</html>
