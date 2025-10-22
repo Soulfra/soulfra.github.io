@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalOS SDK - Live Demo</title>
+  <meta name="description" content="Try the CalOS Platform SDK in your browser - zero dependencies, privacy-first">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .demo-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .demo-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .demo-card p {
+      opacity: 0.9;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 20px;
+      background: #fff;
+      color: #667eea;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result pre {
+      color: #61dafb;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .status.connected {
+      background: rgba(46,204,113,0.3);
+      color: #2ecc71;
+    }
+
+    .status.disconnected {
+      background: rgba(231,76,60,0.3);
+      color: #e74c3c;
+    }
+
+    .setup-notice {
+      background: rgba(241,196,15,0.2);
+      border: 1px solid rgba(241,196,15,0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .setup-notice h3 {
+      color: #f1c40f;
+      margin-bottom: 10px;
+    }
+
+    .setup-notice code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔒 CalOS SDK - Live Demo</h1>
+      <p class="subtitle">Try the SDK in your browser - zero dependencies, privacy-first</p>
+      <div id="connectionStatus"></div>
+    </header>
+
+    <div class="setup-notice">
+      <h3>⚙️ Setup Required</h3>
+      <p>To use this demo, you need to run the CalOS backend locally:</p>
+      <pre><code>cd ~/Desktop/CALOS_ROOT/agent-router
+npm start -- --local</code></pre>
+      <p>The SDK will connect to <code>http://localhost:5001</code></p>
+      <p>Not running locally? <a href="signup.html">Sign up</a> for hosted access</p>
+    </div>
+
+    <div class="demo-grid">
+      <!-- Receipt Parser Demo -->
+      <div class="demo-card">
+        <h2>📝 Receipt Parser</h2>
+        <p>Upload a receipt image and get structured data with automatic categorization</p>
+
+        <div class="input-group">
+          <label for="receiptFile">Upload Receipt</label>
+          <input type="file" id="receiptFile" accept="image/*">
+        </div>
+
+        <button id="parseReceiptBtn">Parse Receipt</button>
+
+        <div class="result" id="receiptResult">
+          <pre id="receiptOutput"></pre>
+        </div>
+      </div>
+
+      <!-- Email Demo -->
+      <div class="demo-card">
+        <h2>📧 Email Relay</h2>
+        <p>Send email via zero-cost Gmail relay (500/day free)</p>
+
+        <div class="input-group">
+          <label for="emailTo">To</label>
+          <input type="email" id="emailTo" placeholder="customer@example.com">
+        </div>
+
+        <div class="input-group">
+          <label for="emailSubject">Subject</label>
+          <input type="text" id="emailSubject" placeholder="Hello from CalOS">
+        </div>
+
+        <div class="input-group">
+          <label for="emailBody">Message</label>
+          <textarea id="emailBody" rows="4" placeholder="Your message here..."></textarea>
+        </div>
+
+        <button id="sendEmailBtn">Send Email</button>
+
+        <div class="result" id="emailResult">
+          <pre id="emailOutput"></pre>
+        </div>
+      </div>
+
+      <!-- Privacy Dashboard Demo -->
+      <div class="demo-card">
+        <h2>🔒 Privacy Dashboard</h2>
+        <p>See exactly what data CalOS collects (spoiler: almost nothing)</p>
+
+        <button id="privacyBtn">View Privacy Stats</button>
+
+        <div class="result" id="privacyResult">
+          <pre id="privacyOutput"></pre>
+        </div>
+      </div>
+
+      <!-- Health Check Demo -->
+      <div class="demo-card">
+        <h2>💚 System Health</h2>
+        <p>Check if the CalOS backend is running and healthy</p>
+
+        <button id="healthBtn">Check Health</button>
+
+        <div class="result" id="healthResult">
+          <pre id="healthOutput"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load SDK -->
+  <script src="calos-sdk-browser.js"></script>
+
+  <script>
+    // Initialize SDK (points to localhost backend)
+    const calos = new CalOSPlatform({
+      baseURL: 'http://localhost:5001',
+      privacyMode: 'strict',
+      silent: false // Show watermark in console
+    });
+
+    // Check connection status
+    async function checkConnection() {
+      const statusDiv = document.getElementById('connectionStatus');
+
+      try {
+        const health = await calos.health();
+
+        if (health.success) {
+          statusDiv.innerHTML = '<span class="status connected">✓ Connected to localhost:5001</span>';
+        } else {
+          statusDiv.innerHTML = '<span class="status disconnected">✗ Backend not running</span>';
+        }
+      } catch (error) {
+        statusDiv.innerHTML = '<span class="status disconnected">✗ Backend not running</span>';
+      }
+    }
+
+    // Check on load
+    checkConnection();
+
+    // Receipt Parser
+    document.getElementById('parseReceiptBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('receiptFile');
+      const btn = document.getElementById('parseReceiptBtn');
+      const result = document.getElementById('receiptResult');
+      const output = document.getElementById('receiptOutput');
+
+      if (!fileInput.files[0]) {
+        alert('Please select a receipt image');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Parsing...';
+
+      try {
+        const response = await calos.receipts.parse(fileInput.files[0]);
+        output.textContent = JSON.stringify(response, null, 2);
+        result.classList.add('show');
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+        result.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Parse Receipt';
+      }
+    });
+
+    // Email Sender
+    document.getElementById('sendEmailBtn').addEventListener('click', async () => {
+      const to = document.getElementById('emailTo').value;
+      const subject = document.getElementById('emailSubject').value;
+      const text = document.getElementById('emailBody').value;
+      const btn = document.getElementById('sendEmailBtn');
+      const result = document.getElementById('emailResult');
+      const output = document.getElementById('emailOutput');
+
+      if (!to || !subject || !text) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const response = await calos.email.send({
+          userId: 'demo_user',
+          to,
+          subject,
+          text
+        });
+        output.textContent = JSON.stringify(response, null, 2);
+        result.classList.add('show');
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+        result.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Email';
+      }
+    });
+
+    // Privacy Dashboard
+    document.getElementById('privacyBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('privacyBtn');
+      const result = document.getElementById('privacyResult');
+      const output = document.getElementById('privacyOutput');
+
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+
+      try {
+        const response = await calos.privacy.getDashboard();
+        output.textContent = JSON.stringify(response, null, 2);
+        result.classList.add('show');
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+        result.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'View Privacy Stats';
+      }
+    });
+
+    // Health Check
+    document.getElementById('healthBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('healthBtn');
+      const result = document.getElementById('healthResult');
+      const output = document.getElementById('healthOutput');
+
+      btn.disabled = true;
+      btn.textContent = 'Checking...';
+
+      try {
+        const response = await calos.health();
+        output.textContent = JSON.stringify(response, null, 2);
+        result.classList.add('show');
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+        result.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Check Health';
+        checkConnection(); // Update status
+      }
+    });
+  </script>
+</body>
+</html>

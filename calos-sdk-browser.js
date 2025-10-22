@@ -12,7 +12,31 @@
  *
  * @version 2.0.0-browser
  * @license MIT
+ * @copyright (c) 2025 SoulFra (Matthew Mauer)
+ * @source https://github.com/soulfra/soulfra.github.io
  * @dependencies ZERO - uses only browser built-ins (fetch, FileReader, crypto)
+ *
+ * ---
+ *
+ * MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 (function(window) {
@@ -36,6 +60,7 @@
       this.baseURL = config.baseURL || 'http://localhost:5001';
       this.privacyMode = config.privacyMode || PrivacyMode.BALANCED;
       this.timeout = config.timeout || 60000;
+      this.silent = config.silent || false;
 
       // Sub-modules
       this.receipts = new ReceiptsModule(this);
@@ -45,7 +70,46 @@
       this.files = new FilesModule(this);
       this.privacy = new PrivacyModule(this);
 
-      console.log(`[CalOSPlatform] Browser SDK initialized (privacy: ${this.privacyMode})`);
+      // Attribution (can be disabled with silent: true)
+      if (!this.silent) {
+        console.log('%c🔒 CalOS Platform SDK v2.0.0', 'font-weight: bold; color: #667eea;');
+        console.log('%cBuilt with ❤️ by SoulFra', 'color: #667eea;');
+        console.log('%chttps://soulfra.github.io', 'color: #667eea;');
+        console.log(`%cPrivacy mode: ${this.privacyMode}`, 'color: #2ecc71;');
+        console.log('%c---', 'color: #ddd;');
+      }
+
+      // Optional privacy-first telemetry (opt-in only)
+      if (config.telemetry === true) {
+        this._sendAttribution();
+      }
+    }
+
+    /**
+     * Privacy-first attribution tracking (opt-in only)
+     * Sends: domain, SDK version, timestamp
+     * Does NOT send: user data, IPs, cookies, or any PII
+     */
+    _sendAttribution() {
+      try {
+        const data = {
+          domain: window.location.hostname,
+          version: '2.0.0-browser',
+          timestamp: new Date().toISOString(),
+          privacyMode: this.privacyMode
+        };
+
+        // Send to self-hosted tracker (not Google Analytics or Big Tech)
+        fetch(`${this.baseURL}/api/telemetry/attribution`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).catch(() => {
+          // Fail silently - telemetry is optional
+        });
+      } catch (error) {
+        // Fail silently
+      }
     }
 
     /**
@@ -309,6 +373,16 @@
   window.CalOSPlatform = CalOSPlatform;
   window.PrivacyMode = PrivacyMode;
 
-  console.log('[CalOS Browser SDK] Loaded successfully - zero dependencies ✅');
+  // Watermark (visible in source code)
+  console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #667eea;');
+  console.log('%c🔒 CalOS Browser SDK Loaded', 'font-weight: bold; font-size: 14px; color: #667eea;');
+  console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #667eea;');
+  console.log('%cVersion: 2.0.0-browser', 'color: #888;');
+  console.log('%cLicense: MIT', 'color: #888;');
+  console.log('%cCopyright: (c) 2025 SoulFra', 'color: #888;');
+  console.log('%cSource: https://github.com/soulfra/soulfra.github.io', 'color: #888;');
+  console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #667eea;');
+  console.log('%c✅ Zero dependencies • Privacy-first • Self-hostable', 'color: #2ecc71; font-weight: bold;');
+  console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n', 'color: #667eea;');
 
 })(window);
