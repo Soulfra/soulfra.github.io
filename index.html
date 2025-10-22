@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalOS - Privacy-First Automation Platform</title>
+  <meta name="description" content="Zero-dependency SDK for receipts, email, payments. Privacy-first Stripe/Zapier alternative.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .hero-code {
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto 40px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-code pre {
+      color: #61dafb;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .hero-code .comment {
+      color: #7a7a9d;
+    }
+
+    .hero-code .string {
+      color: #98c379;
+    }
+
+    .hero-code .keyword {
+      color: #c678dd;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 15px 40px;
+      background: #fff;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 60px 0;
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature p {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    .comparison {
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 60px 0;
+    }
+
+    .comparison h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .comparison-item h4 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #61dafb;
+    }
+
+    .comparison-item ul {
+      list-style: none;
+      text-align: left;
+    }
+
+    .comparison-item li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-item li:before {
+      content: "✓ ";
+      color: #2ecc71;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      background: rgba(46,204,113,0.2);
+      color: #2ecc71;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .badge-new {
+      background: rgba(241,196,15,0.2);
+      color: #f1c40f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      opacity: 0.8;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 80px;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    footer a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta {
+        display: block;
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔒 CalOS Platform</h1>
+      <p class="subtitle">Privacy-First Automation for Developers</p>
+      <p style="font-size: 1.1rem; opacity: 0.85; margin-bottom: 30px;">
+        Zero-dependency SDK • Receipts • Email • Payments • Dev Tools
+      </p>
+
+      <div class="hero-code">
+        <pre><span class="comment">// Copy-paste this - no npm install required</span>
+<span class="keyword">&lt;script</span> src=<span class="string">"https://soulfra.github.io/calos-sdk-browser.js"</span><span class="keyword">&gt;&lt;/script&gt;</span>
+<span class="keyword">&lt;script&gt;</span>
+  <span class="keyword">const</span> calos = <span class="keyword">new</span> CalOSPlatform({
+    baseURL: <span class="string">'https://api.calos.dev'</span>,
+    privacyMode: <span class="string">'strict'</span> <span class="comment">// auto-obfuscate PII</span>
+  });
+
+  <span class="comment">// Parse receipt (OCR + auto-categorize)</span>
+  <span class="keyword">const</span> receipt = <span class="keyword">await</span> calos.receipts.parse(imageFile);
+
+  <span class="comment">// Send email (zero-cost Gmail relay)</span>
+  <span class="keyword">await</span> calos.email.send({ to: <span class="string">'user@example.com'</span>, subject: <span class="string">'Hello'</span> });
+
+  <span class="comment">// Charge card (Stripe competitor)</span>
+  <span class="keyword">await</span> calos.pos.charge({ amount: 2900, card: <span class="string">'...'</span> });
+<span class="keyword">&lt;/script&gt;</span></pre>
+      </div>
+
+      <a href="sdk.html" class="cta">Try Live Demo →</a>
+      <a href="https://github.com/soulfra/calos-platform" class="cta cta-secondary">View on GitHub</a>
+    </header>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📝</div>
+        <h3>Receipt Parser <span class="badge badge-new">NEW</span></h3>
+        <p>OCR + auto-categorize into 10 expense types. Works with Stripe, PayPal, Square, Amazon receipts. Export for taxes.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📧</div>
+        <h3>Email Relay <span class="badge">FREE</span></h3>
+        <p>Zero-cost alternative to Mailchimp. Gmail (500/day), Brevo (300/day). Double opt-in, rate limiting, AES-256 encryption.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">💳</div>
+        <h3>POS Terminal</h3>
+        <p>Square competitor. 2.6% + $0.10 per swipe. Stripe Terminal integration, QR codes, cash tracking, QuickBooks sync.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🎨</div>
+        <h3>Ragebait Generator</h3>
+        <p>Dev meme generator with domain branding. 11 templates (npm install, merge conflicts). GIF/MP4 output for Twitter.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📁</div>
+        <h3>File Explorer</h3>
+        <p>Zero-dependency git scanner. Find uncommitted changes across repos. Shows GitHub connections, last commits.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy Dashboard <span class="badge">UNIQUE</span></h3>
+        <p>See exactly what data we collect (and don't). SHA-256 hashed user IDs, domain-only emails. 0 PII leaks.</p>
+      </div>
+    </div>
+
+    <div class="comparison">
+      <h2>Why CalOS?</h2>
+      <div class="comparison-grid">
+        <div class="comparison-item">
+          <h4>vs Stripe</h4>
+          <ul>
+            <li>Privacy-first (show logic, not data)</li>
+            <li>Receipt parsing built-in</li>
+            <li>Dev tools included</li>
+            <li>Zero-cost email relay</li>
+            <li>Open source core</li>
+          </ul>
+        </div>
+
+        <div class="comparison-item">
+          <h4>vs Zapier</h4>
+          <ul>
+            <li>Local-first (Ollama for sensitive data)</li>
+            <li>Zero-dependency SDK</li>
+            <li>File explorer + git scanner</li>
+            <li>POS terminal built-in</li>
+            <li>No workflow limits</li>
+          </ul>
+        </div>
+
+        <div class="comparison-item">
+          <h4>vs Everyone</h4>
+          <ul>
+            <li>Privacy dashboard (trust through transparency)</li>
+            <li>Auto-detect sensitive queries</li>
+            <li>Browser SDK (no npm install)</li>
+            <li>MIT licensed</li>
+            <li>Self-hostable</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 60px 0;">
+      <h2 style="font-size: 2.5rem; margin-bottom: 30px;">Get Started in Seconds</h2>
+      <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">
+        Three ways to use CalOS:
+      </p>
+      <a href="sdk.html" class="cta">Browser SDK (Zero Install)</a>
+      <a href="https://github.com/soulfra/calos-platform" class="cta cta-secondary">Self-Host (Free)</a>
+      <a href="https://calos.dev/signup" class="cta cta-secondary">Managed ($9/mo)</a>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 CalOS Platform • Built with ❤️ by SoulFra</p>
+      <div style="margin-top: 20px;">
+        <a href="https://github.com/soulfra">GitHub</a>
+        <a href="https://twitter.com/calos">Twitter</a>
+        <a href="privacy-dashboard.html">Privacy Dashboard</a>
+        <a href="docs/api-reference.md">Docs</a>
+        <a href="https://discord.gg/calos">Discord</a>
+      </div>
+      <p style="margin-top: 20px; font-size: 0.9rem;">
+        Zero dependencies • MIT Licensed • Privacy-First • Self-Hostable
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
