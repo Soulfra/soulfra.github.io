@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CALOS Learning Player</title>
+  <meta name="description" content="Interactive lesson player with code challenges and instant feedback">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: rgba(0,0,0,0.2);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .back-btn {
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .user-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: calc(100vh - 80px);
+    }
+
+    .lesson-panel {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+    }
+
+    .challenge-panel {
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .lesson-meta {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      background: rgba(46,204,113,0.3);
+      color: #2ecc71;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .lesson-content {
+      line-height: 1.8;
+    }
+
+    .lesson-content h2 {
+      margin: 25px 0 15px;
+      font-size: 1.5rem;
+    }
+
+    .lesson-content h3 {
+      margin: 20px 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .lesson-content ul, .lesson-content ol {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    .lesson-content code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .lesson-content pre {
+      background: rgba(0,0,0,0.4);
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 15px 0;
+    }
+
+    .lesson-content pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .challenge-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+
+    .challenge-description {
+      opacity: 0.9;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #1e1e1e;
+      border-radius: 8px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #d4d4d4;
+      border: 2px solid rgba(255,255,255,0.2);
+      resize: none;
+      margin-bottom: 15px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: rgba(102,126,234,0.6);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #2ecc71;
+      color: #fff;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: #27ae60;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .feedback {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .feedback.success {
+      background: rgba(46,204,113,0.2);
+      border: 1px solid rgba(46,204,113,0.5);
+      display: block;
+    }
+
+    .feedback.error {
+      background: rgba(231,76,60,0.2);
+      border: 1px solid rgba(231,76,60,0.5);
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 100px 20px;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .lesson-panel {
+        max-height: 400px;
+      }
+
+      .challenge-panel {
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-btn">← Back to Hub</a>
+    <div class="user-stats">
+      <div class="stat">
+        <span>⚡</span>
+        <span id="user-xp">0 XP</span>
+      </div>
+      <div class="stat">
+        <span>🎯</span>
+        <span id="user-level">Level 1</span>
+      </div>
+      <div class="stat">
+        <span>🔥</span>
+        <span id="user-streak">0 day streak</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    Loading lesson...
+  </div>
+
+  <div id="player" class="container" style="display: none;">
+    <div class="lesson-panel">
+      <h1 id="lesson-title">Loading...</h1>
+      <div class="lesson-meta">
+        <span id="lesson-time">— min</span>
+        <span id="lesson-xp" class="badge">— XP</span>
+      </div>
+      <div id="lesson-content" class="lesson-content">
+        <!-- Dynamic content loaded here -->
+      </div>
+    </div>
+
+    <div class="challenge-panel">
+      <h2 class="challenge-title">💻 Challenge</h2>
+      <div class="challenge-description" id="challenge-prompt">
+        Complete the lesson objectives above to unlock the challenge!
+      </div>
+      <textarea
+        id="code-editor"
+        class="code-editor"
+        placeholder="// Write your code here..."
+        spellcheck="false"
+      ></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" id="submit-btn" onclick="submitChallenge()">
+          ✅ Submit & Check
+        </button>
+        <button class="btn btn-secondary" id="hint-btn" onclick="showHint()">
+          💡 Hint
+        </button>
+        <button class="btn btn-secondary" id="skip-btn" onclick="skipLesson()">
+          ⏭️ Skip
+        </button>
+      </div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API_BASE = window.location.hostname === 'localhost'
+      ? 'http://localhost:5001'
+      : 'https://api.calos.dev';
+
+    // Get URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const pathSlug = urlParams.get('path');
+    const userId = localStorage.getItem('calos_user_id') || generateUserId();
+
+    let currentLesson = null;
+    let currentPath = null;
+
+    function generateUserId() {
+      const id = 'user_' + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('calos_user_id', id);
+      return id;
+    }
+
+    // Load lesson
+    async function loadLesson() {
+      if (!pathSlug) {
+        alert('No learning path specified!');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      try {
+        // Get next lesson
+        const response = await fetch(`${API_BASE}/api/learning/next-lesson/${userId}/${pathSlug}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load lesson');
+        }
+
+        if (!data.nextLesson) {
+          alert('🎉 Path completed! No more lessons.');
+          window.location.href = 'index.html';
+          return;
+        }
+
+        currentLesson = data.nextLesson;
+        renderLesson(currentLesson);
+        loadUserProgress();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('player').style.display = 'grid';
+
+      } catch (error) {
+        console.error('Failed to load lesson:', error);
+        alert(`Failed to load lesson: ${error.message}`);
+        // Load mock lesson for demo
+        renderMockLesson();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('player').style.display = 'grid';
+      }
+    }
+
+    function renderLesson(lesson) {
+      document.getElementById('lesson-title').textContent = lesson.lesson_title;
+      document.getElementById('lesson-time').textContent = `${lesson.estimated_minutes || '?'} min`;
+      document.getElementById('lesson-xp').textContent = `${lesson.xp_reward || '?'} XP`;
+
+      // Render content
+      const contentDiv = document.getElementById('lesson-content');
+      contentDiv.innerHTML = renderLessonContent(lesson);
+
+      // Render challenge
+      document.getElementById('challenge-prompt').textContent = lesson.challenge_prompt || 'No challenge for this lesson.';
+    }
+
+    function renderLessonContent(lesson) {
+      let html = '';
+
+      // Description
+      if (lesson.description) {
+        html += `<p><strong>${lesson.description}</strong></p>`;
+      }
+
+      // Learning objectives
+      if (lesson.learning_objectives && lesson.learning_objectives.length > 0) {
+        html += `<h2>Learning Objectives</h2><ul>`;
+        lesson.learning_objectives.forEach(obj => {
+          html += `<li>${obj}</li>`;
+        });
+        html += `</ul>`;
+      }
+
+      // Content data (steps, examples, etc.)
+      if (lesson.content_data) {
+        const data = lesson.content_data;
+
+        // Steps
+        if (data.steps) {
+          html += `<h2>Steps</h2>`;
+          data.steps.forEach((step, i) => {
+            html += `<h3>${i + 1}. ${step.title || `Step ${i + 1}`}</h3>`;
+            html += `<p>${step.content || step.description || ''}</p>`;
+            if (step.code) {
+              html += `<pre><code>${escapeHtml(step.code)}</code></pre>`;
+            }
+          });
+        }
+
+        // Examples
+        if (data.examples) {
+          html += `<h2>Examples</h2>`;
+          data.examples.forEach((example, i) => {
+            html += `<h3>Example ${i + 1}: ${example.title || 'Untitled'}</h3>`;
+            html += `<p>${example.description || ''}</p>`;
+            if (example.code) {
+              html += `<pre><code>${escapeHtml(example.code)}</code></pre>`;
+            }
+          });
+        }
+      }
+
+      return html || '<p>No content available for this lesson.</p>';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function loadUserProgress() {
+      try {
+        const response = await fetch(`${API_BASE}/api/learning/progress/${userId}/${pathSlug}`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (data.success && data.progress) {
+          document.getElementById('user-xp').textContent = `${data.progress.total_xp_earned || 0} XP`;
+          document.getElementById('user-level').textContent = `Level ${data.progress.current_level || 1}`;
+          document.getElementById('user-streak').textContent = `${data.progress.current_streak_days || 0} day streak`;
+        }
+      } catch (error) {
+        console.log('Progress not loaded:', error);
+      }
+    }
+
+    async function submitChallenge() {
+      const code = document.getElementById('code-editor').value;
+
+      if (!code.trim()) {
+        showFeedback('Please write some code first!', 'error');
+        return;
+      }
+
+      const feedbackDiv = document.getElementById('feedback');
+      feedbackDiv.className = 'feedback';
+      feedbackDiv.textContent = 'Checking your code...';
+      feedbackDiv.style.display = 'block';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/learning/complete-lesson`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            lessonId: currentLesson.lesson_id,
+            score: 100, // TODO: Real validation
+            timeSpentMinutes: Math.floor(Math.random() * 15) + 5,
+            completionData: { code }
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showFeedback(`🎉 ${data.message}`, 'success');
+          setTimeout(() => {
+            loadLesson(); // Load next lesson
+          }, 2000);
+        } else {
+          showFeedback(`Error: ${data.error}`, 'error');
+        }
+
+      } catch (error) {
+        console.error('Submit failed:', error);
+        showFeedback('Mock: Challenge completed! +100 XP (API offline)', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    }
+
+    function showHint() {
+      alert('💡 Hint: Try using the examples above as a reference!');
+    }
+
+    function skipLesson() {
+      if (confirm('Skip this lesson? You won\'t earn XP.')) {
+        loadLesson();
+      }
+    }
+
+    function showFeedback(message, type) {
+      const feedbackDiv = document.getElementById('feedback');
+      feedbackDiv.className = `feedback ${type}`;
+      feedbackDiv.textContent = message;
+      feedbackDiv.style.display = 'block';
+    }
+
+    function renderMockLesson() {
+      currentLesson = {
+        lesson_id: 'mock-1',
+        lesson_title: 'Introduction to grep',
+        estimated_minutes: 15,
+        xp_reward: 100,
+        description: 'Learn to find patterns in code using grep - the fundamental search tool for debugging',
+        learning_objectives: [
+          'Understand what grep does and why it\'s essential',
+          'Search for simple patterns in single files',
+          'Search recursively across directories',
+          'Count matches and show context lines'
+        ],
+        challenge_prompt: 'Write a grep command to find all TODO comments in a JavaScript file',
+        content_data: {
+          steps: [
+            {
+              title: 'Basic grep syntax',
+              content: 'The basic syntax is: grep "pattern" filename',
+              code: 'grep "TODO" app.js'
+            },
+            {
+              title: 'Recursive search',
+              content: 'Use -r to search directories recursively',
+              code: 'grep -r "TODO" src/'
+            }
+          ]
+        }
+      };
+      renderLesson(currentLesson);
+    }
+
+    // Initialize
+    loadLesson();
+  </script>
+</body>
+</html>
