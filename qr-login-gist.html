@@ -219,7 +219,7 @@
         </div>
 
         <div class="gist-link">
-          Session Gist: <a id="gistLink" href="#" target="_blank"></a>
+          Session Paste: <a id="gistLink" href="#" target="_blank"></a>
         </div>
 
         <div class="instructions">
@@ -234,10 +234,10 @@
 
         <div class="tech-note">
           <strong>🔐 How it works:</strong><br>
-          • Session stored in public GitHub Gist<br>
+          • Session stored on dpaste.com (anonymous)<br>
           • All data encrypted end-to-end<br>
           • No backend server needed<br>
-          • Fully distributed & open source
+          • No authentication required
         </div>
 
         <button id="regenerateBtn">Generate New Code</button>
@@ -266,12 +266,13 @@
   <!-- CalOS Identity Tracker -->
   <script src="identity-tracker.js"></script>
 
-  <!-- GitHub Gist Auth Library -->
-  <script src="github-gist-auth.js"></script>
+  <!-- Pastebin Auth Library (dpaste.com) -->
+  <script src="pastebin-auth.js"></script>
 
   <script>
-    let gistAuth = null;
-    let sessionGistId = null;
+    let pastebinAuth = null;
+    let sessionId = null;
+    let pasteId = null;
     let encryptionKey = null;
     let pollInterval = null;
     let timerInterval = null;
@@ -286,21 +287,22 @@
       document.getElementById(state + 'State').classList.remove('hidden');
     }
 
-    // Generate QR code using GitHub Gist
+    // Generate QR code using dpaste.com
     async function generateQRCode() {
       try {
         showState('loading');
 
-        // Initialize Gist auth
-        gistAuth = new GitHubGistAuth();
+        // Initialize Pastebin auth
+        pastebinAuth = new PastebinAuth();
 
         // Get device fingerprint
         const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
 
-        // Create session Gist
-        const session = await gistAuth.createSession(fingerprint);
+        // Create session paste
+        const session = await pastebinAuth.createSession(fingerprint);
 
-        sessionGistId = session.gistId;
+        sessionId = session.sessionId;
+        pasteId = session.pasteId;
         encryptionKey = session.encryptionKey;
         expiresAt = session.expiresAt;
 
@@ -315,9 +317,9 @@
           }
         });
 
-        // Show Gist link
-        document.getElementById('gistLink').href = session.gistUrl;
-        document.getElementById('gistLink').textContent = session.gistId.substring(0, 8) + '...';
+        // Show paste link
+        document.getElementById('gistLink').href = session.pasteUrl;
+        document.getElementById('gistLink').textContent = session.pasteId.substring(0, 8) + '...';
 
         // Show QR state
         showState('qr');
@@ -329,7 +331,8 @@
         startTimer();
 
         console.log('[QR Login] Session created:', {
-          gistId: sessionGistId,
+          sessionId: sessionId,
+          pasteId: pasteId,
           expiresAt: new Date(expiresAt).toISOString()
         });
 
@@ -339,13 +342,13 @@
       }
     }
 
-    // Poll GitHub for verification
+    // Poll dpaste.com for verification
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
 
       pollInterval = setInterval(async () => {
         try {
-          const result = await gistAuth.pollForVerification(sessionGistId, encryptionKey);
+          const result = await pastebinAuth.pollForVerification(sessionId, encryptionKey);
 
           if (result.verified) {
             // Login successful!
@@ -361,7 +364,7 @@
         } catch (error) {
           console.error('[QR Login] Polling error:', error);
         }
-      }, 3000); // Poll every 3 seconds (be nice to GitHub API)
+      }, 2000); // Poll every 2 seconds
     }
 
     // Countdown timer
@@ -398,9 +401,8 @@
         localStorage.setItem('calos_session', JSON.stringify({
           userId: session.userId,
           phoneFingerprint: session.phoneFingerprint,
-          desktopFingerprint: session.desktopFingerprint,
           verifiedAt: session.verifiedAt,
-          authMethod: 'github-gist-qr'
+          authMethod: 'pastebin-qr'
         }));
 
         console.log('[QR Login] Login successful:', session);

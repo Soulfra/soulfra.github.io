@@ -203,10 +203,10 @@
       </div>
       <div class="tech-note">
         <strong>🔐 How it works:</strong><br>
-        • Reading encrypted session from Gist<br>
-        • Creating verification Gist<br>
+        • Reading encrypted session from dpaste<br>
+        • Creating verification paste<br>
         • No backend server needed<br>
-        • All data encrypted end-to-end
+        • No authentication required
       </div>
     </div>
 
@@ -235,11 +235,11 @@
   <!-- CalOS Identity Tracker -->
   <script src="identity-tracker.js"></script>
 
-  <!-- GitHub Gist Auth Library -->
-  <script src="github-gist-auth.js"></script>
+  <!-- Pastebin Auth Library (dpaste.com) -->
+  <script src="pastebin-auth.js"></script>
 
   <script>
-    let gistAuth = null;
+    let pastebinAuth = null;
 
     // Show/hide states
     function showState(state) {
@@ -293,7 +293,7 @@
           throw new Error('Invalid QR code type');
         }
 
-        if (!qrData.gistId || !qrData.key) {
+        if (!qrData.sessionId || !qrData.key) {
           throw new Error('Invalid QR code - missing required data');
         }
 
@@ -303,20 +303,21 @@
         }
 
         console.log('[Scanner] Processing QR code:', {
-          gistId: qrData.gistId,
+          sessionId: qrData.sessionId,
+          pasteId: qrData.pasteId,
           expiresAt: new Date(qrData.expiresAt).toISOString()
         });
 
-        // Initialize Gist auth
-        gistAuth = new GitHubGistAuth();
+        // Initialize Pastebin auth
+        pastebinAuth = new PastebinAuth();
 
         // Get phone fingerprint
         const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
         const userId = localStorage.getItem('calos_user_id') || fingerprint;
 
-        // Verify session with GitHub Gist
-        const result = await gistAuth.verifySession(
-          qrData.gistId,
+        // Verify session with dpaste.com
+        const result = await pastebinAuth.verifySession(
+          qrData.sessionId,
           qrData.key,
           fingerprint,
           userId
