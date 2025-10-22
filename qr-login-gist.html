@@ -219,7 +219,7 @@
         </div>
 
         <div class="gist-link">
-          Session Paste: <a id="gistLink" href="#" target="_blank"></a>
+          Session Sheet: <a id="gistLink" href="#" target="_blank"></a>
         </div>
 
         <div class="instructions">
@@ -234,8 +234,8 @@
 
         <div class="tech-note">
           <strong>🔐 How it works:</strong><br>
-          • Session stored on dpaste.com (anonymous)<br>
-          • All data encrypted end-to-end<br>
+          • Session stored in Google Sheets (free)<br>
+          • Works cross-device (desktop ↔ iPhone)<br>
           • No backend server needed<br>
           • No authentication required
         </div>
@@ -266,14 +266,12 @@
   <!-- CalOS Identity Tracker -->
   <script src="identity-tracker.js"></script>
 
-  <!-- Pastebin Auth Library (dpaste.com) -->
-  <script src="pastebin-auth.js"></script>
+  <!-- Google Sheets QR Auth Library -->
+  <script src="sheets-qr-auth.js"></script>
 
   <script>
-    let pastebinAuth = null;
+    let sheetsAuth = null;
     let sessionId = null;
-    let pasteId = null;
-    let encryptionKey = null;
     let pollInterval = null;
     let timerInterval = null;
     let expiresAt = null;
@@ -287,23 +285,24 @@
       document.getElementById(state + 'State').classList.remove('hidden');
     }
 
-    // Generate QR code using dpaste.com
+    // Generate QR code using Google Sheets
     async function generateQRCode() {
       try {
         showState('loading');
 
-        // Initialize Pastebin auth
-        pastebinAuth = new PastebinAuth();
+        // Initialize Google Sheets auth
+        sheetsAuth = new SheetsQRAuth({
+          spreadsheetId: '1YourSpreadsheetIdHere', // Replace with your Google Sheet ID
+          apiKey: 'YOUR_GOOGLE_API_KEY' // Replace with your Google API key
+        });
 
         // Get device fingerprint
         const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
 
-        // Create session paste
-        const session = await pastebinAuth.createSession(fingerprint);
+        // Create session in Google Sheets
+        const session = await sheetsAuth.createSession(fingerprint);
 
         sessionId = session.sessionId;
-        pasteId = session.pasteId;
-        encryptionKey = session.encryptionKey;
         expiresAt = session.expiresAt;
 
         // Generate QR code from payload
@@ -317,9 +316,9 @@
           }
         });
 
-        // Show paste link
-        document.getElementById('gistLink').href = session.pasteUrl;
-        document.getElementById('gistLink').textContent = session.pasteId.substring(0, 8) + '...';
+        // Show sheet link
+        document.getElementById('gistLink').href = session.sheetUrl;
+        document.getElementById('gistLink').textContent = 'View Sheet';
 
         // Show QR state
         showState('qr');
@@ -332,7 +331,6 @@
 
         console.log('[QR Login] Session created:', {
           sessionId: sessionId,
-          pasteId: pasteId,
           expiresAt: new Date(expiresAt).toISOString()
         });
 
@@ -342,13 +340,13 @@
       }
     }
 
-    // Poll dpaste.com for verification
+    // Poll Google Sheets for verification
     function startPolling() {
       if (pollInterval) clearInterval(pollInterval);
 
       pollInterval = setInterval(async () => {
         try {
-          const result = await pastebinAuth.pollForVerification(sessionId, encryptionKey);
+          const result = await sheetsAuth.pollForVerification(sessionId);
 
           if (result.verified) {
             // Login successful!
@@ -402,7 +400,7 @@
           userId: session.userId,
           phoneFingerprint: session.phoneFingerprint,
           verifiedAt: session.verifiedAt,
-          authMethod: 'pastebin-qr'
+          authMethod: 'sheets-qr'
         }));
 
         console.log('[QR Login] Login successful:', session);

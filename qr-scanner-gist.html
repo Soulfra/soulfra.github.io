@@ -199,12 +199,12 @@
     <div id="processingState">
       <div class="spinner"></div>
       <div class="status waiting">
-        Verifying login with GitHub Gist...
+        Verifying login with Google Sheets...
       </div>
       <div class="tech-note">
         <strong>🔐 How it works:</strong><br>
-        • Reading encrypted session from dpaste<br>
-        • Creating verification paste<br>
+        • Reading session from Google Sheets<br>
+        • Updating verification status<br>
         • No backend server needed<br>
         • No authentication required
       </div>
@@ -235,11 +235,11 @@
   <!-- CalOS Identity Tracker -->
   <script src="identity-tracker.js"></script>
 
-  <!-- Pastebin Auth Library (dpaste.com) -->
-  <script src="pastebin-auth.js"></script>
+  <!-- Google Sheets QR Auth Library -->
+  <script src="sheets-qr-auth.js"></script>
 
   <script>
-    let pastebinAuth = null;
+    let sheetsAuth = null;
 
     // Show/hide states
     function showState(state) {
@@ -293,7 +293,7 @@
           throw new Error('Invalid QR code type');
         }
 
-        if (!qrData.sessionId || !qrData.key) {
+        if (!qrData.sessionId || !qrData.spreadsheetId) {
           throw new Error('Invalid QR code - missing required data');
         }
 
@@ -304,21 +304,24 @@
 
         console.log('[Scanner] Processing QR code:', {
           sessionId: qrData.sessionId,
-          pasteId: qrData.pasteId,
+          spreadsheetId: qrData.spreadsheetId,
           expiresAt: new Date(qrData.expiresAt).toISOString()
         });
 
-        // Initialize Pastebin auth
-        pastebinAuth = new PastebinAuth();
+        // Initialize Google Sheets auth
+        sheetsAuth = new SheetsQRAuth({
+          spreadsheetId: qrData.spreadsheetId,
+          sheetName: qrData.sheetName || 'qr_sessions',
+          apiKey: 'YOUR_GOOGLE_API_KEY' // Replace with your Google API key
+        });
 
         // Get phone fingerprint
         const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
         const userId = localStorage.getItem('calos_user_id') || fingerprint;
 
-        // Verify session with dpaste.com
-        const result = await pastebinAuth.verifySession(
+        // Verify session with Google Sheets
+        const result = await sheetsAuth.verifySession(
           qrData.sessionId,
-          qrData.key,
           fingerprint,
           userId
         );
