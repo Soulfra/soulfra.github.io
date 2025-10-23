@@ -308,11 +308,11 @@
           expiresAt: new Date(qrData.expiresAt).toISOString()
         });
 
-        // Initialize Google Sheets auth
+        // Initialize Google Sheets auth (loads from localStorage)
         sheetsAuth = new SheetsQRAuth({
           spreadsheetId: qrData.spreadsheetId,
-          sheetName: qrData.sheetName || 'qr_sessions',
-          apiKey: 'YOUR_GOOGLE_API_KEY' // Replace with your Google API key
+          sheetName: qrData.sheetName || 'qr_sessions'
+          // apiKey loaded from localStorage automatically
         });
 
         // Get phone fingerprint

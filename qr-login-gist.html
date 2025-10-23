@@ -191,14 +191,146 @@
       margin-top: 10px;
       word-break: break-all;
     }
+
+    /* Config Panel Styles */
+    .config-panel {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .config-panel h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+
+    .config-panel p {
+      opacity: 0.9;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .form-help {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    .config-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .config-actions button {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.2) !important;
+      color: #fff !important;
+    }
+
+    .settings-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      font-size: 1.5rem;
+    }
+
+    .settings-icon:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="login-card">
+      <div class="settings-icon" onclick="toggleConfigPanel()">⚙️</div>
       <h1>🔒 QR Login</h1>
       <p class="subtitle">Scan with your iPhone to login instantly</p>
       <div class="serverless-badge">✨ Serverless (No Backend!)</div>
+
+      <!-- Config Panel (hidden by default) -->
+      <div id="configPanel" class="config-panel hidden">
+        <h2>⚙️ Setup Google Sheets</h2>
+        <p>Configure your own Google Sheet for QR login sessions. Free & open source!</p>
+
+        <div class="form-group">
+          <label for="spreadsheetId">Google Sheet ID</label>
+          <input
+            type="text"
+            id="spreadsheetId"
+            placeholder="1ABC123XYZ..."
+            autocomplete="off"
+          />
+          <div class="form-help">
+            Get from: <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> → Create new sheet → Copy ID from URL
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="apiKey">Google API Key</label>
+          <input
+            type="password"
+            id="apiKey"
+            placeholder="AIza..."
+            autocomplete="off"
+          />
+          <div class="form-help">
+            Get from: <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a> → Create API key → Enable Sheets API
+          </div>
+        </div>
+
+        <div class="config-actions">
+          <button class="btn-secondary" onclick="toggleConfigPanel()">Cancel</button>
+          <button onclick="saveConfig()">Save & Test</button>
+        </div>
+
+        <div class="tech-note">
+          <strong>📖 Need help?</strong><br>
+          See full setup guide: <a href="QR_LOGIN_SETUP.md" target="_blank">QR_LOGIN_SETUP.md</a>
+        </div>
+      </div>
 
       <!-- Loading State -->
       <div id="loadingState">
@@ -276,6 +408,42 @@
     let timerInterval = null;
     let expiresAt = null;
 
+    // Config Panel Functions
+    function toggleConfigPanel() {
+      const panel = document.getElementById('configPanel');
+      const isHidden = panel.classList.contains('hidden');
+
+      if (isHidden) {
+        // Load saved config into form
+        const auth = new SheetsQRAuth();
+        document.getElementById('spreadsheetId').value = auth.spreadsheetId || '';
+        document.getElementById('apiKey').value = auth.apiKey || '';
+        panel.classList.remove('hidden');
+      } else {
+        panel.classList.add('hidden');
+      }
+    }
+
+    function saveConfig() {
+      const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+      const apiKey = document.getElementById('apiKey').value.trim();
+
+      if (!spreadsheetId || !apiKey) {
+        alert('Please enter both Spreadsheet ID and API Key');
+        return;
+      }
+
+      // Save to library
+      const auth = new SheetsQRAuth();
+      auth.saveConfig({ spreadsheetId, apiKey });
+
+      alert('✓ Config saved! Click "Try Again" to test your setup.');
+      toggleConfigPanel();
+
+      // Refresh page to use new config
+      location.reload();
+    }
+
     // Show/hide states
     function showState(state) {
       document.getElementById('loadingState').classList.add('hidden');
@@ -285,16 +453,33 @@
       document.getElementById(state + 'State').classList.remove('hidden');
     }
 
+    // Check if configured on load
+    function checkConfig() {
+      sheetsAuth = new SheetsQRAuth();
+
+      if (!sheetsAuth.isConfigured()) {
+        // Show config panel automatically
+        document.getElementById('configPanel').classList.remove('hidden');
+        showState('error');
+        document.getElementById('errorMessage').textContent = '⚙️ Setup Required: Click the gear icon to configure your Google Sheet';
+        return false;
+      }
+
+      return true;
+    }
+
     // Generate QR code using Google Sheets
     async function generateQRCode() {
       try {
         showState('loading');
 
-        // Initialize Google Sheets auth
-        sheetsAuth = new SheetsQRAuth({
-          spreadsheetId: '1YourSpreadsheetIdHere', // Replace with your Google Sheet ID
-          apiKey: 'YOUR_GOOGLE_API_KEY' // Replace with your Google API key
-        });
+        // Initialize Google Sheets auth (loads from localStorage)
+        sheetsAuth = new SheetsQRAuth();
+
+        // Check if configured
+        if (!sheetsAuth.isConfigured()) {
+          throw new Error('Google Sheets not configured. Click ⚙️ to set up.');
+        }
 
         // Get device fingerprint
         const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
@@ -426,10 +611,14 @@
     document.getElementById('regenerateBtn').addEventListener('click', generateQRCode);
     document.getElementById('retryBtn').addEventListener('click', generateQRCode);
 
-    // Generate QR code on page load
+    // Check config and generate QR on page load
     window.addEventListener('load', () => {
       // Wait for identity tracker to load
-      setTimeout(generateQRCode, 500);
+      setTimeout(() => {
+        if (checkConfig()) {
+          generateQRCode();
+        }
+      }, 500);
     });
   </script>
 </body>

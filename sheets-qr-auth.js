@@ -21,16 +21,131 @@
 
 class SheetsQRAuth {
   constructor(config = {}) {
+    // Load config from localStorage if not provided
+    const savedConfig = this.loadConfig();
+
     // Public Google Sheet (anyone with link can view/edit)
     // Create your own at: sheets.google.com
     // Share → Anyone with link → Editor
-    this.spreadsheetId = config.spreadsheetId || '1YourSpreadsheetIdHere';
-    this.sheetName = config.sheetName || 'qr_sessions';
-    this.apiKey = config.apiKey || 'YOUR_GOOGLE_API_KEY'; // Google API key with Sheets API enabled
+    this.spreadsheetId = config.spreadsheetId || savedConfig.spreadsheetId || null;
+    this.sheetName = config.sheetName || savedConfig.sheetName || 'qr_sessions';
+    this.apiKey = config.apiKey || savedConfig.apiKey || null;
 
     this.SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
-    console.log('[SheetsQRAuth] Initialized');
+    // Backend API detection
+    this.backendUrl = config.backendUrl || this.detectBackendUrl();
+    this.useBackend = false; // Will be set after detection
+
+    console.log('[SheetsQRAuth] Initialized', {
+      hasSpreadsheetId: !!this.spreadsheetId,
+      hasApiKey: !!this.apiKey,
+      backendUrl: this.backendUrl
+    });
+  }
+
+  /**
+   * Load config from localStorage
+   * @private
+   */
+  loadConfig() {
+    try {
+      const saved = localStorage.getItem('calos_sheets_config');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.warn('[SheetsQRAuth] Failed to load config from localStorage:', error);
+    }
+    return {};
+  }
+
+  /**
+   * Save config to localStorage
+   */
+  saveConfig(config) {
+    try {
+      const merged = {
+        ...this.loadConfig(),
+        ...config
+      };
+      localStorage.setItem('calos_sheets_config', JSON.stringify(merged));
+
+      // Update instance values
+      if (config.spreadsheetId) this.spreadsheetId = config.spreadsheetId;
+      if (config.sheetName) this.sheetName = config.sheetName;
+      if (config.apiKey) this.apiKey = config.apiKey;
+
+      console.log('[SheetsQRAuth] Config saved');
+      return true;
+    } catch (error) {
+      console.error('[SheetsQRAuth] Failed to save config:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Check if configured
+   */
+  isConfigured() {
+    return !!(this.spreadsheetId && this.apiKey);
+  }
+
+  /**
+   * Clear saved config
+   */
+  clearConfig() {
+    localStorage.removeItem('calos_sheets_config');
+    this.spreadsheetId = null;
+    this.apiKey = null;
+    console.log('[SheetsQRAuth] Config cleared');
+  }
+
+  /**
+   * Detect backend API URL
+   * @private
+   */
+  detectBackendUrl() {
+    // Try localhost first (development)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:5001/api/v1/qr-login';
+    }
+
+    // Check if on GitHub Pages
+    if (window.location.hostname.includes('github.io')) {
+      // GitHub Pages - no backend, use direct Sheets API
+      return null;
+    }
+
+    // Otherwise assume backend is on same origin
+    return `${window.location.origin}/api/v1/qr-login`;
+  }
+
+  /**
+   * Check if backend API is available
+   * @private
+   */
+  async checkBackendAvailable() {
+    if (!this.backendUrl) return false;
+
+    try {
+      const response = await fetch(`${this.backendUrl}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[SheetsQRAuth] Backend available:', data.version || 'unknown');
+        return true;
+      }
+
+      return false;
+
+    } catch (error) {
+      console.log('[SheetsQRAuth] Backend not available, using direct Sheets API');
+      return false;
+    }
   }
 
   /**
@@ -39,6 +154,29 @@ class SheetsQRAuth {
    */
   async createSession(deviceFingerprint) {
     try {
+      // Check if backend is available
+      this.useBackend = await this.checkBackendAvailable();
+
+      if (this.useBackend) {
+        // Use backend API
+        const response = await fetch(`${this.backendUrl}/session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceFingerprint })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Backend error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('[SheetsQRAuth] Session created via backend');
+        return data;
+      }
+
+      // Fallback to direct Google Sheets API
+      console.log('[SheetsQRAuth] Using direct Sheets API');
+
       // Generate unique session ID
       const sessionId = this.generateSessionId();
 
@@ -86,6 +224,29 @@ class SheetsQRAuth {
    */
   async verifySession(sessionId, phoneFingerprint, userId) {
     try {
+      // Check if backend is available
+      this.useBackend = await this.checkBackendAvailable();
+
+      if (this.useBackend) {
+        // Use backend API
+        const response = await fetch(`${this.backendUrl}/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, phoneFingerprint, userId })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Backend error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('[SheetsQRAuth] Session verified via backend');
+        return data;
+      }
+
+      // Fallback to direct Google Sheets API
+      console.log('[SheetsQRAuth] Using direct Sheets API');
+
       // Update session row
       const updates = {
         status: 'verified',
@@ -114,6 +275,24 @@ class SheetsQRAuth {
    */
   async pollForVerification(sessionId) {
     try {
+      // Check if backend is available (only once, then cache)
+      if (this.useBackend === undefined) {
+        this.useBackend = await this.checkBackendAvailable();
+      }
+
+      if (this.useBackend) {
+        // Use backend API
+        const response = await fetch(`${this.backendUrl}/poll/${sessionId}`);
+
+        if (!response.ok) {
+          throw new Error(`Backend error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+      }
+
+      // Fallback to direct Google Sheets API
       // Read session row from Google Sheets
       const session = await this.readRow(sessionId);
 
