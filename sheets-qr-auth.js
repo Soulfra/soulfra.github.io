@@ -482,6 +482,354 @@ class SheetsQRAuth {
     crypto.getRandomValues(array);
     return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
   }
+
+  // ==================== TRIAL MANAGEMENT ====================
+
+  /**
+   * Get trial data for a user
+   * @param {string} userId - User ID
+   * @returns {Object|null} Trial data or null if not found
+   */
+  async getTrialData(userId) {
+    try {
+      const sheetName = 'trials';
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:H?key=${this.apiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      const rows = data.values || [];
+
+      // Find row with matching userId
+      const rowIndex = rows.findIndex((row, idx) => idx > 0 && row[0] === userId);
+      if (rowIndex === -1) return null;
+
+      const row = rows[rowIndex];
+      return {
+        userId: row[0],
+        email: row[1],
+        name: row[2],
+        trialDays: parseInt(row[3]) || 30,
+        bonusDays: parseInt(row[4]) || 0,
+        startedAt: parseInt(row[5]),
+        status: row[6] || 'active',
+        updatedAt: parseInt(row[7]) || Date.now(),
+        _rowIndex: rowIndex
+      };
+    } catch (error) {
+      console.error('[SheetsQRAuth] Get trial data error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Create trial for a user
+   * @param {string} userId - User ID
+   * @param {Object} options - Trial options
+   * @returns {Object} Created trial data
+   */
+  async createTrial(userId, options = {}) {
+    try {
+      const sheetName = 'trials';
+      const trialData = {
+        userId,
+        email: options.email || '',
+        name: options.name || '',
+        trialDays: options.trialDays || 30,
+        bonusDays: options.bonusDays || 0,
+        startedAt: options.startedAt || Date.now(),
+        status: options.status || 'active',
+        updatedAt: Date.now()
+      };
+
+      const row = [
+        trialData.userId,
+        trialData.email,
+        trialData.name,
+        trialData.trialDays,
+        trialData.bonusDays,
+        trialData.startedAt,
+        trialData.status,
+        trialData.updatedAt
+      ];
+
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:H:append?valueInputOption=RAW&key=${this.apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create trial');
+      }
+
+      console.log('[SheetsQRAuth] Trial created:', userId);
+      return trialData;
+    } catch (error) {
+      console.error('[SheetsQRAuth] Create trial error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update trial data
+   * @param {string} userId - User ID
+   * @param {Object} updates - Fields to update
+   */
+  async updateTrial(userId, updates) {
+    try {
+      const trial = await this.getTrialData(userId);
+      if (!trial) {
+        throw new Error('Trial not found');
+      }
+
+      const sheetName = 'trials';
+      const updatedRow = [
+        trial.userId,
+        updates.email || trial.email,
+        updates.name || trial.name,
+        updates.trialDays !== undefined ? updates.trialDays : trial.trialDays,
+        updates.bonusDays !== undefined ? updates.bonusDays : trial.bonusDays,
+        trial.startedAt,
+        updates.status || trial.status,
+        Date.now()
+      ];
+
+      const rowNum = trial._rowIndex + 1;
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A${rowNum}:H${rowNum}?valueInputOption=RAW&key=${this.apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [updatedRow] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update trial');
+      }
+
+      console.log('[SheetsQRAuth] Trial updated:', userId);
+    } catch (error) {
+      console.error('[SheetsQRAuth] Update trial error:', error);
+      throw error;
+    }
+  }
+
+  // ==================== REFERRAL MANAGEMENT ====================
+
+  /**
+   * Get referral data for a user
+   * @param {string} userId - User ID
+   * @returns {Object|null} Referral data or null if not found
+   */
+  async getReferralData(userId) {
+    try {
+      const sheetName = 'referrals';
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:G?key=${this.apiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      const rows = data.values || [];
+
+      // Find row with matching userId
+      const rowIndex = rows.findIndex((row, idx) => idx > 0 && row[0] === userId);
+      if (rowIndex === -1) return null;
+
+      const row = rows[rowIndex];
+      return {
+        userId: row[0],
+        code: row[1],
+        referralCount: parseInt(row[2]) || 0,
+        bonusDaysEarned: parseInt(row[3]) || 0,
+        createdAt: parseInt(row[4]),
+        updatedAt: parseInt(row[5]),
+        referredBy: row[6] || null,
+        _rowIndex: rowIndex
+      };
+    } catch (error) {
+      console.error('[SheetsQRAuth] Get referral data error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Create referral code for a user
+   * @param {string} userId - User ID
+   * @param {string} code - Referral code
+   * @param {Object} options - Additional options
+   * @returns {Object} Created referral data
+   */
+  async createReferralCode(userId, code, options = {}) {
+    try {
+      const sheetName = 'referrals';
+      const referralData = {
+        userId,
+        code,
+        referralCount: options.referralCount || 0,
+        bonusDaysEarned: options.bonusDaysEarned || 0,
+        createdAt: options.createdAt || Date.now(),
+        updatedAt: Date.now(),
+        referredBy: options.referredBy || null
+      };
+
+      const row = [
+        referralData.userId,
+        referralData.code,
+        referralData.referralCount,
+        referralData.bonusDaysEarned,
+        referralData.createdAt,
+        referralData.updatedAt,
+        referralData.referredBy || ''
+      ];
+
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:G:append?valueInputOption=RAW&key=${this.apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create referral code');
+      }
+
+      console.log('[SheetsQRAuth] Referral code created:', code);
+      return referralData;
+    } catch (error) {
+      console.error('[SheetsQRAuth] Create referral code error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Increment referral count
+   * @param {string} userId - User ID
+   * @param {number} bonusDays - Bonus days to add (default: 7)
+   */
+  async incrementReferralCount(userId, bonusDays = 7) {
+    try {
+      const referral = await this.getReferralData(userId);
+      if (!referral) {
+        throw new Error('Referral not found');
+      }
+
+      const sheetName = 'referrals';
+      const newCount = referral.referralCount + 1;
+      const newBonusDays = referral.bonusDaysEarned + bonusDays;
+
+      const updatedRow = [
+        referral.userId,
+        referral.code,
+        newCount,
+        newBonusDays,
+        referral.createdAt,
+        Date.now(),
+        referral.referredBy || ''
+      ];
+
+      const rowNum = referral._rowIndex + 1;
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A${rowNum}:G${rowNum}?valueInputOption=RAW&key=${this.apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [updatedRow] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to increment referral count');
+      }
+
+      console.log('[SheetsQRAuth] Referral count incremented:', userId, newCount);
+
+      // Also update trial bonus days
+      await this.updateTrial(userId, { bonusDays: newBonusDays });
+    } catch (error) {
+      console.error('[SheetsQRAuth] Increment referral count error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find user by referral code
+   * @param {string} code - Referral code
+   * @returns {Object|null} Referral data or null if not found
+   */
+  async findUserByReferralCode(code) {
+    try {
+      const sheetName = 'referrals';
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:G?key=${this.apiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      const rows = data.values || [];
+
+      // Find row with matching code
+      const rowIndex = rows.findIndex((row, idx) => idx > 0 && row[1] === code);
+      if (rowIndex === -1) return null;
+
+      const row = rows[rowIndex];
+      return {
+        userId: row[0],
+        code: row[1],
+        referralCount: parseInt(row[2]) || 0,
+        bonusDaysEarned: parseInt(row[3]) || 0,
+        createdAt: parseInt(row[4]),
+        updatedAt: parseInt(row[5]),
+        referredBy: row[6] || null
+      };
+    } catch (error) {
+      console.error('[SheetsQRAuth] Find user by referral code error:', error);
+      return null;
+    }
+  }
+
+  // ==================== NEWSLETTER MANAGEMENT ====================
+
+  /**
+   * Add newsletter recipient
+   * @param {Object} options - Recipient options
+   */
+  async addNewsletterRecipient(options) {
+    try {
+      const sheetName = 'newsletter_recipients';
+      const row = [
+        options.userId,
+        options.email,
+        options.name || '',
+        options.source || 'qr-login',
+        options.status || 'pending_confirmation',
+        options.createdAt || Date.now(),
+        options.confirmedAt || '',
+        options.unsubscribedAt || ''
+      ];
+
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values/${sheetName}!A:H:append?valueInputOption=RAW&key=${this.apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add newsletter recipient');
+      }
+
+      console.log('[SheetsQRAuth] Newsletter recipient added:', options.email);
+    } catch (error) {
+      console.error('[SheetsQRAuth] Add newsletter recipient error:', error);
+      throw error;
+    }
+  }
 }
 
 // Export for use in HTML pages
