@@ -154,6 +154,20 @@
 
   // Initialize
   try {
+    // Load CookieSnapshotManager if available
+    let cookieManager = null;
+    let cookieSnapshot = null;
+
+    if (typeof CookieSnapshotManager !== 'undefined') {
+      cookieManager = new CookieSnapshotManager({ autoRestore: true });
+      cookieSnapshot = cookieManager.snapshot();
+
+      console.log('%c🍪 Cookie Snapshot Created', 'color: #f39c12; font-weight: bold;');
+      console.log('%cCookies found:', 'color: #888;', cookieSnapshot.count);
+      console.log('%cCategories:', 'color: #888;', Object.keys(cookieSnapshot.categories));
+      console.log('%cTop interests:', 'color: #888;', cookieManager.getInferredInterests().slice(0, 3));
+    }
+
     // Generate fingerprint
     const fingerprinter = new SimpleFingerprint();
     const fingerprint = await fingerprinter.generate();
@@ -161,11 +175,23 @@
     // Create/load profile
     const profile = new SimpleProfile(fingerprint.id);
 
+    // Merge cookie-based interests with profile interests
+    if (cookieManager) {
+      const cookieInterests = cookieManager.getInferredInterests();
+      cookieInterests.forEach(({ interest, score }) => {
+        profile.profile.interests[`cookie-${interest}`] = score;
+      });
+      profile.save();
+    }
+
     // Make globally available
     window.CalOSIdentity = {
       fingerprint: fingerprint.id,
       profile: profile,
-      getResume: () => profile.getResume()
+      cookieManager: cookieManager,
+      getResume: () => profile.getResume(),
+      getCookieReport: () => cookieManager ? cookieManager.getPrivacyReport() : null,
+      getSuggestedPaths: () => cookieManager ? cookieManager.getSuggestedLearningPaths() : []
     };
 
     // Display in console
@@ -175,6 +201,13 @@
     console.log('%cFingerprint ID:', 'color: #888;', fingerprint.id);
     console.log('%cVisit #:', 'color: #888;', profile.profile.visits);
     console.log('%cTop Interests:', 'color: #888;', profile.getResume().interests);
+
+    if (cookieManager) {
+      console.log('%c🍪 Cookie Analysis:', 'color: #f39c12;');
+      console.log('%c  Privacy Guarantee:', 'color: #888;', 'Original cookies restored on exit');
+      console.log('%c  Suggested Paths:', 'color: #888;', cookieManager.getSuggestedLearningPaths().map(p => p.path));
+    }
+
     console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n', 'color: #667eea;');
 
     // Display resume after 5 seconds
@@ -182,6 +215,11 @@
       const resume = profile.getResume();
       console.log('%c📊 Your Profile Resume:', 'color: #2ecc71; font-weight: bold;');
       console.table(resume);
+
+      if (cookieManager) {
+        console.log('%c🎯 Learning Path Suggestions:', 'color: #9b59b6; font-weight: bold;');
+        console.table(cookieManager.getSuggestedLearningPaths());
+      }
     }, 5000);
 
   } catch (error) {
