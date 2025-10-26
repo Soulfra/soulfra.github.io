@@ -347,6 +347,7 @@
         <div class="tab active" onclick="switchTab('login', event)">🔐 Login</div>
         <div class="tab" onclick="switchTab('brands', event)">🌐 12 Brands</div>
         <div class="tab" onclick="switchTab('keys', event)">🔑 Your Keys</div>
+        <div class="tab" onclick="switchTab('hire', event)">💼 Hire Me</div>
       </div>
 
       <!-- Login Tab -->
@@ -528,6 +529,136 @@
               <li><strong>Local storage only</strong> - We never see or store your private key</li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      <!-- Hire Me Tab -->
+      <div id="hireTab" class="tab-content">
+        <h2 style="margin-bottom: 20px;">💼 This IS My Resume</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 30px; opacity: 0.95;">
+          I don't interview. I build. Here are 12 products proving 12 different skills.
+        </p>
+
+        <div style="background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+          <h3 style="color: #2ecc71; margin-bottom: 15px;">The Pitch:</h3>
+          <p style="font-size: 1.1rem; margin-bottom: 15px;">
+            Instead of "trust me, I can code," I built a 12-brand empire with autonomous AI systems.
+          </p>
+          <p style="opacity: 0.9;">
+            <strong>Skills Map:</strong> Security → Identity → AI Routing → Search → Full-Stack → DevOps → Fintech → Game Dev → DX → Design Systems → SRE → NLP
+          </p>
+        </div>
+
+        <h3 style="margin-bottom: 20px;">🎯 Which Skill Do You Need? I've Already Proved It:</h3>
+
+        <div class="brand-grid" style="margin-bottom: 30px;">
+          <div class="brand-card foundation">
+            <h3>🔐 Soulfra</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Security Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Ed25519 crypto • SSO • Zero-knowledge proofs</p>
+            <a href="https://soulfra.github.io" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.2); border-radius: 6px; text-decoration: none; color: white;">Live Demo →</a>
+          </div>
+
+          <div class="brand-card foundation">
+            <h3>🤖 Calriven</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> AI/ML Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Multi-LLM routing • ELO systems • Agent marketplace</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card foundation">
+            <h3>🔍 DeathToData</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Search Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Search engine • Content indexer • Knowledge graph</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card business">
+            <h3>💡 FinishThisIdea</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Full-Stack + Product</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Project tracking • Payments • AI assistant</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card business">
+            <h3>💻 FinishThisRepo</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> DevOps/CI Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">GitHub integration • Code review • Bounties</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card business">
+            <h3>📈 IPOMyAgent</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Fintech Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Marketplace • Revenue sharing • IPO simulation</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card creative">
+            <h3>🏘️ HollowTown</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Game/Graphics Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Multiplayer • Game engine • Virtual economy</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card creative">
+            <h3>🚀 ColdStartKit</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Developer Experience</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Templates • Deployment wizard • DX tooling</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card creative">
+            <h3>🎨 BrandAidKit</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Design Systems</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Logo gen • Branding • Sprite manager</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card additional">
+            <h3>⚖️ DealOrDelete</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Collaboration Tools</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Decision matrix • AI advisor • Voting</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card additional">
+            <h3>🆘 SaveOrSink</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> SRE/Reliability</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">System monitoring • Auto-recovery • Disaster recovery</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+
+          <div class="brand-card additional">
+            <h3>😬 CringeProof</h3>
+            <p style="margin-bottom: 10px;"><strong>Proves:</strong> ML/NLP Engineering</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Content analysis • Cringe detection • NLP</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
+          </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 25px; margin-top: 30px;">
+          <h3 style="margin-bottom: 15px;">🤖 The Meta-Skill:</h3>
+          <ul style="margin-left: 20px; font-size: 1.05rem;">
+            <li style="margin: 10px 0;"><strong>Built with Cal:</strong> Autonomous AI build system (Ollama for boilerplate, Claude for security)</li>
+            <li style="margin: 10px 0;"><strong>IETF Standards:</strong> Uses JSON (RFC 8259), not paid specs</li>
+            <li style="margin: 10px 0;"><strong>Cost-Optimized:</strong> Free-tier Ollama for 90% of tasks</li>
+            <li style="margin: 10px 0;"><strong>Transparent:</strong> All code public on GitHub</li>
+            <li style="margin: 10px 0;"><strong>Scalable:</strong> Run `npm run cal:build-domains` to see autonomous build</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2);">
+          <h3 style="margin-bottom: 20px;">📬 Want to Talk?</h3>
+          <p style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
+            Email: <a href="mailto:matt@soulfra.com" style="color: #2ecc71; font-weight: 600;">matt@soulfra.com</a>
+          </p>
+          <p style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
+            GitHub: <a href="https://github.com/Soulfra" target="_blank" style="color: #2ecc71; font-weight: 600;">@Soulfra</a>
+          </p>
+          <p style="font-size: 0.95rem; opacity: 0.8; margin-top: 30px;">
+            "I didn't just apply. I built 12 products to prove I can do the job."
+          </p>
         </div>
       </div>
 

@@ -234,39 +234,69 @@
     </div>
   </div>
 
-  <script src="/lib/github-pages-bridge.js"></script>
+  <!-- Auth System -->
+  <script src="soulfra-universal-auth.js"></script>
+  <script src="sheets-qr-auth.js"></script>
+  <script src="soulfra-unified-auth.js"></script>
 
   <script>
-    const bridge = new GitHubPagesBridge();
+    let unifiedAuth = null;
 
     // Load existing keys on page load
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
+      await initAuth();
       loadExistingKeys();
-      updateUsageStats();
     });
 
-    // Load existing keys
-    function loadExistingKeys() {
-      const byok = localStorage.getItem('calos_byok');
-      if (!byok) return;
-
+    // Initialize auth system
+    async function initAuth() {
       try {
-        const keys = JSON.parse(byok);
-        if (keys.openai) {
-          document.getElementById('openaiKey').value = '••••••••';
-          document.getElementById('openaiKey').dataset.hasKey = 'true';
+        unifiedAuth = new SoulfraUnifiedAuth();
+
+        // Try to login
+        const result = await unifiedAuth.login();
+
+        if (!result.success) {
+          // Not logged in - redirect to auth page
+          showStatus('Please login first', 'error');
+          setTimeout(() => {
+            window.location.href = 'auth.html?redirect=byok-settings.html';
+          }, 2000);
+          return;
         }
-        if (keys.anthropic) {
-          document.getElementById('anthropicKey').value = '••••••••';
-          document.getElementById('anthropicKey').dataset.hasKey = 'true';
-        }
+
+        console.log('[BYOK] Logged in as:', result.user.email);
       } catch (error) {
-        console.error('Failed to load keys:', error);
+        console.error('[BYOK] Auth init failed:', error);
+        showStatus('Auth initialization failed', 'error');
+      }
+    }
+
+    // Load existing keys from unified auth
+    function loadExistingKeys() {
+      if (!unifiedAuth || !unifiedAuth.isAuthenticated()) {
+        return;
+      }
+
+      const keys = unifiedAuth.getAllApiKeys();
+
+      if (keys.openai) {
+        document.getElementById('openaiKey').value = '••••••••';
+        document.getElementById('openaiKey').dataset.hasKey = 'true';
+      }
+      if (keys.anthropic) {
+        document.getElementById('anthropicKey').value = '••••••••';
+        document.getElementById('anthropicKey').dataset.hasKey = 'true';
       }
     }
 
     // Save API key
     async function saveKey(provider) {
+      if (!unifiedAuth || !unifiedAuth.isAuthenticated()) {
+        showStatus('Not logged in', 'error');
+        return;
+      }
+
       const input = document.getElementById(`${provider}Key`);
       const key = input.value;
 
@@ -276,33 +306,17 @@
       }
 
       try {
-        // Encrypt key using Web Crypto API
-        const encrypted = await encryptKey(key);
+        // Save to unified auth (automatically encrypted)
+        const result = unifiedAuth.saveApiKey(provider, key);
 
-        // Save to localStorage (browser)
-        let byok = localStorage.getItem('calos_byok');
-        byok = byok ? JSON.parse(byok) : {};
-        byok[provider] = {
-          encrypted,
-          addedAt: Date.now()
-        };
-        localStorage.setItem('calos_byok', JSON.stringify(byok));
+        if (!result.success) {
+          throw new Error(result.error);
+        }
 
-        // Also save to server (double-encrypted in PostgreSQL)
-        try {
-          const response = await bridge.callAPI('/api/byok/browser/save', {
-            provider,
-            encrypted,
-            addedAt: Date.now()
-          });
-
-          if (response.error) {
-            console.warn('[BYOK] Server save failed, using localStorage only:', response.error);
-          } else {
-            console.log('[BYOK] Saved to both localStorage and server');
-          }
-        } catch (serverError) {
-          console.warn('[BYOK] Server unavailable, using localStorage only:', serverError.message);
+        // Try to sync to Google Sheets (optional)
+        const syncResult = await unifiedAuth.syncApiKeysToSheets();
+        if (syncResult.success) {
+          console.log('[BYOK] Synced to Google Sheets for cross-device access');
         }
 
         // Mask input
@@ -319,16 +333,19 @@
 
     // Remove API key
     function removeKey(provider) {
+      if (!unifiedAuth || !unifiedAuth.isAuthenticated()) {
+        showStatus('Not logged in', 'error');
+        return;
+      }
+
       if (!confirm(`Remove ${provider} API key?`)) return;
 
       try {
-        let byok = localStorage.getItem('calos_byok');
-        if (!byok) return;
+        const result = unifiedAuth.deleteApiKey(provider);
 
-        byok = JSON.parse(byok);
-        delete byok[provider];
-
-        localStorage.setItem('calos_byok', JSON.stringify(byok));
+        if (!result.success) {
+          throw new Error(result.error);
+        }
 
         document.getElementById(`${provider}Key`).value = '';
         delete document.getElementById(`${provider}Key`).dataset.hasKey;
@@ -343,76 +360,63 @@
 
     // Test API key
     async function testKey(provider) {
+      if (!unifiedAuth || !unifiedAuth.isAuthenticated()) {
+        showStatus('Not logged in', 'error');
+        return;
+      }
+
       showStatus('Testing key...', 'success');
 
       try {
-        // Simple test call
-        const result = await bridge.callAPI('/api/agent', {
-          prompt: 'Say "Hello" in one word',
-          model: provider === 'openai' ? 'gpt-4' : 'claude-3-opus-20240229',
-          max_tokens: 10
-        });
+        const apiKey = unifiedAuth.getApiKey(provider);
 
-        if (result.error) {
-          throw new Error(result.error);
+        if (!apiKey) {
+          throw new Error('No API key found for ' + provider);
         }
 
-        showStatus(`✓ ${provider} key works! Response: ${result.response}`, 'success');
+        // Test with a simple API call
+        let response;
+        if (provider === 'anthropic') {
+          response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
+              'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+              model: 'claude-3-haiku-20240307',
+              max_tokens: 10,
+              messages: [{ role: 'user', content: 'Say hello in one word' }]
+            })
+          });
+        } else if (provider === 'openai') {
+          response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: 'gpt-3.5-turbo',
+              max_tokens: 10,
+              messages: [{ role: 'user', content: 'Say hello in one word' }]
+            })
+          });
+        }
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error?.message || 'API test failed');
+        }
+
+        const data = await response.json();
+        showStatus(`✓ ${provider} key works!`, 'success');
 
       } catch (error) {
         console.error('Test failed:', error);
         showStatus(`✗ ${provider} key test failed: ${error.message}`, 'error');
       }
-    }
-
-    // Encrypt key using Web Crypto API
-    async function encryptKey(key) {
-      // Generate encryption key from password (user's device fingerprint)
-      const fingerprint = window.CalOSIdentity?.fingerprint || 'calos-default-key';
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey(
-        'raw',
-        enc.encode(fingerprint),
-        'PBKDF2',
-        false,
-        ['deriveKey']
-      );
-
-      const cryptoKey = await crypto.subtle.deriveKey(
-        {
-          name: 'PBKDF2',
-          salt: enc.encode('calos-byok-salt'),
-          iterations: 100000,
-          hash: 'SHA-256'
-        },
-        keyMaterial,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['encrypt', 'decrypt']
-      );
-
-      // Encrypt
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encrypted = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
-        cryptoKey,
-        enc.encode(key)
-      );
-
-      return {
-        ciphertext: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
-        iv: btoa(String.fromCharCode(...iv))
-      };
-    }
-
-    // Update usage stats
-    function updateUsageStats() {
-      const stats = bridge.getUsageStats();
-
-      document.getElementById('totalCalls').textContent = stats.calls || 0;
-      document.getElementById('totalTokens').textContent = (stats.tokens || 0).toLocaleString();
-      document.getElementById('byokCalls').textContent = stats.byokCalls || 0;
-      document.getElementById('systemCalls').textContent = stats.systemCalls || 0;
     }
 
     // Show status message
