@@ -40,6 +40,15 @@
       opacity: 0.9;
     }
 
+    .role-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 10px 0;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -270,7 +279,8 @@
   <div class="dashboard-container">
     <header>
       <h1>🚀 Welcome to CalOS</h1>
-      <p class="welcome-msg">Hi <span id="userName">Developer</span>! Your free trial is active.</p>
+      <p class="welcome-msg">Hi <span id="userName">Developer</span>!</p>
+      <div id="roleBadge" class="role-badge"></div>
     </header>
 
     <div class="grid">
@@ -418,6 +428,27 @@
 
         const loginDate = new Date(userData.loginAt);
         document.getElementById('memberSince').textContent = loginDate.toLocaleDateString();
+
+        // Initialize role manager
+        roleManager = new RoleManager();
+
+        // Initialize network detector
+        networkDetector = new LocalNetworkDetector();
+
+        // Get and display role
+        const role = roleManager.getRole(userData.userId);
+        const roleConfig = roleManager.getRoleConfig(userData.userId);
+        const roleBadge = document.getElementById('roleBadge');
+        roleBadge.innerHTML = roleConfig.badge;
+        roleBadge.style.background = roleConfig.color + '20';
+        roleBadge.style.color = roleConfig.color;
+        roleBadge.style.border = `1px solid ${roleConfig.color}40`;
+
+        console.log('[Dashboard] User role:', role, roleConfig);
+
+        // Get network info
+        const networkInfo = await networkDetector.detect();
+        console.log('[Dashboard] Network info:', networkInfo);
 
         // Initialize Sheets Auth
         sheetsAuth = new SheetsQRAuth();

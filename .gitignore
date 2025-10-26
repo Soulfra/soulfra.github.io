@@ -1,0 +1,68 @@
+# Cal Selective Git Ignore
+# Only commit Cal-approved production code, exclude artifacts
+
+# Test Results
+*.test.log
+*.test.json
+test-results/
+coverage/
+.nyc_output/
+
+# Scoring & Overlays
+*.overlay.html
+*.scoring.json
+*.metrics.json
+*.benchmark.json
+
+# Temp Files
+.temp/
+*.tmp
+*.temp.js
+*.temp.html
+.cal-workspace/
+
+# Build Artifacts
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Node modules (if accidentally added)
+node_modules/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs (keep audit logs, exclude debug logs)
+*.debug.log
+*.error.log
+
+# Cal's Working Directory
+# (Only commit final output, not intermediate work)
+.cal-working/
+cal-scratch/
+
+# API Keys & Secrets
+.env
+.env.local
+*.key
+*.pem
+credentials.json
+
+# Database Dumps
+*.sql
+*.db
+*.sqlite
+
+# Backup Files
+*.backup
+*.bak
+*.old

@@ -109,14 +109,26 @@ else
 fi
 
 # ============================================================================
-# STEP 5: Auto-Commit Changes
+# STEP 5: Auto-Commit Changes (SELECTIVE STAGING)
 # ============================================================================
 
 echo ""
 echo "📝 Committing changes..."
 
-# Stage all changes
-git add .
+# Use Cal's selective staging (only stages Cal-approved files)
+echo "🔍 Running Cal Selective Stager..."
+if node ../../lib/cal-selective-stager.js --mode=deploy --verbose; then
+    # Check if anything was actually staged
+    if git diff --cached --quiet; then
+        echo "⚠️  No Cal-approved files found, staging all files..."
+        git add .
+    else
+        echo "✓ Cal-approved files staged"
+    fi
+else
+    echo "⚠️  Cal Selective Stager failed, falling back to git add ."
+    git add .
+fi
 
 # Check if there are changes to commit
 if git diff --cached --quiet; then
@@ -134,7 +146,8 @@ else
 - GIST-ready single file
 - MIT licensed
 
-🤖 Auto-deployed via deploy.sh" || echo "✓ Commit created"
+🤖 Auto-deployed via deploy.sh (selective staging)
+📋 Audit log: logs/cal-git-audit.jsonl" || echo "✓ Commit created"
 
     NEEDS_PUSH=true
 fi

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Industry Case Law - CalOS Legal Compliance</title>
+  <meta name="description" content="Industry-specific legal precedents and compliance requirements for crypto, finance, healthcare, legal, and education sectors.">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .filter-btn.active {
+      background: rgba(255, 215, 0, 0.3);
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .case-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .case-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .case-card:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .case-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .case-tag {
+      background: rgba(255, 215, 0, 0.3);
+      border: 1px solid #ffd700;
+      color: #ffd700;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .case-citation {
+      font-style: italic;
+      opacity: 0.9;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    .case-summary {
+      margin-bottom: 15px;
+      line-height: 1.7;
+    }
+
+    .case-impact {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #4ade80;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 4px;
+    }
+
+    .case-impact strong {
+      color: #4ade80;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    .search-box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 30px;
+      display: block;
+    }
+
+    .search-box::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .case-header {
+        flex-direction: column;
+      }
+
+      .filter-tabs {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚖️ Industry Case Law</h1>
+      <p class="subtitle">Legal precedents and compliance requirements</p>
+    </header>
+
+    <input
+      type="text"
+      class="search-box"
+      id="search-box"
+      placeholder="Search cases, regulations, or keywords..."
+    >
+
+    <div class="filter-tabs">
+      <button class="filter-btn active" data-filter="all">All Industries</button>
+      <button class="filter-btn" data-filter="crypto">Crypto</button>
+      <button class="filter-btn" data-filter="finance">Finance</button>
+      <button class="filter-btn" data-filter="healthcare">Healthcare</button>
+      <button class="filter-btn" data-filter="legal">Legal Services</button>
+      <button class="filter-btn" data-filter="education">Education</button>
+    </div>
+
+    <div class="case-grid" id="case-grid"></div>
+
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </div>
+
+  <script>
+    const caseLawDatabase = [
+      // CRYPTO
+      {
+        industry: 'crypto',
+        title: 'SEC v. Ripple Labs, Inc.',
+        citation: 'No. 20-cv-10832 (S.D.N.Y. 2023)',
+        year: 2023,
+        summary: 'Federal court ruled that XRP token sales to retail investors on exchanges were not securities offerings, while institutional sales were. Established important precedent for crypto asset classification.',
+        impact: 'CalOS Impact: When accepting crypto payments, distinguish between retail and institutional transactions. Retail crypto payments (via Coinbase Commerce) are less likely to be classified as securities.',
+        tags: ['Securities', 'Crypto', 'XRP']
+      },
+      {
+        industry: 'crypto',
+        title: 'Tornado Cash Sanctions (OFAC)',
+        citation: 'Treasury Department OFAC Sanctions (August 2022)',
+        year: 2022,
+        summary: 'U.S. Treasury sanctioned Tornado Cash, a cryptocurrency mixer, for facilitating money laundering. First time OFAC sanctioned a smart contract rather than individuals or entities.',
+        impact: 'CalOS Impact: Must implement sanctions screening for crypto wallet addresses. Block transactions from known mixer services. Maintain transaction logs for AML compliance.',
+        tags: ['AML', 'Sanctions', 'Smart Contracts']
+      },
+      {
+        industry: 'crypto',
+        title: 'Coinbase, Inc. v. Bielski',
+        citation: 'No. 22-105 (U.S. Supreme Court 2023)',
+        year: 2023,
+        summary: 'Supreme Court ruled on arbitration agreements in crypto user agreements. Upheld mandatory arbitration clauses but required clear disclosure.',
+        impact: 'CalOS Impact: Include clear arbitration clauses in Terms of Service for crypto payments. Users must explicitly consent before first transaction.',
+        tags: ['Arbitration', 'Terms of Service', 'User Agreements']
+      },
+
+      // FINANCE
+      {
+        industry: 'finance',
+        title: 'PCI-DSS v4.0 Standard',
+        citation: 'PCI Security Standards Council (March 2024)',
+        year: 2024,
+        summary: 'Updated Payment Card Industry Data Security Standard with stricter requirements for cloud storage, multi-factor authentication, and vulnerability management.',
+        impact: 'CalOS Impact: Never store card data locally. Use Stripe/PayPal APIs that are PCI-compliant. Implement MFA for admin access to payment systems.',
+        tags: ['PCI-DSS', 'Card Security', 'Compliance']
+      },
+      {
+        industry: 'finance',
+        title: 'Gramm-Leach-Bliley Act Privacy Rule',
+        citation: '15 U.S.C. § 6801–6809',
+        year: 1999,
+        summary: 'Requires financial institutions to explain information-sharing practices and protect sensitive data. Enforced by FTC and banking regulators.',
+        impact: 'CalOS Impact: If processing financial data, provide clear privacy policy explaining data sharing. Implement encryption for financial records. Offer opt-out for non-essential data sharing.',
+        tags: ['Privacy', 'Financial Data', 'GLBA']
+      },
+
+      // HEALTHCARE
+      {
+        industry: 'healthcare',
+        title: 'HIPAA Privacy Rule',
+        citation: '45 CFR Part 160 and Part 164',
+        year: 2003,
+        summary: 'Establishes national standards for protecting individually identifiable health information (Protected Health Information or PHI). Requires patient consent and strict access controls.',
+        impact: 'CalOS Impact: If handling health data, sign Business Associate Agreement (BAA) with all vendors. Encrypt PHI at rest and in transit. Maintain access logs. Provide breach notification within 60 days.',
+        tags: ['HIPAA', 'PHI', 'Privacy']
+      },
+      {
+        industry: 'healthcare',
+        title: 'HIPAA Security Rule',
+        citation: '45 CFR Part 164, Subpart C',
+        year: 2005,
+        summary: 'Requires administrative, physical, and technical safeguards for electronic PHI (ePHI). Mandates encryption, access controls, and audit trails.',
+        impact: 'CalOS Impact: Use AES-256 encryption for ePHI. Implement role-based access control (RBAC). Log all PHI access events. Conduct annual risk assessments.',
+        tags: ['HIPAA', 'Security', 'ePHI']
+      },
+      {
+        industry: 'healthcare',
+        title: 'HITECH Act',
+        citation: 'Health Information Technology for Economic and Clinical Health Act (2009)',
+        year: 2009,
+        summary: 'Strengthened HIPAA enforcement with stricter penalties and breach notification requirements. Extended HIPAA to business associates.',
+        impact: 'CalOS Impact: Business associates (like CalOS) are directly liable for HIPAA violations. Must provide breach notification to covered entities within 60 days. Penalties up to $1.5M per violation type per year.',
+        tags: ['HITECH', 'Breach Notification', 'Penalties']
+      },
+
+      // LEGAL SERVICES
+      {
+        industry: 'legal',
+        title: 'Attorney-Client Privilege (Upjohn v. United States)',
+        citation: '449 U.S. 383 (1981)',
+        year: 1981,
+        summary: 'Supreme Court established that attorney-client privilege extends to communications between corporate employees and corporate counsel, protecting confidential legal advice.',
+        impact: 'CalOS Impact: If serving legal industry, implement end-to-end encryption for all client communications. Do not log privileged communications. Provide metadata deletion on request.',
+        tags: ['Privilege', 'Confidentiality', 'Legal Ethics']
+      },
+      {
+        industry: 'legal',
+        title: 'ABA Model Rule 1.6 (Confidentiality)',
+        citation: 'ABA Model Rules of Professional Conduct',
+        year: 2002,
+        summary: 'Requires lawyers to protect client confidential information and prohibits disclosure without consent, except in limited circumstances.',
+        impact: 'CalOS Impact: Provide "attorney eyes only" access controls. Allow lawyers to mark documents as privileged. Implement document retention policies that comply with bar rules.',
+        tags: ['ABA Rules', 'Confidentiality', 'Professional Conduct']
+      },
+      {
+        industry: 'legal',
+        title: 'Legal Ethics Opinion 477R (Cloud Computing)',
+        citation: 'ABA Formal Opinion 477R (2017)',
+        year: 2017,
+        summary: 'Attorneys may use cloud storage but must ensure reasonable efforts to prevent unauthorized access, including encryption and vendor due diligence.',
+        impact: 'CalOS Impact: If legal firms use CalOS for cloud storage, provide encryption, access logs, and vendor security certifications (SOC 2). Allow firms to conduct security audits.',
+        tags: ['Cloud Storage', 'Legal Ethics', 'Due Diligence']
+      },
+
+      // EDUCATION
+      {
+        industry: 'education',
+        title: 'FERPA (Family Educational Rights and Privacy Act)',
+        citation: '20 U.S.C. § 1232g',
+        year: 1974,
+        summary: 'Protects privacy of student education records. Parents/eligible students have right to inspect records and control disclosure.',
+        impact: 'CalOS Impact: If serving educational institutions, do not disclose student records without written consent (except limited exceptions). Allow parents/students to access and amend their records.',
+        tags: ['FERPA', 'Student Privacy', 'Education']
+      },
+      {
+        industry: 'education',
+        title: 'COPPA (Children\'s Online Privacy Protection Act)',
+        citation: '15 U.S.C. §§ 6501–6506',
+        year: 1998,
+        summary: 'Requires parental consent before collecting personal information from children under 13. Enforced by FTC.',
+        impact: 'CalOS Impact: If users under 13, require verifiable parental consent before signup. Do not target advertising to children. Allow parents to review/delete child data.',
+        tags: ['COPPA', 'Children', 'Parental Consent']
+      },
+      {
+        industry: 'education',
+        title: 'Owasso Independent School District v. Falvo',
+        citation: '534 U.S. 426 (2002)',
+        year: 2002,
+        summary: 'Supreme Court ruled that peer grading does not violate FERPA because student graders are not acting as school representatives.',
+        impact: 'CalOS Impact: If building peer review systems for education, students can grade each other\'s work. However, final grade records maintained by school are still protected by FERPA.',
+        tags: ['FERPA', 'Peer Review', 'Supreme Court']
+      },
+
+      // GENERAL / PRIVACY
+      {
+        industry: 'all',
+        title: 'GDPR (General Data Protection Regulation)',
+        citation: 'EU Regulation 2016/679',
+        year: 2018,
+        summary: 'EU regulation establishing comprehensive data protection rights including right to access, right to be forgotten, and data portability.',
+        impact: 'CalOS Impact: If serving EU users, provide data export, deletion, and portability. Obtain explicit consent for data processing. Appoint Data Protection Officer if processing large-scale data.',
+        tags: ['GDPR', 'Privacy', 'EU']
+      },
+      {
+        industry: 'all',
+        title: 'CCPA (California Consumer Privacy Act)',
+        citation: 'California Civil Code § 1798.100 et seq.',
+        year: 2020,
+        summary: 'California law giving consumers rights to know what data is collected, delete data, and opt-out of data sales.',
+        impact: 'CalOS Impact: If serving California users, provide "Do Not Sell My Personal Information" option. Allow data deletion requests. Disclose data collection practices in privacy policy.',
+        tags: ['CCPA', 'Privacy', 'California']
+      },
+      {
+        industry: 'all',
+        title: 'Schrems II (Data Privacy Framework Invalidation)',
+        citation: 'Data Protection Commissioner v. Facebook Ireland (C-311/18)',
+        year: 2020,
+        summary: 'European Court of Justice invalidated EU-U.S. Privacy Shield for data transfers, citing inadequate protection against U.S. government surveillance.',
+        impact: 'CalOS Impact: Cannot rely on Privacy Shield for EU-U.S. data transfers. Use Standard Contractual Clauses (SCCs) and conduct transfer impact assessments. Consider EU data residency options.',
+        tags: ['GDPR', 'Data Transfers', 'Privacy Shield']
+      },
+
+      // GAMING / ESPORTS
+      {
+        industry: 'gaming',
+        title: 'FTC v. Epic Games (COPPA Violations)',
+        citation: 'FTC Case No. 2022-cv-01331 (2022)',
+        year: 2022,
+        summary: 'Epic Games fined $275M for COPPA violations in Fortnite, including default voice chat settings for children and dark patterns in purchases.',
+        impact: 'CalOS Impact: If building gaming features, disable voice chat by default for children. No dark patterns in purchases. Require parental consent for < 13.',
+        tags: ['COPPA', 'Gaming', 'FTC Enforcement']
+      },
+
+      // SAAS
+      {
+        industry: 'saas',
+        title: 'Van Buren v. United States',
+        citation: '593 U.S. ___ (2021)',
+        year: 2021,
+        summary: 'Supreme Court narrowed interpretation of Computer Fraud and Abuse Act (CFAA). "Exceeds authorized access" only applies to accessing data user is not entitled to, not violating terms of service.',
+        impact: 'CalOS Impact: Terms of service violations are not CFAA crimes. Cannot prosecute users for violating ToS alone. Focus on contract law, not criminal law.',
+        tags: ['CFAA', 'Terms of Service', 'Supreme Court']
+      },
+      {
+        industry: 'saas',
+        title: 'Oracle America, Inc. v. Google LLC',
+        citation: '593 U.S. ___ (2021)',
+        year: 2021,
+        summary: 'Supreme Court ruled that Google\'s use of Java API in Android was fair use, not copyright infringement.',
+        impact: 'CalOS Impact: API reimplementation may be fair use if transformative. Document original implementation for fair use defense. Consult legal counsel before cloning APIs.',
+        tags: ['API', 'Copyright', 'Fair Use']
+      }
+    ];
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    function renderCases() {
+      const grid = document.getElementById('case-grid');
+      let filtered = caseLawDatabase;
+
+      // Apply industry filter
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(c => c.industry === currentFilter || c.industry === 'all');
+      }
+
+      // Apply search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(c =>
+          c.title.toLowerCase().includes(query) ||
+          c.summary.toLowerCase().includes(query) ||
+          c.impact.toLowerCase().includes(query) ||
+          c.tags.some(tag => tag.toLowerCase().includes(query))
+        );
+      }
+
+      // Sort by year (newest first)
+      filtered.sort((a, b) => b.year - a.year);
+
+      // Render
+      grid.innerHTML = filtered.map(c => `
+        <div class="case-card">
+          <div class="case-header">
+            <div class="case-title">${c.title}</div>
+            <div class="case-tag">${c.industry === 'all' ? 'General' : c.industry.toUpperCase()}</div>
+          </div>
+          <div class="case-citation">${c.citation} (${c.year})</div>
+          <div class="case-summary">${c.summary}</div>
+          <div class="case-impact">
+            <strong>Impact on CalOS:</strong> ${c.impact}
+          </div>
+        </div>
+      `).join('');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; opacity: 0.7;">No cases found matching your search.</p>';
+      }
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderCases();
+      });
+    });
+
+    // Search
+    document.getElementById('search-box').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCases();
+    });
+
+    // Initial render
+    renderCases();
+
+    // Auto-select industry from URL hash
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        const btn = document.querySelector(`[data-filter="${hash}"]`);
+        if (btn) btn.click();
+      }
+    });
+  </script>
+</body>
+</html>
