@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cal Handoffs - Investigation System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: #161b22;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #30363d;
+    }
+    .header h1 { font-size: 1.5rem; font-weight: 600; }
+    .header p { color: #8b949e; margin-top: 0.25rem; }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Handoffs List */
+    .handoffs-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .handoff-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .handoff-card:hover {
+      border-color: #1f6feb;
+    }
+    .handoff-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.75rem;
+    }
+    .handoff-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    .handoff-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-needs-investigation { background: #58a6ff; color: #0d1117; }
+    .status-investigating { background: #f0883e; color: #0d1117; }
+    .status-complete { background: #3fb950; color: #0d1117; }
+    .handoff-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: #8b949e;
+      font-size: 0.875rem;
+    }
+    .handoff-meta span::before {
+      content: '•';
+      margin-right: 0.5rem;
+    }
+
+    /* Handoff Detail View */
+    .handoff-detail {
+      display: none;
+    }
+    .handoff-detail.active {
+      display: block;
+    }
+    .back-button {
+      background: #21262d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+    .back-button:hover {
+      background: #30363d;
+    }
+    .handoff-content {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .handoff-content h2 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #58a6ff;
+    }
+    .handoff-content h3 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #f0883e;
+    }
+    .handoff-content code {
+      background: #0d1117;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.875em;
+    }
+    .handoff-content pre {
+      background: #0d1117;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .handoff-content pre code {
+      background: none;
+      padding: 0;
+    }
+
+    /* Investigation Actions */
+    .investigation-actions {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #30363d;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #238636;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2ea043;
+    }
+    .btn-secondary {
+      background: #21262d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+    }
+    .btn-secondary:hover {
+      background: #30363d;
+    }
+
+    /* Investigation Log */
+    .investigation-log {
+      margin-top: 2rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.875rem;
+    }
+    .log-entry {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #161b22;
+    }
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    .log-timestamp {
+      color: #8b949e;
+      margin-right: 1rem;
+    }
+    .log-message {
+      color: #c9d1d9;
+    }
+
+    /* Loading Spinner */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #30363d;
+      border-top-color: #58a6ff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #8b949e;
+    }
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 Cal Handoffs</h1>
+    <p>Investigation and debugging system</p>
+  </div>
+
+  <div class="container">
+    <!-- Handoffs List View -->
+    <div id="handoffs-list-view">
+      <div class="handoffs-list" id="handoffs-list">
+        <!-- Dynamically populated -->
+      </div>
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state-icon">📭</div>
+        <h2>No handoffs yet</h2>
+        <p>Handoff reports will appear here when system errors are detected</p>
+      </div>
+    </div>
+
+    <!-- Handoff Detail View -->
+    <div id="handoff-detail-view" class="handoff-detail">
+      <button class="back-button" onclick="showHandoffsList()">← Back to handoffs</button>
+      <div class="handoff-content" id="handoff-content">
+        <!-- Dynamically populated -->
+      </div>
+      <div class="investigation-actions">
+        <h3>🔍 Investigation Actions</h3>
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="calInvestigate()">
+            Let Cal Investigate
+          </button>
+          <button class="btn btn-secondary" onclick="showMigrationStatus()">
+            Check Migrations
+          </button>
+          <button class="btn btn-secondary" onclick="viewCalFindings()">
+            View Cal's Findings
+          </button>
+        </div>
+        <div id="investigation-log" class="investigation-log" style="display: none;">
+          <!-- Investigation logs appear here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-detect API base URL (localhost vs production)
+    const API_BASE_URL = window.location.hostname === 'localhost'
+      ? 'http://localhost:5001'
+      : 'https://soulfra.com'; // TODO: Replace with your production server URL
+
+    let currentHandoffId = null;
+
+    // Load handoffs list on page load
+    window.addEventListener('load', async () => {
+      await loadHandoffs();
+    });
+
+    // Load all handoffs
+    async function loadHandoffs() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/cal-handoffs?userEmail=matt@soulfra.com`);
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          renderHandoffs(data);
+        } else {
+          document.getElementById('empty-state').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Failed to load handoffs:', error);
+      }
+    }
+
+    // Render handoffs list
+    function renderHandoffs(handoffs) {
+      const listEl = document.getElementById('handoffs-list');
+      listEl.innerHTML = handoffs.map(h => {
+        const statusClass = getStatusClass(h.status);
+        const createdDate = new Date(h.createdAt || Date.now()).toLocaleString();
+        return `
+          <div class="handoff-card" onclick="viewHandoff('${h.sessionId}')">
+            <div class="handoff-header">
+              <div class="handoff-title">${h.stuckOn || h.sessionId}</div>
+              <div class="handoff-status ${statusClass}">${h.status}</div>
+            </div>
+            <div class="handoff-meta">
+              <span>${createdDate}</span>
+              <span>From: ${h.userEmail}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Get status CSS class
+    function getStatusClass(status) {
+      if (status.includes('Needs Investigation')) return 'status-needs-investigation';
+      if (status.includes('Investigating')) return 'status-investigating';
+      if (status.includes('Complete')) return 'status-complete';
+      return 'status-needs-investigation';
+    }
+
+    // View handoff detail
+    async function viewHandoff(sessionId) {
+      currentHandoffId = sessionId;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/cal-handoffs/${sessionId}?userEmail=matt@soulfra.com`);
+        const data = await response.json();
+
+        // Format handoff content for display
+        let htmlContent = `
+          <h2>🚨 Handoff from Cal</h2>
+          <p><strong>Session:</strong> ${data.sessionId}</p>
+          <p><strong>User:</strong> ${data.userEmail}</p>
+          <p><strong>Status:</strong> ${data.status}</p>
+          <p><strong>Created:</strong> ${new Date(data.createdAt).toLocaleString()}</p>
+
+          <h2>❌ Stuck On:</h2>
+          <p>${data.stuckOn}</p>
+
+          <h2>📝 Conversation:</h2>
+          <pre>${JSON.stringify(data.conversation, null, 2)}</pre>
+
+          <h2>✅ TODOs:</h2>
+          <pre>${JSON.stringify(data.todos, null, 2)}</pre>
+
+          <h2>💻 Snippets:</h2>
+          <pre>${JSON.stringify(data.snippets, null, 2)}</pre>
+
+          <h2>🐛 Debug Report:</h2>
+          <pre>${JSON.stringify(data.debugReport, null, 2)}</pre>
+        `;
+
+        if (data.claudeResponse) {
+          htmlContent += `
+            <h2>✨ Claude's Response:</h2>
+            <pre>${JSON.stringify(data.claudeResponse, null, 2)}</pre>
+          `;
+        }
+
+        if (data.testResults) {
+          htmlContent += `
+            <h2>🧪 Test Results:</h2>
+            <pre>${JSON.stringify(data.testResults, null, 2)}</pre>
+          `;
+        }
+
+        document.getElementById('handoff-content').innerHTML = htmlContent;
+        document.getElementById('handoffs-list-view').style.display = 'none';
+        document.getElementById('handoff-detail-view').classList.add('active');
+      } catch (error) {
+        console.error('Failed to load handoff:', error);
+        alert('Failed to load handoff: ' + error.message);
+      }
+    }
+
+    // Show handoffs list
+    function showHandoffsList() {
+      document.getElementById('handoffs-list-view').style.display = 'block';
+      document.getElementById('handoff-detail-view').classList.remove('active');
+      currentHandoffId = null;
+    }
+
+    // Cal investigates the handoff
+    async function calInvestigate() {
+      if (!currentHandoffId) return;
+
+      const logEl = document.getElementById('investigation-log');
+      logEl.style.display = 'block';
+      logEl.innerHTML = '<div class="log-entry"><span class="log-timestamp">Starting...</span><span class="log-message">Cal is investigating this handoff <span class="loading"></span></span></div>';
+
+      // Simulate Cal's investigation process
+      addLog('Reading handoff report...');
+      await sleep(1000);
+
+      addLog('Searching codebase for related code...');
+      await sleep(1500);
+
+      try {
+        // Trigger Cal's investigation API
+        const response = await fetch(`${API_BASE_URL}/api/cal/investigate/${currentHandoffId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: 'search for errors mentioned in handoff',
+            userId: 'cal'
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          addLog(`Found ${data.investigation.results.matches.length} matches in codebase`);
+          addLog('Writing findings...');
+          await sleep(1000);
+          addLog('✅ Investigation complete! Cal has written his findings.');
+        } else {
+          addLog('❌ Investigation failed: ' + data.error);
+        }
+      } catch (error) {
+        addLog('❌ Error: ' + error.message);
+      }
+    }
+
+    // Show migration status
+    async function showMigrationStatus() {
+      const logEl = document.getElementById('investigation-log');
+      logEl.style.display = 'block';
+      logEl.innerHTML = '<div class="log-entry"><span class="log-message">Checking migrations <span class="loading"></span></span></div>';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/cal/migrations/status`);
+        const data = await response.json();
+
+        if (data.success) {
+          logEl.innerHTML = '';
+          addLog(`📊 Migration Status:`);
+          addLog(`   Total: ${data.migrations.total}`);
+          addLog(`   Applied: ${data.migrations.applied}`);
+          addLog(`   Pending: ${data.migrations.pending}`);
+
+          if (data.migrations.pending > 0) {
+            addLog('');
+            addLog('⚠️  Pending migrations need to be applied:');
+            data.migrations.details
+              .filter(m => !m.applied)
+              .slice(0, 10)
+              .forEach(m => {
+                addLog(`   - ${m.filename}`);
+              });
+          }
+        }
+      } catch (error) {
+        addLog('❌ Error: ' + error.message);
+      }
+    }
+
+    // View Cal's findings
+    async function viewCalFindings() {
+      const logEl = document.getElementById('investigation-log');
+      logEl.style.display = 'block';
+      logEl.innerHTML = '<div class="log-entry"><span class="log-message">Loading Cal\'s findings <span class="loading"></span></span></div>';
+
+      addLog('🔍 Cal\'s Findings:');
+      addLog('');
+      addLog('This feature is coming soon!');
+      addLog('Cal will write his investigation findings here.');
+    }
+
+    // Add log entry
+    function addLog(message) {
+      const logEl = document.getElementById('investigation-log');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-timestamp">${new Date().toLocaleTimeString()}</span>
+        <span class="log-message">${message}</span>
+      `;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // Convert markdown to HTML (basic)
+    function convertMarkdownToHTML(markdown) {
+      let html = markdown;
+
+      // Code blocks
+      html = html.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>');
+
+      // Inline code
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      // Headers
+      html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+      // Bold
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+      // Line breaks
+      html = html.replace(/\n/g, '<br>');
+
+      return html;
+    }
+
+    // Sleep helper
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  </script>
+</body>
+</html>
