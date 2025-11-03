@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CALOS Launcher</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#667eea">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    
+.launcher-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #1a1a2e;
+  color: white;
+  padding: 20px;
+}
+
+.launcher-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.launcher-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.launcher-subtitle {
+  font-size: 1.2em;
+  color: #999;
+}
+
+.launcher-grid {
+  display: grid;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.launcher-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #667eea;
+}
+
+.launcher-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.launcher-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.launcher-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #667eea;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.card-icon {
+  font-size: 3em;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 0.9em;
+  color: #999;
+}
+
+.launcher-status {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-item {
+  display: flex;
+  gap: 10px;
+}
+
+.status-label {
+  color: #999;
+}
+
+.status-value {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .launcher-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .launcher-status {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  
+<div class="launcher-container">
+  <div class="launcher-header">
+    <h1 class="launcher-title">CALOS Launcher</h1>
+    <p class="launcher-subtitle">Select what you want to access</p>
+  </div>
+
+  <div class="launcher-grid">
+    <!-- Login Section -->
+    <div class="launcher-section">
+      <h2 class="section-title">🔐 Login Systems</h2>
+      <div class="launcher-cards">
+        <div class="launcher-card" data-action="qr-login">
+          <div class="card-icon">📱</div>
+          <div class="card-title">QR Login</div>
+          <div class="card-desc">Scan to authenticate</div>
+        </div>
+        <div class="launcher-card" data-action="oauth-login">
+          <div class="card-icon">🔑</div>
+          <div class="card-title">OAuth Login</div>
+          <div class="card-desc">GitHub, Google, Discord</div>
+        </div>
+        <div class="launcher-card" data-action="voice-login">
+          <div class="card-icon">🎤</div>
+          <div class="card-title">Voice Login</div>
+          <div class="card-desc">Speak to authenticate</div>
+        </div>
+        <div class="launcher-card" data-action="passkey-login">
+          <div class="card-icon">🔐</div>
+          <div class="card-title">Passkey Login</div>
+          <div class="card-desc">Biometric auth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="launcher-section">
+      <h2 class="section-title">💬 Chat Interfaces</h2>
+      <div class="launcher-cards">
+        <div class="launcher-card" data-action="cal-chat">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">Cal Chat</div>
+          <div class="card-desc">Talk with Cal AI</div>
+        </div>
+        <div class="launcher-card" data-action="team-chat">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Team Chat</div>
+          <div class="card-desc">Trillian-style interface</div>
+        </div>
+        <div class="launcher-card" data-action="notebook-chat">
+          <div class="card-icon">📓</div>
+          <div class="card-title">Notebook Chat</div>
+          <div class="card-desc">Code notebook + chat</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mascot Section -->
+    <div class="launcher-section">
+      <h2 class="section-title">🎭 Mascot Systems</h2>
+      <div class="launcher-cards">
+        <div class="launcher-card" data-action="mascot-dashboard">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">ThunderBug</div>
+          <div class="card-desc">Tampa Bay Lightning mascot</div>
+        </div>
+        <div class="launcher-card" data-action="character-builder">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">Character Builder</div>
+          <div class="card-desc">Create your character</div>
+        </div>
+        <div class="launcher-card" data-action="mascot-story">
+          <div class="card-icon">📖</div>
+          <div class="card-title">Story Progression</div>
+          <div class="card-desc">Interactive storytelling</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Games Section -->
+    <div class="launcher-section">
+      <h2 class="section-title">🎮 Games</h2>
+      <div class="launcher-cards">
+        <div class="launcher-card" data-action="album-game">
+          <div class="card-icon">🎵</div>
+          <div class="card-title">Album Player</div>
+          <div class="card-desc">Music game interface</div>
+        </div>
+        <div class="launcher-card" data-action="swipe-game">
+          <div class="card-icon">👆</div>
+          <div class="card-title">Swipe Game</div>
+          <div class="card-desc">Card-based gameplay</div>
+        </div>
+        <div class="launcher-card" data-action="terminal-game">
+          <div class="card-icon">⌨️</div>
+          <div class="card-title">Terminal Game</div>
+          <div class="card-desc">Roguelike adventure</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyring Section (if enabled) -->
+    
+  </div>
+
+  <!-- Status Bar -->
+  <div class="launcher-status">
+    <div class="status-item">
+      <span class="status-label">Status:</span>
+      <span class="status-value" id="launcher-status">Ready</span>
+    </div>
+    
+    <div class="status-item">
+      <span class="status-label">Mode:</span>
+      <span class="status-value">Offline-first</span>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    
+// Launcher state
+const launcherState = {
+  currentView: 'launcher',
+  loggedIn: false,
+  characterId: null,
+  keyringConnected: false
+};
+
+// Load launcher state from localStorage
+function loadLauncherState() {
+  const saved = localStorage.getItem('launcher_state');
+  if (saved) {
+    Object.assign(launcherState, JSON.parse(saved));
+    updateStatusBar();
+  }
+}
+
+// Save launcher state
+function saveLauncherState() {
+  localStorage.setItem('launcher_state', JSON.stringify(launcherState));
+}
+
+// Update status bar
+function updateStatusBar() {
+  const statusEl = document.getElementById('launcher-status');
+  if (statusEl) {
+    statusEl.textContent = launcherState.loggedIn ? 'Logged in' : 'Ready';
+    statusEl.style.color = launcherState.loggedIn ? '#4CAF50' : '#999';
+  }
+
+  
+}
+
+// Handle card clicks
+function handleCardClick(action) {
+  console.log('Launcher action:', action);
+
+  switch (action) {
+    // Login actions
+    case 'qr-login':
+      window.location.href = '../qr-mobile-login.html';
+      break;
+    case 'oauth-login':
+      window.location.href = '../oauth-login.html';
+      break;
+    case 'voice-login':
+      window.location.href = '../voice-login.html';
+      break;
+    case 'passkey-login':
+      alert('Passkey login coming soon!');
+      break;
+
+    // Chat actions
+    case 'cal-chat':
+      window.location.href = '../chat/index.html';
+      break;
+    case 'team-chat':
+      window.location.href = '../cal-chat-trillian-style.html';
+      break;
+    case 'notebook-chat':
+      window.location.href = '../notebook-chat.html';
+      break;
+
+    // Mascot actions
+    case 'mascot-dashboard':
+      window.location.href = '../mascot-dashboard.html';
+      break;
+    case 'character-builder':
+      alert('Character builder coming soon!');
+      break;
+    case 'mascot-story':
+      alert('Story progression coming soon!');
+      break;
+
+    // Game actions
+    case 'album-game':
+      window.location.href = '../game/index.html';
+      break;
+    case 'swipe-game':
+      window.location.href = '../swipe/index.html';
+      break;
+    case 'terminal-game':
+      alert('Terminal game coming soon!');
+      break;
+
+    // Keyring actions
+    
+
+    default:
+      console.log('Unknown action:', action);
+  }
+}
+
+
+
+// Initialize launcher
+document.addEventListener('DOMContentLoaded', () => {
+  loadLauncherState();
+
+  // Attach click handlers
+  document.querySelectorAll('.launcher-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const action = card.dataset.action;
+      handleCardClick(action);
+    });
+  });
+
+  console.log('✓ Launcher initialized');
+  console.log('✓ State:', launcherState);
+});
+
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('✓ Service worker registered'))
+          .catch(err => console.log('✗ Service worker registration failed:', err));
+      });
+    }
+
+    console.log('✓ Launcher PWA loaded');
+    console.log('✓ Offline mode active');
+    console.log('✓ PWA installable');
+  </script>
+</body>
+</html>
