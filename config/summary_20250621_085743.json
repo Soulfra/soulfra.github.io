@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "format_version": "1.0",
+    "system": "soulfra_max",
+    "timestamp": "2025-06-21T08:57:43.953595",
+    "encoding": "utf-8"
+  },
+  "system_state": {
+    "operational": true,
+    "services": {
+      "Master Orchestrator": {
+        "port": 8000,
+        "endpoint": "http://localhost:8000",
+        "healthy": true
+      },
+      "Chatlog Processor": {
+        "port": 8888,
+        "endpoint": "http://localhost:8888",
+        "healthy": true
+      },
+      "AI Ecosystem": {
+        "port": 9999,
+        "endpoint": "http://localhost:9999",
+        "healthy": true
+      },
+      "Empire Builder": {
+        "port": 8181,
+        "endpoint": "http://localhost:8181",
+        "healthy": true
+      }
+    }
+  },
+  "capabilities": {
+    "chat_processing": {
+      "formats": [
+        "Discord",
+        "Slack",
+        "WhatsApp",
+        "Telegram"
+      ],
+      "output": [
+        "Markdown",
+        "PDF",
+        "JSON",
+        "API"
+      ],
+      "monetization": "$9.99 per export"
+    },
+    "ai_services": {
+      "agents": [
+        "Domingo",
+        "CAL"
+      ],
+      "features": [
+        "Context understanding",
+        "Code generation",
+        "Analysis"
+      ],
+      "pricing": "100 credits = $1"
+    },
+    "idea_processing": {
+      "input": "Any text idea",
+      "output": "Complete business structure",
+      "value": "Billion-dollar potential"
+    }
+  },
+  "api_schema": {
+    "base_url": "http://localhost:8000",
+    "endpoints": [
+      {
+        "path": "/api/process",
+        "method": "POST",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "chatlog",
+                "idea",
+                "code"
+              ]
+            },
+            "data": {
+              "type": "string"
+            },
+            "options": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "type",
+            "data"
+          ]
+        },
+        "output_schema": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            },
+            "result": {
+              "type": "object"
+            },
+            "metadata": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "integration_code": {
+    "python": "\nclass YourPlugin:\n    def process(self, data):\n        return enhanced_data\n        \nsoulfra.register_plugin('yours', YourPlugin())\n",
+    "javascript": "\nconst soulfra = new SoulfraClient({\n    endpoint: 'http://localhost:8000'\n});\n\nconst result = await soulfra.process({\n    type: 'chatlog',\n    data: yourData\n});\n",
+    "curl": "\ncurl -X POST http://localhost:8000/api/process \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"type\":\"chatlog\",\"data\":\"your_data\"}'\n"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "op-1750167478787-0ecdeb09",
+  "type": "insert",
+  "path": "automation_1.json",
+  "data": "7f6ad29f840ca8bb7bdc6c863e58e73bc77f0a7d8e6fa4995e09e2e8b5e042e499d050e7081569ef5432e72af862ad7e",
+  "metadata": {},
+  "timestamp": 1750167478787,
+  "author": "shell-1750167477777-ffe317e1073c6ec5",
+  "checksum": "38a1da0a911c7c3587bcec4b2882dab48b91d9cce691b2f7b6e912b3cfd78339",
+  "encrypted": true
+}

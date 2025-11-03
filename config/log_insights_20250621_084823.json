@@ -1,0 +1,21 @@
+{
+  "total_files": 39,
+  "total_lines": 4107,
+  "errors_found": 414,
+  "important_patterns": {
+    "timestamp": 3012,
+    "file_path": 1474,
+    "ip_address": 1013,
+    "function_call": 52,
+    "url": 11,
+    "port_number": 11
+  },
+  "insights": [
+    "\u26a0\ufe0f  Most common error: general_error (217 occurrences)",
+    "\ud83d\udd0c Found 193 API errors - check API keys and endpoints",
+    "\ud83d\udccd Total errors found: 414"
+  ],
+  "recommendations": [
+    "\ud83d\udea8 High error rate detected - prioritize debugging"
+  ]
+}

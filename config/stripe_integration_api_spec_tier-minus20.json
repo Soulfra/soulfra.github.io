@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Real Stripe Payment Processing",
+    "version": "1.0.0",
+    "description": "Handle actual money transactions"
+  },
+  "servers": [
+    {
+      "url": "https://api.soulfra.com",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:4000",
+      "description": "Development"
+    }
+  ],
+  "paths": {
+    "/stripe/purchase": {
+      "post": {
+        "summary": "Buy credits with real money",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stripe/payout": {
+      "post": {
+        "summary": "Pay creators their share",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stripe/subscription": {
+      "post": {
+        "summary": "Enterprise subscriptions",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stripe/webhook": {
+      "post": {
+        "summary": "Handle Stripe events",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

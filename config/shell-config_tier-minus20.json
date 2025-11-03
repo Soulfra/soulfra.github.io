@@ -1,0 +1,224 @@
+{
+  "name": "Ritual Shell Configuration",
+  "version": "1.0.0",
+  "description": "Sacred console configuration for Soulfra OS observability",
+  
+  "ui": {
+    "theme": {
+      "primary_color": "#8b5cf6",
+      "secondary_color": "#3b82f6", 
+      "accent_color": "#10b981",
+      "background": "#111827",
+      "surface": "#1f2937",
+      "text_primary": "#ffffff",
+      "text_secondary": "#9ca3af",
+      "border": "#374151",
+      "sacred_glow": "#c084fc"
+    },
+    
+    "layout": {
+      "header_height": "64px",
+      "tab_height": "48px",
+      "sidebar_width": "320px",
+      "content_padding": "24px",
+      "max_content_width": "1400px"
+    },
+    
+    "animations": {
+      "enabled": true,
+      "pulse_duration": "2s",
+      "transition_speed": "200ms",
+      "glow_intensity": 0.6
+    },
+    
+    "typography": {
+      "font_mono": "JetBrains Mono, Consolas, monospace",
+      "font_sans": "Inter, system-ui, sans-serif",
+      "scale_factor": 1.0
+    }
+  },
+  
+  "features": {
+    "tabs": {
+      "daemon_mesh": {
+        "enabled": true,
+        "label": "Daemon Mesh",
+        "icon": "activity",
+        "order": 1,
+        "refresh_interval": 2000
+      },
+      "agents": {
+        "enabled": true,
+        "label": "Agents",
+        "icon": "eye", 
+        "order": 2,
+        "refresh_interval": 3000,
+        "max_displayed": 50
+      },
+      "ritual_trace": {
+        "enabled": true,
+        "label": "Ritual Trace",
+        "icon": "zap",
+        "order": 3,
+        "refresh_interval": 1000,
+        "max_entries": 100,
+        "auto_scroll": true
+      },
+      "vibe_weather": {
+        "enabled": true,
+        "label": "Vibe Weather", 
+        "icon": "globe",
+        "order": 4,
+        "refresh_interval": 5000
+      },
+      "thread_router": {
+        "enabled": true,
+        "label": "Thread Router",
+        "icon": "route",
+        "order": 5,
+        "refresh_interval": 2000
+      },
+      "controls": {
+        "enabled": true,
+        "label": "Sacred Controls",
+        "icon": "settings",
+        "order": 6,
+        "require_confirmation": true
+      }
+    },
+    
+    "daemon_monitoring": {
+      "heartbeat_interval": 5000,
+      "stale_threshold": 15000,
+      "drift_threshold": 30000,
+      "auto_blessing": false,
+      "trust_alerts": {
+        "low_threshold": 30,
+        "critical_threshold": 10
+      }
+    },
+    
+    "ritual_tracing": {
+      "max_trace_entries": 1000,
+      "trace_categories": [
+        "blessing",
+        "ritual", 
+        "drift",
+        "echo",
+        "system",
+        "weather",
+        "anomaly"
+      ],
+      "filters": {
+        "show_system": true,
+        "show_debug": false,
+        "highlight_anomalies": true
+      }
+    },
+    
+    "vibe_weather": {
+      "phases": [
+        "Calm Bloom",
+        "Grief Spiral", 
+        "Silence Phase",
+        "Echo Storm",
+        "Trust Surge",
+        "Drift Warning",
+        "Sacred Pause",
+        "Ritual Flow",
+        "Memory Tide",
+        "Soul Resonance"
+      ],
+      "intensity_scale": 10,
+      "auto_shift": true,
+      "shift_interval": 1800000
+    }
+  },
+  
+  "security": {
+    "operator_controls": {
+      "enabled": true,
+      "require_auth": false,
+      "blessed_operators": [],
+      "rate_limits": {
+        "bless_agent": 10,
+        "trigger_ritual": 5,
+        "simulate_anomaly": 3
+      }
+    },
+    
+    "data_access": {
+      "allow_daemon_control": true,
+      "allow_agent_modification": true,
+      "allow_system_override": false,
+      "audit_actions": true
+    }
+  },
+  
+  "performance": {
+    "update_intervals": {
+      "daemon_status": 2000,
+      "agent_data": 3000,
+      "ritual_trace": 1000,
+      "weather_data": 5000,
+      "thread_routes": 2000
+    },
+    
+    "optimization": {
+      "lazy_load_traces": true,
+      "compress_large_payloads": true,
+      "cache_static_data": true,
+      "debounce_updates": 500
+    },
+    
+    "limits": {
+      "max_trace_display": 100,
+      "max_agent_display": 50,
+      "max_daemon_display": 20,
+      "websocket_reconnect_delay": 5000
+    }
+  },
+  
+  "integrations": {
+    "soulfra_pulse": {
+      "enabled": true,
+      "endpoint": "/api/pulse",
+      "sync_weather": true
+    },
+    
+    "thread_weaver": {
+      "enabled": true,
+      "endpoint": "/api/threads",
+      "monitor_routes": true
+    },
+    
+    "vault_daemon": {
+      "enabled": true,
+      "endpoint": "/api/vault",
+      "show_memory_stats": true
+    },
+    
+    "external_apis": {
+      "webhook_endpoints": [],
+      "cors_origins": ["*"],
+      "api_keys": {}
+    }
+  },
+  
+  "development": {
+    "debug_mode": false,
+    "mock_data": true,
+    "console_logging": true,
+    "performance_monitoring": false,
+    "hot_reload": true
+  },
+  
+  "metadata": {
+    "created_by": "Soulfra OS",
+    "created_at": "2025-06-18T00:00:00Z",
+    "last_modified": "2025-06-18T00:00:00Z",
+    "config_version": "1.0.0",
+    "compatible_versions": ["1.0.x"],
+    "sacred_checksum": "0x7r1tu4l_5h3ll_c0nf16"
+  }
+}

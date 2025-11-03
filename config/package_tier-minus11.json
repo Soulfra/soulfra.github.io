@@ -1,0 +1,15 @@
+{
+  "name": "soulfra-ecosystem",
+  "version": "1.0.0",
+  "description": "The platform that eats platforms",
+  "main": "MASTER-LAUNCH.sh",
+  "scripts": {
+    "start": "./MASTER-LAUNCH.sh",
+    "heal": "node debug-orchestrator/self-healing-debug.js",
+    "test": "node debug-orchestrator/end-to-end-test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "ws": "^8.0.0"
+  }
+}

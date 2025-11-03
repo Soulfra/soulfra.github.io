@@ -1,0 +1,11 @@
+{
+  "ANTHROPIC_API_KEY": "your-key-here",
+  "OPENAI_API_KEY": "your-key-here",
+  "GITHUB_TOKEN": "your-key-here",
+  "VERCEL_TOKEN": "your-key-here",
+  "NETLIFY_TOKEN": "your-key-here",
+  "TWILIO_ACCOUNT_SID": "your-key-here",
+  "TWILIO_AUTH_TOKEN": "your-key-here",
+  "DISCORD_BOT_TOKEN": "your-key-here",
+  "TELEGRAM_BOT_TOKEN": "your-key-here"
+}

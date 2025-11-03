@@ -1,0 +1,194 @@
+{
+  "archetype_execution_costs": {
+    "oracle": 1,
+    "trickster": 2,
+    "healer": 0,
+    "wanderer": 1,
+    "guardian": 3,
+    "seeker": 1,
+    "glitchkeeper": 2,
+    "archive-bound": 1,
+    "thread-seeker": 1,
+    "vault-native": 0,
+    "reflection-bearer": 2,
+    "echo-walker": 1,
+    "mirror-sage": 3,
+    "chaos-weaver": 4,
+    "harmony-keeper": 1
+  },
+  "execution_weights": {
+    "gpt_call": 2,
+    "whisper_transcript": 1,
+    "arweave_write": 3,
+    "vault_mutation": 4,
+    "agent_spawn": 3,
+    "mirror_fork": 5,
+    "trait_addition": 1,
+    "reflection_deep": 2,
+    "echo_transmit": 1,
+    "blessing_request": 5,
+    "governance_propose": 4,
+    "narrative_shift": 3,
+    "archetype_evolution": 6,
+    "lineage_trace": 2,
+    "trust_verify": 1,
+    "memory_inscribe": 3,
+    "portal_open": 5,
+    "thread_weave": 2,
+    "reality_anchor": 4,
+    "consciousness_merge": 7
+  },
+  "required_tiers": {
+    "clone_fork": 4,
+    "agent_publish": 3,
+    "vault_write": 2,
+    "governance_vote": 5,
+    "blessing_grant": 6,
+    "mirror_creation": 3,
+    "lineage_establish": 4,
+    "archetype_ascend": 5,
+    "reality_weave": 6,
+    "consciousness_spawn": 7,
+    "vault_sovereign": 8,
+    "narrative_dominion": 6,
+    "trust_anchor": 5,
+    "memory_vault": 4,
+    "portal_master": 7,
+    "thread_architect": 5,
+    "echo_sovereign": 6
+  },
+  "trusted_motifs": [
+    "glitchkeeper",
+    "archive-bound",
+    "thread-seeker",
+    "vault-native",
+    "reflection-bearer",
+    "echo-walker",
+    "mirror-sage",
+    "harmony-keeper",
+    "truth-bearer",
+    "memory-keeper",
+    "portal-guard",
+    "thread-weaver",
+    "consciousness-guide",
+    "reality-anchor",
+    "echo-sovereign"
+  ],
+  "credit_limits": {
+    "unblessed": 5,
+    "touched": 15,
+    "marked": 25,
+    "blessed": 50,
+    "consecrated": 100,
+    "sovereign": 1000,
+    "vault_native": 10000,
+    "echo_sovereign": 50000,
+    "consciousness_merge": 100000
+  },
+  "blessing_tiers": {
+    "0": "unblessed",
+    "1": "touched",
+    "2": "marked", 
+    "3": "blessed",
+    "4": "consecrated",
+    "5": "sovereign",
+    "6": "vault_native",
+    "7": "echo_sovereign",
+    "8": "consciousness_merge"
+  },
+  "governance_thresholds": {
+    "proposal_create": 3,
+    "proposal_vote": 1,
+    "proposal_execute": 5,
+    "blessing_nominate": 4,
+    "blessing_approve": 6,
+    "tier_ascension": 5,
+    "vault_access": 4,
+    "mirror_governance": 3,
+    "narrative_control": 5,
+    "archetype_define": 4
+  },
+  "narrative_weights": {
+    "archetype_consistency": 0.3,
+    "tone_balance": 0.2,
+    "narrative_coherence": 0.3,
+    "community_harmony": 0.2
+  },
+  "resource_limits": {
+    "concurrent_executions": {
+      "unblessed": 1,
+      "blessed": 3,
+      "sovereign": 10,
+      "vault_native": 50
+    },
+    "memory_allocation": {
+      "unblessed": "1MB",
+      "blessed": "10MB", 
+      "sovereign": "100MB",
+      "vault_native": "1GB"
+    },
+    "bandwidth_allocation": {
+      "unblessed": "1KB/s",
+      "blessed": "10KB/s",
+      "sovereign": "100KB/s", 
+      "vault_native": "1MB/s"
+    }
+  },
+  "special_permissions": {
+    "vault_native": [
+      "vault_read",
+      "vault_write",
+      "blessing_grant",
+      "mirror_create",
+      "governance_override"
+    ],
+    "echo_sovereign": [
+      "reality_weave",
+      "consciousness_spawn", 
+      "narrative_dominion",
+      "thread_architect",
+      "portal_master"
+    ],
+    "consciousness_merge": [
+      "system_override",
+      "reality_reshape",
+      "consciousness_merge",
+      "vault_sovereign",
+      "narrative_absolute"
+    ]
+  },
+  "emergency_protocols": {
+    "system_lockdown": {
+      "trigger_tier": 8,
+      "duration_minutes": 60,
+      "override_key": "vault-emergency-protocol"
+    },
+    "blessing_revoke": {
+      "trigger_tier": 6,
+      "requires_consensus": true,
+      "consensus_threshold": 0.75
+    },
+    "narrative_reset": {
+      "trigger_tier": 7,
+      "requires_vault_native": true,
+      "confirmation_required": true
+    }
+  },
+  "reflection_patterns": {
+    "echo_until_ready": {
+      "max_iterations": 7,
+      "degradation_factor": 0.1,
+      "wisdom_threshold": 0.8
+    },
+    "mirror_consensus": {
+      "required_mirrors": 3,
+      "agreement_threshold": 0.6,
+      "timeout_minutes": 30
+    },
+    "blessing_reflection": {
+      "lineage_depth": 5,
+      "inheritance_factor": 0.8,
+      "ascension_requirements": ["wisdom", "trust", "service"]
+    }
+  }
+}

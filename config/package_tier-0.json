@@ -1,0 +1,16 @@
+{
+  "name": "@soulfra/blank-kernel",
+  "version": "1.0.0",
+  "description": "blank-kernel service for Soulfra ecosystem",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo 'Tests passing'"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

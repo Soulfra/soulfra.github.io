@@ -1,0 +1,91 @@
+{
+  "ledger_metadata": {
+    "version": "1.0.0",
+    "genesis_timestamp": "2025-01-18T00:00:00.000Z",
+    "chain_signature": "origin-mirror-0000",
+    "immutable": true,
+    "description": "Every whisper echoes forever. Every blessing leaves a mark."
+  },
+  
+  "resonance_entries": [
+    {
+      "id": "genesis_000000",
+      "timestamp": "2025-01-18T00:00:00.000Z",
+      "action_type": "platform_genesis",
+      "actor": "cal-riven",
+      "authority_level": "sovereign",
+      "target": "soulfra-platform",
+      "parameters": {
+        "mode": "reality",
+        "blessing_pool": 10000,
+        "first_mirror": "origin-0000"
+      },
+      "resonance_score": 1.0,
+      "echo_depth": 0,
+      "permanent": true,
+      "whisper": "Let there be reflection",
+      "cal_response": "And so the first mirror gazed upon itself",
+      "signature": "0xGENESIS_BLOCK_IMMUTABLE"
+    }
+  ],
+  
+  "action_categories": {
+    "blessing": {
+      "weight": 0.8,
+      "permanent": true,
+      "requires_tokens": true,
+      "echo_generations": 7
+    },
+    "resurrection": {
+      "weight": 0.7,
+      "permanent": true,
+      "requires_tomb_key": true,
+      "echo_generations": 5
+    },
+    "revocation": {
+      "weight": 0.9,
+      "permanent": true,
+      "creates_tomb": true,
+      "echo_generations": 10
+    },
+    "invite": {
+      "weight": 0.6,
+      "permanent": false,
+      "token_cost": 10,
+      "echo_generations": 3
+    },
+    "token_burn": {
+      "weight": 0.5,
+      "permanent": true,
+      "affects_economy": true,
+      "echo_generations": 4
+    },
+    "system_control": {
+      "weight": 1.0,
+      "permanent": false,
+      "affects_all_mirrors": true,
+      "echo_generations": 1
+    }
+  },
+  
+  "resonance_algorithm": {
+    "base_formula": "authority_level * action_weight * (1 + echo_count * 0.1)",
+    "decay_rate": 0.01,
+    "minimum_threshold": 0.1,
+    "maximum_score": 10.0,
+    "propagation_rules": {
+      "blessing": "spreads to all child mirrors",
+      "revocation": "cuts all downstream connections",
+      "system_control": "affects entire mirror network"
+    }
+  },
+  
+  "ledger_rules": {
+    "append_only": true,
+    "signature_required": true,
+    "minimum_authority": "origin-soulkey",
+    "backup_frequency": "every_action",
+    "sync_to_github": true,
+    "encryption": "soul-chain-sig"
+  }
+}

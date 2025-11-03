@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="c9399a6f-7ca3-4f8f-8094-5e6838cfc101"
+LABEL site.domain="c9399a6f.familyhub.app"
+LABEL site.type="social"

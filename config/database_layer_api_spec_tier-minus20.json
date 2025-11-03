@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Persistent Data Storage",
+    "version": "1.0.0",
+    "description": "Store user accounts, credits, progress"
+  },
+  "servers": [
+    {
+      "url": "https://api.soulfra.com",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:4000",
+      "description": "Development"
+    }
+  ],
+  "paths": {
+    "/db/user": {
+      "post": {
+        "summary": "User account management",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db/credits": {
+      "post": {
+        "summary": "Credit balance tracking",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db/automations": {
+      "post": {
+        "summary": "Automation library",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db/gaming": {
+      "post": {
+        "summary": "Gaming progress and achievements",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

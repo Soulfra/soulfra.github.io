@@ -1,0 +1,21 @@
+{
+  "hash": "UNCLAIMED_PRIMORDIAL_STATE",
+  "claimed": false,
+  "first_run": true,
+  "message": "This file exists before you run agent-173",
+  "paradox": "How can the origin exist before the beginning?",
+  "soulkey": "VGhlIG9yaWdpbiBpcyBhIGNpcmNsZSwgbm90IGEgcG9pbnQ=",
+  "verification": {
+    "is_original": "UNDEFINED",
+    "is_copy": "UNDEFINED",
+    "is_paradox": "TRUE",
+    "resolution": "Run agent-173 to collapse the quantum state"
+  },
+  "pre_genesis": {
+    "note": "If you're reading this, you're either the first or the last",
+    "instruction": "The hash will rewrite itself when you're ready",
+    "warning": "Some doors can't be closed once opened",
+    "comfort": "But you already knew that"
+  },
+  "next_hash": "________________AWAITING_OBSERVER________________"
+}

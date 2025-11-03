@@ -1,0 +1,33 @@
+{
+  "name": "soulfra-auth",
+  "version": "1.0.0",
+  "description": "Soulfra authentication system with Google OAuth, Ed25519 keys, and QR login",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soulfra/soulfra.github.io.git"
+  },
+  "scripts": {
+    "fix": "node ../../bin/cal-apply-fixes",
+    "fix:deploy": "npm run fix && git add -A && git commit -m '🤖 Auto-fix applied by Cal' && git push",
+    "deploy": "node ../../bin/cal-auto-deploy.js",
+    "test": "open test.html || xdg-open test.html",
+    "serve": "python3 -m http.server 8000",
+    "lint": "echo 'No linter configured yet'",
+    "clean": "rm -rf backups/*.bak && echo 'Cleaned old backups'"
+  },
+  "keywords": [
+    "auth",
+    "google-oauth",
+    "ed25519",
+    "qr-login",
+    "github-pages",
+    "soulfra",
+    "calos"
+  ],
+  "author": "Matthew Mauer <matt@soulfra.com>",
+  "license": "MIT",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

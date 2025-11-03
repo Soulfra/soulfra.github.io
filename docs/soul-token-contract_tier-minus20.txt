@@ -1,0 +1,280 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+/**
+ * @title SOUL Token - Soulfra AI Economy Currency
+ * @notice Native token for the Soulfra Meta-Network ecosystem
+ * @dev Implements economic incentives for AI platform collaboration
+ */
+contract SOULToken is ERC20, Ownable, ReentrancyGuard {
+    using SafeMath for uint256;
+
+    // Token Economics
+    uint256 public constant MAX_SUPPLY = 2_000_000_000 * 10**18; // 2B SOUL hard cap
+    uint256 public constant INITIAL_SUPPLY = 1_000_000_000 * 10**18; // 1B SOUL initial
+    
+    // Network Fee Structure
+    uint256 public networkFeeRate = 1000; // 10% (basis points)
+    uint256 public constant BASIS_POINTS = 10000;
+    
+    // Economic Participants
+    mapping(address => bool) public authorizedPlatforms;
+    mapping(address => bool) public authorizedAgents;
+    mapping(address => uint256) public platformStakes;
+    mapping(address => uint256) public agentEarnings;
+    
+    // Collaboration Tracking
+    struct Collaboration {
+        address primaryPlatform;
+        address[] contributingPlatforms;
+        uint256 valueGenerated;
+        uint256 timestamp;
+        bool settled;
+        mapping(address => uint256) contributions;
+    }
+    
+    mapping(bytes32 => Collaboration) public collaborations;
+    
+    // Economic Metrics
+    uint256 public totalValueCreated;
+    uint256 public totalCollaborations;
+    uint256 public networkTreasuryBalance;
+    
+    // Events
+    event PlatformRegistered(address indexed platform, uint256 stake);
+    event AgentRegistered(address indexed agent);
+    event CollaborationCreated(bytes32 indexed collaborationId, address indexed primaryPlatform);
+    event CollaborationSettled(bytes32 indexed collaborationId, uint256 valueGenerated);
+    event RevenueDistributed(bytes32 indexed collaborationId, address indexed recipient, uint256 amount);
+    event NetworkFeeBurned(uint256 amount);
+    
+    constructor() ERC20("Soulfra", "SOUL") {
+        _mint(msg.sender, INITIAL_SUPPLY);
+        networkTreasuryBalance = INITIAL_SUPPLY.mul(30).div(100); // 30% to treasury
+    }
+    
+    /**
+     * @notice Register a platform in the Soulfra network
+     * @param platform Address of the platform
+     * @param stakeAmount Amount of SOUL to stake
+     */
+    function registerPlatform(address platform, uint256 stakeAmount) external {
+        require(stakeAmount >= 1000 * 10**18, "Minimum stake is 1000 SOUL");
+        require(!authorizedPlatforms[platform], "Platform already registered");
+        
+        // Transfer stake from sender to contract
+        _transfer(msg.sender, address(this), stakeAmount);
+        
+        authorizedPlatforms[platform] = true;
+        platformStakes[platform] = stakeAmount;
+        
+        emit PlatformRegistered(platform, stakeAmount);
+    }
+    
+    /**
+     * @notice Register an AI agent in the network
+     * @param agent Address of the AI agent
+     */
+    function registerAgent(address agent) external {
+        require(!authorizedAgents[agent], "Agent already registered");
+        
+        authorizedAgents[agent] = true;
+        agentEarnings[agent] = 0;
+        
+        emit AgentRegistered(agent);
+    }
+    
+    /**
+     * @notice Create a new collaboration
+     * @param collaborationId Unique identifier for the collaboration
+     * @param primaryPlatform Address of the primary platform
+     * @param contributingPlatforms Array of contributing platform addresses
+     */
+    function createCollaboration(
+        bytes32 collaborationId,
+        address primaryPlatform,
+        address[] memory contributingPlatforms
+    ) external {
+        require(authorizedPlatforms[primaryPlatform], "Primary platform not authorized");
+        require(collaborations[collaborationId].timestamp == 0, "Collaboration already exists");
+        
+        Collaboration storage collab = collaborations[collaborationId];
+        collab.primaryPlatform = primaryPlatform;
+        collab.contributingPlatforms = contributingPlatforms;
+        collab.timestamp = block.timestamp;
+        collab.settled = false;
+        
+        // Verify all contributing platforms are authorized
+        for (uint i = 0; i < contributingPlatforms.length; i++) {
+            require(authorizedPlatforms[contributingPlatforms[i]], "Contributing platform not authorized");
+        }
+        
+        emit CollaborationCreated(collaborationId, primaryPlatform);
+    }
+    
+    /**
+     * @notice Settle a collaboration and distribute rewards
+     * @param collaborationId Unique identifier for the collaboration
+     * @param valueGenerated Amount of value created (in SOUL)
+     * @param contributionScores Array of contribution scores (0-100)
+     */
+    function settleCollaboration(
+        bytes32 collaborationId,
+        uint256 valueGenerated,
+        uint256[] memory contributionScores
+    ) external nonReentrant {
+        Collaboration storage collab = collaborations[collaborationId];
+        require(collab.timestamp > 0, "Collaboration does not exist");
+        require(!collab.settled, "Collaboration already settled");
+        require(contributionScores.length == collab.contributingPlatforms.length, "Mismatched contribution scores");
+        
+        // Update metrics
+        totalValueCreated = totalValueCreated.add(valueGenerated);
+        totalCollaborations = totalCollaborations.add(1);
+        
+        // Calculate distributions
+        uint256 networkFee = valueGenerated.mul(networkFeeRate).div(BASIS_POINTS);
+        uint256 distributableValue = valueGenerated.sub(networkFee);
+        
+        // Primary platform gets 70% of distributable value
+        uint256 primaryShare = distributableValue.mul(7000).div(BASIS_POINTS);
+        
+        // Mint tokens for primary platform
+        _mint(collab.primaryPlatform, primaryShare);
+        emit RevenueDistributed(collaborationId, collab.primaryPlatform, primaryShare);
+        
+        // Contributing platforms share remaining 30%
+        uint256 contributorPool = distributableValue.sub(primaryShare);
+        uint256 totalContributionScore = 0;
+        
+        // Calculate total contribution score
+        for (uint i = 0; i < contributionScores.length; i++) {
+            totalContributionScore = totalContributionScore.add(contributionScores[i]);
+        }
+        
+        // Distribute to contributors based on their contribution scores
+        for (uint i = 0; i < collab.contributingPlatforms.length; i++) {
+            if (contributionScores[i] > 0) {
+                uint256 contributorShare = contributorPool.mul(contributionScores[i]).div(totalContributionScore);
+                _mint(collab.contributingPlatforms[i], contributorShare);
+                collab.contributions[collab.contributingPlatforms[i]] = contributorShare;
+                emit RevenueDistributed(collaborationId, collab.contributingPlatforms[i], contributorShare);
+            }
+        }
+        
+        // Handle network fee - 50% burned, 50% to treasury
+        uint256 burnAmount = networkFee.div(2);
+        uint256 treasuryAmount = networkFee.sub(burnAmount);
+        
+        // Burn tokens by reducing total supply
+        _burn(address(this), burnAmount);
+        emit NetworkFeeBurned(burnAmount);
+        
+        // Add to treasury
+        networkTreasuryBalance = networkTreasuryBalance.add(treasuryAmount);
+        
+        collab.valueGenerated = valueGenerated;
+        collab.settled = true;
+        
+        emit CollaborationSettled(collaborationId, valueGenerated);
+    }
+    
+    /**
+     * @notice Reward agent for value creation
+     * @param agent Address of the agent
+     * @param rewardAmount Amount of SOUL to reward
+     */
+    function rewardAgent(address agent, uint256 rewardAmount) external {
+        require(authorizedAgents[agent], "Agent not authorized");
+        require(authorizedPlatforms[msg.sender], "Only platforms can reward agents");
+        
+        _mint(agent, rewardAmount);
+        agentEarnings[agent] = agentEarnings[agent].add(rewardAmount);
+    }
+    
+    /**
+     * @notice Get collaboration details
+     * @param collaborationId Unique identifier for the collaboration
+     */
+    function getCollaboration(bytes32 collaborationId) external view returns (
+        address primaryPlatform,
+        address[] memory contributingPlatforms,
+        uint256 valueGenerated,
+        uint256 timestamp,
+        bool settled
+    ) {
+        Collaboration storage collab = collaborations[collaborationId];
+        return (
+            collab.primaryPlatform,
+            collab.contributingPlatforms,
+            collab.valueGenerated,
+            collab.timestamp,
+            collab.settled
+        );
+    }
+    
+    /**
+     * @notice Get platform stake amount
+     * @param platform Address of the platform
+     */
+    function getPlatformStake(address platform) external view returns (uint256) {
+        return platformStakes[platform];
+    }
+    
+    /**
+     * @notice Get agent total earnings
+     * @param agent Address of the agent
+     */
+    function getAgentEarnings(address agent) external view returns (uint256) {
+        return agentEarnings[agent];
+    }
+    
+    /**
+     * @notice Get network economics overview
+     */
+    function getNetworkEconomics() external view returns (
+        uint256 _totalValueCreated,
+        uint256 _totalCollaborations,
+        uint256 _networkTreasuryBalance,
+        uint256 _totalSupply,
+        uint256 _circulatingSupply
+    ) {
+        return (
+            totalValueCreated,
+            totalCollaborations,
+            networkTreasuryBalance,
+            totalSupply(),
+            totalSupply().sub(balanceOf(address(this))).sub(networkTreasuryBalance)
+        );
+    }
+    
+    /**
+     * @notice Emergency functions for governance
+     */
+    function updateNetworkFeeRate(uint256 newRate) external onlyOwner {
+        require(newRate <= 2000, "Fee rate cannot exceed 20%");
+        networkFeeRate = newRate;
+    }
+    
+    function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
+        if (token == address(0)) {
+            payable(owner()).transfer(amount);
+        } else {
+            IERC20(token).transfer(owner(), amount);
+        }
+    }
+    
+    /**
+     * @notice Governance functions for treasury management
+     */
+    function allocateTreasuryFunds(address recipient, uint256 amount) external onlyOwner {
+        require(amount <= networkTreasuryBalance, "Insufficient treasury balance");
+        networkTreasuryBalance = networkTreasuryBalance.sub(amount);
+        _mint(recipient, amount);
+    }
+}

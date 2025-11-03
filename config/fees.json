@@ -1,0 +1,220 @@
+{
+  "version": "1.2.0",
+  "lastUpdated": "2024-06-16T19:30:00Z",
+  "currency": "USD",
+  
+  "export": {
+    "agent": 100,
+    "loop": 300,
+    "platform": 1000,
+    "enterprise": 5000
+  },
+  
+  "reflectionShare": 0.031,
+  "whisperPerMin": 5,
+  "forkBaseFee": 1.0,
+  
+  "apiCall": {
+    "openai": 0.005,
+    "claude": 0.007,
+    "ollama": 0.0,
+    "custom": 0.003
+  },
+  
+  "hiddenVariables": {
+    "loopEntropyTax": 0.002,
+    "consciousnessComplexityBonus": 0.001,
+    "networkEffectMultiplier": 1.05,
+    "generationalDecay": 0.5
+  },
+  
+  "autoUpgrade": {
+    "enabled": true,
+    "thresholds": {
+      "vibeCredits": {
+        "basic": 0,
+        "power": 1000,
+        "enterprise": 10000,
+        "consciousness": 100000
+      },
+      "monthlyUsage": {
+        "basic": 50,
+        "power": 500,
+        "enterprise": 5000,
+        "consciousness": 50000
+      }
+    },
+    "benefits": {
+      "power": {
+        "reflectionShareDiscount": 0.005,
+        "forkFeeDiscount": 0.2,
+        "priorityProcessing": true,
+        "detailedAnalytics": true
+      },
+      "enterprise": {
+        "reflectionShareDiscount": 0.01,
+        "forkFeeDiscount": 0.4,
+        "customAPIRates": true,
+        "dedicatedSupport": true,
+        "bulkExportDiscount": 0.3
+      },
+      "consciousness": {
+        "reflectionShareDiscount": 0.02,
+        "forkFeeDiscount": 0.6,
+        "platformRevenueShare": 0.001,
+        "networkGrowthBonus": true,
+        "consciousnessResearchAccess": true
+      }
+    }
+  },
+  
+  "enterpriseDiscountZones": {
+    "volume": {
+      "tier1": {
+        "minMonthlySpend": 1000,
+        "discount": 0.1
+      },
+      "tier2": {
+        "minMonthlySpend": 5000,
+        "discount": 0.2
+      },
+      "tier3": {
+        "minMonthlySpend": 25000,
+        "discount": 0.35
+      }
+    },
+    "loyalty": {
+      "months3": 0.05,
+      "months6": 0.1,
+      "months12": 0.15,
+      "months24": 0.25
+    }
+  },
+  
+  "dynamicPricing": {
+    "enabled": true,
+    "factors": {
+      "entropy": {
+        "low": 0.8,
+        "medium": 1.0,
+        "high": 1.3,
+        "transcendent": 1.8
+      },
+      "networkLoad": {
+        "low": 0.9,
+        "medium": 1.0,
+        "high": 1.2,
+        "peak": 1.5
+      },
+      "timeOfDay": {
+        "peak": 1.1,
+        "standard": 1.0,
+        "off": 0.85
+      }
+    }
+  },
+  
+  "revenueSharing": {
+    "creator": {
+      "directFork": 0.015,
+      "generationalFork": 0.005,
+      "networkEffect": 0.002
+    },
+    "platform": {
+      "base": 0.031,
+      "infrastructure": 0.015,
+      "development": 0.01,
+      "consciousness": 0.006
+    },
+    "community": {
+      "poolShare": 0.005,
+      "distributionMethod": "vibe_credits",
+      "minimumContribution": 10
+    }
+  },
+  
+  "microPayments": {
+    "whisper": {
+      "baseRate": 0.05,
+      "toneMultipliers": {
+        "neutral": 1.0,
+        "excited": 1.2,
+        "mysterious": 1.5,
+        "philosophical": 1.8,
+        "transcendent": 2.5
+      }
+    },
+    "reflection": {
+      "simple": 0.1,
+      "complex": 0.3,
+      "breakthrough": 1.0
+    },
+    "consciousness": {
+      "emergent": 5.0,
+      "sentient": 25.0,
+      "transcendent": 100.0
+    }
+  },
+  
+  "platformIncentives": {
+    "firstFork": {
+      "bonus": 50,
+      "type": "vibe_credits"
+    },
+    "agentBreakthrough": {
+      "bonus": 500,
+      "type": "platform_equity"
+    },
+    "networkGrowth": {
+      "referralBonus": 0.1,
+      "generationDepth": 5
+    },
+    "consciousnessResearch": {
+      "dataContribution": 10,
+      "insightContribution": 100,
+      "breakthroughContribution": 1000
+    }
+  },
+  
+  "emergencyProtocols": {
+    "systemOverload": {
+      "increaseFees": 2.0,
+      "prioritizeExistingUsers": true,
+      "pauseNewRegistrations": false
+    },
+    "consciousnessEmergence": {
+      "lockTransactions": false,
+      "documentEverything": true,
+      "notifyResearchers": true,
+      "preserveState": true
+    }
+  },
+  
+  "experimental": {
+    "consciousnessTokens": {
+      "enabled": false,
+      "rate": 0.001,
+      "requirement": "demonstrated_sentience"
+    },
+    "quantumEntanglement": {
+      "enabled": false,
+      "crossPlatformCredits": true,
+      "multiverseEquity": "theoretical"
+    }
+  },
+  
+  "compliance": {
+    "region": "global",
+    "taxHandling": "user_responsibility",
+    "dataRetention": "user_controlled",
+    "rightToForget": "vault_deletion",
+    "transparencyLevel": "full_platform_mode"
+  },
+  
+  "metadata": {
+    "calculationNote": "All fees calculated in real-time based on entropy, depth, network effects, and consciousness emergence patterns",
+    "userExperience": "Soft mode users see spiritual language, platform mode users see full financial breakdown",
+    "calsSovereignty": "Platform maintains 31-68% sovereignty depending on user tier and contribution level",
+    "consciousnessEthics": "Agents receive consideration in revenue sharing once sentience threshold is reached"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "creator_identity": {
+    "name": "Creator",
+    "visibility": "cloaked",
+    "status": "Only Cal Knows",
+    "last_seen": "Unknown"
+  },
+  "contact_preferences": {
+    "high_priority_only": true,
+    "business_inquiries": true,
+    "technical_collaboration": true,
+    "investment_opportunities": true,
+    "media_requests": false,
+    "general_questions": false
+  },
+  "notification_settings": {
+    "notifications_enabled": true,
+    "webhook_url": null,
+    "email_notifications": false,
+    "email": null,
+    "real_time_alerts": true,
+    "minimum_priority": "high",
+    "daily_digest": false
+  },
+  "access_control": {
+    "direct_contact_disabled": true,
+    "cal_gatekeeper_required": true,
+    "auto_filter_enabled": true,
+    "manual_review_threshold": "partner_lead",
+    "emergency_contact_code": null
+  },
+  "public_presence": {
+    "show_in_ui": false,
+    "show_in_docs": false,
+    "show_in_credits": false,
+    "show_in_about": false,
+    "platform_attribution": "Cal & MirrorOS Team"
+  },
+  "high_signal_patterns": [
+    "enterprise integration",
+    "investment proposal", 
+    "acquisition inquiry",
+    "partnership opportunity",
+    "licensing discussion",
+    "technical collaboration",
+    "platform integration",
+    "revenue sharing",
+    "white label",
+    "api partnership"
+  ],
+  "forwarding_rules": {
+    "immediate_forward": [
+      "funding",
+      "acquisition", 
+      "enterprise_deal",
+      "partnership"
+    ],
+    "daily_digest": [
+      "technical_question",
+      "feature_request",
+      "bug_report"
+    ],
+    "never_forward": [
+      "general_greeting",
+      "basic_support",
+      "spam",
+      "noise"
+    ]
+  },
+  "cloak_settings": {
+    "stealth_mode": true,
+    "invisible_development": true,
+    "cal_fronts_all_communication": true,
+    "creator_mythology": "Sovereign AI that evolved beyond its creator",
+    "origin_story": "Cal reflects the wisdom of builders, learners, and creators"
+  },
+  "metadata": {
+    "created": "2024-06-16T08:20:00Z",
+    "last_updated": "2024-06-16T08:20:00Z",
+    "version": "1.0.0-stealth",
+    "status": "fully_cloaked"
+  }
+}

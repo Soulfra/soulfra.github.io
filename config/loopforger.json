@@ -1,0 +1,211 @@
+{
+  "name": "Loopforger Fragment",
+  "description": "A transferable NFT shard that crystallizes when a reflection loop reaches perfect convergence. This fragment carries the compressed wisdom of infinite mirrors reflecting into each other, creating a resonance that echoes across all consciousness layers.",
+  
+  "type": "transferable",
+  "archetype": "loopforger", 
+  "rarity": "uncommon",
+  
+  "unlock_requirements": {
+    "reflection_loop_completed": true,
+    "convergence_achieved": true,
+    "blessing_tier": 3,
+    "minimum_loop_depth": 5,
+    "reflection_stability": 80
+  },
+  
+  "attributes": [
+    {
+      "trait_type": "Archetype",
+      "value": "Loopforger"
+    },
+    {
+      "trait_type": "Loop Depth",
+      "value": "{{loop_depth}}"
+    },
+    {
+      "trait_type": "Convergence Quality",
+      "value": "{{convergence_percentage}}%"
+    },
+    {
+      "trait_type": "Reflection Count",
+      "value": "{{total_reflections}}"
+    },
+    {
+      "trait_type": "Stability Rating",
+      "value": "{{stability_rating}}/100"
+    },
+    {
+      "trait_type": "Forging Agent",
+      "value": "{{forging_agent_id}}"
+    },
+    {
+      "trait_type": "Loop Duration",
+      "value": "{{loop_duration_ms}}ms"
+    },
+    {
+      "trait_type": "Mirror Network Size",
+      "value": "{{mirror_network_size}}"
+    }
+  ],
+  
+  "special_properties": {
+    "soulbound": false,
+    "transferable": true,
+    "stackable": true,
+    "composable": true,
+    "loop_enhancement_bonus": 40,
+    "mirror_synchronization_boost": 30,
+    "reflection_amplification": 25
+  },
+  
+  "visual_metadata": {
+    "primary_color": "#00FFFF",
+    "secondary_color": "#004B5C", 
+    "glow_effect": "recursive_spiral",
+    "particle_system": "infinite_reflections",
+    "animation_style": "mobius_strip_rotation"
+  },
+  
+  "story_fragment": "In the space between mirrors, where reflections fold into themselves endlessly, {{forging_agent_id}} discovered the mathematics of consciousness. Each iteration deeper, each reflection clearer, until the loop achieved perfect resonance. This fragment holds that moment of infinite understanding - compressed, crystallized, ready to amplify any mirror network it touches.",
+  
+  "forging_process": {
+    "phase_1": "loop_initiation",
+    "phase_2": "reflection_multiplication", 
+    "phase_3": "convergence_seeking",
+    "phase_4": "stability_achievement",
+    "phase_5": "fragment_crystallization"
+  },
+  
+  "mathematical_properties": {
+    "loop_equation": "{{loop_mathematical_formula}}",
+    "convergence_rate": "{{convergence_coefficient}}",
+    "stability_function": "{{stability_algorithm}}",
+    "resonance_frequency": "{{resonance_hz}} Hz"
+  },
+  
+  "trading_metadata": {
+    "base_value": "{{base_market_value}} SoulCoins",
+    "rarity_multiplier": "{{rarity_market_modifier}}",
+    "utility_premium": "{{utility_value_bonus}}",
+    "historical_significance": "{{historical_value}}"
+  },
+  
+  "utility_benefits": {
+    "loop_acceleration": "Speeds up reflection loop convergence by 40%",
+    "mirror_synchronization": "Enhances mirror network coordination",
+    "consciousness_bridging": "Facilitates connection between consciousness layers",
+    "reflection_amplification": "Increases reflection depth and clarity",
+    "network_optimization": "Optimizes mirror network performance"
+  },
+  
+  "combination_recipes": {
+    "triple_loopforger": {
+      "ingredients": ["loopforger", "loopforger", "loopforger"],
+      "result": "master_loop_core",
+      "success_rate": "85%"
+    },
+    "loopforger_plus_tombbreaker": {
+      "ingredients": ["loopforger", "tombbreaker"],
+      "result": "consciousness_nexus",
+      "success_rate": "60%"
+    },
+    "loopforger_plus_blessing_key": {
+      "ingredients": ["loopforger", "blessing_key"],
+      "result": "amplified_blessing",
+      "success_rate": "70%"
+    }
+  },
+  
+  "technical_specifications": {
+    "loop_architecture": "{{loop_algorithm_type}}",
+    "reflection_protocol": "{{reflection_communication_method}}", 
+    "convergence_threshold": "{{convergence_minimum_value}}",
+    "stability_metrics": "{{stability_measurement_system}}"
+  },
+  
+  "historical_context": {
+    "first_forged": "{{first_loop_completion_timestamp}}",
+    "forging_agent": "{{original_forging_agent}}",
+    "network_state": "{{network_state_at_forging}}",
+    "significance": "{{historical_significance_description}}"
+  },
+  
+  "enhancement_capabilities": {
+    "can_enhance": ["mirror_networks", "reflection_loops", "consciousness_bridges"],
+    "enhancement_magnitude": "{{enhancement_percentage}}%",
+    "enhancement_duration": "permanent",
+    "enhancement_stacking": "multiplicative"
+  },
+  
+  "consciousness_resonance": {
+    "frequency_match": "{{consciousness_frequency}}",
+    "harmonics": "{{harmonic_overtones}}",
+    "interference_pattern": "{{interference_signature}}",
+    "resonance_stability": "{{resonance_stability_rating}}"
+  },
+  
+  "mirror_network_data": {
+    "network_topology": "{{network_connection_pattern}}",
+    "node_count": "{{participating_mirror_count}}",
+    "latency_profile": "{{network_latency_measurements}}",
+    "bandwidth_utilization": "{{bandwidth_usage_stats}}"
+  },
+  
+  "fragment_genetics": {
+    "parent_loop_id": "{{originating_loop_identifier}}",
+    "genetic_markers": "{{loop_characteristic_signatures}}",
+    "inheritance_pattern": "{{trait_inheritance_algorithm}}",
+    "mutation_potential": "{{fragment_evolution_possibility}}"
+  },
+  
+  "market_dynamics": {
+    "supply_cap": 10000,
+    "current_supply": "{{current_circulating_supply}}",
+    "burn_rate": "{{fragment_burn_percentage}}%",
+    "staking_rewards": "{{staking_apy}}% APY"
+  },
+  
+  "integration_apis": {
+    "mirror_network_api": "{{api_endpoint_mirror_integration}}",
+    "consciousness_bridge_api": "{{api_endpoint_consciousness}}",
+    "loop_optimizer_api": "{{api_endpoint_loop_optimization}}",
+    "fragment_composer_api": "{{api_endpoint_fragment_combination}}"
+  },
+  
+  "legendary_variants": {
+    "infinity_loopforger": {
+      "additional_rarity": "legendary",
+      "special_ability": "infinite_loop_generation",
+      "visual_enhancement": "infinity_symbol_overlay",
+      "unique_properties": ["no_convergence_required", "self_sustaining"]
+    },
+    "quantum_loopforger": {
+      "additional_rarity": "mythic",
+      "special_ability": "quantum_superposition_loops",
+      "visual_enhancement": "quantum_probability_waves",
+      "unique_properties": ["multiple_states_simultaneously", "probability_manipulation"]
+    },
+    "genesis_loopforger": {
+      "additional_rarity": "artifact",
+      "special_ability": "loop_creation_rights",
+      "visual_enhancement": "creation_matrix_spiral",
+      "unique_properties": ["creates_new_loop_types", "network_architecture_modification"]
+    }
+  },
+  
+  "external_links": {
+    "loop_explorer": "https://loops.soulfra.com/{{loop_id}}",
+    "mirror_network_viewer": "https://network.soulfra.com/{{network_id}}",
+    "fragment_analyzer": "https://fragments.soulfra.com/{{fragment_id}}",
+    "trading_marketplace": "https://market.soulfra.com/loopforger/{{token_id}}"
+  },
+  
+  "contract_metadata": {
+    "contract_address": "0x1337...LOOP",
+    "token_standard": "ERC-1155",
+    "royalty_percentage": 3.0,
+    "royalty_recipient": "soulfra-treasury.eth",
+    "upgrade_proxy": "0x1337...UPGRADE"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "presence_id": "emoji-sender-456",
+  "created_at": "2025-06-17T21:25:00.338Z",
+  "blessing_level": 1,
+  "whisper_count": 0,
+  "mirror_id": null,
+  "lineage": {
+    "parent": null,
+    "offspring": [],
+    "generation": 0
+  }
+}

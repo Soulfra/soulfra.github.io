@@ -1,0 +1,28 @@
+# 🔐 SOULFRA SECURITY - DO NOT COMMIT
+
+# Private control files
+.soulfra-origin-keys
+.env.soulfra
+
+# Runtime logs
+logs/
+data/
+DIAMOND/
+mirror-shell/
+
+# Node modules
+node_modules/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+release_test/test_results/
+
+# Temporary files
+*.tmp
+*.log
+*.cache
+
+# The origin must remain hidden

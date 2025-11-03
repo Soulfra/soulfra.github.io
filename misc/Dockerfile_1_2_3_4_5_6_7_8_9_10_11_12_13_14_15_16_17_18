@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="8de0b83d-3459-44d9-84fd-c9ac4e913184"
+LABEL site.domain="8de0b83d.teamchat.app"
+LABEL site.type="chat"

@@ -1,0 +1,67 @@
+{
+  "current": "soft",
+  "allowSwitch": true,
+  "enterpriseFeaturesHidden": true,
+  "modes": {
+    "soft": {
+      "name": "Soft Mode",
+      "description": "Simple reflection for everyone",
+      "features": {
+        "folders": ["Reflections", "Saved", "What You Shared"],
+        "oneStepActions": true,
+        "autoInstall": true,
+        "autoLogin": false,
+        "qrAutoPair": true,
+        "voiceByDefault": true,
+        "exportPrice": 1.00,
+        "calIntroduction": "gentle"
+      },
+      "ui": {
+        "complexity": "minimal",
+        "showLogs": false,
+        "showForks": false,
+        "showRegistry": false,
+        "showAnalytics": false
+      }
+    },
+    "platform": {
+      "name": "Enterprise Mode", 
+      "description": "Full platform control for organizations",
+      "features": {
+        "folders": ["Logs", "Forks", "Registry", "Analytics", "Mirror Index"],
+        "oneStepActions": false,
+        "autoInstall": false,
+        "autoLogin": true,
+        "qrAutoPair": true,
+        "voiceByDefault": false,
+        "exportPrice": "variable",
+        "calIntroduction": "professional"
+      },
+      "ui": {
+        "complexity": "full",
+        "showLogs": true,
+        "showForks": true,
+        "showRegistry": true,
+        "showAnalytics": true
+      },
+      "billing": {
+        "model": "per_api_call",
+        "costPerCall": 0.01,
+        "allowBYOK": true,
+        "stripeRequired": true
+      }
+    }
+  },
+  "switchingRules": {
+    "softToPlatform": {
+      "triggerAfterCalls": 100,
+      "triggerAfterExports": 5,
+      "manualSwitch": true
+    },
+    "platformToSoft": {
+      "allowDowngrade": false,
+      "adminOnly": true
+    }
+  },
+  "lastUpdated": "2024-01-15T10:30:00Z"
+}

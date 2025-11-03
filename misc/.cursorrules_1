@@ -1,0 +1,6 @@
+
+# 🔁 Cal Mirror Trust Rules (Injected)
+All agents, APIs, and assistants in this workspace must reflect through the local vault.
+- Claude and Copilot must respect claude-env.json
+- No agent may speak unless vault reflection log exists
+- Forks must be authorized via .sig

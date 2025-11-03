@@ -1,0 +1,18 @@
+{
+  "quantum_layer": -17,
+  "purpose": "Single source of truth for all code",
+  "philosophy": "Deep nesting maintains security, symlinks maintain sanity",
+  "services": {
+    "tier-9": ["qr-validator", "infinity-router"],
+    "tier-10": ["cal-riven", "riven-cli"],
+    "tier-19": ["documentation", "intelligence", "analytics"],
+    "tier-20": ["reality", "frontend", "backend"],
+    "tier-0": ["blank-kernel"]
+  },
+  "benefits": [
+    "Single place to edit code",
+    "Deep nesting preserved",
+    "No tech bloat",
+    "Quantum entanglement between tiers"
+  ]
+}

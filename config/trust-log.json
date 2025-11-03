@@ -1,0 +1,11 @@
+[
+  {
+    "event": "vault_spawned",
+    "timestamp": "2025-06-16T01:16:25.218Z",
+    "uuid": "test-uuid-12345",
+    "deviceHash": "cli-device-hash",
+    "origin": "cli-test",
+    "tier": -12,
+    "mirrorEntry": true
+  }
+]

@@ -1,0 +1,125 @@
+{
+  "topics": [
+    {
+      "id": "startup-method-001",
+      "term": "build-measure-learn",
+      "type": "methods",
+      "context": "The build-measure-learn cycle is fundamental to lean startup methodology",
+      "domain": "startup_methodology",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.85,
+      "relatedTerms": ["lean", "cycle", "iteration", "feedback", "pivot", "validate"]
+    },
+    {
+      "id": "learning-tech-001", 
+      "term": "spaced repetition",
+      "type": "methods",
+      "context": "Spaced repetition improves long-term retention of information",
+      "domain": "learning_techniques",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.80,
+      "relatedTerms": ["memory", "retention", "intervals", "forgetting", "curve", "anki"]
+    },
+    {
+      "id": "communication-001",
+      "term": "socratic questioning",
+      "type": "methods", 
+      "context": "Socratic questioning helps people discover their own solutions",
+      "domain": "communication_patterns",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.75,
+      "relatedTerms": ["questions", "discovery", "assumptions", "critical", "thinking", "dialogue"]
+    },
+    {
+      "id": "startup-concept-001",
+      "term": "minimum viable product",
+      "type": "concepts",
+      "context": "MVP allows testing core assumptions with minimal resources",
+      "domain": "startup_methodology", 
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.90,
+      "relatedTerms": ["mvp", "testing", "assumptions", "validation", "resources", "features"]
+    },
+    {
+      "id": "emotional-001",
+      "term": "imposter syndrome",
+      "type": "concepts",
+      "context": "Imposter syndrome affects founders' confidence and decision-making",
+      "domain": "emotional_intelligence",
+      "source": "founder_seed", 
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.85,
+      "relatedTerms": ["confidence", "doubt", "belonging", "competence", "anxiety", "validation"]
+    },
+    {
+      "id": "learning-concept-001",
+      "term": "learning velocity",
+      "type": "concepts",
+      "context": "Track learning speed rather than just shipping speed in early stages",
+      "domain": "learning_techniques",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z", 
+      "confidence": 0.75,
+      "relatedTerms": ["speed", "progress", "metrics", "shipping", "development", "growth"]
+    },
+    {
+      "id": "decision-001",
+      "term": "information vs insight",
+      "type": "concepts",
+      "context": "More data doesn't automatically lead to better decisions",
+      "domain": "decision_making",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.80,
+      "relatedTerms": ["data", "analysis", "decisions", "users", "feedback", "experience"]
+    },
+    {
+      "id": "problem-solving-001",
+      "term": "first principles thinking",
+      "type": "methods",
+      "context": "Break down complex problems to fundamental truths and build up",
+      "domain": "problem_solving",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.85,
+      "relatedTerms": ["fundamentals", "assumptions", "reasoning", "innovation", "patterns", "basics"]
+    },
+    {
+      "id": "productivity-001",
+      "term": "systems vs motivation",
+      "type": "concepts", 
+      "context": "Build systems that work even when motivation is low",
+      "domain": "productivity_systems",
+      "source": "founder_seed",
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.80,
+      "relatedTerms": ["discipline", "habits", "consistency", "workflow", "automation", "structure"]
+    },
+    {
+      "id": "startup-process-001",
+      "term": "user validation",
+      "type": "processes",
+      "context": "Talk to users before building to validate assumptions",
+      "domain": "startup_methodology",
+      "source": "founder_seed", 
+      "extractedAt": "2024-06-16T07:30:00Z",
+      "confidence": 0.90,
+      "relatedTerms": ["interviews", "feedback", "assumptions", "customers", "research", "validation"]
+    }
+  ],
+  "totalTopics": 10,
+  "lastUpdated": "2024-06-16T07:30:00Z",
+  "domains": [
+    "startup_methodology",
+    "learning_techniques", 
+    "communication_patterns",
+    "emotional_intelligence",
+    "decision_making",
+    "problem_solving",
+    "productivity_systems"
+  ]
+}

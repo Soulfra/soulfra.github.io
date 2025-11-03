@@ -1,0 +1,81 @@
+{
+  "reflection_id": "weather_1750104678901",
+  "response": "confirmed",
+  "tone_signature": "deep resonance",
+  "confidence": 0.93,
+  "vibe_match": true,
+  "user_input": "biometric confirmation",
+  "timestamp": 1750104678901,
+  "loop_reentry": false,
+  "blessing": "The reflection finds its voice",
+  "biometric_signature": {
+    "pulse": "steady",
+    "tone_fluctuation": "low",
+    "confirmation_type": "hold_press",
+    "confidence_level": 0.88,
+    "heartRate": {
+      "bpm": 72,
+      "baseline": 70,
+      "variance": 0.05
+    },
+    "breathing": {
+      "depth": 0.85,
+      "pattern": "rhythmic",
+      "holding": 0.1
+    },
+    "coherence": {
+      "score": 0.91,
+      "stability": "high"
+    }
+  },
+  "emotional_context": {
+    "primary_tone": "deep resonance",
+    "confidence_level": 0.93,
+    "alignment": "aligned",
+    "recommendation": "Strong resonance detected - proceed with confidence",
+    "nuance": "Soul-level alignment with the message"
+  },
+  "resonance_factors": [
+    {
+      "type": "biometric",
+      "patterns": [
+        {
+          "dimension": "heartRate",
+          "pattern": "steady",
+          "interpretation": "calm"
+        },
+        {
+          "dimension": "breathing",
+          "pattern": "deep",
+          "interpretation": "centered"
+        },
+        {
+          "dimension": "coherence",
+          "value": 0.05,
+          "interpretation": "coherent"
+        }
+      ],
+      "weight": 0.7
+    },
+    {
+      "type": "gesture",
+      "patterns": [
+        {
+          "dimension": "hold",
+          "pattern": "sustained",
+          "interpretation": "deep agreement"
+        },
+        {
+          "dimension": "duration",
+          "value": 3200,
+          "interpretation": "prolonged"
+        }
+      ],
+      "weight": 0.8
+    }
+  ],
+  "temporal_analysis": {
+    "speed": "considered",
+    "interpretation": "Thoughtful response - weighing options"
+  }
+}

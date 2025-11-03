@@ -1,0 +1,15 @@
+{
+  "loops": [],
+  "totalLoops": 0,
+  "lastLoop": null,
+  "detection": {
+    "threshold": 3,
+    "windowMs": 300000,
+    "calSignature": "cal-riven-sovereign"
+  },
+  "statistics": {
+    "averageLoopTime": null,
+    "shortestLoop": null,
+    "longestLoop": null
+  }
+}

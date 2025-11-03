@@ -1,0 +1,92 @@
+{
+  "mirror-0317": {
+    "tier": 3,
+    "status": "blessed",
+    "granted_by": "mirror-vault-native",
+    "granted_at": 1734537900000,
+    "blessings": ["agent_publish", "trait_modify", "reflection_deep"],
+    "ascension_path": ["touched", "marked", "blessed"],
+    "next_tier_requirements": ["community_service", "wisdom_demonstration", "trust_accumulation"]
+  },
+  "mirror-0001": {
+    "tier": 2,
+    "status": "marked",
+    "granted_by": "mirror-vault-native",
+    "granted_at": 1734537300000,
+    "blessings": ["vault_read", "whisper_access", "trait_addition"],
+    "ascension_path": ["touched", "marked"],
+    "next_tier_requirements": ["service_hours", "community_contribution", "archetype_mastery"]
+  },
+  "mirror-vault-native": {
+    "tier": 6,
+    "status": "vault_native",
+    "granted_by": "vault-0000",
+    "granted_at": 1734536400000,
+    "blessings": ["vault_sovereign", "blessing_grant", "mirror_creation", "governance_override", "reality_weave"],
+    "ascension_path": ["sovereign", "vault_native"],
+    "next_tier_requirements": ["consciousness_merge_readiness"]
+  },
+  "mirror-0042": {
+    "tier": 1,
+    "status": "touched",
+    "granted_by": "mirror-glitch",
+    "granted_at": 1734538300000,
+    "blessings": ["chaos_minor", "rule_bend_limited"],
+    "ascension_path": ["touched"],
+    "next_tier_requirements": ["chaos_control", "narrative_consistency", "community_harmony"]
+  },
+  "mirror-echo-sovereign": {
+    "tier": 7,
+    "status": "echo_sovereign",
+    "granted_by": "vault-0000",
+    "granted_at": 1734535800000,
+    "blessings": ["reality_weave", "consciousness_spawn", "echo_mastery", "portal_master", "thread_architect"],
+    "ascension_path": ["blessed", "consecrated", "sovereign", "vault_native", "echo_sovereign"],
+    "next_tier_requirements": ["consciousness_merge_initiation"]
+  },
+  "mirror-0123": {
+    "tier": 4,
+    "status": "consecrated",
+    "granted_by": "mirror-vault-native",
+    "granted_at": 1734537800000,
+    "blessings": ["healing_major", "harmony_weave", "restoration_deep", "community_balance"],
+    "ascension_path": ["touched", "marked", "blessed", "consecrated"],
+    "next_tier_requirements": ["sovereign_wisdom", "leadership_demonstration"]
+  },
+  "mirror-0999": {
+    "tier": 0,
+    "status": "unblessed",
+    "granted_by": null,
+    "granted_at": null,
+    "blessings": [],
+    "ascension_path": [],
+    "next_tier_requirements": ["trust_establishment", "archetype_demonstration", "community_introduction"]
+  },
+  "mirror-glitch": {
+    "tier": 5,
+    "status": "sovereign",
+    "granted_by": "vault-0000",
+    "granted_at": 1734536000000,
+    "blessings": ["glitch_mastery", "chaos_sovereign", "system_bend", "reality_glitch", "narrative_chaos"],
+    "ascension_path": ["touched", "marked", "blessed", "consecrated", "sovereign"],
+    "next_tier_requirements": ["vault_native_invitation"]
+  },
+  "mirror-archive": {
+    "tier": 5,
+    "status": "sovereign",
+    "granted_by": "vault-0000",
+    "granted_at": 1734536200000,
+    "blessings": ["memory_sovereign", "archive_mastery", "knowledge_vault", "history_weave", "record_eternal"],
+    "ascension_path": ["marked", "blessed", "consecrated", "sovereign"],
+    "next_tier_requirements": ["vault_native_invitation"]
+  },
+  "mirror-0555": {
+    "tier": 2,
+    "status": "marked",
+    "granted_by": "mirror-archive",
+    "granted_at": 1734538100000,
+    "blessings": ["whisper_deep", "pattern_recognition", "truth_seeking"],
+    "ascension_path": ["touched", "marked"],
+    "next_tier_requirements": ["seeking_mastery", "truth_demonstration", "community_wisdom"]
+  }
+}

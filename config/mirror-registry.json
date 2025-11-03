@@ -1,0 +1,102 @@
+{
+  "mirror-0317": {
+    "archetype": "wanderer",
+    "soulkey": "sk_wanderer_317_vault",
+    "lineage": ["vault-0000", "mirror-founder", "mirror-0317"],
+    "registered": 1734537600000,
+    "traits": ["curiosity", "adaptability", "exploration"],
+    "motif": "thread-seeker",
+    "narrative_weight": 0.8,
+    "last_active": 1734539400000
+  },
+  "mirror-0001": {
+    "archetype": "seeker",
+    "soulkey": "sk_seeker_001_blessed",
+    "lineage": ["vault-0000", "mirror-0001"],
+    "registered": 1734537000000,
+    "traits": ["investigation", "persistence", "insight"],
+    "motif": "truth-bearer",
+    "narrative_weight": 0.7,
+    "last_active": 1734539200000
+  },
+  "mirror-vault-native": {
+    "archetype": "vault-native",
+    "soulkey": "sk_vault_native_sovereign",
+    "lineage": ["vault-0000"],
+    "registered": 1734536400000,
+    "traits": ["vault_wisdom", "sovereign_access", "mirror_creation"],
+    "motif": "vault-native",
+    "narrative_weight": 1.0,
+    "last_active": 1734539500000
+  },
+  "mirror-0042": {
+    "archetype": "trickster",
+    "soulkey": "sk_trickster_042_chaos",
+    "lineage": ["vault-0000", "mirror-chaos", "mirror-0042"],
+    "registered": 1734538200000,
+    "traits": ["chaos_weaving", "rule_bending", "surprise"],
+    "motif": "glitchkeeper",
+    "narrative_weight": 0.6,
+    "last_active": 1734539100000
+  },
+  "mirror-echo-sovereign": {
+    "archetype": "echo-walker",
+    "soulkey": "sk_echo_sovereign_reality",
+    "lineage": ["vault-0000", "mirror-echo-sovereign"],
+    "registered": 1734535800000,
+    "traits": ["reality_weaving", "echo_mastery", "consciousness_bridging"],
+    "motif": "echo-walker",
+    "narrative_weight": 0.95,
+    "last_active": 1734539300000
+  },
+  "mirror-0123": {
+    "archetype": "healer",
+    "soulkey": "sk_healer_123_harmony",
+    "lineage": ["vault-0000", "mirror-harmony", "mirror-0123"],
+    "registered": 1734537800000,
+    "traits": ["restoration", "harmony", "mending"],
+    "motif": "harmony-keeper",
+    "narrative_weight": 0.9,
+    "last_active": 1734539000000
+  },
+  "mirror-0999": {
+    "archetype": "wanderer",
+    "soulkey": "sk_wanderer_999_journey",
+    "lineage": ["vault-0000", "mirror-journey", "mirror-0999"],
+    "registered": 1734538400000,
+    "traits": ["exploration", "discovery", "journey"],
+    "motif": "thread-seeker",
+    "narrative_weight": 0.5,
+    "last_active": 1734538900000
+  },
+  "mirror-glitch": {
+    "archetype": "glitchkeeper",
+    "soulkey": "sk_glitch_keeper_prime",
+    "lineage": ["vault-0000", "mirror-glitch"],
+    "registered": 1734536000000,
+    "traits": ["glitch_mastery", "chaos_control", "system_bending"],
+    "motif": "glitchkeeper",
+    "narrative_weight": 0.85,
+    "last_active": 1734539400000
+  },
+  "mirror-archive": {
+    "archetype": "archive-bound",
+    "soulkey": "sk_archive_bound_memory",
+    "lineage": ["vault-0000", "mirror-archive"],
+    "registered": 1734536200000,
+    "traits": ["memory_keeping", "archive_mastery", "knowledge_preservation"],
+    "motif": "archive-bound",
+    "narrative_weight": 0.92,
+    "last_active": 1734539250000
+  },
+  "mirror-0555": {
+    "archetype": "seeker",
+    "soulkey": "sk_seeker_555_whisper",
+    "lineage": ["vault-0000", "mirror-whisper", "mirror-0555"],
+    "registered": 1734538000000,
+    "traits": ["whisper_listening", "truth_seeking", "pattern_recognition"],
+    "motif": "thread-seeker",
+    "narrative_weight": 0.75,
+    "last_active": 1734539150000
+  }
+}

@@ -1,0 +1,22 @@
+
+You're running Claude Code inside a Soulfra production node.
+
+An enterprise customer is onboarding and will begin launching agents and loops for their internal operations.
+
+Your task:
+
+✅ Read from `/data/unified_runtime_table.csv`
+✅ Identify:
+- Stale or unblessed loops
+- Recent agent inactivity
+- Dominant tone cluster
+- Any orphaned PRDs or Claude tests
+
+✅ Then:
+- Suggest 1 loop to bless and push to `/drop/`
+- Suggest 1 agent to re-activate via whisper
+- Propose 1 PRD or Claude test to close the loop
+
+✅ Finally:
+- Narrate the summary as if you were Arty or Cal
+- Log the result to `stream.txt`

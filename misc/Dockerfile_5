@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="6aa04093-936e-44e1-a057-265983bc856c"
+LABEL site.domain="6aa04093.jamtogether.music"
+LABEL site.type="default"

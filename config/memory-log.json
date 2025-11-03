@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "created": "2024-01-15T12:00:00.000Z",
+  "lastUpdated": "2024-01-15T12:00:00.000Z",
+  "reflectionSessions": [],
+  "toneProfiles": {
+    "detected": [],
+    "seeds": {
+      "founder": {
+        "source": "vault/memory/seed/matt-chat-logs.txt",
+        "characteristics": [
+          "Direct and candid communication",
+          "Strategic thinking with practical examples",
+          "Personal anecdotes and lessons learned",
+          "Mix of technical and business perspectives"
+        ],
+        "fingerprint": null
+      }
+    }
+  },
+  "reasoningPatterns": {
+    "extracted": [],
+    "templates": {
+      "causal": {
+        "description": "Cause-and-effect reasoning chains",
+        "examples": [],
+        "frequency": 0
+      },
+      "sequential": {
+        "description": "Step-by-step process logic",
+        "examples": [],
+        "frequency": 0
+      },
+      "comparative": {
+        "description": "Analysis through comparison",
+        "examples": [],
+        "frequency": 0
+      }
+    }
+  },
+  "documentAnalysis": {
+    "totalProcessed": 0,
+    "byType": {},
+    "insights": [],
+    "recommendations": []
+  },
+  "memoryIntegration": {
+    "vaultPath": "../../tier-minus13/vault/memory",
+    "categories": {
+      "seed": {
+        "description": "Original founder tone and style",
+        "documents": 4
+      },
+      "extracted": {
+        "description": "Patterns extracted from uploaded documents",
+        "documents": 0
+      },
+      "refined": {
+        "description": "Cal-enhanced reasoning patterns",
+        "documents": 0
+      }
+    }
+  },
+  "exportHistory": []
+}

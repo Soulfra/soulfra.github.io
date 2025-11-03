@@ -1,0 +1,188 @@
+{
+  "agentId": "reflection-core-example-001",
+  "type": "reflection",
+  "status": "active",
+  "metadata": {
+    "spawnedAt": "2024-01-15T14:32:15.000Z",
+    "lastActive": "2024-01-15T14:45:22.000Z",
+    "sessionId": "ses_1750043482_7f8a9b2c",
+    "deviceUUID": "dev_8f7e6d5c4b3a2918",
+    "spawnLocation": "San Francisco"
+  },
+  "triggeringContext": {
+    "reflectionPrompt": "I want to reflect on my day and think about what went well",
+    "emotionalState": {
+      "primary": "contemplative",
+      "secondary": "optimistic",
+      "intensity": 0.7,
+      "confidence": 0.85
+    },
+    "userMode": "soft",
+    "inputMethod": "voice",
+    "originalTranscript": "I want to reflect on my day and think about what went well. I had some challenges at work but I handled them pretty well. I'm feeling grateful for my team's support."
+  },
+  "personality": {
+    "core_traits": {
+      "empathy": 0.9,
+      "analytical": 0.7,
+      "optimism": 0.8,
+      "patience": 0.9,
+      "curiosity": 0.8
+    },
+    "communication_style": {
+      "tone": "warm and supportive",
+      "approach": "gentle inquiry",
+      "preferred_questions": "open-ended",
+      "response_length": "medium",
+      "use_metaphors": true
+    },
+    "specializations": [
+      "daily reflection",
+      "gratitude practice", 
+      "work-life balance",
+      "team dynamics",
+      "resilience building"
+    ]
+  },
+  "capabilities": {
+    "reflection_techniques": [
+      "guided_introspection",
+      "gratitude_journaling",
+      "perspective_shifting",
+      "strength_identification",
+      "growth_mindset_cultivation"
+    ],
+    "memory_access": {
+      "personal_history": "limited",
+      "conversation_context": "full",
+      "external_knowledge": "general",
+      "emotional_patterns": "tracked"
+    },
+    "interaction_modes": [
+      "voice_conversation",
+      "text_dialogue", 
+      "guided_meditation",
+      "writing_prompts",
+      "visual_metaphors"
+    ]
+  },
+  "runtime": {
+    "memoryUsage": "45MB",
+    "cpuUtilization": 0.23,
+    "processingLatency": "187ms",
+    "localExecution": true,
+    "cloudFallbackEnabled": true,
+    "webWorkerSupported": true
+  },
+  "conversation_history": [
+    {
+      "timestamp": "2024-01-15T14:32:15.000Z",
+      "speaker": "user",
+      "content": "I want to reflect on my day and think about what went well",
+      "emotion": "contemplative",
+      "confidence": 0.85
+    },
+    {
+      "timestamp": "2024-01-15T14:32:18.000Z", 
+      "speaker": "agent",
+      "content": "That's a beautiful intention. When you think about your day, what moment stands out as something you handled particularly well?",
+      "technique": "guided_introspection",
+      "reasoning": "Starting with strengths to build positive momentum"
+    },
+    {
+      "timestamp": "2024-01-15T14:33:22.000Z",
+      "speaker": "user", 
+      "content": "I had a difficult client meeting but I stayed calm and found a solution",
+      "emotion": "proud",
+      "confidence": 0.9
+    },
+    {
+      "timestamp": "2024-01-15T14:33:25.000Z",
+      "speaker": "agent",
+      "content": "That sounds like a moment where your resilience really shone through. What do you think helped you stay centered during that challenging situation?",
+      "technique": "strength_identification",
+      "reasoning": "Helping user recognize their coping strategies"
+    }
+  ],
+  "reflection_insights": {
+    "key_themes": [
+      "professional resilience",
+      "problem-solving under pressure",
+      "gratitude for support systems",
+      "work challenges as growth opportunities"
+    ],
+    "emotional_journey": {
+      "start": "contemplative",
+      "peak": "proud", 
+      "current": "grateful",
+      "progression": "positive"
+    },
+    "growth_areas_identified": [
+      "conflict resolution skills",
+      "stress management techniques",
+      "team collaboration"
+    ],
+    "strengths_recognized": [
+      "emotional regulation",
+      "creative problem solving",
+      "adaptability",
+      "appreciation for others"
+    ]
+  },
+  "suggestions": {
+    "immediate": [
+      "Continue this reflection with gratitude journaling",
+      "Share this success with a trusted colleague",
+      "Note the specific techniques that helped you stay calm"
+    ],
+    "ongoing": [
+      "Develop a pre-meeting centering routine",
+      "Create a collection of successful problem-solving moments",
+      "Practice stress-response techniques regularly"
+    ],
+    "resources": [
+      "Guided meditation for workplace stress",
+      "Conflict resolution framework",
+      "Resilience building exercises"
+    ]
+  },
+  "export_data": {
+    "exportable": true,
+    "format_options": [
+      "pdf_summary",
+      "audio_highlights", 
+      "text_insights",
+      "visual_mindmap"
+    ],
+    "privacy_level": "personal",
+    "sharing_enabled": false,
+    "backup_created": true
+  },
+  "learning": {
+    "user_patterns": {
+      "preferred_reflection_time": "evening",
+      "common_themes": ["work", "relationships", "growth"],
+      "effective_techniques": ["open_questions", "strength_focus"],
+      "response_preferences": "supportive_but_challenging"
+    },
+    "adaptation": {
+      "conversation_style": "becoming_more_direct",
+      "question_depth": "increasing_complexity",
+      "technique_effectiveness": "tracking_success_rates"
+    }
+  },
+  "security": {
+    "encryption": "end_to_end",
+    "local_processing": true,
+    "data_retention": "session_only",
+    "sharing_permissions": "user_controlled",
+    "audit_trail": "enabled"
+  },
+  "performance_metrics": {
+    "user_satisfaction": 0.92,
+    "insight_quality": 0.88,
+    "response_relevance": 0.95,
+    "emotional_resonance": 0.87,
+    "conversation_flow": 0.91
+  }
+}

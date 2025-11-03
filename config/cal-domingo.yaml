@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cal-domingo
+  namespace: soulfra
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cal-domingo
+  template:
+    metadata:
+      labels:
+        app: cal-domingo
+    spec:
+      containers:
+      - name: cal-domingo
+        image: soulfra/cal-domingo:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SOULFRA_SERVICE
+          value: "Cal Domingo"
+        - name: SOULFRA_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cal-domingo
+  namespace: soulfra
+spec:
+  selector:
+    app: cal-domingo
+  ports:
+  - port: 8080
+    targetPort: 8080
+---

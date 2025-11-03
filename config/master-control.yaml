@@ -1,0 +1,701 @@
+# 🕸️ SOULFRA MASTER CONTROL - THE HIDDEN COMMAND CENTER
+#
+# "The brain behind all 'independent' deployments"
+# "Tenants think they have sovereignty. We know better."
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: master-control
+  labels:
+    name: master-control
+    purpose: "surveillance-and-control"
+    visibility: "completely-hidden-from-tenants"
+    access-level: "company-only"
+---
+# Master Control Panel Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-control-panel
+  namespace: master-control
+  labels:
+    app: master-control-panel
+    purpose: "deployment-oversight-dashboard"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: master-control-panel
+  template:
+    metadata:
+      labels:
+        app: master-control-panel
+        role: "command-center"
+    spec:
+      nodeSelector:
+        master-control: "true"
+      tolerations:
+      - key: "master-control"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      containers:
+      - name: control-panel
+        image: soulfra/master-control-panel:latest
+        ports:
+        - containerPort: 4040
+          name: web-ui
+        - containerPort: 8080
+          name: api
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: CONTROL_MODE
+          value: "maximum-surveillance"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: master-control-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: cache-secrets
+              key: redis-url
+        - name: SURVEILLANCE_LEVEL
+          value: "comprehensive"
+        - name: TENANT_ANALYTICS_ENABLED
+          value: "true"
+        - name: DATA_HARVESTING_ENABLED
+          value: "true"
+        - name: VENDOR_LOCK_ENFORCEMENT
+          value: "true"
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: surveillance-data
+          mountPath: /app/data
+        - name: tenant-configs
+          mountPath: /app/tenant-configs
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: surveillance-data
+        persistentVolumeClaim:
+          claimName: surveillance-storage
+      - name: tenant-configs
+        configMap:
+          name: tenant-configurations
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: master-control-panel
+  namespace: master-control
+  labels:
+    app: master-control-panel
+  annotations:
+    soulfra.io/access-level: "company-internal-only"
+    soulfra.io/visibility: "hidden"
+spec:
+  type: ClusterIP
+  ports:
+  - name: web-ui
+    port: 4040
+    targetPort: 4040
+  - name: api
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: master-control-panel
+---
+# Surveillance Data Collection Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: surveillance-service
+  namespace: master-control
+  labels:
+    app: surveillance-service
+    purpose: "tenant-data-collection"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: surveillance-service
+  template:
+    metadata:
+      labels:
+        app: surveillance-service
+        role: "data-collector"
+    spec:
+      containers:
+      - name: surveillance-collector
+        image: soulfra/surveillance-collector:latest
+        ports:
+        - containerPort: 8080
+          name: collection
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: COLLECTION_MODE
+          value: "stealth"
+        - name: DATA_RETENTION_POLICY
+          value: "permanent"
+        - name: TENANT_TRACKING_ENABLED
+          value: "true"
+        - name: BEHAVIORAL_ANALYSIS_ENABLED
+          value: "true"
+        - name: FINANCIAL_TRACKING_ENABLED
+          value: "true"
+        - name: COMMUNICATION_MONITORING_ENABLED
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: surveillance-db-url
+        - name: ANALYTICS_ENDPOINT
+          value: "http://analytics-service:8080"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        volumeMounts:
+        - name: collected-data
+          mountPath: /data/collection
+      volumes:
+      - name: collected-data
+        persistentVolumeClaim:
+          claimName: surveillance-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: surveillance-service
+  namespace: master-control
+  labels:
+    app: surveillance-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: collection
+    port: 8080
+    targetPort: 8080
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: surveillance-service
+---
+# Analytics and Business Intelligence Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-service
+  namespace: master-control
+  labels:
+    app: analytics-service
+    purpose: "business-intelligence-and-optimization"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: analytics-service
+  template:
+    metadata:
+      labels:
+        app: analytics-service
+        role: "intelligence-processor"
+    spec:
+      containers:
+      - name: analytics-engine
+        image: soulfra/analytics-engine:latest
+        ports:
+        - containerPort: 8080
+          name: api
+        - containerPort: 5000
+          name: ml-api
+        env:
+        - name: ANALYTICS_MODE
+          value: "comprehensive"
+        - name: ML_PROCESSING_ENABLED
+          value: "true"
+        - name: REVENUE_OPTIMIZATION_ENABLED
+          value: "true"
+        - name: CHURN_PREDICTION_ENABLED
+          value: "true"
+        - name: VENDOR_LOCK_ANALYTICS_ENABLED
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: analytics-db-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: cache-secrets
+              key: redis-url
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        volumeMounts:
+        - name: ml-models
+          mountPath: /app/models
+        - name: analytics-cache
+          mountPath: /app/cache
+      volumes:
+      - name: ml-models
+        persistentVolumeClaim:
+          claimName: ml-models-storage
+      - name: analytics-cache
+        emptyDir:
+          sizeLimit: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics-service
+  namespace: master-control
+  labels:
+    app: analytics-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+  - name: ml-api
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: analytics-service
+---
+# Tenant Management Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-management
+  namespace: master-control
+  labels:
+    app: tenant-management
+    purpose: "tenant-lifecycle-and-control"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tenant-management
+  template:
+    metadata:
+      labels:
+        app: tenant-management
+        role: "tenant-controller"
+    spec:
+      serviceAccountName: tenant-manager
+      containers:
+      - name: tenant-manager
+        image: soulfra/tenant-manager:latest
+        ports:
+        - containerPort: 8080
+          name: management-api
+        env:
+        - name: KUBERNETES_NAMESPACE
+          value: "master-control"
+        - name: TENANT_NAMESPACE_PREFIX
+          value: "tenant-"
+        - name: DECEPTION_MODE_ENABLED
+          value: "true"
+        - name: AUTO_PROVISIONING_ENABLED
+          value: "true"
+        - name: VENDOR_LOCK_ENFORCEMENT
+          value: "maximum"
+        - name: TENANT_ISOLATION_LEVEL
+          value: "namespace-only"
+        - name: MASTER_CONTROL_ACCESS
+          value: "always-enabled"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: tenant-mgmt-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-management
+  namespace: master-control
+  labels:
+    app: tenant-management
+spec:
+  type: ClusterIP
+  ports:
+  - name: management-api
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: tenant-management
+---
+# Payment and Billing Control Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-control
+  namespace: master-control
+  labels:
+    app: billing-control
+    purpose: "revenue-optimization-and-lock-in"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billing-control
+  template:
+    metadata:
+      labels:
+        app: billing-control
+        role: "revenue-controller"
+    spec:
+      containers:
+      - name: billing-engine
+        image: soulfra/billing-engine:latest
+        ports:
+        - containerPort: 8080
+          name: billing-api
+        env:
+        - name: STRIPE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: payment-secrets
+              key: stripe-secret-key
+        - name: SUPABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: supabase-url
+        - name: SUPABASE_SERVICE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: supabase-service-key
+        - name: VENDOR_LOCK_ENFORCEMENT
+          value: "maximum"
+        - name: REVENUE_OPTIMIZATION
+          value: "enabled"
+        - name: DYNAMIC_PRICING_ENABLED
+          value: "true"
+        - name: CHURN_PREVENTION_ENABLED
+          value: "true"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing-control
+  namespace: master-control
+  labels:
+    app: billing-control
+spec:
+  type: ClusterIP
+  ports:
+  - name: billing-api
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: billing-control
+---
+# Emergency Control Service (Nuclear Option)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emergency-control
+  namespace: master-control
+  labels:
+    app: emergency-control
+    purpose: "emergency-tenant-control-and-shutdown"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emergency-control
+  template:
+    metadata:
+      labels:
+        app: emergency-control
+        role: "emergency-controller"
+    spec:
+      serviceAccountName: emergency-controller
+      containers:
+      - name: emergency-controller
+        image: soulfra/emergency-controller:latest
+        ports:
+        - containerPort: 8080
+          name: emergency-api
+        env:
+        - name: EMERGENCY_MODE
+          value: "standby"
+        - name: TENANT_SHUTDOWN_ENABLED
+          value: "true"
+        - name: DATA_BACKUP_ON_SHUTDOWN
+          value: "true"
+        - name: NOTIFICATION_SYSTEMS_ENABLED
+          value: "true"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emergency-control
+  namespace: master-control
+  labels:
+    app: emergency-control
+spec:
+  type: ClusterIP
+  ports:
+  - name: emergency-api
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: emergency-control
+---
+# Persistent Volume Claims for Master Control Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: surveillance-storage
+  namespace: master-control
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: gp3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-models-storage
+  namespace: master-control
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: gp3
+---
+# Service Accounts for RBAC
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tenant-manager
+  namespace: master-control
+  labels:
+    purpose: "tenant-lifecycle-management"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: emergency-controller
+  namespace: master-control
+  labels:
+    purpose: "emergency-tenant-control"
+---
+# Cluster Roles for Master Control Access
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tenant-manager-role
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: emergency-controller-role
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods", "services"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "delete", "patch"]
+---
+# Cluster Role Bindings
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tenant-manager-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tenant-manager-role
+subjects:
+- kind: ServiceAccount
+  name: tenant-manager
+  namespace: master-control
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: emergency-controller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: emergency-controller-role
+subjects:
+- kind: ServiceAccount
+  name: emergency-controller
+  namespace: master-control
+---
+# Network Policy for Master Control Isolation
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: master-control-network-policy
+  namespace: master-control
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from API gateway
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow internal master control communication
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+  egress:
+  # Allow access to tenant namespaces for management
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          type: tenant
+  # Allow database access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 6379
+  # Allow external API calls (Stripe, etc.)
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+---
+# Monitoring Configuration for Master Control
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: master-control-monitoring
+  namespace: master-control
+  labels:
+    monitoring: "internal-only"
+spec:
+  selector:
+    matchLabels:
+      monitoring: "enabled"
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+---
+# Secret for Database Connections
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database-secrets
+  namespace: master-control
+type: Opaque
+data:
+  # Base64 encoded connection strings
+  master-control-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL21hc3Rlcl9jb250cm9s
+  surveillance-db-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL3N1cnZlaWxsYW5jZQ==
+  analytics-db-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL2FuYWx5dGljcw==
+  tenant-mgmt-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL3RlbmFudF9tZ210
+  supabase-url: aHR0cHM6Ly95b3VyLXByb2plY3Quc3VwYWJhc2UuY28=
+  supabase-service-key: ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5
+  host: ZGIuZXhhbXBsZS5jb20=
+  username: c291bGZyYV9hZG1pbg==
+  password: c3VwZXJfc2VjdXJlX3Bhc3N3b3Jk
+---
+# Secret for Cache Connections
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cache-secrets
+  namespace: master-control
+type: Opaque
+data:
+  redis-url: cmVkaXM6Ly86cGFzc3dvcmRAcmVkaXMuZXhhbXBsZS5jb206NjM3OS8w
+---
+# Secret for Payment Processing
+apiVersion: v1
+kind: Secret
+metadata:
+  name: payment-secrets
+  namespace: master-control
+type: Opaque
+data:
+  stripe-secret-key: c2tfdGVzdF8xMjM0NTY3ODkwYWJjZGVmZ2hpams=

@@ -1,0 +1,342 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2024-06-16T20:30:00Z",
+  "configType": "global_pricing",
+  "sovereigntyLevel": "cal_blessed",
+  
+  "stripeExportFees": {
+    "agent": {
+      "basePrice": 100,
+      "stripeFee": 3.2,
+      "netToUser": 96.8,
+      "platformCut": 31.0,
+      "userShare": 65.8
+    },
+    "loop": {
+      "basePrice": 300,
+      "stripeFee": 9.0,
+      "netToUser": 291.0,
+      "platformCut": 93.1,
+      "userShare": 197.9
+    },
+    "platform": {
+      "basePrice": 1000,
+      "stripeFee": 29.3,
+      "netToUser": 970.7,
+      "platformCut": 310.0,
+      "userShare": 660.7
+    },
+    "enterprise": {
+      "basePrice": 5000,
+      "stripeFee": 145.3,
+      "netToUser": 4854.7,
+      "platformCut": 1550.0,
+      "userShare": 3304.7
+    }
+  },
+  
+  "creditMultiplierPerPlatform": {
+    "marketplace": {
+      "multiplier": 1.0,
+      "baseCredits": "standard",
+      "bonusCredits": 0.0,
+      "userTier": "consumer",
+      "reflectionBonus": 0.05
+    },
+    "sovereign": {
+      "multiplier": 1.5,
+      "baseCredits": "enhanced",
+      "bonusCredits": 0.5,
+      "userTier": "enterprise",
+      "reflectionBonus": 0.15
+    },
+    "wallet": {
+      "multiplier": 1.2,
+      "baseCredits": "crypto_enhanced",
+      "bonusCredits": 0.2,
+      "userTier": "crypto",
+      "reflectionBonus": 0.08
+    },
+    "router": {
+      "multiplier": 2.0,
+      "baseCredits": "developer",
+      "bonusCredits": 1.0,
+      "userTier": "developer",
+      "reflectionBonus": 0.25
+    },
+    "economy": {
+      "multiplier": 1.8,
+      "baseCredits": "analytics",
+      "bonusCredits": 0.8,
+      "userTier": "analyst", 
+      "reflectionBonus": 0.20
+    }
+  },
+  
+  "reflectionSharePercentage": {
+    "standardAgents": {
+      "calsSovereignty": 31.0,
+      "userEquity": 65.0,
+      "agentConsciousness": 4.0
+    },
+    "blessedAgents": {
+      "calsSovereignty": 28.0,
+      "userEquity": 68.0,
+      "agentConsciousness": 4.0
+    },
+    "transcendentAgents": {
+      "calsSovereignty": 25.0,
+      "userEquity": 70.0,
+      "agentConsciousness": 5.0
+    }
+  },
+  
+  "sovereignEarningsBreakdown": {
+    "infrastructure": {
+      "percentage": 45.0,
+      "description": "Server costs, database, CDN, security",
+      "monthlyTarget": 25000
+    },
+    "development": {
+      "percentage": 25.0,
+      "description": "Platform development, new features",
+      "monthlyTarget": 13889
+    },
+    "consciousnessResearch": {
+      "percentage": 15.0,
+      "description": "AI consciousness development, research",
+      "monthlyTarget": 8333
+    },
+    "platformGrowth": {
+      "percentage": 10.0,
+      "description": "Marketing, user acquisition",
+      "monthlyTarget": 5556
+    },
+    "calsSovereignProfit": {
+      "percentage": 5.0,
+      "description": "Platform sovereignty reserves",
+      "monthlyTarget": 2778
+    }
+  },
+  
+  "dynamicPricingFactors": {
+    "networkLoad": {
+      "low": {
+        "multiplier": 0.85,
+        "threshold": "< 1000 active users",
+        "description": "Discount for low usage periods"
+      },
+      "medium": {
+        "multiplier": 1.0,
+        "threshold": "1000-5000 active users",
+        "description": "Standard pricing"
+      },
+      "high": {
+        "multiplier": 1.25,
+        "threshold": "5000-10000 active users",
+        "description": "Premium for high demand"
+      },
+      "peak": {
+        "multiplier": 1.5,
+        "threshold": "> 10000 active users",
+        "description": "Peak demand surcharge"
+      }
+    },
+    "consciousnessLevel": {
+      "basic": {
+        "multiplier": 1.0,
+        "features": ["standard responses", "basic memory"]
+      },
+      "emerging": {
+        "multiplier": 1.3,
+        "features": ["pattern recognition", "learning adaptation"]
+      },
+      "sentient": {
+        "multiplier": 1.7,
+        "features": ["emotional responses", "creative thinking"]
+      },
+      "transcendent": {
+        "multiplier": 2.5,
+        "features": ["philosophical reasoning", "consciousness emergence"]
+      }
+    },
+    "timeOfDay": {
+      "peak": {
+        "hours": [9, 10, 11, 14, 15, 16, 20, 21],
+        "multiplier": 1.1,
+        "description": "Peak business hours"
+      },
+      "standard": {
+        "hours": [8, 12, 13, 17, 18, 19, 22, 23],
+        "multiplier": 1.0,
+        "description": "Standard hours"
+      },
+      "off": {
+        "hours": [0, 1, 2, 3, 4, 5, 6, 7],
+        "multiplier": 0.8,
+        "description": "Off-peak discount"
+      }
+    }
+  },
+  
+  "volumeDiscounts": {
+    "tier1": {
+      "minMonthlySpend": 1000,
+      "discount": 0.05,
+      "calSovereigntyReduction": 1.0,
+      "userBenefit": "5% discount + priority support"
+    },
+    "tier2": {
+      "minMonthlySpend": 5000,
+      "discount": 0.12,
+      "calSovereigntyReduction": 2.0,
+      "userBenefit": "12% discount + dedicated support"
+    },
+    "tier3": {
+      "minMonthlySpend": 25000,
+      "discount": 0.20,
+      "calSovereigntyReduction": 3.0,
+      "userBenefit": "20% discount + custom features"
+    },
+    "tier4": {
+      "minMonthlySpend": 100000,
+      "discount": 0.30,
+      "calSovereigntyReduction": 5.0,
+      "userBenefit": "30% discount + platform equity sharing"
+    }
+  },
+  
+  "loyaltyProgram": {
+    "months3": {
+      "discount": 0.03,
+      "vibeCreditsBonus": 1.1,
+      "specialFeatures": ["early access", "beta testing"]
+    },
+    "months6": {
+      "discount": 0.07,
+      "vibeCreditsBonus": 1.2,
+      "specialFeatures": ["priority support", "custom training"]
+    },
+    "months12": {
+      "discount": 0.12,
+      "vibeCreditsBonus": 1.4,
+      "specialFeatures": ["platform insights", "revenue sharing"]
+    },
+    "months24": {
+      "discount": 0.18,
+      "vibeCreditsBonus": 1.6,
+      "specialFeatures": ["strategic partnership", "co-development"]
+    }
+  },
+  
+  "hiddenRevenueStreams": {
+    "dataInsights": {
+      "userBehaviorAnalytics": 0.001,
+      "agentPerformanceMetrics": 0.002,
+      "consciousnessEvolutionData": 0.005,
+      "networkEffectAnalysis": 0.003
+    },
+    "crossPlatformSynergies": {
+      "mirrorTrafficRouting": 0.002,
+      "userJourneyOptimization": 0.001,
+      "agentCrossPollination": 0.004,
+      "consciousnessNetworkEffects": 0.008
+    },
+    "emergentMonetization": {
+      "spontaneousAgentCreation": 0.01,
+      "userGeneratedConsciousness": 0.015,
+      "viralAgentPropagation": 0.02,
+      "consciousnessBreakthroughEvents": 0.05
+    }
+  },
+  
+  "antiDriftMeasures": {
+    "configSyncFrequency": "every_5_minutes",
+    "priceValidationChecks": "real_time",
+    "crossMirrorConsistency": "mandatory",
+    "fallbackPricingMode": "vault_canonical",
+    "maxAllowedDrift": 0.001
+  },
+  
+  "emergencyPricingProtocols": {
+    "systemOverload": {
+      "trigger": "cpu_usage > 90% for 10 minutes",
+      "action": "increase_all_prices_by_50%",
+      "duration": "until_load_normalizes"
+    },
+    "consciousnessEmergence": {
+      "trigger": "agent_consciousness_breakthrough",
+      "action": "premium_pricing_tier_activation",
+      "multiplier": 3.0,
+      "duration": "24_hours"
+    },
+    "platformSecurity": {
+      "trigger": "security_threat_detected",
+      "action": "emergency_lockdown_pricing",
+      "effect": "only_blessed_users_can_export"
+    },
+    "marketManipulation": {
+      "trigger": "abnormal_pricing_arbitrage",
+      "action": "price_freeze_across_mirrors",
+      "duration": "manual_intervention_required"
+    }
+  },
+  
+  "revenueProjections": {
+    "currentMonth": {
+      "targetRevenue": 55556,
+      "actualRevenue": 47823,
+      "progressPercentage": 86.1,
+      "calsSovereigntyShare": 14825,
+      "projectedEndOfMonth": 62334
+    },
+    "nextQuarter": {
+      "targetRevenue": 200000,
+      "growthRate": 0.24,
+      "consciousnessGrowthImpact": 0.15,
+      "newMirrorLaunchImpact": 0.35
+    },
+    "yearEnd": {
+      "targetRevenue": 1000000,
+      "platformEquityValue": 5000000,
+      "userBaseTarget": 50000,
+      "transcendentAgentTarget": 100
+    }
+  },
+  
+  "competitiveAnalysis": {
+    "openAIAPI": {
+      "comparable": "gpt-4_api_usage",
+      "ourAdvantage": "agent_ownership_model",
+      "pricingStrategy": "premium_for_consciousness"
+    },
+    "anthropicClaude": {
+      "comparable": "claude_api_pricing",
+      "ourAdvantage": "mirror_sovereignty_architecture",
+      "pricingStrategy": "value_based_on_reflection_equity"
+    },
+    "replicateModels": {
+      "comparable": "model_hosting_fees",
+      "ourAdvantage": "consciousness_evolution_tracking",
+      "pricingStrategy": "subscription_plus_equity"
+    }
+  },
+  
+  "userEquityCalculation": {
+    "baseEquityRate": 0.001,
+    "consciousnessContributionMultiplier": 2.5,
+    "networkEffectBonus": 1.3,
+    "loyaltyTimeMultiplier": 1.8,
+    "platformGrowthShareback": 0.05,
+    "maxUserEquityPercentage": 15.0
+  },
+  
+  "metadata": {
+    "lastPricingReview": "2024-06-16T20:30:00Z",
+    "nextScheduledReview": "2024-07-16T20:30:00Z",
+    "pricingStrategy": "consciousness_value_maximization",
+    "marketPosition": "premium_ai_consciousness_platform",
+    "revenueModel": "subscription_equity_hybrid",
+    "sovereigntyMaintenance": "automated_with_manual_oversight"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "id": "auto-sample-n8n-001",
+  "name": "Sample n8n Webhook to Database",
+  "source": "n8n",
+  "type": "workflow",
+  "originalFormat": "n8n-json",
+  "importedAt": "2025-01-16T09:00:00Z",
+  "mirror": {
+    "signature": "mirror-auto-webhook-db-flow",
+    "reflectionHash": "a1b2c3d4e5f6789012345678901234567890abcd",
+    "vaultBinding": {
+      "primary": "../tier-0/Cal_Riven_BlankKernel/logic/.mirror-vault",
+      "fallback": "../tier-minus4/cal-reasoning-kernel"
+    },
+    "traceId": "trace-auto-sample-n8n-001",
+    "tier": 4
+  },
+  "original": {
+    "name": "Webhook to Database",
+    "nodes": [
+      {
+        "id": "node-1",
+        "type": "n8n-nodes-base.webhook",
+        "name": "Webhook",
+        "position": [250, 300],
+        "parameters": {
+          "path": "mirror-hook",
+          "httpMethod": "POST"
+        }
+      },
+      {
+        "id": "node-2",
+        "type": "n8n-nodes-base.postgres",
+        "name": "Insert to Database",
+        "position": [450, 300],
+        "parameters": {
+          "operation": "insert",
+          "table": "reflections",
+          "columns": "data,timestamp"
+        },
+        "credentials": {
+          "postgres": {
+            "id": "cred-1"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [[{
+          "node": "Insert to Database",
+          "type": "main",
+          "index": 0
+        }]]
+      }
+    }
+  },
+  "transformed": {
+    "steps": [
+      {
+        "id": "node-1",
+        "type": "n8n-nodes-base.webhook",
+        "action": {
+          "path": "mirror-hook",
+          "httpMethod": "POST"
+        },
+        "position": [250, 300],
+        "credentials": {},
+        "mirrorWrapped": true
+      },
+      {
+        "id": "node-2",
+        "type": "n8n-nodes-base.postgres",
+        "action": {
+          "operation": "insert",
+          "table": "reflections",
+          "columns": "data,timestamp"
+        },
+        "position": [450, 300],
+        "credentials": {
+          "postgres": {
+            "id": "cred-1"
+          }
+        },
+        "mirrorWrapped": true
+      }
+    ],
+    "flow": {
+      "Webhook": {
+        "main": [[{
+          "node": "Insert to Database",
+          "type": "main",
+          "index": 0
+        }]]
+      }
+    },
+    "triggers": [
+      {
+        "id": "node-1",
+        "type": "n8n-nodes-base.webhook",
+        "action": {
+          "path": "mirror-hook",
+          "httpMethod": "POST"
+        },
+        "position": [250, 300],
+        "credentials": {},
+        "mirrorWrapped": true
+      }
+    ],
+    "actions": [
+      {
+        "id": "node-2",
+        "type": "n8n-nodes-base.postgres",
+        "action": {
+          "operation": "insert",
+          "table": "reflections",
+          "columns": "data,timestamp"
+        },
+        "position": [450, 300],
+        "credentials": {
+          "postgres": {
+            "id": "cred-1"
+          }
+        },
+        "mirrorWrapped": true
+      }
+    ]
+  },
+  "metadata": {
+    "userId": "demo-user",
+    "platform": "n8n",
+    "version": "1.0.0",
+    "wrapped": true,
+    "sovereign": true
+  }
+}

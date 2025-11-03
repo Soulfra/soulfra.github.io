@@ -1,0 +1,156 @@
+{
+  "pipeline": {
+    "name": "MirrorOS Reasoning Pipeline",
+    "version": "1.0.0",
+    "stages": [
+      {
+        "id": "input-validation",
+        "type": "filter",
+        "config": {
+          "maxLength": 4000,
+          "sanitize": true,
+          "rejectPatterns": [
+            "^\\s*$",
+            "(?i)(ignore|bypass|override).*instructions",
+            "(?i)reveal.*system.*prompt"
+          ]
+        }
+      },
+      {
+        "id": "qr-verification",
+        "type": "gate",
+        "config": {
+          "requiredField": "qrCode",
+          "validValues": ["qr-founder-0000", "qr-riven-001", "qr-user-0821"]
+        }
+      },
+      {
+        "id": "memory-injection",
+        "type": "enhancer",
+        "config": {
+          "source": "vault/memory-bank",
+          "contextWindow": 5,
+          "relevanceThreshold": 0.7
+        }
+      },
+      {
+        "id": "transformation-layer",
+        "type": "transformer",
+        "config": {
+          "conditional": true,
+          "transformers": [
+            {
+              "name": "npc-wrapper",
+              "enabled": "${options.useShield}",
+              "module": "../../mesh-shield/npc-wrapper"
+            },
+            {
+              "name": "cringe-layer",
+              "enabled": "${options.useCringe}",
+              "module": "../../mesh-shield/cringe-layer"
+            },
+            {
+              "name": "tone-diffusion",
+              "enabled": "${options.useTone}",
+              "module": "../../mesh-shield/tone-diffusion"
+            }
+          ]
+        }
+      },
+      {
+        "id": "reasoning-kernel",
+        "type": "processor",
+        "config": {
+          "module": "../../tier-minus4/cal-reasoning-kernel/cal-reflect-core",
+          "fallbackToPassthrough": true,
+          "injectContext": {
+            "tier": -3,
+            "component": "llm-router",
+            "timestamp": "${Date.now()}"
+          }
+        }
+      },
+      {
+        "id": "llm-routing",
+        "type": "router",
+        "config": {
+          "strategy": "priority-fallback",
+          "routes": [
+            {
+              "name": "claude",
+              "connector": "./connectors/claude-connector",
+              "priority": 1,
+              "condition": "${keys.claude && keys.claude !== 'default'}"
+            },
+            {
+              "name": "openai",
+              "connector": "./connectors/openai-connector",
+              "priority": 2,
+              "condition": "${keys.openai}"
+            },
+            {
+              "name": "ollama",
+              "connector": "./connectors/ollama-connector",
+              "priority": 3,
+              "condition": "${keys.ollama}"
+            },
+            {
+              "name": "local",
+              "connector": "./connectors/local-connector",
+              "priority": 4,
+              "condition": "true"
+            }
+          ]
+        }
+      },
+      {
+        "id": "response-caching",
+        "type": "cache",
+        "config": {
+          "strategy": "lru",
+          "maxSize": 100,
+          "ttl": 300000,
+          "keyGenerator": "md5(prompt + llm)"
+        }
+      },
+      {
+        "id": "vault-logging",
+        "type": "logger",
+        "config": {
+          "destination": "vault/tier3-reflections.json",
+          "fields": ["sessionId", "timestamp", "prompt", "response", "llm", "metadata"],
+          "maxEntries": 500,
+          "compression": false
+        }
+      }
+    ]
+  },
+  "error_handling": {
+    "retry_strategy": {
+      "maxAttempts": 3,
+      "backoffMultiplier": 2,
+      "initialDelay": 1000
+    },
+    "fallback_chain": ["claude", "openai", "ollama", "local"],
+    "circuit_breaker": {
+      "enabled": true,
+      "failureThreshold": 5,
+      "resetTimeout": 60000
+    }
+  },
+  "performance": {
+    "parallel_stages": ["transformation-layer", "memory-injection"],
+    "timeout_per_stage": 30000,
+    "total_timeout": 120000
+  },
+  "monitoring": {
+    "metrics": {
+      "stage_latency": true,
+      "success_rate": true,
+      "cache_hit_rate": true,
+      "llm_usage": true
+    },
+    "export_interval": 60000,
+    "export_path": "vault/metrics/tier3-metrics.json"
+  }
+}

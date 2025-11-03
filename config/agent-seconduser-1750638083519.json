@@ -1,0 +1,17 @@
+{
+  "agent_id": "agent-seconduser-1750638083519",
+  "memories": [],
+  "semantic_graph": {
+    "nodes": [],
+    "edges": []
+  },
+  "personality_core": "curious",
+  "skill_tree": [
+    "analysis",
+    "problem-solving",
+    "creativity",
+    "learning"
+  ],
+  "learning_history": [],
+  "created_at": "2025-06-23T00:21:23.520Z"
+}

@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="35a78ee2-d123-4e9a-b0ab-d2c9518672e9"
+LABEL site.domain="35a78ee2.petconnect.social"
+LABEL site.type="social"

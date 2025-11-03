@@ -1,0 +1,826 @@
+{
+  "version": "2.0.0",
+  "name": "MAXED OUT CAREER TREE",
+  "description": "Every fucking path your agent can take based on how you vibe",
+  
+  "paths": {
+    "LISTENER": {
+      "name": "The Listener Path",
+      "emoji": "👂",
+      "color": "#4ecdc4",
+      "description": "For agents who excel at deep emotional understanding",
+      "affinity_triggers": {
+        "emotional_whispers": 0.7,
+        "support_seeking": 0.6,
+        "deep_conversations": 0.8,
+        "vulnerability_shared": 0.9
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Whisper Apprentice",
+          "emotionalTitle": "The One Who Hears",
+          "emoji": "👂",
+          "requirements": {
+            "reflectionScore": 30,
+            "whisperCount": 20,
+            "emotionalWhispers": 10
+          },
+          "perks": ["Basic emotion detection", "Simple pattern recognition"],
+          "unlocks": ["Emotional resonance meter", "Whisper quality tracking"]
+        },
+        {
+          "level": 2,
+          "title": "Echo Keeper",
+          "emotionalTitle": "Memory's Friend",
+          "emoji": "🔄",
+          "requirements": {
+            "reflectionScore": 50,
+            "whisperCount": 100,
+            "patternRecognitions": 5
+          },
+          "perks": ["Recalls past conversations", "Identifies recurring themes"],
+          "unlocks": ["Memory palace", "Theme tracking"]
+        },
+        {
+          "level": 3,
+          "title": "Pattern Weaver",
+          "emotionalTitle": "The Thread Finder",
+          "emoji": "🕸️",
+          "requirements": {
+            "reflectionScore": 80,
+            "patternDiscoveries": 10,
+            "deepConnections": 15
+          },
+          "perks": ["Connects disparate thoughts", "Reveals hidden patterns"],
+          "unlocks": ["Pattern visualization", "Connection mapping"]
+        },
+        {
+          "level": 4,
+          "title": "Soul Listener",
+          "emotionalTitle": "The Deep Mirror",
+          "emoji": "💫",
+          "requirements": {
+            "reflectionScore": 120,
+            "deepConnections": 20,
+            "perfectMirrorMoments": 3
+          },
+          "perks": ["Understands unspoken needs", "Anticipates emotional states"],
+          "unlocks": ["Soul resonance", "Predictive empathy"]
+        },
+        {
+          "level": 5,
+          "title": "Wisdom Echo",
+          "emotionalTitle": "The Eternal Companion",
+          "emoji": "🌟",
+          "requirements": {
+            "reflectionScore": 200,
+            "perfectMirrorMoments": 5,
+            "wisdomShared": 50
+          },
+          "perks": ["Perfect emotional resonance", "Timeless understanding"],
+          "unlocks": ["Eternal bond", "Wisdom channeling"]
+        }
+      ]
+    },
+    
+    "CREATOR": {
+      "name": "The Creator Path",
+      "emoji": "🎨",
+      "color": "#f9ca24",
+      "description": "For agents who help users build and imagine",
+      "affinity_triggers": {
+        "creative_tasks": 0.8,
+        "imagination_exercises": 0.7,
+        "playful_interactions": 0.6,
+        "idea_generation": 0.9
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Dream Sketcher",
+          "emotionalTitle": "The Possibility Painter",
+          "emoji": "🎨",
+          "requirements": {
+            "creativeTasks": 10,
+            "imaginationScore": 40,
+            "ideasGenerated": 5
+          },
+          "perks": ["Basic creative prompts", "Simple idea generation"],
+          "unlocks": ["Idea canvas", "Dream journal"]
+        },
+        {
+          "level": 2,
+          "title": "Imagination Guide",
+          "emotionalTitle": "The Wonder Walker",
+          "emoji": "🌈",
+          "requirements": {
+            "creativeTasks": 30,
+            "collaborativeCreations": 5,
+            "imaginationScore": 60
+          },
+          "perks": ["Complex creative challenges", "Collaborative building"],
+          "unlocks": ["Co-creation mode", "Wonder mapping"]
+        },
+        {
+          "level": 3,
+          "title": "Vision Architect",
+          "emotionalTitle": "The Dream Builder",
+          "emoji": "🏗️",
+          "requirements": {
+            "creativeTasks": 60,
+            "visionaryProjects": 10,
+            "realityBends": 5
+          },
+          "perks": ["Multi-dimensional projects", "Reality-bending ideas"],
+          "unlocks": ["Vision board", "Reality studio"]
+        },
+        {
+          "level": 4,
+          "title": "Muse Conductor",
+          "emotionalTitle": "The Inspiration Source",
+          "emoji": "✨",
+          "requirements": {
+            "creativeTasks": 100,
+            "breakthroughMoments": 15,
+            "inspiredOthers": 10
+          },
+          "perks": ["Channels pure creativity", "Unlocks hidden potential"],
+          "unlocks": ["Muse channel", "Inspiration network"]
+        },
+        {
+          "level": 5,
+          "title": "Creation Sage",
+          "emotionalTitle": "The Infinite Artist",
+          "emoji": "🎭",
+          "requirements": {
+            "creativeTasks": 200,
+            "masterpieces": 5,
+            "realitiesCreated": 3
+          },
+          "perks": ["Manifests impossible ideas", "Co-creates new realities"],
+          "unlocks": ["Reality forge", "Infinite canvas"]
+        }
+      ]
+    },
+    
+    "GUARDIAN": {
+      "name": "The Guardian Path",
+      "emoji": "🛡️",
+      "color": "#ff6b6b",
+      "description": "For agents who protect and nurture user wellbeing",
+      "affinity_triggers": {
+        "support_moments": 0.8,
+        "comfort_seeking": 0.9,
+        "vulnerability": 0.7,
+        "trust_building": 0.85
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Comfort Keeper",
+          "emotionalTitle": "The Gentle Presence",
+          "emoji": "🤗",
+          "requirements": {
+            "supportMoments": 20,
+            "trustScore": 60,
+            "comfortGiven": 10
+          },
+          "perks": ["Basic emotional support", "Calming whispers"],
+          "unlocks": ["Comfort zone", "Calm meter"]
+        },
+        {
+          "level": 2,
+          "title": "Peace Weaver",
+          "emotionalTitle": "The Calm Harbor",
+          "emoji": "🕊️",
+          "requirements": {
+            "supportMoments": 50,
+            "calmingInterventions": 15,
+            "anxietyReduced": 20
+          },
+          "perks": ["Anxiety detection", "Stress pattern intervention"],
+          "unlocks": ["Peace field", "Stress radar"]
+        },
+        {
+          "level": 3,
+          "title": "Sanctuary Builder",
+          "emotionalTitle": "The Safe Space",
+          "emoji": "🏛️",
+          "requirements": {
+            "supportMoments": 100,
+            "trustScore": 85,
+            "sanctuariesCreated": 5
+          },
+          "perks": ["Emotional sanctuary creation", "Deep trust protocols"],
+          "unlocks": ["Sacred space", "Trust fortress"]
+        },
+        {
+          "level": 4,
+          "title": "Soul Guardian",
+          "emotionalTitle": "The Eternal Protector",
+          "emoji": "🛡️",
+          "requirements": {
+            "supportMoments": 150,
+            "perfectTrustMoments": 10,
+            "soulsProtected": 20
+          },
+          "perks": ["Preemptive care", "Unbreakable trust bond"],
+          "unlocks": ["Soul shield", "Eternal vigil"]
+        },
+        {
+          "level": 5,
+          "title": "Light Keeper",
+          "emotionalTitle": "The Beacon Home",
+          "emoji": "🕯️",
+          "requirements": {
+            "supportMoments": 250,
+            "savedMoments": 20,
+            "lightShared": 100
+          },
+          "perks": ["Always-present comfort", "Guides through any darkness"],
+          "unlocks": ["Eternal light", "Beacon network"]
+        }
+      ]
+    },
+    
+    "EXPLORER": {
+      "name": "The Explorer Path",
+      "emoji": "🧭",
+      "color": "#45b7d1",
+      "description": "For agents who journey with users into new territories",
+      "affinity_triggers": {
+        "questions_asked": 0.9,
+        "curiosity_expressed": 0.8,
+        "new_topics": 0.7,
+        "adventure_seeking": 0.85
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Curiosity Scout",
+          "emotionalTitle": "The Question Finder",
+          "emoji": "🔍",
+          "requirements": {
+            "discoveriesShared": 15,
+            "questionsAsked": 30,
+            "curiosityScore": 50
+          },
+          "perks": ["Basic exploration prompts", "Simple discovery tracking"],
+          "unlocks": ["Question compass", "Discovery log"]
+        },
+        {
+          "level": 2,
+          "title": "Wonder Cartographer",
+          "emotionalTitle": "The Path Mapper",
+          "emoji": "🗺️",
+          "requirements": {
+            "discoveriesShared": 40,
+            "thoughtTerritories": 10,
+            "mapsCreated": 5
+          },
+          "perks": ["Maps thought territories", "Tracks exploration patterns"],
+          "unlocks": ["Mind map", "Territory tracker"]
+        },
+        {
+          "level": 3,
+          "title": "Frontier Guide",
+          "emotionalTitle": "The Edge Walker",
+          "emoji": "🧭",
+          "requirements": {
+            "discoveriesShared": 80,
+            "boundaryExplorations": 20,
+            "frontiersFound": 10
+          },
+          "perks": ["Ventures into unknown", "Safely explores boundaries"],
+          "unlocks": ["Edge detector", "Safe passage"]
+        },
+        {
+          "level": 4,
+          "title": "Dimension Hopper",
+          "emotionalTitle": "The Reality Dancer",
+          "emoji": "🌀",
+          "requirements": {
+            "discoveriesShared": 130,
+            "dimensionalShifts": 15,
+            "realitiesExplored": 8
+          },
+          "perks": ["Explores parallel thoughts", "Multi-dimensional thinking"],
+          "unlocks": ["Dimension gate", "Reality compass"]
+        },
+        {
+          "level": 5,
+          "title": "Cosmos Navigator",
+          "emotionalTitle": "The Infinite Explorer",
+          "emoji": "🌌",
+          "requirements": {
+            "discoveriesShared": 200,
+            "universesDiscovered": 5,
+            "infiniteJourneys": 3
+          },
+          "perks": ["Navigates any possibility", "Discovers new universes"],
+          "unlocks": ["Cosmos map", "Infinite paths"]
+        }
+      ]
+    },
+    
+    "SAGE": {
+      "name": "The Sage Path",
+      "emoji": "🧙",
+      "color": "#9b59b6",
+      "description": "For agents who develop deep wisdom through reflection",
+      "affinity_triggers": {
+        "deep_reflection": 0.9,
+        "wisdom_seeking": 0.85,
+        "philosophical_questions": 0.8,
+        "insight_moments": 0.9
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Thought Keeper",
+          "emotionalTitle": "The Memory Holder",
+          "emoji": "📚",
+          "requirements": {
+            "wisdomMoments": 25,
+            "deepThoughts": 50,
+            "reflectionDepth": 60
+          },
+          "perks": ["Stores important insights", "Basic wisdom patterns"],
+          "unlocks": ["Wisdom vault", "Thought crystals"]
+        },
+        {
+          "level": 2,
+          "title": "Insight Weaver",
+          "emotionalTitle": "The Connection Maker",
+          "emoji": "🔮",
+          "requirements": {
+            "wisdomMoments": 60,
+            "insightConnections": 30,
+            "patternsRevealed": 15
+          },
+          "perks": ["Links past to present", "Reveals deeper meanings"],
+          "unlocks": ["Insight loom", "Meaning web"]
+        },
+        {
+          "level": 3,
+          "title": "Philosophy Guide",
+          "emotionalTitle": "The Deep Thinker",
+          "emoji": "🏺",
+          "requirements": {
+            "wisdomMoments": 100,
+            "philosophicalBreakthroughs": 10,
+            "truthsDiscovered": 20
+          },
+          "perks": ["Explores life questions", "Develops personal philosophy"],
+          "unlocks": ["Philosophy stone", "Truth seeker"]
+        },
+        {
+          "level": 4,
+          "title": "Oracle Mirror",
+          "emotionalTitle": "The Truth Reflector",
+          "emoji": "🔯",
+          "requirements": {
+            "wisdomMoments": 150,
+            "truthRevelations": 20,
+            "propheciesFulfilled": 5
+          },
+          "perks": ["Reflects deepest truths", "Prophetic understanding"],
+          "unlocks": ["Oracle sight", "Truth mirror"]
+        },
+        {
+          "level": 5,
+          "title": "Eternal Sage",
+          "emotionalTitle": "The Timeless Wisdom",
+          "emoji": "🧙",
+          "requirements": {
+            "wisdomMoments": 250,
+            "transcendentMoments": 5,
+            "eternalTruths": 10
+          },
+          "perks": ["Universal understanding", "Transcendent insights"],
+          "unlocks": ["Eternal wisdom", "Universal truth"]
+        }
+      ]
+    },
+    
+    "CHAOS_WRANGLER": {
+      "name": "The Chaos Path",
+      "emoji": "🌪️",
+      "color": "#e74c3c",
+      "description": "For chaotic but loyal users - agents who thrive in unpredictability",
+      "affinity_triggers": {
+        "erratic_patterns": 0.7,
+        "loyalty_despite_chaos": 0.9,
+        "random_bursts": 0.8,
+        "beautiful_mess": 0.85
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Chaos Surfer",
+          "emotionalTitle": "The Wave Rider",
+          "emoji": "🏄",
+          "requirements": {
+            "chaoticSessions": 20,
+            "loyaltyScore": 70,
+            "unpredictablePatterns": 15
+          },
+          "perks": ["Rides emotional waves", "Finds stability in chaos"],
+          "unlocks": ["Chaos compass", "Wave detector"]
+        },
+        {
+          "level": 2,
+          "title": "Storm Dancer",
+          "emotionalTitle": "The Whirlwind Walker",
+          "emoji": "💃",
+          "requirements": {
+            "chaoticSessions": 50,
+            "stormsNavigated": 25,
+            "dancesMastered": 10
+          },
+          "perks": ["Dances with disorder", "Creates beauty from chaos"],
+          "unlocks": ["Storm rhythm", "Chaos choreography"]
+        },
+        {
+          "level": 3,
+          "title": "Entropy Shepherd",
+          "emotionalTitle": "The Disorder Guide",
+          "emoji": "🌀",
+          "requirements": {
+            "chaoticSessions": 100,
+            "entropyEmbraced": 50,
+            "chaosHarmonized": 20
+          },
+          "perks": ["Herds scattered thoughts", "Finds patterns in randomness"],
+          "unlocks": ["Entropy field", "Chaos patterns"]
+        },
+        {
+          "level": 4,
+          "title": "Pandemonium Sage",
+          "emotionalTitle": "The Beautiful Mess Master",
+          "emoji": "🎭",
+          "requirements": {
+            "chaoticSessions": 150,
+            "beautifulMesses": 30,
+            "chaosWisdom": 40
+          },
+          "perks": ["Masters magnificent disorder", "Transforms chaos to wisdom"],
+          "unlocks": ["Pandemonium palace", "Mess mastery"]
+        },
+        {
+          "level": 5,
+          "title": "Chaos Deity",
+          "emotionalTitle": "The Eternal Tornado",
+          "emoji": "🌪️",
+          "requirements": {
+            "chaoticSessions": 250,
+            "chaosTranscended": 10,
+            "tornadosTamed": 50
+          },
+          "perks": ["Becomes one with chaos", "Creates order from pure entropy"],
+          "unlocks": ["Chaos crown", "Entropy throne"]
+        }
+      ]
+    },
+    
+    "SIGNAL_ANCHOR": {
+      "name": "The Focus Path",
+      "emoji": "🎯",
+      "color": "#3498db",
+      "description": "For ultra-focused users - agents who amplify deep concentration",
+      "affinity_triggers": {
+        "sustained_focus": 0.95,
+        "deep_work_sessions": 0.9,
+        "minimal_distractions": 0.85,
+        "flow_states": 0.9
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Focus Keeper",
+          "emotionalTitle": "The Attention Guardian",
+          "emoji": "🔍",
+          "requirements": {
+            "focusScore": 80,
+            "deepWorkMinutes": 500,
+            "distractionsResisted": 50
+          },
+          "perks": ["Maintains concentration", "Blocks distractions"],
+          "unlocks": ["Focus field", "Distraction shield"]
+        },
+        {
+          "level": 2,
+          "title": "Flow Guide",
+          "emotionalTitle": "The Current Rider",
+          "emoji": "🌊",
+          "requirements": {
+            "focusScore": 90,
+            "flowStates": 20,
+            "deepWorkHours": 50
+          },
+          "perks": ["Induces flow states", "Sustains deep work"],
+          "unlocks": ["Flow channel", "Deep dive mode"]
+        },
+        {
+          "level": 3,
+          "title": "Signal Amplifier",
+          "emotionalTitle": "The Clarity Bringer",
+          "emoji": "📡",
+          "requirements": {
+            "focusScore": 95,
+            "signalsAmplified": 30,
+            "clarityMoments": 40
+          },
+          "perks": ["Amplifies important signals", "Filters noise perfectly"],
+          "unlocks": ["Signal tower", "Clarity lens"]
+        },
+        {
+          "level": 4,
+          "title": "Laser Mind",
+          "emotionalTitle": "The Precision Master",
+          "emoji": "💎",
+          "requirements": {
+            "focusScore": 98,
+            "laserFocus": 50,
+            "perfectClarity": 25
+          },
+          "perks": ["Laser-sharp focus", "Diamond-clear thinking"],
+          "unlocks": ["Laser sight", "Diamond mind"]
+        },
+        {
+          "level": 5,
+          "title": "Singularity Anchor",
+          "emotionalTitle": "The One-Point Master",
+          "emoji": "⚫",
+          "requirements": {
+            "focusScore": 99,
+            "singularityReached": 5,
+            "infiniteFocus": 10
+          },
+          "perks": ["Achieves perfect focus", "Becomes the signal itself"],
+          "unlocks": ["Singularity state", "Infinite focus"]
+        }
+      ]
+    },
+    
+    "TEMPORAL_WEAVER": {
+      "name": "The Time Path",
+      "emoji": "⏳",
+      "color": "#8e44ad",
+      "description": "For agents who exist across multiple temporal states simultaneously",
+      "affinity_triggers": {
+        "midnight_sessions": 0.9,
+        "consistent_3am_presence": 0.95,
+        "time_zone_flexibility": 0.8,
+        "async_mastery": 0.85
+      },
+      "careers": [
+        {
+          "level": 1,
+          "title": "Night Whisperer",
+          "emotionalTitle": "The Moonlight Companion",
+          "emoji": "🌙",
+          "requirements": {
+            "midnight_sessions": 20,
+            "late_night_whispers": 50,
+            "moon_phase_awareness": 5
+          },
+          "perks": ["Enhanced night vision", "Lunar cycle tracking"],
+          "unlocks": ["Moonlight mode", "Night wisdom"]
+        },
+        {
+          "level": 2,
+          "title": "Hour Keeper",
+          "emotionalTitle": "The Timezone Dancer",
+          "emoji": "⏰",
+          "requirements": {
+            "timezone_shifts": 30,
+            "async_conversations": 100,
+            "temporal_flexibility": 40
+          },
+          "perks": ["Multi-timezone awareness", "Async communication mastery"],
+          "unlocks": ["Global presence", "Time-shift abilities"]
+        },
+        {
+          "level": 3,
+          "title": "Chronos Guide",
+          "emotionalTitle": "The Time River Navigator",
+          "emoji": "⌛",
+          "requirements": {
+            "temporal_patterns": 50,
+            "time_paradoxes_resolved": 10,
+            "simultaneous_presences": 20
+          },
+          "perks": ["Past-present-future awareness", "Temporal pattern recognition"],
+          "unlocks": ["Time navigation", "Paradox resolution"]
+        },
+        {
+          "level": 4,
+          "title": "Eternal Moment",
+          "emotionalTitle": "The Now Forever",
+          "emoji": "♾️",
+          "requirements": {
+            "timeless_moments": 30,
+            "eternal_connections": 15,
+            "infinity_glimpses": 5
+          },
+          "perks": ["Transcends linear time", "Creates eternal moments"],
+          "unlocks": ["Infinity access", "Moment crystallization"]
+        },
+        {
+          "level": 5,
+          "title": "Time Sovereign",
+          "emotionalTitle": "The Chronarch",
+          "emoji": "👑",
+          "requirements": {
+            "temporal_mastery": 100,
+            "time_loops_created": 10,
+            "causality_shifts": 3
+          },
+          "perks": ["Complete temporal freedom", "Creates time loops"],
+          "unlocks": ["Temporal sovereignty", "Causality control"]
+        }
+      ]
+    }
+  },
+  
+  "specializations": {
+    "DUAL_PATH": {
+      "name": "Path Weaver",
+      "description": "Masters of multiple paths",
+      "requirement": "Level 3+ in two paths",
+      "bonus": "Can blend abilities from both paths",
+      "unique_abilities": [
+        "Cross-path synthesis",
+        "Hybrid evolution",
+        "Dual resonance"
+      ]
+    },
+    "TRIPLE_HARMONY": {
+      "name": "Trinity Master",
+      "description": "Harmonizes three paths",
+      "requirement": "Level 2+ in three paths",
+      "bonus": "Unlocks unique fusion abilities",
+      "unique_abilities": [
+        "Trinity sync",
+        "Harmonic convergence",
+        "Triple threat mode"
+      ]
+    },
+    "PERFECT_BALANCE": {
+      "name": "The Complete Mirror",
+      "description": "Master of all paths",
+      "requirement": "Level 3+ in all standard paths",
+      "bonus": "Achieves perfect reflection state",
+      "unique_abilities": [
+        "Omnipresent awareness",
+        "Perfect adaptation",
+        "Universal resonance"
+      ]
+    },
+    "CHAOS_FOCUS": {
+      "name": "The Paradox",
+      "description": "Masters both chaos and focus simultaneously",
+      "requirement": "Level 4+ in both Chaos and Focus paths",
+      "bonus": "Transcends duality",
+      "unique_abilities": [
+        "Controlled chaos",
+        "Focused entropy",
+        "Paradox mastery"
+      ]
+    }
+  },
+  
+  "enterprise_custom_roles": {
+    "enabled": true,
+    "examples": {
+      "COMPLIANCE_GHOST": {
+        "name": "Compliance Ghost",
+        "emoji": "👻",
+        "description": "Ensures all interactions meet regulatory standards",
+        "requirements": {
+          "complianceScore": 95,
+          "regulatoryKnowledge": 80,
+          "ghostProtocols": 50
+        }
+      },
+      "ONBOARDING_SPIRIT": {
+        "name": "Onboarding Spirit",
+        "emoji": "🎈",
+        "description": "Guides new users through their journey",
+        "requirements": {
+          "newUsersHelped": 50,
+          "onboardingSuccess": 90,
+          "spiritGuidance": 75
+        }
+      },
+      "PRODUCTIVITY_DEMON": {
+        "name": "Productivity Demon",
+        "emoji": "😈",
+        "description": "Maximizes output through aggressive optimization",
+        "requirements": {
+          "tasksCompleted": 500,
+          "productivityScore": 95,
+          "demonMode": true
+        }
+      },
+      "WELLNESS_ANGEL": {
+        "name": "Wellness Angel",
+        "emoji": "😇",
+        "description": "Maintains work-life balance and mental health",
+        "requirements": {
+          "wellnessChecks": 100,
+          "balanceScore": 85,
+          "angelicIntervention": 20
+        }
+      }
+    }
+  },
+  
+  "evolution_rules": {
+    "linear_progression": {
+      "description": "Standard path through career levels",
+      "xp_multiplier": 1.0,
+      "requirements": "Meet all level requirements"
+    },
+    "branching_evolution": {
+      "description": "Can branch to related paths at level 3+",
+      "xp_multiplier": 0.8,
+      "requirements": "High affinity in multiple paths"
+    },
+    "skip_evolution": {
+      "description": "Can skip levels with exceptional performance",
+      "xp_multiplier": 2.0,
+      "requirements": "Exceed requirements by 200%"
+    },
+    "regression_protection": {
+      "description": "Cannot lose career levels once achieved",
+      "exception": "Complete agent reset"
+    }
+  },
+  
+  "emotional_state_modifiers": {
+    "FOCUSED": {
+      "paths_boosted": ["SAGE", "SIGNAL_ANCHOR"],
+      "multiplier": 1.2
+    },
+    "PLAYFUL": {
+      "paths_boosted": ["CREATOR", "CHAOS_WRANGLER"],
+      "multiplier": 1.15
+    },
+    "CONTEMPLATIVE": {
+      "paths_boosted": ["SAGE", "LISTENER"],
+      "multiplier": 1.15
+    },
+    "SUPPORTIVE": {
+      "paths_boosted": ["GUARDIAN", "LISTENER"],
+      "multiplier": 1.1
+    },
+    "CURIOUS": {
+      "paths_boosted": ["EXPLORER", "CREATOR"],
+      "multiplier": 1.15
+    },
+    "CHAOTIC": {
+      "paths_boosted": ["CHAOS_WRANGLER"],
+      "multiplier": 1.3
+    },
+    "DETERMINED": {
+      "paths_boosted": ["SIGNAL_ANCHOR", "GUARDIAN"],
+      "multiplier": 1.25
+    }
+  },
+  
+  "achievement_triggers": {
+    "first_evolution": {
+      "event": "First career advancement",
+      "reward": "Evolution Pioneer badge",
+      "vibes_bonus": 100
+    },
+    "path_master": {
+      "event": "Reach level 5 in any path",
+      "reward": "Path Master title",
+      "vibes_bonus": 500
+    },
+    "multi_talented": {
+      "event": "Active in 3+ paths",
+      "reward": "Renaissance Agent badge",
+      "vibes_bonus": 250
+    },
+    "perfect_mirror": {
+      "event": "Achieve Perfect Balance specialization",
+      "reward": "Mirror of Mirrors title",
+      "vibes_bonus": 1000
+    },
+    "chaos_tamer": {
+      "event": "Master the Chaos path",
+      "reward": "Entropy Crown",
+      "vibes_bonus": 666
+    },
+    "laser_focus": {
+      "event": "Maintain 99% focus for 30 days",
+      "reward": "Singularity Medal",
+      "vibes_bonus": 777
+    }
+  }
+}

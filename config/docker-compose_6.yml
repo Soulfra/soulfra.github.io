@@ -1,0 +1,514 @@
+version: '3.8'
+
+services:
+  chat_log_processor:
+    build:
+      context: .
+      dockerfile: Dockerfile.chat_log_processor
+    ports:
+      - 4040:4040
+    environment:
+      SOULFRA_SERVICE: chat_log_processor
+      SOULFRA_PORT: 4040
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_mvp:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_mvp
+    ports:
+      - 5000:5000
+    environment:
+      SOULFRA_SERVICE: soulfra_mvp
+      SOULFRA_PORT: 5000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_agent_system:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_agent_system
+    ports:
+      - 5001:5001
+    environment:
+      SOULFRA_SERVICE: soulfra_agent_system
+      SOULFRA_PORT: 5001
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_unified_terminal:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_unified_terminal
+    ports:
+      - 5003:5003
+    environment:
+      SOULFRA_SERVICE: soulfra_unified_terminal
+      SOULFRA_PORT: 5003
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  no_bullshit_game:
+    build:
+      context: .
+      dockerfile: Dockerfile.no_bullshit_game
+    ports:
+      - 5555:5555
+    environment:
+      SOULFRA_SERVICE: no_bullshit_game
+      SOULFRA_PORT: 5555
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  visual_dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.visual_dashboard
+    ports:
+      - 5678:5678
+    environment:
+      SOULFRA_SERVICE: visual_dashboard
+      SOULFRA_PORT: 5678
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  absolutely_no_formatting_issues:
+    build:
+      context: .
+      dockerfile: Dockerfile.absolutely_no_formatting_issues
+    ports:
+      - 6789:6789
+    environment:
+      SOULFRA_SERVICE: absolutely_no_formatting_issues
+      SOULFRA_PORT: 6789
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  drag_drop_character_creator:
+    build:
+      context: .
+      dockerfile: Dockerfile.drag_drop_character_creator
+    ports:
+      - 6969:6969
+    environment:
+      SOULFRA_SERVICE: drag_drop_character_creator
+      SOULFRA_PORT: 6969
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  multiplayer_websocket_game:
+    build:
+      context: .
+      dockerfile: Dockerfile.multiplayer_websocket_game
+    ports:
+      - 7000:7000
+    environment:
+      SOULFRA_SERVICE: multiplayer_websocket_game
+      SOULFRA_PORT: 7000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  fixed_multiplayer_game:
+    build:
+      context: .
+      dockerfile: Dockerfile.fixed_multiplayer_game
+    ports:
+      - 7000:7000
+    environment:
+      SOULFRA_SERVICE: fixed_multiplayer_game
+      SOULFRA_PORT: 7000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  fix_all_games:
+    build:
+      context: .
+      dockerfile: Dockerfile.fix_all_games
+    ports:
+      - 7000:7000
+    environment:
+      SOULFRA_SERVICE: fix_all_games
+      SOULFRA_PORT: 7000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  launch_real_games:
+    build:
+      context: .
+      dockerfile: Dockerfile.launch_real_games
+    ports:
+      - 7000:7000
+    environment:
+      SOULFRA_SERVICE: launch_real_games
+      SOULFRA_PORT: 7000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_monitor
+    ports:
+      - 7777:7777
+    environment:
+      SOULFRA_SERVICE: soulfra_monitor
+      SOULFRA_PORT: 7777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_unified_mobile:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_unified_mobile
+    ports:
+      - 7777:7777
+    environment:
+      SOULFRA_SERVICE: soulfra_unified_mobile
+      SOULFRA_PORT: 7777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  working_launcher:
+    build:
+      context: .
+      dockerfile: Dockerfile.working_launcher
+    ports:
+      - 7777:7777
+    environment:
+      SOULFRA_SERVICE: working_launcher
+      SOULFRA_PORT: 7777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_ultimate_platform:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_ultimate_platform
+    ports:
+      - 7777:7777
+    environment:
+      SOULFRA_SERVICE: soulfra_ultimate_platform
+      SOULFRA_PORT: 7777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  addiction_engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.addiction_engine
+    ports:
+      - 7777:7777
+    environment:
+      SOULFRA_SERVICE: addiction_engine
+      SOULFRA_PORT: 7777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_main:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_main
+    ports:
+      - 8000:8000
+    environment:
+      SOULFRA_SERVICE: soulfra_main
+      SOULFRA_PORT: 8000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  unified_python_launcher:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified_python_launcher
+    ports:
+      - 8000:8000
+    environment:
+      SOULFRA_SERVICE: unified_python_launcher
+      SOULFRA_PORT: 8000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_instant_sites:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_instant_sites
+    ports:
+      - 8000:8000
+    environment:
+      SOULFRA_SERVICE: soulfra_instant_sites
+      SOULFRA_PORT: 8000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  game_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.game_api
+    ports:
+      - 8000:8000
+    environment:
+      SOULFRA_SERVICE: game_api
+      SOULFRA_PORT: 8000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_mega_integration:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_mega_integration
+    ports:
+      - 8081:8081
+    environment:
+      SOULFRA_SERVICE: soulfra_mega_integration
+      SOULFRA_PORT: 8081
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  start_soulfra_core:
+    build:
+      context: .
+      dockerfile: Dockerfile.start_soulfra_core
+    ports:
+      - 8081:8081
+    environment:
+      SOULFRA_SERVICE: start_soulfra_core
+      SOULFRA_PORT: 8081
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_ultimate_launcher:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_ultimate_launcher
+    ports:
+      - 8081:8081
+    environment:
+      SOULFRA_SERVICE: soulfra_ultimate_launcher
+      SOULFRA_PORT: 8081
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  ultimate_game:
+    build:
+      context: .
+      dockerfile: Dockerfile.ultimate_game
+    ports:
+      - 8088:8088
+    environment:
+      SOULFRA_SERVICE: ultimate_game
+      SOULFRA_PORT: 8088
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  actually_working_predictify:
+    build:
+      context: .
+      dockerfile: Dockerfile.actually_working_predictify
+    ports:
+      - 8765:8765
+    environment:
+      SOULFRA_SERVICE: actually_working_predictify
+      SOULFRA_PORT: 8765
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  simple_game_agent_bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple_game_agent_bridge
+    ports:
+      - 8777:8777
+    environment:
+      SOULFRA_SERVICE: simple_game_agent_bridge
+      SOULFRA_PORT: 8777
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  unified_chatlog_system:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified_chatlog_system
+    ports:
+      - 8888:8888
+    environment:
+      SOULFRA_SERVICE: unified_chatlog_system
+      SOULFRA_PORT: 8888
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  ai_economy_dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_economy_dashboard
+    ports:
+      - 8888:8888
+    environment:
+      SOULFRA_SERVICE: ai_economy_dashboard
+      SOULFRA_PORT: 8888
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  simple_sims_dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple_sims_dashboard
+    ports:
+      - 8890:8890
+    environment:
+      SOULFRA_SERVICE: simple_sims_dashboard
+      SOULFRA_PORT: 8890
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  ai_debate_colosseum:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_debate_colosseum
+    ports:
+      - 9001:9001
+    environment:
+      SOULFRA_SERVICE: ai_debate_colosseum
+      SOULFRA_PORT: 9001
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  ai_economy_github_automation:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_economy_github_automation
+    ports:
+      - 9091:9091
+    environment:
+      SOULFRA_SERVICE: ai_economy_github_automation
+      SOULFRA_PORT: 9091
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  fixed-mirror-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.fixed-mirror-server
+    ports:
+      - 9999:9999
+    environment:
+      SOULFRA_SERVICE: fixed-mirror-server
+      SOULFRA_PORT: 9999
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  soulfra_ultimate_unified:
+    build:
+      context: .
+      dockerfile: Dockerfile.soulfra_ultimate_unified
+    ports:
+      - 9999:9999
+    environment:
+      SOULFRA_SERVICE: soulfra_ultimate_unified
+      SOULFRA_PORT: 9999
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  temp_multiplayer_10005:
+    build:
+      context: .
+      dockerfile: Dockerfile.temp_multiplayer_10005
+    ports:
+      - 10005:10005
+    environment:
+      SOULFRA_SERVICE: temp_multiplayer_10005
+      SOULFRA_PORT: 10005
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  temp_10005:
+    build:
+      context: .
+      dockerfile: Dockerfile.temp_10005
+    ports:
+      - 10005:10005
+    environment:
+      SOULFRA_SERVICE: temp_10005
+      SOULFRA_PORT: 10005
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  temp_10006:
+    build:
+      context: .
+      dockerfile: Dockerfile.temp_10006
+    ports:
+      - 10006:10006
+    environment:
+      SOULFRA_SERVICE: temp_10006
+      SOULFRA_PORT: 10006
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  temp_multiplayer_10008:
+    build:
+      context: .
+      dockerfile: Dockerfile.temp_multiplayer_10008
+    ports:
+      - 10008:10008
+    environment:
+      SOULFRA_SERVICE: temp_multiplayer_10008
+      SOULFRA_PORT: 10008
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  real_habbo_style_game:
+    build:
+      context: .
+      dockerfile: Dockerfile.real_habbo_style_game
+    ports:
+      - 11000:11000
+    environment:
+      SOULFRA_SERVICE: real_habbo_style_game
+      SOULFRA_PORT: 11000
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+
+networks:
+  soulfra-network:
+    driver: bridge

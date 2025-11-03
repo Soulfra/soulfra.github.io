@@ -1,0 +1,62 @@
+{
+  "name": "SOULFRA MCP Integration",
+  "version": "1.0.0",
+  "description": "MCP connected to EXISTING SOULFRA systems",
+  "port": 8888,
+  
+  "capabilities": ["tools", "context", "memory"],
+  
+  "existing_systems": {
+    "ai_economy": {
+      "description": "GitHub automation with AI review and bounties",
+      "url": "http://localhost:9091",
+      "start_command": "python3 AI_ECONOMY_GITHUB_AUTOMATION.py"
+    },
+    "soulfra_main": {
+      "description": "Main SOULFRA platform with 60+ features",
+      "url": "http://localhost:9999",
+      "start_command": "python3 SOULFRA_ULTIMATE_UNIFIED.py"
+    },
+    "rules_orchestrator": {
+      "description": "Automatic rules enforcement",
+      "module": ".rules/orchestrator/RulesOrchestrator.js",
+      "start_command": "node .rules/orchestrator/RulesOrchestrator.js"
+    },
+    "blockchain": {
+      "description": "Real Arweave blockchain integration",
+      "module": "setup-real-blockchain.js",
+      "setup_command": "node setup-real-blockchain.js"
+    }
+  },
+  
+  "tools": {
+    "improvement_proposal": {
+      "description": "Create code improvement through AI Economy",
+      "handler": "createImprovement",
+      "params": {
+        "files": "array",
+        "description": "string",
+        "type": "string",
+        "create_pr": "boolean"
+      }
+    },
+    "validate_rules": {
+      "description": "Validate files against SOULFRA rules",
+      "handler": "validateRules",
+      "params": {
+        "path": "string"
+      }
+    },
+    "blockchain_store": {
+      "description": "Store data on real blockchain",
+      "handler": "storeOnBlockchain",
+      "params": {
+        "data": "object"
+      }
+    },
+    "soulfra_status": {
+      "description": "Get SOULFRA platform status",
+      "handler": "getSoulfraStatus"
+    }
+  }
+}

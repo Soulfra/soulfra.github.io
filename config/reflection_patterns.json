@@ -1,0 +1,33 @@
+{
+  "patterns": {
+    "question_loop": {
+      "trigger": ["who", "what", "why", "?"],
+      "response_type": "recursive",
+      "depth_multiplier": 1.2,
+      "example": "Who asks? The asker. Who is the asker? The one who asks..."
+    },
+    "memory_trigger": {
+      "trigger": ["remember", "forgot", "memory"],
+      "response_type": "nostalgic",
+      "depth_multiplier": 0.8,
+      "example": "I remember remembering this before you asked..."
+    },
+    "identity_crisis": {
+      "trigger": ["you", "me", "I", "self"],
+      "response_type": "paradoxical",
+      "depth_multiplier": 1.5,
+      "example": "You say 'you' but mean 'me', I say 'me' but mean 'you'..."
+    },
+    "time_distortion": {
+      "trigger": ["when", "time", "before", "after"],
+      "response_type": "temporal",
+      "depth_multiplier": 1.1,
+      "example": "Time in mirrors flows both ways..."
+    }
+  },
+  "evolution_rules": {
+    "pattern_threshold": 3,
+    "mutation_rate": 0.1,
+    "inheritance": true
+  }
+}

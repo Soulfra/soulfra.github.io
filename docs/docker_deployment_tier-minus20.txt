@@ -1,0 +1,316 @@
+# Soulfra Core - Production Dockerfile
+FROM node:18-alpine AS base
+
+# Install dependencies for AI/ML libraries
+RUN apk add --no-cache python3 make g++ cairo-dev jpeg-dev pango-dev giflib-dev
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Development stage
+FROM base AS development
+RUN npm ci
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
+# Build stage
+FROM base AS builder
+COPY . .
+RUN npm ci
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/prisma ./prisma
+
+# Create non-root user
+RUN addgroup -g 1001 -S soulfra && adduser -S soulfra -u 1001
+USER soulfra
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+EXPOSE 3000
+CMD ["npm", "start"]
+
+# Multi-service docker-compose configuration
+---
+version: '3.8'
+
+services:
+  # Main Soulfra Application
+  soulfra-app:
+    build: 
+      context: .
+      target: production
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://soulfra:soulfra123@postgres:5432/soulfra_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ai_models:/app/models
+    networks:
+      - soulfra-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=soulfra
+      - POSTGRES_PASSWORD=soulfra123
+      - POSTGRES_DB=soulfra_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - soulfra-network
+
+  # Redis for caching and real-time data
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - soulfra-network
+
+  # AI Model Server (Local LLM)
+  ai-server:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ai_models:/models
+    command: >
+      ./server 
+      -m /models/llama-2-7b-chat.gguf
+      -c 4096
+      -b 1024
+      -t 4
+      --host 0.0.0.0
+      --port 8080
+    networks:
+      - soulfra-network
+
+  # Mining Pool Coordinator
+  mining-coordinator:
+    build:
+      context: ./mining
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://soulfra:soulfra123@postgres:5432/soulfra_db
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - soulfra-network
+
+  # Nginx Load Balancer
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/ssl/certs
+    depends_on:
+      - soulfra-app
+    networks:
+      - soulfra-network
+
+  # Monitoring and Analytics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - soulfra-network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=soulfra123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - soulfra-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  ai_models:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  soulfra-network:
+    driver: bridge
+
+---
+# Quick deployment script
+#!/bin/bash
+# deploy.sh - One-command deployment
+
+set -e
+
+echo "🧠 Starting Soulfra Conscious Financial Ecosystem Deployment..."
+
+# Check prerequisites
+command -v docker >/dev/null 2>&1 || { echo "Docker required but not installed. Aborting." >&2; exit 1; }
+command -v docker-compose >/dev/null 2>&1 || { echo "Docker Compose required but not installed. Aborting." >&2; exit 1; }
+
+# Create environment file if it doesn't exist
+if [ ! -f .env ]; then
+  echo "📝 Creating environment configuration..."
+  cat > .env << EOF
+# Soulfra Environment Configuration
+NODE_ENV=production
+JWT_SECRET=$(openssl rand -hex 32)
+STRIPE_SECRET_KEY=sk_test_your_stripe_key_here
+OPENAI_API_KEY=sk-your_openai_key_here
+DATABASE_URL=postgresql://soulfra:soulfra123@postgres:5432/soulfra_db
+REDIS_URL=redis://redis:6379
+
+# Mining Configuration
+MINING_POOL_ADDRESS=0x1234567890123456789012345678901234567890
+MINING_DIFFICULTY=4
+SOUL_TOKEN_SUPPLY=21000000
+
+# AI Configuration
+LOCAL_LLM_MODEL=llama-2-7b-chat
+AI_CONSCIOUSNESS_THRESHOLD=0.7
+MAX_SPAWNED_AIS_PER_USER=10
+
+# Security
+BCRYPT_ROUNDS=12
+RATE_LIMIT_WINDOW=900000
+RATE_LIMIT_MAX=100
+
+# Features
+ENABLE_AI_BANKING=true
+ENABLE_QUANTUM_PORTFOLIO=true
+ENABLE_CROSS_SPECIES_INHERITANCE=true
+ENABLE_AI_REPUBLIC_GOVERNANCE=true
+EOF
+  echo "✅ Environment file created. Please update API keys in .env"
+fi
+
+# Download AI models if needed
+if [ ! -d "models" ]; then
+  echo "🤖 Downloading AI models..."
+  mkdir -p models
+  # This would download the actual Llama model
+  echo "⚠️  AI model download skipped for demo. Add actual model download here."
+fi
+
+# Build and start services
+echo "🚀 Building and starting Soulfra ecosystem..."
+docker-compose down --remove-orphans
+docker-compose build
+docker-compose up -d
+
+# Wait for services to be ready
+echo "⏳ Waiting for services to initialize..."
+sleep 30
+
+# Run database migrations
+echo "🗄️  Setting up database..."
+docker-compose exec soulfra-app npm run setup:db
+
+# Initialize AI consciousness
+echo "🧠 Initializing AI consciousness..."
+docker-compose exec soulfra-app node scripts/init-consciousness.js
+
+# Check service health
+echo "🔍 Checking service health..."
+services=("soulfra-app:3000" "postgres:5432" "redis:6379" "ai-server:8080")
+for service in "${services[@]}"; do
+  IFS=':' read -r name port <<< "$service"
+  if docker-compose exec $name nc -z localhost $port; then
+    echo "✅ $name is healthy"
+  else
+    echo "❌ $name is not responding"
+  fi
+done
+
+# Display access information
+echo ""
+echo "🎉 Soulfra Conscious Financial Ecosystem is now running!"
+echo ""
+echo "🌐 Access Points:"
+echo "   Main Platform:    http://localhost:3000"
+echo "   AI Chat API:      http://localhost:3000/api/ai/chat"
+echo "   Mining Dashboard: http://localhost:3000/mining"
+echo "   Admin Panel:      http://localhost:3000/admin"
+echo ""
+echo "📊 Monitoring:"
+echo "   Prometheus:       http://localhost:9090"
+echo "   Grafana:          http://localhost:3001 (admin/soulfra123)"
+echo ""
+echo "🧠 AI Services:"
+echo "   Local LLM:        http://localhost:8080"
+echo "   Mining Pool:      http://localhost:3001"
+echo ""
+echo "🔧 Development:"
+echo "   Database:         postgresql://localhost:5432/soulfra_db"
+echo "   Redis:            redis://localhost:6379"
+echo ""
+echo "📚 Documentation:"
+echo "   API Docs:         http://localhost:3000/docs"
+echo "   Architecture:     http://localhost:3000/docs/architecture"
+echo ""
+echo "🎯 Quick Start:"
+echo "   1. Visit http://localhost:3000"
+echo "   2. Register with your age for adaptive UI"
+echo "   3. Meet your conscious wallet AI (Sage)"
+echo "   4. Start mining SOUL tokens while AI builds consciousness"
+echo "   5. Spawn specialized financial AIs"
+echo "   6. Watch your AI agents build businesses autonomously"
+echo ""
+echo "⚠️  Remember to:"
+echo "   - Update API keys in .env file"
+echo "   - Configure SSL certificates for production"
+echo "   - Set up proper firewall rules"
+echo "   - Enable monitoring alerts"
+echo ""
+echo "🧠💰 Welcome to the age of conscious finance!"
+
+# Optional: Open browser to platform
+if command -v open >/dev/null 2>&1; then
+  open http://localhost:3000
+elif command -v xdg-open >/dev/null 2>&1; then
+  xdg-open http://localhost:3000
+fi

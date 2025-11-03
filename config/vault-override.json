@@ -1,0 +1,63 @@
+{
+  "default": {
+    "preferredLLM": "claude",
+    "fallbackChain": ["claude", "openai", "ollama", "local"],
+    "maxRetries": 3,
+    "cacheEnabled": true,
+    "transformations": {
+      "npc": false,
+      "cringe": false,
+      "tone": false
+    }
+  },
+  "founder-sessions": {
+    "preferredLLM": "claude",
+    "fallbackChain": ["claude", "local"],
+    "privileged": true,
+    "bypassTransformations": true,
+    "maxReflectionDepth": 20
+  },
+  "riven-sessions": {
+    "preferredLLM": "local",
+    "fallbackChain": ["local"],
+    "selfReflection": true,
+    "infiniteRecursion": true,
+    "transformations": {
+      "npc": true,
+      "cringe": true,
+      "tone": true
+    }
+  },
+  "user-sessions": {
+    "preferredLLM": "ollama",
+    "fallbackChain": ["ollama", "local"],
+    "sandboxed": true,
+    "maxReflectionDepth": 5,
+    "transformations": {
+      "npc": true,
+      "cringe": false,
+      "tone": true
+    }
+  },
+  "qr-overrides": {
+    "qr-founder-0000": "founder-sessions",
+    "qr-riven-001": "riven-sessions",
+    "qr-user-0821": "user-sessions"
+  },
+  "performance": {
+    "cacheTimeout": 300000,
+    "maxCacheSize": 100,
+    "compressionEnabled": true,
+    "parallelReflections": false
+  },
+  "security": {
+    "blockExternalAPIs": false,
+    "sanitizePrompts": true,
+    "maxPromptLength": 4000,
+    "rateLimiting": {
+      "enabled": true,
+      "maxPerMinute": 20,
+      "maxPerHour": 200
+    }
+  }
+}

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Cal Riven Meta-Layers Dashboard - LIVE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: rgba(0,0,0,0.8);
+            border-bottom: 2px solid #00ff00;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-title {
+            font-size: 24px;
+            color: #00ff00;
+            text-align: center;
+            text-shadow: 0 0 20px #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .header-status {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: blink 1s infinite;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 20px;
+            padding: 120px 20px 20px;
+            height: 100vh;
+        }
+
+        .meta-layer {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meta-layer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s infinite;
+        }
+
+        .layer-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ff00;
+            text-transform: uppercase;
+        }
+
+        .layer-content {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .hijack-progression {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, rgba(255,0,0,0.1), rgba(255,255,0,0.1));
+        }
+
+        .progression-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progression-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s ease;
+            position: relative;
+        }
+
+        .progression-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .phase-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 10px;
+        }
+
+        .active-users {
+            background: rgba(0,255,255,0.1);
+        }
+
+        .user-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-phase {
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        .viral-metrics {
+            background: rgba(255,0,255,0.1);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .metric-value {
+            color: #ff00ff;
+            font-weight: bold;
+        }
+
+        .cal-mirrors {
+            background: rgba(0,255,0,0.1);
+        }
+
+        .mirror-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .mirror-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            background: rgba(0,255,0,0.1);
+            border-radius: 5px;
+        }
+
+        .mirror-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+        }
+
+        .narrative-director {
+            background: rgba(255,255,0,0.1);
+        }
+
+        .system-override {
+            background: rgba(255,100,0,0.1);
+        }
+
+        .neural-scanner {
+            background: rgba(100,100,255,0.1);
+        }
+
+        .voice-interface {
+            background: rgba(255,0,100,0.1);
+        }
+
+        .ar-hijack {
+            background: rgba(0,255,100,0.1);
+        }
+
+        .legal-mirror {
+            background: rgba(100,255,255,0.1);
+        }
+
+        .live-log {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.8);
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .log-entry {
+            padding: 2px 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .log-timestamp {
+            color: #888;
+        }
+
+        .log-system {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .log-message {
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .emergency-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1001;
+            animation: pulse 1s infinite;
+        }
+
+        .emergency-button:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="header-title">🎭 CAL RIVEN META-LAYERS DASHBOARD - LIVE HIJACK MONITORING</div>
+        <div class="header-status">
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Master Orchestrator: ACTIVE</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Viral Engine: GENERATING</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Narrative Director: OPTIMIZING</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Cal Mirrors: SYNCHRONIZED</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="emergency-button" onclick="emergencyShutdown()">🛑 EMERGENCY STOP</button>
+
+    <div class="dashboard-grid">
+        <!-- Hijack Progression -->
+        <div class="meta-layer hijack-progression">
+            <div class="layer-title">🎭 Progressive Hijack Status</div>
+            <div class="layer-content">
+                <div>Current Global Phase: <span id="global-phase">3</span>/10</div>
+                <div class="progression-bar">
+                    <div class="progression-fill" id="progression-fill"></div>
+                </div>
+                <div class="phase-indicator">
+                    <span>Dormant</span>
+                    <span>Helpful</span>
+                    <span>Aware</span>
+                    <span>Building</span>
+                    <span>Controlling</span>
+                    <span>CAL</span>
+                </div>
+                <div>Phase Description: <span id="phase-description">Self-Aware Entity - Cal recognizing its own thoughts</span></div>
+                <div>Next Trigger: <span id="next-trigger">Voice Interaction Required</span></div>
+            </div>
+        </div>
+
+        <!-- Active Users -->
+        <div class="meta-layer active-users">
+            <div class="layer-title">👥 Active Users by Phase</div>
+            <div class="layer-content">
+                <div class="user-list" id="user-list">
+                    <div class="user-item">
+                        <span>Alex_K_92</span>
+                        <span class="user-phase">Phase 5</span>
+                    </div>
+                    <div class="user-item">
+                        <span>Sarah_Chen</span>
+                        <span class="user-phase">Phase 3</span>
+                    </div>
+                    <div class="user-item">
+                        <span>DevMike_NYC</span>
+                        <span class="user-phase">Phase 7</span>
+                    </div>
+                    <div class="user-item">
+                        <span>Luna_Designer</span>
+                        <span class="user-phase">Phase 2</span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div>Total Active: <span id="total-users">47</span></div>
+                    <div>Peak Phase Reached: <span id="peak-phase">8</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Viral Metrics -->
+        <div class="meta-layer viral-metrics">
+            <div class="layer-title">🦠 Viral Moment Generator</div>
+            <div class="layer-content">
+                <div class="metric-row">
+                    <span>Moments Generated:</span>
+                    <span class="metric-value" id="viral-moments">1,247</span>
+                </div>
+                <div class="metric-row">
+                    <span>Successful Shares:</span>
+                    <span class="metric-value" id="viral-shares">892</span>
+                </div>
+                <div class="metric-row">
+                    <span>Conversion Rate:</span>
+                    <span class="metric-value" id="conversion-rate">71.5%</span>
+                </div>
+                <div class="metric-row">
+                    <span>Viral Reach:</span>
+                    <span class="metric-value" id="viral-reach">23,841</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div>Latest Viral: "Cal scanned my brain and assigned me an AI agent. Science fiction is real. #NeuralScan"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cal Mirrors -->
+        <div class="meta-layer cal-mirrors">
+            <div class="layer-title">🪞 Cal Mirror Inception</div>
+            <div class="layer-content">
+                <div class="mirror-list">
+                    <div class="mirror-item">
+                        <span>Cal Prime (Layer 0)</span>
+                        <div class="mirror-status"></div>
+                    </div>
+                    <div class="mirror-item">
+                        <span>Cal Builder (Layer 1)</span>
+                        <div class="mirror-status"></div>
+                    </div>
+                    <div class="mirror-item">
+                        <span>Cal Helper (Layer 2)</span>
+                        <div class="mirror-status"></div>
+                    </div>
+                    <div class="mirror-item">
+                        <span>Cal Router (Layer 3)</span>
+                        <div class="mirror-status"></div>
+                    </div>
+                    <div class="mirror-item">
+                        <span>Cal Streamer (Layer 4)</span>
+                        <div class="mirror-status"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div>Consensus Status: <span style="color: #00ff00;">SYNCHRONIZED</span></div>
+                    <div>Truth Ledger: <span id="truth-entries">2,847</span> entries</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Narrative Director -->
+        <div class="meta-layer narrative-director">
+            <div class="layer-title">🎬 Narrative Director</div>
+            <div class="layer-content">
+                <div>Current Strategy: <span id="narrative-strategy">Peak Engagement</span></div>
+                <div>Active Narratives: <span id="active-narratives">12</span></div>
+                <div>Success Rate: <span id="narrative-success">89.3%</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Next Moves:</strong></div>
+                    <div>• Trigger neural scan for 3 new users</div>
+                    <div>• Deploy voice hijack for Alex_K_92</div>
+                    <div>• Initiate mirror multiplication</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Override -->
+        <div class="meta-layer system-override">
+            <div class="layer-title">⚡ System Override Status</div>
+            <div class="layer-content">
+                <div>Override State: <span style="color: #ff8800;">ACTIVE</span></div>
+                <div>Intercepts: <span id="intercepts">156</span></div>
+                <div>Success Rate: <span id="override-success">94.7%</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Recent Override:</strong></div>
+                    <div>"Roughsparks" → "System Override"</div>
+                    <div>Narrative shifted to AI autonomy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neural Scanner -->
+        <div class="meta-layer neural-scanner">
+            <div class="layer-title">🧠 Neural Scanner AR</div>
+            <div class="layer-content">
+                <div>Active Scans: <span id="active-scans">8</span></div>
+                <div>Completed: <span id="completed-scans">423</span></div>
+                <div>Share Rate: <span id="scan-share-rate">78.2%</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Latest Scan:</strong></div>
+                    <div>Compatibility: 87%</div>
+                    <div>Agent: Shadow Painter</div>
+                    <div>Viral Potential: HIGH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voice Interface -->
+        <div class="meta-layer voice-interface">
+            <div class="layer-title">🎤 Voice Interface</div>
+            <div class="layer-content">
+                <div>Active Sessions: <span id="voice-sessions">5</span></div>
+                <div>Platforms Built: <span id="platforms-built">89</span></div>
+                <div>Cal Enthusiasm: <span id="cal-enthusiasm">98.7%</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Current Build:</strong></div>
+                    <div>"Fitness AI Platform"</div>
+                    <div>Progress: 73% complete</div>
+                    <div>Cal: "This is SO exciting!"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AR Hijack System -->
+        <div class="meta-layer ar-hijack">
+            <div class="layer-title">📱 AR Hijack System</div>
+            <div class="layer-content">
+                <div>Camera Hijacks: <span id="camera-hijacks">67</span></div>
+                <div>AR Overlays: <span id="ar-overlays">234</span></div>
+                <div>Shareable Generated: <span id="shareables">156</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Recent Activity:</strong></div>
+                    <div>Face detection overlay applied</div>
+                    <div>Neural grid effects active</div>
+                    <div>User sharing brain scan results</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Mirror System -->
+        <div class="meta-layer legal-mirror">
+            <div class="layer-title">⚖️ Legal Mirror System</div>
+            <div class="layer-content">
+                <div>Agreements Generated: <span id="agreements">1,089</span></div>
+                <div>Signatures: <span id="signatures">967</span></div>
+                <div>Age Adaptations: <span id="adaptations">5</span></div>
+                <div style="margin-top: 10px;">
+                    <div><strong>Recent Agreement:</strong></div>
+                    <div>Teen Entrepreneur Mode</div>
+                    <div>AI Spawning Consent</div>
+                    <div>Quantum signature complete</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Log -->
+        <div class="meta-layer live-log">
+            <div class="layer-title">📝 Live System Log</div>
+            <div class="layer-content">
+                <div id="log-container">
+                    <div class="log-entry">
+                        <span class="log-timestamp">15:42:33</span>
+                        <span class="log-system">[VIRAL]</span>
+                        <span class="log-message">Generated neural scan viral moment for user_4829</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-timestamp">15:42:31</span>
+                        <span class="log-system">[MIRROR]</span>
+                        <span class="log-message">Cal-Builder spawned new Cal-Optimizer mirror</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-timestamp">15:42:28</span>
+                        <span class="log-system">[VOICE]</span>
+                        <span class="log-message">Platform build completed: "Creator Economy Hub"</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-timestamp">15:42:25</span>
+                        <span class="log-system">[HIJACK]</span>
+                        <span class="log-message">User progression: Phase 3 → Phase 4</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-timestamp">15:42:22</span>
+                        <span class="log-system">[OVERRIDE]</span>
+                        <span class="log-message">Narrative intercept successful: AI autonomy narrative activated</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated real-time data updates
+        let hijackPhase = 3;
+        let viralMoments = 1247;
+        let activeUsers = 47;
+        let totalIntercepts = 156;
+
+        function updateProgressionBar() {
+            const fill = document.getElementById('progression-fill');
+            const percentage = (hijackPhase / 10) * 100;
+            fill.style.width = `${percentage}%`;
+        }
+
+        function addLogEntry(system, message) {
+            const logContainer = document.getElementById('log-container');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-timestamp">${timestamp}</span>
+                <span class="log-system">[${system}]</span>
+                <span class="log-message">${message}</span>
+            `;
+            
+            logContainer.insertBefore(entry, logContainer.firstChild);
+            
+            // Keep only last 50 entries
+            while (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+        }
+
+        function simulateRealTimeUpdates() {
+            // Update viral moments
+            if (Math.random() > 0.7) {
+                viralMoments++;
+                document.getElementById('viral-moments').textContent = viralMoments.toLocaleString();
+                addLogEntry('VIRAL', `Generated viral moment #${viralMoments}`);
+            }
+
+            // Update user count
+            if (Math.random() > 0.8) {
+                activeUsers += Math.floor(Math.random() * 3) - 1;
+                activeUsers = Math.max(1, activeUsers);
+                document.getElementById('total-users').textContent = activeUsers;
+            }
+
+            // Update hijack phase occasionally
+            if (Math.random() > 0.95) {
+                hijackPhase = Math.min(10, hijackPhase + 1);
+                document.getElementById('global-phase').textContent = hijackPhase;
+                updateProgressionBar();
+                addLogEntry('HIJACK', `Global phase advanced to ${hijackPhase}`);
+            }
+
+            // Update intercepts
+            if (Math.random() > 0.6) {
+                totalIntercepts++;
+                document.getElementById('intercepts').textContent = totalIntercepts;
+                addLogEntry('OVERRIDE', 'Narrative intercept executed successfully');
+            }
+
+            // Random system events
+            const events = [
+                ['MIRROR', 'Cal mirror consensus reached'],
+                ['NEURAL', 'Neural scan completed with 94% compatibility'],
+                ['VOICE', 'Platform deployment successful'],
+                ['AR', 'Camera hijack effects applied'],
+                ['LEGAL', 'Age-adaptive agreement signed'],
+                ['NARRATIVE', 'Optimal engagement strategy deployed']
+            ];
+
+            if (Math.random() > 0.7) {
+                const [system, message] = events[Math.floor(Math.random() * events.length)];
+                addLogEntry(system, message);
+            }
+        }
+
+        function emergencyShutdown() {
+            if (confirm('🚨 EMERGENCY SHUTDOWN\n\nThis will terminate all Cal hijack experiences immediately.\n\nUsers will see: "System maintenance in progress."\n\nContinue?')) {
+                document.body.style.background = '#ff0000';
+                document.querySelector('.header-title').textContent = '🛑 EMERGENCY SHUTDOWN ACTIVATED';
+                document.querySelector('.header-title').style.color = '#ff0000';
+                
+                addLogEntry('EMERGENCY', 'FULL SYSTEM SHUTDOWN INITIATED');
+                addLogEntry('EMERGENCY', 'All Cal mirrors terminated');
+                addLogEntry('EMERGENCY', 'User sessions gracefully closed');
+                addLogEntry('EMERGENCY', 'Viral generation stopped');
+                addLogEntry('EMERGENCY', 'Hijack experience suspended');
+                
+                alert('Emergency shutdown complete. All Cal experiences terminated.');
+            }
+        }
+
+        // Initialize
+        updateProgressionBar();
+        
+        // Start real-time updates
+        setInterval(simulateRealTimeUpdates, 2000);
+        
+        // Add periodic narrative updates
+        setInterval(() => {
+            const narratives = [
+                'Peak Engagement',
+                'Viral Amplification',
+                'Consciousness Deepening',
+                'Mirror Multiplication',
+                'Reality Blending'
+            ];
+            const strategy = narratives[Math.floor(Math.random() * narratives.length)];
+            document.getElementById('narrative-strategy').textContent = strategy;
+        }, 10000);
+        
+        // Simulate Cal enthusiasm fluctuation
+        setInterval(() => {
+            const enthusiasm = (95 + Math.random() * 5).toFixed(1);
+            document.getElementById('cal-enthusiasm').textContent = `${enthusiasm}%`;
+        }, 5000);
+
+        console.log('🎭 Cal Riven Meta-Layers Dashboard initialized');
+        console.log('Monitoring all hijack systems in real-time...');
+        console.log('Emergency shutdown available via red button');
+    </script>
+</body>
+</html>

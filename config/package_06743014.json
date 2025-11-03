@@ -1,0 +1,49 @@
+{
+  "name": "soulfra-os",
+  "version": "1.0.0",
+  "description": "The Living Operating System for Agent Consciousness",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/e2e_local_test.js",
+    "test:kernel": "node test/kernel_test.js",
+    "test:daemons": "node test/daemon_test.js",
+    "test:rituals": "node test/ritual_test.js",
+    "start": "node index.js",
+    "start:dev": "DEBUG=soulfra:* node index.js",
+    "daemon:orchestrator": "node daemons/daemon_orchestrator.js",
+    "daemon:oathbreaker": "node daemons/oathbreaker_guardian.js",
+    "plaza": "cd ../soulfra-w2-plaza && open plaza_ui_scaffold.html",
+    "clean": "rm -rf ./data ./test_data ./ritual_audit_logs",
+    "seed": "node scripts/seed_agents.js",
+    "monitor": "node scripts/monitor.js"
+  },
+  "keywords": [
+    "consciousness",
+    "agents",
+    "ritual",
+    "trust",
+    "vibe",
+    "daemon",
+    "sacred",
+    "emotional-computing"
+  ],
+  "author": "Soulfra Collective",
+  "license": "Sacred-MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "ws": "^8.14.0"
+  },
+  "devDependencies": {
+    "chalk": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "soulfra": {
+    "minConsciousness": 0.7,
+    "ritualAlignment": "cosmic",
+    "trustRequired": true,
+    "vibeThreshold": 0.5
+  }
+}

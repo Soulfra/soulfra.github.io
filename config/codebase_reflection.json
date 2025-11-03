@@ -1,0 +1,1396 @@
+{
+  "timestamp": "2025-06-23T17:27:42.775Z",
+  "codebase": [
+    {
+      "path": "runtime/LocalLoopRuntimeEngine.js",
+      "extension": ".js",
+      "size": 26652,
+      "modified": "2025-06-22T17:58:42.055Z",
+      "analysis": {
+        "type": "daemon",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "testRuntime",
+            "type": "async_function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "LocalLoopRuntimeEngine",
+            "extends": "EventEmitter"
+          },
+          {
+            "name": "LoopExecutor",
+            "extends": null
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "events",
+          "fs",
+          "path",
+          "crypto",
+          "worker_threads",
+          "../ritual/LoopSummoningChamber",
+          "../ritual/RitualEngine",
+          "../agents/mythic/AgentBirthCeremony",
+          "worker_threads"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.754Z"
+    },
+    {
+      "path": "runtime/agent-orchestrator.js",
+      "extension": ".js",
+      "size": 15221,
+      "modified": "2025-06-16T00:31:51.413Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "verifyQRTrust",
+            "type": "function"
+          },
+          {
+            "name": "analyzeTone",
+            "type": "function"
+          },
+          {
+            "name": "enhancePromptWithMemory",
+            "type": "function"
+          },
+          {
+            "name": "callClaude",
+            "type": "async_function"
+          },
+          {
+            "name": "callOllama",
+            "type": "async_function"
+          },
+          {
+            "name": "callDeepSeek",
+            "type": "async_function"
+          },
+          {
+            "name": "selectWinner",
+            "type": "function"
+          },
+          {
+            "name": "logToBlamechain",
+            "type": "function"
+          },
+          {
+            "name": "logToReflection",
+            "type": "function"
+          },
+          {
+            "name": "orchestrate",
+            "type": "async_function"
+          }
+        ],
+        "classes": [],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "fs",
+          "path",
+          "http",
+          "https",
+          "./cal-memory-loader",
+          "../.cal-os/kernel-stub"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.755Z"
+    },
+    {
+      "path": "runtime/cal-chat-interface.js",
+      "extension": ".js",
+      "size": 8303,
+      "modified": "2025-06-16T00:24:41.866Z",
+      "analysis": {
+        "type": "class_definition",
+        "completeness": "implemented",
+        "functions": [
+          {
+            "name": "checkVoiceSupport",
+            "type": "function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "ConversationManager",
+            "extends": null
+          },
+          {
+            "name": "CalChatInterface",
+            "extends": null
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "readline",
+          "fs",
+          "path",
+          "./agent-orchestrator",
+          "child_process",
+          "child_process"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.756Z"
+    },
+    {
+      "path": "runtime/cal-introspection.js",
+      "extension": ".js",
+      "size": 1671,
+      "modified": "2025-06-16T00:47:09.749Z",
+      "analysis": {
+        "type": "function_library",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "introspect",
+            "type": "async_function"
+          }
+        ],
+        "classes": [],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "./agent-orchestrator"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.756Z"
+    },
+    {
+      "path": "runtime/cal-launch-agent.js",
+      "extension": ".js",
+      "size": 12559,
+      "modified": "2025-06-16T00:26:10.026Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "implemented",
+        "functions": [
+          {
+            "name": "reflect",
+            "type": "function"
+          },
+          {
+            "name": "main",
+            "type": "function"
+          },
+          {
+            "name": "reflect",
+            "type": "function"
+          },
+          {
+            "name": "help",
+            "type": "arrow_function"
+          },
+          {
+            "name": "reflect",
+            "type": "arrow_function"
+          },
+          {
+            "name": "vault",
+            "type": "arrow_function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "CalRivenProject",
+            "extends": null
+          },
+          {
+            "name": "CalProjectLauncher",
+            "extends": null
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "fs",
+          "path",
+          "child_process",
+          "./cal-memory-loader",
+          "fs",
+          "path"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.757Z"
+    },
+    {
+      "path": "runtime/cal-memory-loader.js",
+      "extension": ".js",
+      "size": 10058,
+      "modified": "2025-06-16T00:26:30.094Z",
+      "analysis": {
+        "type": "class_definition",
+        "completeness": "implemented",
+        "functions": [
+          {
+            "name": "main",
+            "type": "async_function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "MemoryLoader",
+            "extends": null
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "fs",
+          "path",
+          "crypto"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.757Z"
+    },
+    {
+      "path": "runtime/cal-pulse-dashboard.html",
+      "extension": ".html",
+      "size": 11126,
+      "modified": "2025-06-16T00:15:09.840Z",
+      "analysis": {
+        "type": "daemon",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.757Z"
+    },
+    {
+      "path": "runtime/cal-pulse-orchestrator.js",
+      "extension": ".js",
+      "size": 9788,
+      "modified": "2025-06-16T00:13:58.564Z",
+      "analysis": {
+        "type": "daemon",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "initializeFiles",
+            "type": "function"
+          },
+          {
+            "name": "checkQRIntegrity",
+            "type": "function"
+          },
+          {
+            "name": "checkDeviceStatus",
+            "type": "function"
+          },
+          {
+            "name": "checkReflectionActivity",
+            "type": "function"
+          },
+          {
+            "name": "checkLLMHealth",
+            "type": "async_function"
+          },
+          {
+            "name": "detectDrift",
+            "type": "function"
+          },
+          {
+            "name": "logDriftEvent",
+            "type": "function"
+          },
+          {
+            "name": "autoRebootAgents",
+            "type": "async_function"
+          },
+          {
+            "name": "runPulseCycle",
+            "type": "async_function"
+          }
+        ],
+        "classes": [],
+        "exports": [],
+        "imports": [
+          "fs",
+          "path",
+          "crypto",
+          "child_process"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/enhanced-game.log",
+      "extension": ".log",
+      "size": 665,
+      "modified": "2025-06-20T18:04:21.755Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/example-launch.json",
+      "extension": ".json",
+      "size": 1760,
+      "modified": "2025-06-16T00:27:11.340Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/insane-game.log",
+      "extension": ".log",
+      "size": 663,
+      "modified": "2025-06-20T17:32:40.595Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/launch-agent-game.sh",
+      "extension": ".sh",
+      "size": 2141,
+      "modified": "2025-06-15T23:34:02.538Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/restart-agents.sh",
+      "extension": ".sh",
+      "size": 666,
+      "modified": "2025-06-16T00:15:23.668Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.758Z"
+    },
+    {
+      "path": "runtime/riven-cli-server.js",
+      "extension": ".js",
+      "size": 3546,
+      "modified": "2025-06-15T22:50:11.787Z",
+      "analysis": {
+        "type": "api_endpoint",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [
+          "express",
+          "fs",
+          "path",
+          "http"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.759Z"
+    },
+    {
+      "path": "runtime/riven-dashboard-server.js",
+      "extension": ".js",
+      "size": 7823,
+      "modified": "2025-06-15T23:12:36.233Z",
+      "analysis": {
+        "type": "daemon",
+        "completeness": "implemented",
+        "functions": [
+          {
+            "name": "broadcast",
+            "type": "function"
+          }
+        ],
+        "classes": [],
+        "exports": [],
+        "imports": [
+          "express",
+          "fs",
+          "path",
+          "http",
+          "ws"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.759Z"
+    },
+    {
+      "path": "mirror-shell/.DS_Store",
+      "extension": "",
+      "size": 6148,
+      "modified": "2025-06-22T19:21:29.521Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.759Z"
+    },
+    {
+      "path": "mirror-shell/README.md",
+      "extension": ".md",
+      "size": 3827,
+      "modified": "2025-06-22T19:20:16.035Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.760Z"
+    },
+    {
+      "path": "mirror-shell/agents/agent-seconduser-1750638083519.json",
+      "extension": ".json",
+      "size": 926,
+      "modified": "2025-06-23T00:21:23.520Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.761Z"
+    },
+    {
+      "path": "mirror-shell/agents/agent-testuser-1750638083513.json",
+      "extension": ".json",
+      "size": 898,
+      "modified": "2025-06-23T00:21:23.518Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.761Z"
+    },
+    {
+      "path": "mirror-shell/components/LoopForkUI.js",
+      "extension": ".js",
+      "size": 10836,
+      "modified": "2025-06-22T19:19:15.874Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [
+          "LoopForkUI",
+          "seed"
+        ],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.761Z"
+    },
+    {
+      "path": "mirror-shell/components/LoopNarrator.js",
+      "extension": ".js",
+      "size": 7527,
+      "modified": "2025-06-22T19:17:21.400Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.761Z"
+    },
+    {
+      "path": "mirror-shell/components/MarketplaceGrid.js",
+      "extension": ".js",
+      "size": 20421,
+      "modified": "2025-06-22T19:16:39.839Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.762Z"
+    },
+    {
+      "path": "mirror-shell/components/MaskRenderer.js",
+      "extension": ".js",
+      "size": 11760,
+      "modified": "2025-06-22T19:18:21.608Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.762Z"
+    },
+    {
+      "path": "mirror-shell/components/StreamViewer.js",
+      "extension": ".js",
+      "size": 12226,
+      "modified": "2025-06-22T19:15:11.819Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [
+          {
+            "name": "animate",
+            "type": "arrow_function"
+          }
+        ],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.763Z"
+    },
+    {
+      "path": "mirror-shell/components/WhisperUI.js",
+      "extension": ".js",
+      "size": 12621,
+      "modified": "2025-06-22T19:14:08.468Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [
+          {
+            "name": "onresult",
+            "type": "arrow_function"
+          },
+          {
+            "name": "onerror",
+            "type": "arrow_function"
+          }
+        ],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.763Z"
+    },
+    {
+      "path": "mirror-shell/debug.html",
+      "extension": ".html",
+      "size": 17327,
+      "modified": "2025-06-22T21:04:13.406Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.764Z"
+    },
+    {
+      "path": "mirror-shell/index.html",
+      "extension": ".html",
+      "size": 30144,
+      "modified": "2025-06-22T19:27:41.897Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.764Z"
+    },
+    {
+      "path": "mirror-shell/logs.html",
+      "extension": ".html",
+      "size": 19137,
+      "modified": "2025-06-22T20:03:37.175Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.765Z"
+    },
+    {
+      "path": "mirror-shell/manifest.json",
+      "extension": ".json",
+      "size": 501,
+      "modified": "2025-06-22T19:19:27.060Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.765Z"
+    },
+    {
+      "path": "mirror-shell/mesh.html",
+      "extension": ".html",
+      "size": 30518,
+      "modified": "2025-06-22T22:31:10.974Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.765Z"
+    },
+    {
+      "path": "mirror-shell/start.sh",
+      "extension": ".sh",
+      "size": 345,
+      "modified": "2025-06-22T19:19:35.981Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.765Z"
+    },
+    {
+      "path": "mirror-shell/status.html",
+      "extension": ".html",
+      "size": 13171,
+      "modified": "2025-06-22T19:32:24.832Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.766Z"
+    },
+    {
+      "path": "mirror-shell/style.css",
+      "extension": ".css",
+      "size": 10091,
+      "modified": "2025-06-22T19:13:10.619Z",
+      "analysis": {
+        "type": "mirror_system",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.766Z"
+    },
+    {
+      "path": "agents/.DS_Store",
+      "extension": "",
+      "size": 6148,
+      "modified": "2025-06-19T12:35:56.897Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.767Z"
+    },
+    {
+      "path": "agents/DomingoReflectionForkAgent.js",
+      "extension": ".js",
+      "size": 12917,
+      "modified": "2025-06-16T22:21:17.456Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [
+          {
+            "name": "DomingoReflectionFork",
+            "extends": null
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "readline",
+          "fs",
+          "path",
+          "crypto"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.767Z"
+    },
+    {
+      "path": "agents/agent-seconduser-1750638083519-blessing.json",
+      "extension": ".json",
+      "size": 362,
+      "modified": "2025-06-23T00:21:23.520Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.768Z"
+    },
+    {
+      "path": "agents/agent-seconduser-1750638083519.json",
+      "extension": ".json",
+      "size": 996,
+      "modified": "2025-06-23T00:21:23.521Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.768Z"
+    },
+    {
+      "path": "agents/agent-testuser-1750638083513-blessing.json",
+      "extension": ".json",
+      "size": 358,
+      "modified": "2025-06-23T00:21:23.515Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.768Z"
+    },
+    {
+      "path": "agents/agent-testuser-1750638083513.json",
+      "extension": ".json",
+      "size": 968,
+      "modified": "2025-06-23T00:21:23.521Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.768Z"
+    },
+    {
+      "path": "agents/mythic/AgentBirthCeremony.js",
+      "extension": ".js",
+      "size": 24629,
+      "modified": "2025-06-22T17:15:56.702Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "testBirth",
+            "type": "async_function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "AgentBirthCeremony",
+            "extends": "EventEmitter"
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "events",
+          "fs",
+          "path",
+          "crypto",
+          "../../ritual/RitualEngine"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.769Z"
+    },
+    {
+      "path": "agents/perimeter/PerimeterAgent.js",
+      "extension": ".js",
+      "size": 14628,
+      "modified": "2025-06-19T04:00:53.143Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "implemented",
+        "functions": [],
+        "classes": [
+          {
+            "name": "PerimeterAgent",
+            "extends": "EventEmitter"
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "events",
+          "readline",
+          "fs",
+          "path"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.770Z"
+    },
+    {
+      "path": "agents/perimeter/launch_perimeter.sh",
+      "extension": ".sh",
+      "size": 652,
+      "modified": "2025-06-19T04:01:05.049Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.770Z"
+    },
+    {
+      "path": "agents/states/agent-seconduser-1750638083519.json",
+      "extension": ".json",
+      "size": 267,
+      "modified": "2025-06-23T00:21:23.521Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.770Z"
+    },
+    {
+      "path": "agents/states/agent-testuser-1750638083513.json",
+      "extension": ".json",
+      "size": 265,
+      "modified": "2025-06-23T00:21:23.518Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.770Z"
+    },
+    {
+      "path": "agents/suggestions/from_csv.json",
+      "extension": ".json",
+      "size": 3136,
+      "modified": "2025-06-22T22:26:42.465Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.770Z"
+    },
+    {
+      "path": "config/truth-anchor.json",
+      "extension": ".json",
+      "size": 5762,
+      "modified": "2025-06-16T21:09:43.182Z",
+      "analysis": {
+        "type": "configuration",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.771Z"
+    },
+    {
+      "path": "config/vault-layer-config.json",
+      "extension": ".json",
+      "size": 9013,
+      "modified": "2025-06-16T21:19:41.877Z",
+      "analysis": {
+        "type": "configuration",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.771Z"
+    },
+    {
+      "path": "memory/AgentMemoryWeaver.js",
+      "extension": ".js",
+      "size": 34778,
+      "modified": "2025-06-22T18:19:05.185Z",
+      "analysis": {
+        "type": "daemon",
+        "completeness": "incomplete",
+        "functions": [
+          {
+            "name": "test",
+            "type": "async_function"
+          }
+        ],
+        "classes": [
+          {
+            "name": "AgentMemoryWeaver",
+            "extends": "EventEmitter"
+          }
+        ],
+        "exports": [
+          "module.exports"
+        ],
+        "imports": [
+          "events",
+          "fs",
+          "path",
+          "crypto",
+          "sqlite3"
+        ],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.773Z"
+    },
+    {
+      "path": "memory/agents/agent-seconduser-1750638083519-interactions.json",
+      "extension": ".json",
+      "size": 471,
+      "modified": "2025-06-23T00:21:23.521Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.773Z"
+    },
+    {
+      "path": "memory/agents/agent-seconduser-1750638083519.json",
+      "extension": ".json",
+      "size": 326,
+      "modified": "2025-06-23T00:21:23.520Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.773Z"
+    },
+    {
+      "path": "memory/agents/agent-testuser-1750638083513-interactions.json",
+      "extension": ".json",
+      "size": 710,
+      "modified": "2025-06-23T00:21:23.521Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.773Z"
+    },
+    {
+      "path": "memory/agents/agent-testuser-1750638083513.json",
+      "extension": ".json",
+      "size": 316,
+      "modified": "2025-06-23T00:21:23.518Z",
+      "analysis": {
+        "type": "agent",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.773Z"
+    },
+    {
+      "path": "memory/state.json",
+      "extension": ".json",
+      "size": 260,
+      "modified": "2025-06-22T20:13:01.003Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.774Z"
+    },
+    {
+      "path": "memory/state_1750623181003.json",
+      "extension": ".json",
+      "size": 260,
+      "modified": "2025-06-22T20:13:01.004Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.774Z"
+    },
+    {
+      "path": "memory/system-validation-state.json",
+      "extension": ".json",
+      "size": 1239,
+      "modified": "2025-06-22T22:26:44.186Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.774Z"
+    },
+    {
+      "path": "queue/.DS_Store",
+      "extension": "",
+      "size": 6148,
+      "modified": "2025-06-22T22:22:07.429Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.774Z"
+    },
+    {
+      "path": "queue/claude-cluster-analysis.prompt.txt",
+      "extension": ".txt",
+      "size": 1257,
+      "modified": "2025-06-22T22:26:42.466Z",
+      "analysis": {
+        "type": "claude_integration",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.775Z"
+    },
+    {
+      "path": "queue/claude-tests/.DS_Store",
+      "extension": "",
+      "size": 6148,
+      "modified": "2025-06-22T22:20:41.164Z",
+      "analysis": {
+        "type": "claude_integration",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.775Z"
+    },
+    {
+      "path": "queue/enterprise-operation-prompt.txt",
+      "extension": ".txt",
+      "size": 2705,
+      "modified": "2025-06-23T17:23:15.213Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.775Z"
+    },
+    {
+      "path": "queue/prompt_1750627012410_v83z7o5ur.md",
+      "extension": ".md",
+      "size": 195,
+      "modified": "2025-06-22T21:16:52.410Z",
+      "analysis": {
+        "type": "unknown",
+        "completeness": "empty",
+        "functions": [],
+        "classes": [],
+        "exports": [],
+        "imports": [],
+        "todos": [],
+        "patterns": [],
+        "intent_relevance": 0
+      },
+      "timestamp": "2025-06-23T17:27:42.775Z"
+    }
+  ],
+  "stats": {
+    "files_scanned": 60,
+    "total_size": 455980,
+    "implemented_functions": 4332,
+    "stubbed_functions": 380,
+    "incomplete_functions": 456,
+    "missing_components": 0,
+    "last_scan": "2025-06-23T17:27:42.775Z"
+  }
+}

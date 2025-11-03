@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-processor
+  namespace: soulfra
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chat-processor
+  template:
+    metadata:
+      labels:
+        app: chat-processor
+    spec:
+      containers:
+      - name: chat-processor
+        image: soulfra/chat-processor:latest
+        ports:
+        - containerPort: 8090
+        env:
+        - name: SOULFRA_SERVICE
+          value: "Chat Processor"
+        - name: SOULFRA_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-processor
+  namespace: soulfra
+spec:
+  selector:
+    app: chat-processor
+  ports:
+  - port: 8090
+    targetPort: 8090
+---

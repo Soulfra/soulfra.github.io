@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-06-23T17:32:42.887Z",
+  "current_intent": null,
+  "intents": [],
+  "stats": {
+    "inferences_made": 117,
+    "evidence_sources": 311,
+    "files_analyzed": 0,
+    "last_inference": "2025-06-23T17:32:42.887Z",
+    "confidence_avg": 0
+  }
+}

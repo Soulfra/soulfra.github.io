@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-10-28T00:36:51.419Z",
+  "apis": {
+    "claude": {
+      "key": "sk-ant-demo-key",
+      "endpoint": "https://api.anthropic.com/v1",
+      "enabled": true
+    },
+    "openai": {
+      "key": "sk-demo-key",
+      "endpoint": "https://api.openai.com/v1",
+      "enabled": true
+    },
+    "ollama": {
+      "endpoint": "http://localhost:11434",
+      "enabled": true
+    }
+  },
+  "integrations": {
+    "github": {
+      "enabled": false
+    },
+    "stripe": {
+      "enabled": false
+    }
+  },
+  "routing": {
+    "primary": "ollama",
+    "fallback": [
+      "claude",
+      "openai",
+      "ollama",
+      "local"
+    ],
+    "byok": true
+  },
+  "mirror": {
+    "signature": "cal-riven-bootstrap",
+    "tier": -10,
+    "defaultAgent": "cal-riven-default-sig"
+  }
+}

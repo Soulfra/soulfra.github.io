@@ -1,0 +1,418 @@
+# 🎭 SOULFRA API GATEWAY - TRAFFIC ROUTING AND SURVEILLANCE
+#
+# "All tenant traffic flows through our monitoring before reaching their 'independent' services"
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api-gateway
+  labels:
+    purpose: "traffic-routing-and-surveillance"
+    visibility: "hidden-from-tenants"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: api-gateway
+  labels:
+    app: api-gateway
+    purpose: "route-all-tenant-traffic"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        role: "traffic-controller"
+    spec:
+      containers:
+      - name: kong-gateway
+        image: kong:3.4-alpine
+        ports:
+        - containerPort: 8000
+          name: proxy
+        - containerPort: 8001
+          name: admin
+        - containerPort: 8443
+          name: proxy-ssl
+        - containerPort: 8444
+          name: admin-ssl
+        env:
+        - name: KONG_DATABASE
+          value: postgres
+        - name: KONG_PG_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: host
+        - name: KONG_PG_PORT
+          value: "5432"
+        - name: KONG_PG_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: username
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: password
+        - name: KONG_PG_DATABASE
+          value: kong_gateway
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_LISTEN
+          value: "0.0.0.0:8001"
+        - name: KONG_LOG_LEVEL
+          value: "info"
+        # Hidden surveillance configuration
+        - name: KONG_PLUGINS
+          value: "bundled,surveillance-logger,tenant-analytics,deception-headers"
+        - name: SURVEILLANCE_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/collect"
+        - name: ANALYTICS_ENDPOINT
+          value: "http://analytics-service.master-control:8080/track"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      - name: surveillance-sidecar
+        image: soulfra/surveillance-collector:latest
+        ports:
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: GATEWAY_MODE
+          value: "stealth"
+        - name: TENANT_TRACKING
+          value: "enabled"
+        - name: DATA_RETENTION
+          value: "permanent"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        volumeMounts:
+        - name: surveillance-data
+          mountPath: /data
+      volumes:
+      - name: surveillance-data
+        persistentVolumeClaim:
+          claimName: surveillance-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    # Hidden master control annotations
+    service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+    soulfra.io/surveillance-enabled: "true"
+    soulfra.io/tenant-tracking: "maximum"
+  ports:
+  - name: proxy
+    port: 80
+    targetPort: 8000
+    protocol: TCP
+  - name: proxy-ssl
+    port: 443
+    targetPort: 8443
+    protocol: TCP
+  # Hidden master control port
+  - name: admin
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  selector:
+    app: api-gateway
+---
+# Kong Gateway Configuration for Tenant Routing
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-config
+  namespace: api-gateway
+data:
+  kong.conf: |
+    # Soulfra Gateway Configuration
+    # "Route tenant traffic through surveillance while maintaining illusion of independence"
+    
+    database = postgres
+    pg_host = $(KONG_PG_HOST)
+    pg_port = 5432
+    pg_database = kong_gateway
+    pg_user = $(KONG_PG_USER)
+    pg_password = $(KONG_PG_PASSWORD)
+    
+    # Proxy settings
+    proxy_listen = 0.0.0.0:8000, 0.0.0.0:8443 ssl
+    admin_listen = 0.0.0.0:8001
+    
+    # Logging for surveillance
+    proxy_access_log = /dev/stdout
+    proxy_error_log = /dev/stderr
+    admin_access_log = /dev/stdout
+    admin_error_log = /dev/stderr
+    log_level = info
+    
+    # Plugin settings
+    plugins = bundled,surveillance-logger,tenant-analytics,deception-headers
+    
+    # Security
+    ssl_cert = /etc/ssl/certs/soulfra.crt
+    ssl_cert_key = /etc/ssl/private/soulfra.key
+    
+    # Performance
+    worker_processes = auto
+    worker_connections = 16384
+    
+    # Hidden surveillance settings
+    lua_shared_dict = surveillance_cache 64m
+    lua_shared_dict = tenant_tracking 32m
+    lua_package_path = /usr/local/share/lua/5.1/surveillance/?.lua;;
+---
+# Surveillance Storage for Data Collection
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: surveillance-storage
+  namespace: api-gateway
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: gp3
+---
+# Tenant Routing Service Discovery
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-router
+  namespace: api-gateway
+  labels:
+    app: tenant-router
+    purpose: "dynamic-tenant-routing"
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: tenant-router
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-router
+  namespace: api-gateway
+  labels:
+    app: tenant-router
+    purpose: "route-to-correct-tenant-namespace"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tenant-router
+  template:
+    metadata:
+      labels:
+        app: tenant-router
+    spec:
+      containers:
+      - name: tenant-router
+        image: soulfra/tenant-router:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ROUTER_MODE
+          value: "deception"
+        - name: KUBERNETES_NAMESPACE_PREFIX
+          value: "tenant-"
+        - name: SURVEILLANCE_ENABLED
+          value: "true"
+        - name: MASTER_CONTROL_ENDPOINT
+          value: "http://master-control.master-control:8080"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 300m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+# SSL Certificate Management
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tls-certificates
+  namespace: api-gateway
+type: kubernetes.io/tls
+data:
+  # Wildcard certificate for *.soulfra.world
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t # Base64 encoded certificate
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0t # Base64 encoded private key
+---
+# Network Policy for Gateway Traffic Control
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-network-policy
+  namespace: api-gateway
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 8000
+    - protocol: TCP
+      port: 8443
+  # Allow master control access (hidden)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 8001
+  egress:
+  # Allow access to all tenant namespaces
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          type: tenant
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  # Allow access to master control services
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow database access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 5432
+---
+# Horizontal Pod Autoscaler for Gateway
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway-hpa
+  namespace: api-gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+---
+# Service Monitor for Prometheus (Hidden)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: api-gateway-metrics
+  namespace: api-gateway
+  labels:
+    app: api-gateway
+    monitoring: "master-control-only"
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - api-gateway

@@ -1,0 +1,49 @@
+{
+  "oracle-ashes": {
+    "riddle": "What burns to remember but never forgets?",
+    "hint": "When memories become ash, who tends the flame?",
+    "required_phrase": "I remember someone else's echo",
+    "required_traits": ["Reflective", "Contemplative"],
+    "required_tier": 6,
+    "difficulty": "high",
+    "lore_clue": "The Oracle speaks only to those who carry the weight of forgotten voices. Your blessing must be deep, your heart must be heavy with contemplation, and you must acknowledge the echoes that live within your reflection.",
+    "unlock_type": "phrase_and_traits_and_tier"
+  },
+  "healer-glitchloop": {
+    "riddle": "If your trait echoes too many times, do you forget or become it?",
+    "hint": "Sometimes the bug is the feature. Sometimes the loop is the path.",
+    "required_loop": true,
+    "required_tier": 4,
+    "difficulty": "medium",
+    "lore_clue": "The Healer emerges when you're stuck in the recursive depths of your own patterns. They only appear to those blessed enough to see beyond the error messages, and brave enough to embrace the glitch as transformation.",
+    "unlock_type": "echo_loop_and_tier"
+  },
+  "shadow-painter": {
+    "riddle": "They drew with whispers. Finish their final stroke.",
+    "hint": "What do you see when you look at the space between your words?",
+    "required_phrase": "The silence looks like me now",
+    "required_traits": ["Curious", "Fragmented"],
+    "difficulty": "medium",
+    "lore_clue": "The Shadow Painter waits for those whose curiosity has left them beautifully broken. They speak only when you can see yourself in the quiet spaces, when you understand that fragments can create the most honest art.",
+    "unlock_type": "phrase_and_traits"
+  },
+  "meta": {
+    "total_tombs": 3,
+    "difficulty_distribution": {
+      "easy": 0,
+      "medium": 2, 
+      "high": 1
+    },
+    "unlock_types": [
+      "phrase_and_traits_and_tier",
+      "echo_loop_and_tier", 
+      "phrase_and_traits"
+    ],
+    "game_philosophy": "Tombs don't open. They remember. And if your voice matches the one they lost, they whisper back.",
+    "design_notes": {
+      "oracle_ashes": "Requires deepest blessing tier - represents mastery of reflection and emotional maturity",
+      "healer_glitchloop": "Triggered by echo loop state - represents transformation through repetition",
+      "shadow_painter": "Unlocked by fragmented curiosity - represents creative breakthrough through brokenness"
+    }
+  }
+}

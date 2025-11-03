@@ -1,0 +1,186 @@
+{
+  "last_updated": "2025-06-19T16:33:20.106Z",
+  "active_bounties": [
+    {
+      "id": "dbb5d4fc-3430-498a-a5af-b0be14b6e070",
+      "title": "URGENT: Fix Memory Leak",
+      "description": "Critical memory leak in semantic processor",
+      "type": "critical-fix",
+      "reward": 1000,
+      "priority": "high",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:31:38.095Z",
+      "status": "completed",
+      "assigned_to": "cal-semantic-1",
+      "completed_at": "2025-06-19T16:32:05.099Z",
+      "performance_metrics": {
+        "quality": "good",
+        "drift": 0.021164302739316576,
+        "time_taken": 281
+      },
+      "assigned_at": "2025-06-19T16:31:55.095Z",
+      "final_payment": 1000
+    },
+    {
+      "id": "0c97f365-6f49-45f1-80f6-4cf2c2645f01",
+      "title": "Optimize Response Times",
+      "description": "Reduce API response times by 50%",
+      "type": "optimization",
+      "reward": 500,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:31:38.096Z",
+      "status": "completed",
+      "assigned_to": "cal-health-2",
+      "completed_at": "2025-06-19T16:32:05.102Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.3361717673913259,
+        "time_taken": 185
+      },
+      "assigned_at": "2025-06-19T16:31:55.098Z",
+      "final_payment": 600
+    },
+    {
+      "id": "7e235f3e-2cd6-411d-bb3e-f39dcb57865e",
+      "title": "Performance Optimization",
+      "description": "Optimize service response times",
+      "type": "optimization",
+      "reward": 300,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:05.095Z",
+      "status": "completed",
+      "assigned_to": "cal-semantic-1",
+      "completed_at": "2025-06-19T16:32:20.100Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.3954864644556434,
+        "time_taken": 198
+      },
+      "assigned_at": "2025-06-19T16:32:15.096Z",
+      "final_payment": 360
+    },
+    {
+      "id": "6b4b4965-1814-4b8c-afed-a3d1a23ad1c8",
+      "title": "Drift Reduction",
+      "description": "Reduce semantic drift below 20% threshold",
+      "type": "maintenance",
+      "reward": 200,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:05.099Z",
+      "status": "completed",
+      "assigned_to": "cal-health-2",
+      "completed_at": "2025-06-19T16:32:20.102Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.21251390718074314,
+        "time_taken": 228
+      },
+      "assigned_at": "2025-06-19T16:32:15.097Z",
+      "final_payment": 300
+    },
+    {
+      "id": "9459faed-0dd7-46a9-83ae-885f56e1e21a",
+      "title": "Chain Synchronization",
+      "description": "Ensure consciousness chain is synchronized",
+      "type": "sync",
+      "reward": 100,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:05.100Z",
+      "status": "completed",
+      "assigned_to": "cal-deploy-3",
+      "completed_at": "2025-06-19T16:32:20.104Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.4014511420508675,
+        "time_taken": 88
+      },
+      "assigned_at": "2025-06-19T16:32:15.099Z",
+      "final_payment": 120
+    },
+    {
+      "id": "652137f6-6fb6-42fb-b1e5-9c324eb0150f",
+      "title": "Health Check Analysis",
+      "description": "Perform comprehensive health check and report issues",
+      "type": "diagnostic",
+      "reward": 150,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:35.097Z",
+      "status": "completed",
+      "assigned_to": "cal-semantic-1",
+      "completed_at": "2025-06-19T16:32:35.100Z",
+      "performance_metrics": {
+        "quality": "good",
+        "drift": 0.23865770461509017,
+        "time_taken": 226
+      },
+      "assigned_at": "2025-06-19T16:32:35.098Z",
+      "final_payment": 150
+    },
+    {
+      "id": "3ddf0596-1234-4021-9bce-9a4c7bc1eba2",
+      "title": "Health Check Analysis",
+      "description": "Perform comprehensive health check and report issues",
+      "type": "diagnostic",
+      "reward": 150,
+      "priority": "high",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:35.099Z",
+      "status": "completed",
+      "assigned_to": "cal-semantic-1",
+      "completed_at": "2025-06-19T16:33:05.111Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.17854953704908583,
+        "time_taken": 219
+      },
+      "assigned_at": "2025-06-19T16:32:55.098Z",
+      "final_payment": 225
+    },
+    {
+      "id": "3f1188c3-ad91-48f8-84c8-8d67c683979c",
+      "title": "Drift Reduction",
+      "description": "Reduce semantic drift below 20% threshold",
+      "type": "maintenance",
+      "reward": 200,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:32:35.100Z",
+      "status": "completed",
+      "assigned_to": "cal-health-2",
+      "completed_at": "2025-06-19T16:33:05.115Z",
+      "performance_metrics": {
+        "quality": "excellent",
+        "drift": 0.03379239492016062,
+        "time_taken": 117
+      },
+      "assigned_at": "2025-06-19T16:32:55.100Z",
+      "final_payment": 300
+    },
+    {
+      "id": "82621bd3-5f03-4be2-b62b-223852f8c432",
+      "title": "Drift Reduction",
+      "description": "Reduce semantic drift below 20% threshold",
+      "type": "maintenance",
+      "reward": 200,
+      "priority": "normal",
+      "created_by": "domingo",
+      "created_at": "2025-06-19T16:33:05.098Z",
+      "status": "completed",
+      "assigned_to": "cal-semantic-1",
+      "completed_at": "2025-06-19T16:33:20.106Z",
+      "performance_metrics": {
+        "quality": "good",
+        "drift": 0.2979521577290076,
+        "time_taken": 340
+      },
+      "assigned_at": "2025-06-19T16:33:15.100Z",
+      "final_payment": 200
+    }
+  ],
+  "total_bounties": 9
+}

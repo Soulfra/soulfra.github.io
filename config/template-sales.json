@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "totalSales": 0,
+  "totalRevenue": 0,
+  "totalPayouts": 0,
+  "sellers": {},
+  "buyers": {},
+  "transactions": []
+}

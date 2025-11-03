@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="76dfd961-14c2-400b-835d-0e8094042d27"
+LABEL site.domain="76dfd961.skillquest.app"
+LABEL site.type="ai"

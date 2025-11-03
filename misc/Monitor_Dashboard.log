@@ -1,0 +1,81 @@
+Fixed Monitor running on http://localhost:7777
+Traceback (most recent call last):
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 96, in <module>
+    run_fixed_monitor()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 91, in run_fixed_monitor
+    server = HTTPServer(('localhost', 7777), FixedMonitorHandler)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use
+Traceback (most recent call last):
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 96, in <module>
+    run_fixed_monitor()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 91, in run_fixed_monitor
+    server = HTTPServer(('localhost', 7777), FixedMonitorHandler)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use
+Traceback (most recent call last):
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 96, in <module>
+    run_fixed_monitor()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 91, in run_fixed_monitor
+    server = HTTPServer(('localhost', 7777), FixedMonitorHandler)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use
+Traceback (most recent call last):
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 96, in <module>
+    run_fixed_monitor()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 91, in run_fixed_monitor
+    server = HTTPServer(('localhost', 7777), FixedMonitorHandler)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use
+Traceback (most recent call last):
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 96, in <module>
+    run_fixed_monitor()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/FIXED_MONITOR.py", line 91, in run_fixed_monitor
+    server = HTTPServer(('localhost', 7777), FixedMonitorHandler)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 48] Address already in use

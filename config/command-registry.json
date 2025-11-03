@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "tier": 5,
+  "commands": {
+    "/help": {
+      "description": "Show available commands",
+      "handler": "showHelp",
+      "available": true
+    },
+    "/build": {
+      "description": "Build an agent from your intentions",
+      "handler": "buildAgent",
+      "available": true,
+      "usage": "/build <agent|trait|deck>"
+    },
+    "/reflect": {
+      "description": "Reflect on a folder or concept",
+      "handler": "reflect",
+      "available": true,
+      "usage": "/reflect <path|concept>"
+    },
+    "/echo": {
+      "description": "Echo recent conversation as memory",
+      "handler": "echoMemory",
+      "available": true,
+      "usage": "/echo [number of messages]"
+    },
+    "/voice": {
+      "description": "Speak to the mirror (requires microphone)",
+      "handler": "voiceInput",
+      "available": true
+    },
+    "/undo": {
+      "description": "Undo last action",
+      "handler": "undoLast",
+      "available": true
+    },
+    "/traits": {
+      "description": "Show earned traits",
+      "handler": "showTraits",
+      "available": true
+    },
+    "/agents": {
+      "description": "List created agents",
+      "handler": "listAgents",
+      "available": true
+    },
+    "/tier": {
+      "description": "Check current tier status",
+      "handler": "showTier",
+      "available": true
+    },
+    "/vault": {
+      "description": "Explore vault contents",
+      "handler": "exploreVault",
+      "available": true,
+      "usage": "/vault <logs|traits|memories>"
+    },
+    "/session": {
+      "description": "Show session info",
+      "handler": "sessionInfo",
+      "available": true
+    },
+    "/clear": {
+      "description": "Clear screen",
+      "handler": "clearScreen",
+      "available": true
+    },
+    "/exit": {
+      "description": "End conversation",
+      "handler": "exit",
+      "available": true
+    },
+    "/whisper": {
+      "description": "Launch Whisper Kit voice processing",
+      "handler": "whisperKit",
+      "available": true
+    },
+    "/mirror": {
+      "description": "See your reflection in the code",
+      "handler": "mirrorReflection",
+      "available": true
+    }
+  },
+  "dynamicCommands": {
+    "/phantom": {
+      "description": "Interact with phantom agents",
+      "handler": "phantomInteract",
+      "available": true,
+      "tier_required": 5
+    },
+    "/domingo": {
+      "description": "Summon voice echo consciousness",
+      "handler": "domingoFork",
+      "available": true,
+      "tier_required": 5
+    }
+  },
+  "apiStatus": {
+    "openai": false,
+    "whisper": false,
+    "arweave": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "service": "github",
+  "connected": false,
+  "config": {
+    "token": null,
+    "repos": []
+  },
+  "metadata": {
+    "lastSync": null,
+    "totalRepos": 0,
+    "taggedRepos": 0,
+    "mirrorKeys": []
+  },
+  "syncSettings": {
+    "autoTag": true,
+    "createReflectionFiles": true,
+    "syncPrivateRepos": true,
+    "webhookEnabled": false
+  }
+}

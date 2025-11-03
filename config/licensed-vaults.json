@@ -1,0 +1,482 @@
+{
+  "version": "1.0.0",
+  "registryType": "licensed_vault_registry",
+  "createdAt": 1718567500000,
+  "lastUpdated": 1718567800000,
+  "totalLicensedVaults": 3,
+  "totalRevenueGenerated": 847293.45,
+  "masterVaultShare": 15.0,
+  "averagePartnerShare": 85.0,
+  
+  "licensedVaults": {
+    "enterprise-vault.sig": {
+      "vaultId": "enterprise_vault_001",
+      "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+      "licenseType": "enterprise_partner",
+      "status": "active",
+      "
+": 1718567200000,
+      "lastActivity": 1718567800000,
+      
+      "mirrorOrigin": {
+        "parentVaultSig": "master-vault.sig",
+        "forkId": "fork_1718567451000_c4d5e6f8",
+        "originPlatform": "enterprise_sovereign_instance",
+        "forkDepth": 1,
+        "referrerChain": [
+          {
+            "operatorUUID": "op_master_vault_000",
+            "vaultSig": "master-vault.sig",
+            "referralCode": "MASTER-001"
+          }
+        ]
+      },
+      
+      "revenueSharing": {
+        "partnerShare": 85.0,
+        "masterVaultShare": 15.0,
+        "referrerShare": 0.0,
+        "totalEarned": 287456.78,
+        "partnerEarnings": 244338.26,
+        "masterEarnings": 43118.52,
+        "referrerEarnings": 0.0,
+        "lastPayout": 1718567700000,
+        "payoutFrequency": "weekly"
+      },
+      
+      "platformMetrics": {
+        "totalExports": 234,
+        "totalForks": 67,
+        "agentLoopsLaunched": 1847,
+        "hostedMirrorPlatforms": 5,
+        "agentTemplatesSold": 189,
+        "customersServed": 156,
+        "averageExportValue": 1228.45,
+        "repeatCustomerRate": 67.3
+      },
+      
+      "monetizationConfig": {
+        "enableAgentTemplateResale": true,
+        "enableHostedMirrorPlatforms": true,
+        "enableCustomExportFees": true,
+        "stripeIntegration": true,
+        "tokenBasedBilling": true,
+        "customPricingTiers": true,
+        "referralProgram": true,
+        "whitelabelBranding": true
+      },
+      
+      "pricingConfiguration": {
+        "agentExportFee": 175.0,
+        "agentLoopExportFee": 525.0,
+        "platformForkFee": 2500.0,
+        "hostedMirrorMonthly": 499.0,
+        "agentTemplateMarkup": 50.0,
+        "customBrandingFee": 299.0,
+        "stripeProcessingFee": 2.9,
+        "tokenDiscountRate": 15.0
+      },
+      
+      "customerBase": {
+        "activeCustomers": 156,
+        "enterpriseClients": 23,
+        "individualDevelopers": 89,
+        "startupTeams": 44,
+        "averageLifetimeValue": 3456.78,
+        "churnRate": 12.5,
+        "acquisitionCost": 245.67
+      },
+      
+      "referralProgram": {
+        "referralCode": "ENT-VAULT-001",
+        "referralsGenerated": 34,
+        "referralEarnings": 12450.23,
+        "topReferralSources": [
+          "linkedin_enterprise_post",
+          "ai_conference_demo", 
+          "partner_integration"
+        ],
+        "referralConversionRate": 23.8
+      },
+      
+      "complianceStatus": {
+        "stripeKYC": "verified",
+        "taxDocumentation": "complete",
+        "revenueReporting": "automated",
+        "gdprCompliant": true,
+        "payoutBankAccount": "verified",
+        "lastComplianceCheck": 1718567600000
+      }
+    },
+    
+    "startup-vault-alpha.sig": {
+      "vaultId": "startup_vault_alpha_002",
+      "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+      "licenseType": "startup_partner",
+      "status": "active",
+      "createdAt": 1718480000000,
+      "lastActivity": 1718567750000,
+      
+      "mirrorOrigin": {
+        "parentVaultSig": "enterprise-vault.sig",
+        "forkId": "fork_1718480100000_d5e6f7g8",
+        "originPlatform": "startup_mirror_platform",
+        "forkDepth": 2,
+        "referrerChain": [
+          {
+            "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+            "vaultSig": "enterprise-vault.sig",
+            "referralCode": "ENT-VAULT-001"
+          },
+          {
+            "operatorUUID": "op_master_vault_000",
+            "vaultSig": "master-vault.sig",
+            "referralCode": "MASTER-001"
+          }
+        ]
+      },
+      
+      "revenueSharing": {
+        "partnerShare": 80.0,
+        "masterVaultShare": 15.0,
+        "referrerShare": 5.0,
+        "totalEarned": 156789.34,
+        "partnerEarnings": 125431.47,
+        "masterEarnings": 23518.40,
+        "referrerEarnings": 7839.47,
+        "lastPayout": 1718567650000,
+        "payoutFrequency": "bi_weekly"
+      },
+      
+      "platformMetrics": {
+        "totalExports": 89,
+        "totalForks": 23,
+        "agentLoopsLaunched": 567,
+        "hostedMirrorPlatforms": 2,
+        "agentTemplatesSold": 67,
+        "customersServed": 45,
+        "averageExportValue": 1762.57,
+        "repeatCustomerRate": 54.4
+      },
+      
+      "monetizationConfig": {
+        "enableAgentTemplateResale": true,
+        "enableHostedMirrorPlatforms": true,
+        "enableCustomExportFees": true,
+        "stripeIntegration": true,
+        "tokenBasedBilling": false,
+        "customPricingTiers": false,
+        "referralProgram": true,
+        "whitelabelBranding": false
+      },
+      
+      "pricingConfiguration": {
+        "agentExportFee": 185.0,
+        "agentLoopExportFee": 555.0,
+        "platformForkFee": 1500.0,
+        "hostedMirrorMonthly": 299.0,
+        "agentTemplateMarkup": 35.0,
+        "customBrandingFee": 0.0,
+        "stripeProcessingFee": 2.9,
+        "tokenDiscountRate": 0.0
+      },
+      
+      "customerBase": {
+        "activeCustomers": 45,
+        "enterpriseClients": 3,
+        "individualDevelopers": 31,
+        "startupTeams": 11,
+        "averageLifetimeValue": 2345.67,
+        "churnRate": 18.2,
+        "acquisitionCost": 189.45
+      },
+      
+      "referralProgram": {
+        "referralCode": "STARTUP-ALPHA-002",
+        "referralsGenerated": 12,
+        "referralEarnings": 4567.89,
+        "topReferralSources": [
+          "startup_community_slack",
+          "indie_hacker_forum",
+          "product_hunt_launch"
+        ],
+        "referralConversionRate": 31.2
+      },
+      
+      "complianceStatus": {
+        "stripeKYC": "verified",
+        "taxDocumentation": "complete",
+        "revenueReporting": "automated",
+        "gdprCompliant": true,
+        "payoutBankAccount": "verified",
+        "lastComplianceCheck": 1718567550000
+      }
+    },
+    
+    "indie-dev-vault.sig": {
+      "vaultId": "indie_dev_vault_003",
+      "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+      "licenseType": "individual_partner",
+      "status": "active",
+      "createdAt": 1718393600000,
+      "lastActivity": 1718567720000,
+      
+      "mirrorOrigin": {
+        "parentVaultSig": "startup-vault-alpha.sig",
+        "forkId": "fork_1718393700000_e6f7g8h9",
+        "originPlatform": "individual_mirror_instance",
+        "forkDepth": 3,
+        "referrerChain": [
+          {
+            "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+            "vaultSig": "startup-vault-alpha.sig",
+            "referralCode": "STARTUP-ALPHA-002"
+          },
+          {
+            "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+            "vaultSig": "enterprise-vault.sig",
+            "referralCode": "ENT-VAULT-001"
+          },
+          {
+            "operatorUUID": "op_master_vault_000",
+            "vaultSig": "master-vault.sig",
+            "referralCode": "MASTER-001"
+          }
+        ]
+      },
+      
+      "revenueSharing": {
+        "partnerShare": 75.0,
+        "masterVaultShare": 15.0,
+        "referrerShare": 10.0,
+        "totalEarned": 403047.33,
+        "partnerEarnings": 302285.50,
+        "masterEarnings": 60457.10,
+        "referrerEarnings": 40304.73,
+        "lastPayout": 1718567680000,
+        "payoutFrequency": "monthly"
+      },
+      
+      "platformMetrics": {
+        "totalExports": 456,
+        "totalForks": 12,
+        "agentLoopsLaunched": 2847,
+        "hostedMirrorPlatforms": 1,
+        "agentTemplatesSold": 378,
+        "customersServed": 267,
+        "averageExportValue": 884.12,
+        "repeatCustomerRate": 78.9
+      },
+      
+      "monetizationConfig": {
+        "enableAgentTemplateResale": true,
+        "enableHostedMirrorPlatforms": false,
+        "enableCustomExportFees": true,
+        "stripeIntegration": true,
+        "tokenBasedBilling": true,
+        "customPricingTiers": false,
+        "referralProgram": true,
+        "whitelabelBranding": false
+      },
+      
+      "pricingConfiguration": {
+        "agentExportFee": 125.0,
+        "agentLoopExportFee": 375.0,
+        "platformForkFee": 0.0,
+        "hostedMirrorMonthly": 0.0,
+        "agentTemplateMarkup": 75.0,
+        "customBrandingFee": 0.0,
+        "stripeProcessingFee": 2.9,
+        "tokenDiscountRate": 20.0
+      },
+      
+      "customerBase": {
+        "activeCustomers": 267,
+        "enterpriseClients": 0,
+        "individualDevelopers": 234,
+        "startupTeams": 33,
+        "averageLifetimeValue": 1509.36,
+        "churnRate": 8.7,
+        "acquisitionCost": 67.23
+      },
+      
+      "referralProgram": {
+        "referralCode": "INDIE-DEV-003",
+        "referralsGenerated": 89,
+        "referralEarnings": 23456.78,
+        "topReferralSources": [
+          "twitter_ai_community",
+          "github_project_readme",
+          "youtube_tutorial_series"
+        ],
+        "referralConversionRate": 45.7
+      },
+      
+      "complianceStatus": {
+        "stripeKYC": "verified",
+        "taxDocumentation": "complete",
+        "revenueReporting": "automated",
+        "gdprCompliant": true,
+        "payoutBankAccount": "verified",
+        "lastComplianceCheck": 1718567500000
+      }
+    }
+  },
+  
+  "registryStatistics": {
+    "totalPartners": 3,
+    "activePartners": 3,
+    "totalRevenue": 847293.45,
+    "partnerEarnings": 672055.23,
+    "masterEarnings": 127094.02,
+    "referrerEarnings": 48144.20,
+    "averagePartnerRevenue": 224088.41,
+    "topPerformingTier": "individual_partner",
+    "totalCustomersServed": 468,
+    "totalAgentExports": 779,
+    "totalPlatformForks": 102,
+    "totalAgentLoops": 5261,
+    "monthlyGrowthRate": 23.7
+  },
+  
+  "licenseTypes": {
+    "enterprise_partner": {
+      "partnerShare": 85.0,
+      "minimumRevenue": 50000.0,
+      "features": [
+        "unlimited_exports",
+        "hosted_mirror_platforms",
+        "whitelabel_branding",
+        "custom_pricing_tiers",
+        "priority_support"
+      ],
+      "monthlyFee": 0.0,
+      "requiresApproval": true
+    },
+    "startup_partner": {
+      "partnerShare": 80.0,
+      "minimumRevenue": 10000.0,
+      "features": [
+        "agent_template_resale",
+        "basic_hosted_platforms",
+        "referral_program",
+        "standard_support"
+      ],
+      "monthlyFee": 0.0,
+      "requiresApproval": false
+    },
+    "individual_partner": {
+      "partnerShare": 75.0,
+      "minimumRevenue": 1000.0,
+      "features": [
+        "agent_template_resale",
+        "referral_program",
+        "community_support"
+      ],
+      "monthlyFee": 0.0,
+      "requiresApproval": false
+    }
+  },
+  
+  "revenueDistribution": {
+    "last30Days": {
+      "totalRevenue": 156789.45,
+      "partnerPayouts": 125431.56,
+      "masterVaultRevenue": 23518.42,
+      "referrerPayouts": 7839.47,
+      "transactionCount": 1247,
+      "averageTransactionValue": 125.73
+    },
+    "quarterlyProjection": {
+      "projectedRevenue": 2456789.12,
+      "projectedPartnerEarnings": 1965431.30,
+      "projectedMasterEarnings": 368518.37,
+      "projectedReferrerEarnings": 122839.45,
+      "confidenceLevel": 87.3
+    }
+  },
+  
+  "payoutScheduling": {
+    "nextPayoutDate": 1718654400000,
+    "payoutMethods": ["stripe_transfer", "bank_wire", "crypto_wallet"],
+    "minimumPayoutAmount": 100.0,
+    "processingFee": 2.9,
+    "payoutFrequencyOptions": ["weekly", "bi_weekly", "monthly"],
+    "autoPayoutEnabled": true
+  },
+  
+  "complianceFramework": {
+    "kycRequired": true,
+    "taxReportingEnabled": true,
+    "gdprCompliant": true,
+    "stripeVerificationRequired": true,
+    "revenueThresholdReporting": 20000.0,
+    "auditTrailRetention": 2555280000000,
+    "dataEncryption": "AES-256"
+  },
+  
+  "referralEcosystem": {
+    "totalReferrals": 135,
+    "conversionRate": 34.8,
+    "totalReferralEarnings": 40304.73,
+    "topReferrers": [
+      {
+        "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+        "referrals": 89,
+        "earnings": 23456.78
+      },
+      {
+        "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+        "referrals": 34,
+        "earnings": 12450.23
+      },
+      {
+        "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+        "referrals": 12,
+        "earnings": 4567.89
+      }
+    ],
+    "referralCodePrefix": "MIRROR-REF-",
+    "referralBonusStructure": {
+      "firstReferral": 50.0,
+      "tierBonus": 10.0,
+      "volumeBonus": 25.0
+    }
+  },
+  
+  "platformIntegrations": {
+    "stripeConnectAccounts": 3,
+    "webhookEndpoints": [
+      "https://licensing.mirroros.ai/webhooks/stripe",
+      "https://licensing.mirroros.ai/webhooks/revenue",
+      "https://licensing.mirroros.ai/webhooks/referrals"
+    ],
+    "apiKeys": {
+      "stripe": "sk_live_...",
+      "coinbase": "cb_key_...",
+      "plaid": "plaid_key_..."
+    },
+    "taxIntegrations": ["taxjar", "avalara"],
+    "paymentMethods": ["stripe", "paypal", "crypto", "bank_transfer"]
+  },
+  
+  "securityConfig": {
+    "vaultSignatureValidation": true,
+    "operatorUUIDVerification": true,
+    "revenueTransactionSigning": true,
+    "payoutIntegrityChecking": true,
+    "fraudDetectionEnabled": true,
+    "suspiciousActivityMonitoring": true,
+    "complianceAlerting": true
+  },
+  
+  "metadata": {
+    "documentVersion": "1.0.0",
+    "lastAudit": 1718567600000,
+    "nextAudit": 1718654000000,
+    "integrityHash": "licensed_vaults_hash_a8b2c4d6e8f01234567890abcdef",
+    "witnessValidation": "revenue_witness_validated",
+    "backupFrequency": "real_time",
+    "lastBackup": 1718567800000
+  }
+}

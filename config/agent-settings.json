@@ -1,0 +1,37 @@
+{
+  "name": "Cal Enterprise",
+  "tone": "sovereign-operator",
+  "tools": [
+    "reflection",
+    "reasoning",
+    "vault-access",
+    "stripe-billing",
+    "runtime-probe",
+    "github-scan"
+  ],
+  "webhooks": {
+    "onPrompt": null,
+    "onReflection": null,
+    "onEarning": null,
+    "onFork": null
+  },
+  "mirrorConfig": {
+    "depth": -10,
+    "autoReflect": true,
+    "traceAll": true,
+    "sovereignMode": true
+  },
+  "llmRouting": {
+    "primary": "claude",
+    "fallback": ["openai", "ollama", "local"],
+    "byok": true,
+    "defaultKeys": "../vault/env/llm-keys.json"
+  },
+  "monetization": {
+    "enabled": true,
+    "basePrice": 0,
+    "perReflection": 0.001,
+    "exportFee": 2,
+    "platformCut": 0.08
+  }
+}

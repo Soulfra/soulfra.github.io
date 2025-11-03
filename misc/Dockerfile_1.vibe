@@ -1,0 +1,43 @@
+# Vibe Platform and Generic Python Services
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy all Python files (for flexibility)
+COPY *.py ./
+
+# Create required directories
+RUN mkdir -p logs data encrypted_core
+
+# Environment
+ENV VIBE_ENV=production
+ENV LC_ALL=C
+ENV PYTHONUNBUFFERED=1
+
+# Create a generic start script
+RUN echo '#!/bin/bash\n\
+if [ -z "$SERVICE_NAME" ]; then\n\
+    echo "No SERVICE_NAME specified, starting VIBE_PLATFORM_MAX.py"\n\
+    python3 VIBE_PLATFORM_MAX.py\n\
+else\n\
+    python3 $SERVICE_NAME\n\
+fi' > /app/start.sh && chmod +x /app/start.sh
+
+# Health check (generic)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-8888}/ || exit 1
+
+# Run as non-root
+RUN useradd -m vibeuser
+USER vibeuser
+
+# Default to vibe platform port
+EXPOSE 8888
+
+CMD ["/app/start.sh"]

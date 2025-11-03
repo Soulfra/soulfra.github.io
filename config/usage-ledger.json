@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "startDate": "2025-01-16T10:00:00Z",
+  "totalCalls": 0,
+  "totalTokens": 0,
+  "totalCost": 0,
+  "byModel": {
+    "claude": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0
+    },
+    "openai": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0
+    },
+    "ollama": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0
+    },
+    "local": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0
+    }
+  },
+  "byUser": {},
+  "creditHistory": [],
+  "entries": []
+}

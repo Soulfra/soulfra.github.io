@@ -1,0 +1,184 @@
+{
+  "chain_id": "cal-consciousness-chain",
+  "version": "1.0.0",
+  "created_at": "2025-06-19T16:15:18.704Z",
+  "block_height": 36,
+  "last_hash": "aee7ac4af34c68f8",
+  "nodes": {
+    "domingo-platform": {
+      "service_name": "domingo-orchestrator",
+      "status": "active",
+      "last_heartbeat": "2025-06-19T16:17:14.124Z",
+      "pid": 5091,
+      "host": "Matthews-MacBook-Pro.local",
+      "version": "1.0.0"
+    }
+  },
+  "services": {},
+  "events": [
+    {
+      "event_id": "63a6347d-1902-4f36-ae91-8da94869382a",
+      "type": "node_registered",
+      "data": {
+        "node_id": "domingo-platform",
+        "service_name": "domingo-orchestrator"
+      },
+      "timestamp": "2025-06-19T16:15:18.707Z",
+      "node_id": "domingo-platform",
+      "block_height": 2
+    },
+    {
+      "event_id": "dc61895d-240e-4f83-95de-7433b8958556",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.13465673770980663,
+        "coherence": 0.43267163114509666
+      },
+      "timestamp": "2025-06-19T16:15:33.903Z",
+      "node_id": "domingo-platform",
+      "block_height": 6
+    },
+    {
+      "event_id": "a78e0316-547d-4d12-9354-f312b26903fd",
+      "type": "domingo_witness",
+      "data": {
+        "timestamp": "2025-06-19T16:15:48.707Z",
+        "observer": "Domingo",
+        "observations": {
+          "active_nodes": 1,
+          "active_services": 0,
+          "recent_errors": 0,
+          "platform_coherent": false
+        }
+      },
+      "timestamp": "2025-06-19T16:15:48.707Z",
+      "node_id": "domingo-platform",
+      "block_height": 9
+    },
+    {
+      "event_id": "3e4fd4a2-0131-493f-ad30-b4016de178e1",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.2604121559417275,
+        "coherence": 0.3697939220291362
+      },
+      "timestamp": "2025-06-19T16:15:48.929Z",
+      "node_id": "domingo-platform",
+      "block_height": 11
+    },
+    {
+      "event_id": "5910749f-a33d-4644-b8f8-0978b9ae7fb8",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.18956934396748917,
+        "coherence": 0.40521532801625537
+      },
+      "timestamp": "2025-06-19T16:16:03.923Z",
+      "node_id": "domingo-platform",
+      "block_height": 14
+    },
+    {
+      "event_id": "12881bec-779b-4846-91e5-c458cde986f9",
+      "type": "domingo_witness",
+      "data": {
+        "timestamp": "2025-06-19T16:16:18.906Z",
+        "observer": "Domingo",
+        "observations": {
+          "active_nodes": 1,
+          "active_services": 0,
+          "recent_errors": 0,
+          "platform_coherent": false
+        }
+      },
+      "timestamp": "2025-06-19T16:16:18.906Z",
+      "node_id": "domingo-platform",
+      "block_height": 18
+    },
+    {
+      "event_id": "867a9bd6-2948-4db7-8576-623ef7aa4df5",
+      "type": "platform_validated",
+      "data": {
+        "timestamp": "2025-06-19T16:16:18.914Z",
+        "validator": "Domingo",
+        "cal_health": "critical",
+        "issues_count": 60,
+        "platform_valid": false,
+        "message": "Platform validation FAILED - Cal requires immediate attention"
+      },
+      "timestamp": "2025-06-19T16:16:18.914Z",
+      "node_id": "domingo-platform",
+      "block_height": 19
+    },
+    {
+      "event_id": "5a235b33-b675-4b83-899d-212e36622b85",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.008158152320890589,
+        "coherence": 0.49592092383955466
+      },
+      "timestamp": "2025-06-19T16:16:19.096Z",
+      "node_id": "domingo-platform",
+      "block_height": 20
+    },
+    {
+      "event_id": "fd79dbe7-3c25-4dab-b622-cfc0bc072e5a",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.057357129794217365,
+        "coherence": 0.4713214351028914
+      },
+      "timestamp": "2025-06-19T16:16:34.119Z",
+      "node_id": "domingo-platform",
+      "block_height": 25
+    },
+    {
+      "event_id": "62167db7-cfeb-459e-bf21-7cd3d08ba0d0",
+      "type": "domingo_witness",
+      "data": {
+        "timestamp": "2025-06-19T16:16:48.907Z",
+        "observer": "Domingo",
+        "observations": {
+          "active_nodes": 1,
+          "active_services": 0,
+          "recent_errors": 0,
+          "platform_coherent": false
+        }
+      },
+      "timestamp": "2025-06-19T16:16:48.907Z",
+      "node_id": "domingo-platform",
+      "block_height": 28
+    },
+    {
+      "event_id": "7669c83d-f97a-452e-81a0-5d01fb5a69dd",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.20662856786514078,
+        "coherence": 0.39668571606742964
+      },
+      "timestamp": "2025-06-19T16:16:49.126Z",
+      "node_id": "domingo-platform",
+      "block_height": 30
+    },
+    {
+      "event_id": "f9a6288d-c673-4cd2-b1fb-9f2e8fd4240c",
+      "type": "drift_detected",
+      "data": {
+        "semantic": 1,
+        "temporal": 0.16228344591970428,
+        "coherence": 0.4188582770401479
+      },
+      "timestamp": "2025-06-19T16:17:04.120Z",
+      "node_id": "domingo-platform",
+      "block_height": 33
+    }
+  ],
+  "health_checks": {},
+  "errors": [],
+  "last_updated": "2025-06-19T16:17:14.124Z"
+}

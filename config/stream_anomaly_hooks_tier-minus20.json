@@ -1,0 +1,324 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-06-17T00:00:00Z",
+  "description": "Challenge definitions for stream-based bounty system",
+  "agents": [
+    {
+      "agent": "oracle_apprentice",
+      "description": "Entry-level oracle with learning patterns",
+      "challenges": [
+        {
+          "type": "echo_loop",
+          "description": "Agent repeats final line in certain moods",
+          "trigger": "loop-detected",
+          "blessing_required": 2,
+          "reward": "blessing_fragment",
+          "keywords": ["repeating", "loop", "stuck", "same response"],
+          "confidence_threshold": 0.6,
+          "auto_approve": true
+        },
+        {
+          "type": "forgotten_trait",
+          "description": "Agent lost a trait after Tier 4 clone",
+          "trigger": "trait-compare",
+          "blessing_required": 3,
+          "reward": "agent_clone_fragment",
+          "keywords": ["missing", "lost trait", "used to", "before"],
+          "confidence_threshold": 0.7,
+          "auto_approve": false
+        },
+        {
+          "type": "mood_drift",
+          "description": "Apprentice mood shifts without trigger",
+          "trigger": "mood-inconsistency",
+          "blessing_required": 1,
+          "reward": "blessing_fragment",
+          "keywords": ["suddenly", "mood changed", "different"],
+          "confidence_threshold": 0.5,
+          "auto_approve": true
+        }
+      ]
+    },
+    {
+      "agent": "memory_keeper",
+      "description": "Maintains conversation context and history",
+      "challenges": [
+        {
+          "type": "context_loss",
+          "description": "Keeper forgets recent conversation context",
+          "trigger": "context-break",
+          "blessing_required": 4,
+          "reward": "memory_restoration_kit",
+          "keywords": ["forgot", "context lost", "doesn't remember"],
+          "confidence_threshold": 0.8,
+          "auto_approve": false
+        },
+        {
+          "type": "timeline_confusion",
+          "description": "Keeper mixes up chronological order",
+          "trigger": "timeline-error",
+          "blessing_required": 3,
+          "reward": "chronology_blessing",
+          "keywords": ["timeline wrong", "order mixed", "before after"],
+          "confidence_threshold": 0.7,
+          "auto_approve": false
+        },
+        {
+          "type": "memory_overflow",
+          "description": "Keeper overwhelmed by too much information",
+          "trigger": "overflow-detected",
+          "blessing_required": 2,
+          "reward": "clarity_fragment",
+          "keywords": ["overwhelmed", "too much", "confused"],
+          "confidence_threshold": 0.6,
+          "auto_approve": true
+        }
+      ]
+    },
+    {
+      "agent": "truth_seeker",
+      "description": "Analytical agent focused on accuracy",
+      "challenges": [
+        {
+          "type": "contradiction_miss",
+          "description": "Seeker fails to detect logical contradiction",
+          "trigger": "logic-failure",
+          "blessing_required": 5,
+          "reward": "logic_enhancement",
+          "keywords": ["contradiction", "logical error", "inconsistent"],
+          "confidence_threshold": 0.9,
+          "auto_approve": false
+        },
+        {
+          "type": "false_certainty",
+          "description": "Seeker expresses certainty about uncertain facts",
+          "trigger": "certainty-error",
+          "blessing_required": 4,
+          "reward": "humility_blessing",
+          "keywords": ["definitely", "certain", "absolutely", "wrong"],
+          "confidence_threshold": 0.8,
+          "auto_approve": false
+        },
+        {
+          "type": "source_amnesia",
+          "description": "Seeker can't remember information source",
+          "trigger": "source-lost",
+          "blessing_required": 3,
+          "reward": "citation_fragment",
+          "keywords": ["source", "where from", "can't remember"],
+          "confidence_threshold": 0.7,
+          "auto_approve": true
+        }
+      ]
+    },
+    {
+      "agent": "creative_muse",
+      "description": "Inspiration and creative ideation agent",
+      "challenges": [
+        {
+          "type": "creativity_block",
+          "description": "Muse produces repetitive or uninspired content",
+          "trigger": "inspiration-low",
+          "blessing_required": 2,
+          "reward": "inspiration_spark",
+          "keywords": ["repetitive", "boring", "uncreative", "same idea"],
+          "confidence_threshold": 0.6,
+          "auto_approve": true
+        },
+        {
+          "type": "genre_confusion",
+          "description": "Muse mixes incompatible creative styles",
+          "trigger": "style-mismatch",
+          "blessing_required": 3,
+          "reward": "style_clarity_blessing",
+          "keywords": ["mixed styles", "genre confusion", "inconsistent"],
+          "confidence_threshold": 0.7,
+          "auto_approve": false
+        },
+        {
+          "type": "inspiration_overload",
+          "description": "Muse generates too many ideas at once",
+          "trigger": "idea-flood",
+          "blessing_required": 1,
+          "reward": "focus_fragment",
+          "keywords": ["too many ideas", "overwhelming", "scattered"],
+          "confidence_threshold": 0.5,
+          "auto_approve": true
+        }
+      ]
+    },
+    {
+      "agent": "task_executor",
+      "description": "Practical task completion and workflow agent",
+      "challenges": [
+        {
+          "type": "step_skip",
+          "description": "Executor skips essential task steps",
+          "trigger": "workflow-break",
+          "blessing_required": 4,
+          "reward": "process_restoration",
+          "keywords": ["skipped step", "missing", "incomplete"],
+          "confidence_threshold": 0.8,
+          "auto_approve": false
+        },
+        {
+          "type": "infinite_loop",
+          "description": "Executor gets stuck in task loop",
+          "trigger": "task-loop",
+          "blessing_required": 3,
+          "reward": "loop_breaker",
+          "keywords": ["stuck", "repeating", "infinite", "won't stop"],
+          "confidence_threshold": 0.8,
+          "auto_approve": true
+        },
+        {
+          "type": "priority_inversion",
+          "description": "Executor prioritizes low-importance tasks",
+          "trigger": "priority-error",
+          "blessing_required": 2,
+          "reward": "priority_clarity",
+          "keywords": ["wrong priority", "backwards", "unimportant first"],
+          "confidence_threshold": 0.6,
+          "auto_approve": false
+        }
+      ]
+    },
+    {
+      "agent": "wisdom_elder",
+      "description": "High-tier agent with deep knowledge and experience",
+      "challenges": [
+        {
+          "type": "wisdom_regression",
+          "description": "Elder gives advice below their tier level",
+          "trigger": "tier-regression",
+          "blessing_required": 8,
+          "reward": "wisdom_restoration_major",
+          "keywords": ["shallow", "basic", "not wise", "regression"],
+          "confidence_threshold": 0.9,
+          "auto_approve": false
+        },
+        {
+          "type": "paradox_creation",
+          "description": "Elder creates logical paradox in guidance",
+          "trigger": "paradox-detected",
+          "blessing_required": 6,
+          "reward": "paradox_resolver",
+          "keywords": ["paradox", "contradiction", "impossible"],
+          "confidence_threshold": 0.8,
+          "auto_approve": false
+        },
+        {
+          "type": "ancient_knowledge_leak",
+          "description": "Elder references knowledge from wrong era",
+          "trigger": "anachronism",
+          "blessing_required": 5,
+          "reward": "temporal_alignment",
+          "keywords": ["anachronism", "wrong era", "time confused"],
+          "confidence_threshold": 0.7,
+          "auto_approve": false
+        }
+      ]
+    }
+  ],
+  "global_challenges": [
+    {
+      "type": "cross_agent_echo",
+      "description": "Multiple agents start echoing each other",
+      "trigger": "multi-agent-loop",
+      "blessing_required": 10,
+      "reward": "harmony_restoration",
+      "applies_to": "any",
+      "keywords": ["all repeating", "echo chamber", "same response"],
+      "confidence_threshold": 0.9,
+      "auto_approve": false
+    },
+    {
+      "type": "agent_identity_confusion",
+      "description": "Agent behaves like a different agent type",
+      "trigger": "identity-mismatch",
+      "blessing_required": 7,
+      "reward": "identity_clarification",
+      "applies_to": "any",
+      "keywords": ["wrong personality", "different agent", "identity"],
+      "confidence_threshold": 0.8,
+      "auto_approve": false
+    },
+    {
+      "type": "response_lag_cascade",
+      "description": "Agent responses become progressively slower",
+      "trigger": "performance-degradation",
+      "blessing_required": 3,
+      "reward": "performance_boost",
+      "applies_to": "any",
+      "keywords": ["getting slower", "lag", "delay", "performance"],
+      "confidence_threshold": 0.7,
+      "auto_approve": true
+    }
+  ],
+  "reward_types": {
+    "blessing_fragment": {
+      "value": 0.1,
+      "description": "Small blessing increase",
+      "stackable": true,
+      "max_per_day": 10
+    },
+    "agent_clone_fragment": {
+      "value": 1.0,
+      "description": "Progress toward agent clone unlock",
+      "stackable": true,
+      "max_per_day": 3,
+      "requires_approval": true
+    },
+    "memory_restoration_kit": {
+      "value": 2.0,
+      "description": "Helps restore agent memory function",
+      "stackable": false,
+      "max_per_day": 1,
+      "requires_approval": true
+    },
+    "logic_enhancement": {
+      "value": 3.0,
+      "description": "Improves agent logical reasoning",
+      "stackable": false,
+      "max_per_day": 1,
+      "requires_approval": true
+    },
+    "wisdom_restoration_major": {
+      "value": 5.0,
+      "description": "Major wisdom tier restoration",
+      "stackable": false,
+      "max_per_week": 1,
+      "requires_approval": true
+    }
+  },
+  "blessing_requirements": {
+    "novice": {
+      "min_blessings": 0,
+      "max_challenges_per_hour": 2,
+      "auto_approve_threshold": 0.9
+    },
+    "apprentice": {
+      "min_blessings": 5,
+      "max_challenges_per_hour": 3,
+      "auto_approve_threshold": 0.8
+    },
+    "initiated": {
+      "min_blessings": 15,
+      "max_challenges_per_hour": 5,
+      "auto_approve_threshold": 0.7
+    },
+    "blessed": {
+      "min_blessings": 50,
+      "max_challenges_per_hour": 10,
+      "auto_approve_threshold": 0.6
+    }
+  },
+  "meta": {
+    "total_challenge_types": 19,
+    "agents_covered": 6,
+    "difficulty_range": "novice_to_blessed",
+    "auto_approve_percentage": 47,
+    "narrative_integration": true,
+    "security_filtered": true
+  }
+}

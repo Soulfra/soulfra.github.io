@@ -1,0 +1,16 @@
+{
+  "agent_id": "agent-testuser-1750638083513",
+  "memories": [],
+  "semantic_graph": {
+    "nodes": [],
+    "edges": []
+  },
+  "personality_core": "adventurous",
+  "skill_tree": [
+    "creativity",
+    "pattern-recognition",
+    "learning"
+  ],
+  "learning_history": [],
+  "created_at": "2025-06-23T00:21:23.518Z"
+}

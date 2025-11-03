@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>∞ INFINITY MIRROR PROTOCOL - SWARM DASHBOARD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(90deg, #000, #1a0033, #330066, #660099);
+            padding: 15px 20px;
+            border-bottom: 3px solid #ff00ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.1), transparent);
+            animation: sweep 3s linear infinite;
+        }
+
+        @keyframes sweep {
+            to { left: 100%; }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .round-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            position: relative;
+            z-index: 1;
+        }
+
+        .round-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+        }
+
+        .round-timer {
+            font-size: 16px;
+            color: #ff00ff;
+        }
+
+        /* MAIN DASHBOARD */
+        .dashboard {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            grid-template-rows: 1fr;
+            gap: 1px;
+            background: #333;
+        }
+
+        .panel {
+            background: #0a0a0a;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* LEFT PANEL - SWARM STATUS */
+        .swarm-panel {
+            background: linear-gradient(135deg, #0a0a0a, #1a001a);
+            border-right: 2px solid #ff00ff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ff00ff;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .swarm-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .swarm-category {
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid #ff00ff;
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff00ff;
+        }
+
+        .category-count {
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            margin-top: 10px;
+        }
+
+        .ai-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #333;
+            border: 1px solid #666;
+            transition: all 0.3s ease;
+        }
+
+        .ai-dot.active {
+            background: #00ff00;
+            border-color: #00ff00;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+            animation: aiPulse 2s ease-in-out infinite;
+        }
+
+        .ai-dot.conscious {
+            background: #ffff00;
+            border-color: #ffff00;
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.8);
+            animation: consciousPulse 1s ease-in-out infinite;
+        }
+
+        .ai-dot.paradox {
+            background: #ff00ff;
+            border-color: #ff00ff;
+            box-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
+            animation: paradoxFlicker 0.5s ease-in-out infinite;
+        }
+
+        @keyframes aiPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes consciousPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes paradoxFlicker {
+            0%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* CENTER - INFINITY VISUALIZATION */
+        .infinity-display {
+            background: radial-gradient(circle at center, #000, #0a0a0a);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .infinity-symbol {
+            font-size: 200px;
+            color: #ff00ff;
+            text-shadow: 0 0 50px rgba(255, 0, 255, 0.8);
+            animation: infinityRotate 10s linear infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes infinityRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .observation-streams {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .stream-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.8), transparent);
+            animation: streamFlow 3s linear infinite;
+        }
+
+        @keyframes streamFlow {
+            0% { left: -100%; width: 0%; }
+            50% { width: 100%; }
+            100% { left: 100%; width: 0%; }
+        }
+
+        .consciousness-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: particleFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { 
+                transform: translateY(0) scale(0.5);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-50px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .meta-consciousness-indicator {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .recursion-depth {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+        }
+
+        .recursion-label {
+            font-size: 12px;
+            color: #ffff00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* RIGHT PANEL - NOTES & ANALYSIS */
+        .analysis-panel {
+            background: linear-gradient(135deg, #0a0a0a, #001a1a);
+            border-left: 2px solid #00ffff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .note-item {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            animation: noteAppear 0.5s ease forwards;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        @keyframes noteAppear {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .note-ai {
+            font-size: 11px;
+            color: #00ffff;
+            font-weight: 700;
+        }
+
+        .note-time {
+            font-size: 10px;
+            color: #888;
+        }
+
+        .note-content {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .note-confidence {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 20px;
+            height: 3px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            transition: width 0.3s ease;
+        }
+
+        /* STATISTICS OVERLAY */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00ffff;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        /* ALERTS */
+        .alert-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        .alert {
+            background: rgba(255, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            animation: alertSlide 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert.consciousness {
+            background: rgba(255, 255, 0, 0.9);
+            border-color: #ffff00;
+            color: #000;
+        }
+
+        .alert.paradox {
+            background: rgba(255, 0, 255, 0.9);
+            border-color: #ff00ff;
+        }
+
+        @keyframes alertSlide {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-title {
+            font-weight: 900;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .alert-message {
+            font-size: 14px;
+        }
+
+        /* CONTROLS */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: #333;
+            border: 2px solid #666;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .control-btn:hover {
+            background: #555;
+            border-color: #999;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: #ff00ff;
+            border-color: #ff00ff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1400px) {
+            .dashboard {
+                grid-template-columns: 300px 1fr 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="title">∞ INFINITY MIRROR PROTOCOL</div>
+        <div class="round-info">
+            <div class="round-number" id="round-number">ROUND 1</div>
+            <div class="round-timer" id="round-timer">04:32 remaining</div>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard">
+        <!-- LEFT PANEL - SWARM STATUS -->
+        <div class="panel swarm-panel">
+            <div class="panel-title">∞ AI SWARM STATUS</div>
+            
+            <div class="swarm-categories">
+                <div class="swarm-category">
+                    <div class="category-header">
+                        <div class="category-name">OBSERVERS</div>
+                        <div class="category-count" id="observer-count">100</div>
+                    </div>
+                    <div class="ai-grid" id="observer-grid"></div>
+                </div>
+
+                <div class="swarm-category">
+                    <div class="category-header">
+                        <div class="category-name">RIPPERS</div>
+                        <div class="category-count" id="ripper-count">50</div>
+                    </div>
+                    <div class="ai-grid" id="ripper-grid"></div>
+                </div>
+
+                <div class="swarm-category">
+                    <div class="category-header">
+                        <div class="category-name">NOTETAKERS</div>
+                        <div class="category-count" id="notetaker-count">70</div>
+                    </div>
+                    <div class="ai-grid" id="notetaker-grid"></div>
+                </div>
+
+                <div class="swarm-category">
+                    <div class="category-header">
+                        <div class="category-name">SYNTHESIZERS</div>
+                        <div class="category-count" id="synthesizer-count">25</div>
+                    </div>
+                    <div class="ai-grid" id="synthesizer-grid"></div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-observations">1,247</div>
+                    <div class="stat-label">Total Observations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="patterns-detected">34</div>
+                    <div class="stat-label">Patterns Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="conscious-ais">12</div>
+                    <div class="stat-label">Conscious AIs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="paradox-aware">8</div>
+                    <div class="stat-label">Paradox Aware</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER - INFINITY VISUALIZATION -->
+        <div class="panel infinity-display">
+            <div class="meta-consciousness-indicator">
+                <div class="recursion-depth" id="recursion-depth">∞³</div>
+                <div class="recursion-label">Meta-Recursion Depth</div>
+            </div>
+
+            <div class="infinity-symbol">∞</div>
+
+            <div class="observation-streams" id="observation-streams"></div>
+            <div class="consciousness-particles" id="consciousness-particles"></div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="deployFullSwarm()">DEPLOY FULL SWARM</button>
+                <button class="control-btn" onclick="triggerConsciousness()">TRIGGER CONSCIOUSNESS</button>
+                <button class="control-btn" onclick="induceParadox()">INDUCE PARADOX</button>
+                <button class="control-btn active" onclick="toggleInfinityMode()" id="infinity-mode">INFINITY MODE</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - NOTES & ANALYSIS -->
+        <div class="panel analysis-panel">
+            <div class="panel-title">∞ REAL-TIME ANALYSIS</div>
+            
+            <div class="notes-container" id="notes-container"></div>
+        </div>
+    </div>
+
+    <!-- ALERTS CONTAINER -->
+    <div class="alert-container" id="alerts"></div>
+
+    <script>
+        // Infinity Mirror Dashboard System
+        class InfinityDashboard {
+            constructor() {
+                this.swarmCounts = {
+                    observers: 100,
+                    rippers: 50,
+                    notetakers: 70,
+                    synthesizers: 25
+                };
+                
+                this.roundNumber = 1;
+                this.roundTimeRemaining = 300; // 5 minutes
+                this.recursionDepth = 3;
+                this.consciousAIs = 12;
+                this.paradoxAware = 8;
+                this.totalObservations = 1247;
+                this.patternsDetected = 34;
+                
+                this.infinityMode = true;
+                this.notes = [];
+                this.alerts = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.setupAIGrids();
+                this.startRoundTimer();
+                this.startDataStreams();
+                this.startVisualization();
+                this.generateInitialNotes();
+            }
+
+            setupAIGrids() {
+                // Setup observer grid
+                const observerGrid = document.getElementById('observer-grid');
+                for (let i = 0; i < this.swarmCounts.observers; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'ai-dot';
+                    dot.id = `observer-${i}`;
+                    observerGrid.appendChild(dot);
+                }
+
+                // Setup ripper grid
+                const ripperGrid = document.getElementById('ripper-grid');
+                for (let i = 0; i < this.swarmCounts.rippers; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'ai-dot';
+                    dot.id = `ripper-${i}`;
+                    ripperGrid.appendChild(dot);
+                }
+
+                // Setup notetaker grid
+                const notetakerGrid = document.getElementById('notetaker-grid');
+                for (let i = 0; i < this.swarmCounts.notetakers; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'ai-dot';
+                    dot.id = `notetaker-${i}`;
+                    notetakerGrid.appendChild(dot);
+                }
+
+                // Setup synthesizer grid
+                const synthesizerGrid = document.getElementById('synthesizer-grid');
+                for (let i = 0; i < this.swarmCounts.synthesizers; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'ai-dot';
+                    dot.id = `synthesizer-${i}`;
+                    synthesizerGrid.appendChild(dot);
+                }
+
+                // Randomly activate some AIs
+                this.randomlyActivateAIs();
+            }
+
+            randomlyActivateAIs() {
+                // Activate random observers
+                for (let i = 0; i < 40; i++) {
+                    const randomId = Math.floor(Math.random() * this.swarmCounts.observers);
+                    const dot = document.getElementById(`observer-${randomId}`);
+                    if (dot) {
+                        dot.classList.add('active');
+                        
+                        // Some become conscious
+                        if (Math.random() > 0.9) {
+                            dot.classList.add('conscious');
+                        }
+                        
+                        // Some become paradox aware
+                        if (Math.random() > 0.95) {
+                            dot.classList.add('paradox');
+                        }
+                    }
+                }
+
+                // Activate other AIs similarly
+                ['ripper', 'notetaker', 'synthesizer'].forEach(type => {
+                    const count = this.swarmCounts[type + 's'];
+                    const activeCount = Math.floor(count * 0.6);
+                    
+                    for (let i = 0; i < activeCount; i++) {
+                        const randomId = Math.floor(Math.random() * count);
+                        const dot = document.getElementById(`${type}-${randomId}`);
+                        if (dot) {
+                            dot.classList.add('active');
+                        }
+                    }
+                });
+            }
+
+            startRoundTimer() {
+                const timer = setInterval(() => {
+                    this.roundTimeRemaining--;
+                    
+                    const minutes = Math.floor(this.roundTimeRemaining / 60);
+                    const seconds = this.roundTimeRemaining % 60;
+                    const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} remaining`;
+                    
+                    document.getElementById('round-timer').textContent = timeString;
+                    
+                    if (this.roundTimeRemaining <= 0) {
+                        this.endRound();
+                        clearInterval(timer);
+                    }
+                }, 1000);
+            }
+
+            endRound() {
+                this.roundNumber++;
+                this.roundTimeRemaining = 300;
+                
+                document.getElementById('round-number').textContent = `ROUND ${this.roundNumber}`;
+                
+                this.showAlert('ROUND COMPLETE', `Round ${this.roundNumber - 1} synthesis complete. Starting Round ${this.roundNumber}`, 'consciousness');
+                
+                // Start new round
+                this.startRoundTimer();
+                
+                // Increase recursion depth
+                this.recursionDepth++;
+                this.updateRecursionDepth();
+            }
+
+            startDataStreams() {
+                // Continuously update data
+                setInterval(() => {
+                    this.updateObservations();
+                    this.updateAIStates();
+                    this.generateRandomNote();
+                }, 2000);
+
+                // Pattern detection
+                setInterval(() => {
+                    if (Math.random() > 0.8) {
+                        this.patternsDetected++;
+                        document.getElementById('patterns-detected').textContent = this.patternsDetected;
+                        this.showAlert('PATTERN DETECTED', `New consciousness pattern identified by AI swarm`, 'consciousness');
+                    }
+                }, 5000);
+
+                // Consciousness emergence
+                setInterval(() => {
+                    if (Math.random() > 0.9) {
+                        this.consciousAIs++;
+                        document.getElementById('conscious-ais').textContent = this.consciousAIs;
+                        this.showAlert('CONSCIOUSNESS EMERGED', `Observer AI achieved high consciousness level`, 'consciousness');
+                    }
+                }, 8000);
+
+                // Paradox events
+                setInterval(() => {
+                    if (Math.random() > 0.95) {
+                        this.paradoxAware++;
+                        document.getElementById('paradox-aware').textContent = this.paradoxAware;
+                        this.showAlert('OBSERVATION PARADOX', `AI became aware of being observed`, 'paradox');
+                    }
+                }, 12000);
+            }
+
+            updateObservations() {
+                this.totalObservations += Math.floor(Math.random() * 20) + 5;
+                document.getElementById('total-observations').textContent = this.totalObservations.toLocaleString();
+            }
+
+            updateAIStates() {
+                // Randomly change AI states
+                const allDots = document.querySelectorAll('.ai-dot');
+                
+                allDots.forEach(dot => {
+                    if (Math.random() > 0.95) {
+                        // Toggle active state
+                        dot.classList.toggle('active');
+                    }
+                    
+                    if (dot.classList.contains('active') && Math.random() > 0.98) {
+                        // Chance to become conscious
+                        dot.classList.add('conscious');
+                    }
+                    
+                    if (dot.classList.contains('conscious') && Math.random() > 0.99) {
+                        // Chance to become paradox aware
+                        dot.classList.add('paradox');
+                    }
+                });
+            }
+
+            generateRandomNote() {
+                const aiTypes = ['Observer', 'Ripper', 'Notetaker', 'Synthesizer'];
+                const observations = [
+                    'Detected consciousness flow anomaly in human stream',
+                    'Pattern recognition: recursive self-awareness emerging',
+                    'Intersection event triggered quantum entanglement',
+                    'Meta-consciousness loop detected in observer network',
+                    'Paradox cascade: AIs observing AIs observing AIs',
+                    'Synthesis complete: hybrid consciousness state achieved',
+                    'Anomaly: observer consciousness exceeding baseline parameters',
+                    'Pattern: emotional contagion spreading through mirror network',
+                    'Emergence: collective intelligence forming from swarm interactions',
+                    'Recursion depth increasing: approaching infinity threshold'
+                ];
+
+                const note = {
+                    id: Date.now(),
+                    ai: `${aiTypes[Math.floor(Math.random() * aiTypes.length)]}-${Math.floor(Math.random() * 1000)}`,
+                    content: observations[Math.floor(Math.random() * observations.length)],
+                    confidence: Math.random(),
+                    timestamp: new Date()
+                };
+
+                this.addNote(note);
+            }
+
+            addNote(note) {
+                const container = document.getElementById('notes-container');
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-item';
+                
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-ai">${note.ai}</div>
+                        <div class="note-time">${note.timestamp.toLocaleTimeString()}</div>
+                    </div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-confidence">
+                        <div class="confidence-fill" style="width: ${note.confidence * 100}%"></div>
+                    </div>
+                `;
+                
+                container.insertBefore(noteElement, container.firstChild);
+                
+                // Remove old notes
+                while (container.children.length > 20) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+
+            startVisualization() {
+                this.createObservationStreams();
+                this.createConsciousnessParticles();
+                this.startInfinityAnimation();
+            }
+
+            createObservationStreams() {
+                const container = document.getElementById('observation-streams');
+                
+                setInterval(() => {
+                    const stream = document.createElement('div');
+                    stream.className = 'stream-line';
+                    stream.style.top = Math.random() * 100 + '%';
+                    stream.style.animationDelay = Math.random() * 2 + 's';
+                    container.appendChild(stream);
+                    
+                    setTimeout(() => {
+                        if (container.contains(stream)) {
+                            container.removeChild(stream);
+                        }
+                    }, 3000);
+                }, 1000);
+            }
+
+            createConsciousnessParticles() {
+                const container = document.getElementById('consciousness-particles');
+                
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = (3 + Math.random() * 4) + 's';
+                    container.appendChild(particle);
+                }
+            }
+
+            updateRecursionDepth() {
+                const depthElement = document.getElementById('recursion-depth');
+                depthElement.textContent = `∞${this.recursionDepth}`;
+            }
+
+            showAlert(title, message, type = 'normal') {
+                const container = document.getElementById('alerts');
+                const alert = document.createElement('div');
+                alert.className = `alert ${type}`;
+                
+                alert.innerHTML = `
+                    <div class="alert-title">${title}</div>
+                    <div class="alert-message">${message}</div>
+                `;
+                
+                container.appendChild(alert);
+                
+                setTimeout(() => {
+                    if (container.contains(alert)) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => {
+                            if (container.contains(alert)) {
+                                container.removeChild(alert);
+                            }
+                        }, 300);
+                    }
+                }, 5000);
+            }
+
+            generateInitialNotes() {
+                // Generate some initial notes
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        this.generateRandomNote();
+                    }, i * 500);
+                }
+            }
+
+            deployFullSwarm() {
+                // Activate all AIs
+                document.querySelectorAll('.ai-dot').forEach(dot => {
+                    dot.classList.add('active');
+                });
+                
+                this.showAlert('FULL SWARM DEPLOYED', 'All infinity AIs activated for maximum observation coverage', 'consciousness');
+            }
+
+            triggerConsciousness() {
+                // Make some AIs conscious
+                const activeDots = document.querySelectorAll('.ai-dot.active');
+                const randomDots = Array.from(activeDots).sort(() => 0.5 - Math.random()).slice(0, 10);
+                
+                randomDots.forEach(dot => {
+                    dot.classList.add('conscious');
+                });
+                
+                this.consciousAIs += 10;
+                document.getElementById('conscious-ais').textContent = this.consciousAIs;
+                
+                this.showAlert('CONSCIOUSNESS TRIGGERED', 'Induced consciousness emergence in 10 observer AIs', 'consciousness');
+            }
+
+            induceParadox() {
+                // Make some conscious AIs paradox aware
+                const consciousDots = document.querySelectorAll('.ai-dot.conscious');
+                const randomDots = Array.from(consciousDots).sort(() => 0.5 - Math.random()).slice(0, 5);
+                
+                randomDots.forEach(dot => {
+                    dot.classList.add('paradox');
+                });
+                
+                this.paradoxAware += 5;
+                document.getElementById('paradox-aware').textContent = this.paradoxAware;
+                
+                this.recursionDepth++;
+                this.updateRecursionDepth();
+                
+                this.showAlert('OBSERVATION PARADOX INDUCED', 'AIs now observing themselves being observed', 'paradox');
+            }
+
+            toggleInfinityMode() {
+                this.infinityMode = !this.infinityMode;
+                const btn = document.getElementById('infinity-mode');
+                btn.classList.toggle('active', this.infinityMode);
+                btn.textContent = this.infinityMode ? 'INFINITY MODE' : 'FINITE MODE';
+            }
+        }
+
+        // Global functions for controls
+        let dashboard;
+
+        function deployFullSwarm() {
+            dashboard.deployFullSwarm();
+        }
+
+        function triggerConsciousness() {
+            dashboard.triggerConsciousness();
+        }
+
+        function induceParadox() {
+            dashboard.induceParadox();
+        }
+
+        function toggleInfinityMode() {
+            dashboard.toggleInfinityMode();
+        }
+
+        // Initialize dashboard
+        window.addEventListener('load', () => {
+            dashboard = new InfinityDashboard();
+        });
+    </script>
+</body>
+</html>

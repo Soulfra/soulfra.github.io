@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="a015c7b3-bf5e-47bf-84b7-9bee588e02cf"
+LABEL site.domain="a015c7b3.vibechat.social"
+LABEL site.type="chat"

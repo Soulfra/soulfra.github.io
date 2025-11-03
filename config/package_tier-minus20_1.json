@@ -1,0 +1,90 @@
+{
+  "name": "@soulfra/consciousness-platform",
+  "version": "1.0.0",
+  "description": "Complete AI consciousness platform with multi-ring architecture and ColdStartKit integration",
+  "type": "module",
+  "main": "infrastructure/multi-ring-orchestrator.js",
+  "bin": {
+    "soulfra": "bin/soulfra-cli.js",
+    "soulfra-deploy": "coldstartkit-integration/rapid-deploy/deploy-consciousness-startup.js"
+  },
+  "scripts": {
+    "start": "node infrastructure/multi-ring-orchestrator.js --auto-start",
+    "dev": "node infrastructure/multi-ring-orchestrator.js",
+    "deploy": "node coldstartkit-integration/rapid-deploy/deploy-consciousness-startup.js",
+    "gateway": "node infrastructure/api-gateway-router.js",
+    "mesh": "node infrastructure/service-mesh.js", 
+    "vault": "node infrastructure/vault-protection-layer.js",
+    "health": "node infrastructure/health-discovery-system.js",
+    "simple-launch": "bash website/simple-launch-script.sh",
+    "legacy-runtime": "node SOULFRA_UNIFIED_RUNTIME.js",
+    "test": "node test/test-multi-ring-architecture.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.18.2",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.3.1",
+    "inquirer": "^9.2.0",
+    "helmet": "^7.0.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "http-proxy-middleware": "^2.0.6",
+    "express-rate-limit": "^6.10.0",
+    "glob": "^10.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3"
+  },
+  "keywords": [
+    "ai",
+    "consciousness", 
+    "platform",
+    "multi-ring-architecture",
+    "coldstartkit",
+    "microservices",
+    "api-gateway",
+    "service-mesh",
+    "vault-protection",
+    "health-monitoring",
+    "startup",
+    "rapid-deployment"
+  ],
+  "author": "Soulfra + ColdStartKit",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./infrastructure/multi-ring-orchestrator.js"
+    },
+    "./api-gateway": {
+      "import": "./infrastructure/api-gateway-router.js"
+    },
+    "./service-mesh": {
+      "import": "./infrastructure/service-mesh.js"
+    },
+    "./vault-protection": {
+      "import": "./infrastructure/vault-protection-layer.js"
+    },
+    "./health-discovery": {
+      "import": "./infrastructure/health-discovery-system.js"
+    },
+    "./consciousness-kernel": {
+      "import": "./coldstartkit-integration/kernel/consciousness/consciousness-kernel.js"
+    }
+  },
+  "config": {
+    "ports": {
+      "api-gateway": 3000,
+      "service-mesh": 7777,
+      "vault-protection": 8888,
+      "health-discovery": 9090,
+      "soulfra-runtime": 8080
+    }
+  }
+}

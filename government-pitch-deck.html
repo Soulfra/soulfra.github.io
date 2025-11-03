@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Government Pitch Deck - Soulfra</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    .slide {
+      min-height: 100vh;
+      padding: 80px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .slide.cover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .slide.problem { background: #1a1a2e; }
+    .slide.solution { background: #16213e; }
+    .slide.traction { background: #0f3460; }
+    .slide.team { background: #1a1a2e; }
+    .slide.capabilities { background: #16213e; }
+    .slide.ask { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+
+    .slide-content {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 30px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      opacity: 0.7;
+      margin-bottom: 40px;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      opacity: 0.8;
+      margin-bottom: 60px;
+    }
+
+    ul {
+      text-align: left;
+      font-size: 1.5rem;
+      line-height: 2.5;
+      list-style: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    ul li {
+      padding-left: 40px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    ul li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: bold;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      margin: 60px 0;
+    }
+
+    .metric {
+      text-align: center;
+    }
+
+    .metric-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .metric-value {
+      font-size: 4rem;
+      font-weight: bold;
+      color: #2ecc71;
+      line-height: 1;
+    }
+
+    .metric-label {
+      font-size: 1.2rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin: 60px 0;
+      text-align: left;
+    }
+
+    .brand-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .brand-card:hover {
+      transform: translateY(-5px);
+      border-color: #667eea;
+    }
+
+    .brand-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .brand-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .brand-capability {
+      font-size: 1.1rem;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .brand-proof {
+      font-size: 0.95rem;
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+
+    .brand-url {
+      margin-top: 15px;
+    }
+
+    .brand-url a {
+      color: #2ecc71;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cta-box {
+      background: rgba(255,255,255,0.1);
+      border: 3px solid #fff;
+      border-radius: 16px;
+      padding: 50px;
+      margin-top: 60px;
+      max-width: 800px;
+    }
+
+    .cta-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .cta-box p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 20px 50px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+    }
+
+    .author-info {
+      margin-top: 40px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .author-info a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #2ecc71;
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 1.8rem; }
+      h3 { font-size: 1.2rem; }
+      ul { font-size: 1.1rem; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .brands-grid { grid-template-columns: 1fr; }
+      .slide { padding: 60px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide cover" data-slide="1">
+    <div class="slide-content">
+      <div class="live-badge">● LIVE & UPDATING</div>
+      <h1>Building the Future of Secure AI Infrastructure</h1>
+      <h2>A Portfolio of 12 Live Products Proving 12 Core Capabilities</h2>
+
+      <div class="author-info">
+        <p><strong>Matt Mauer</strong> • Solo Technical Founder</p>
+        <p><a href="mailto:matt@soulfra.com">matt@soulfra.com</a> • <a href="https://github.com/Soulfra">github.com/Soulfra</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM -->
+  <div class="slide problem" data-slide="2">
+    <div class="slide-content">
+      <h2>The Problem</h2>
+      <h3>Government agencies struggle with AI infrastructure</h3>
+
+      <ul>
+        <li>AI tools are expensive and vendor-locked (OpenAI, Anthropic pricing unpredictable)</li>
+        <li>Security is an afterthought, not built into foundation</li>
+        <li>Developer tools don't meet FedRAMP/IL4/IL5 requirements</li>
+        <li>Procurement cycles too slow for fast-moving AI landscape</li>
+        <li>Incumbent vendors charge 10x markup for government contracts</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: SOLUTION -->
+  <div class="slide solution" data-slide="3">
+    <div class="slide-content">
+      <h2>The Solution</h2>
+      <h3>Open-source, security-first, zero-cost AI infrastructure</h3>
+
+      <ul>
+        <li>Multi-LLM routing with ELO-based selection (best model, lowest cost)</li>
+        <li>Security-first design: Ed25519 crypto, zero-knowledge proofs, SSO</li>
+        <li>Zero-cost infrastructure using free tiers (Google Sheets, Gmail, GitHub Pages)</li>
+        <li>Bring Your Own Key (BYOK) - agencies use their own API keys, encrypted locally</li>
+        <li>Open source + transparent - audit every line of code</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: TRACTION -->
+  <div class="slide traction" data-slide="4">
+    <div class="slide-content">
+      <h2>Traction</h2>
+      <h3>Built and shipped in public - real products, real code</h3>
+
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-icon">🚀</div>
+          <div class="metric-value" id="productsLive">12</div>
+          <div class="metric-label">Products Live</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-icon">📅</div>
+          <div class="metric-value" id="daysBuilding">90</div>
+          <div class="metric-label">Days Building</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-icon">📁</div>
+          <div class="metric-value" id="githubRepos">12</div>
+          <div class="metric-label">GitHub Repos</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-icon">🎯</div>
+          <div class="metric-value" id="totalWins">0</div>
+          <div class="metric-label">Wins Logged</div>
+        </div>
+      </div>
+
+      <h3>All code is public. All products are live. This deck updates automatically as I ship.</h3>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: TEAM -->
+  <div class="slide team" data-slide="5">
+    <div class="slide-content">
+      <h2>Team</h2>
+      <h3>Solo founder with proven execution</h3>
+
+      <div style="max-width: 800px; margin: 40px auto; text-align: left; font-size: 1.3rem; line-height: 2;">
+        <p><strong>Matt Mauer</strong> - Builder</p>
+        <p style="margin-top: 20px; opacity: 0.9;">
+          Solo technical founder building 12 products in parallel.
+          Each product proves a different capability.
+          No team, no funding, just shipping.
+        </p>
+        <p style="margin-top: 30px; font-weight: 600; color: #2ecc71;">
+          12 live products = 12 proven skills
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: CAPABILITIES -->
+  <div class="slide capabilities" data-slide="6">
+    <div class="slide-content">
+      <h2>Capabilities</h2>
+      <h3>Each brand proves a different skill</h3>
+
+      <div class="brands-grid">
+        <div class="brand-card">
+          <div class="brand-icon">🔐</div>
+          <div class="brand-name">Soulfra</div>
+          <div class="brand-capability">Security Engineering</div>
+          <div class="brand-proof">Ed25519 crypto • SSO • Zero-knowledge proofs</div>
+          <div class="brand-url"><a href="https://soulfra.github.io">View Live →</a></div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">🤖</div>
+          <div class="brand-name">Calriven</div>
+          <div class="brand-capability">AI/ML Engineering</div>
+          <div class="brand-proof">Multi-LLM routing • ELO systems • Agent marketplace</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">🧠</div>
+          <div class="brand-name">CALOS</div>
+          <div class="brand-capability">Systems Architecture</div>
+          <div class="brand-proof">Agent router • Gmail relay • Zero-cost infrastructure</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">💭</div>
+          <div class="brand-name">Thoughtstream</div>
+          <div class="brand-capability">Content Generation</div>
+          <div class="brand-proof">Auto-blog • Weekly summaries • Thought logging</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">💰</div>
+          <div class="brand-name">BountyBoard</div>
+          <div class="brand-capability">Talent Matching</div>
+          <div class="brand-proof">ICP builder • Skill detection • Pipeline management</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">🔥</div>
+          <div class="brand-name">DevRagebait</div>
+          <div class="brand-capability">Viral Marketing</div>
+          <div class="brand-proof">Meme generator • GIF/MP4 export • 11 templates</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">🎙️</div>
+          <div class="brand-name">VoiceConsultant</div>
+          <div class="brand-capability">Voice AI</div>
+          <div class="brand-proof">Speech-to-text • Context-aware • Skill extraction</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">📁</div>
+          <div class="brand-name">RepoExplorer</div>
+          <div class="brand-capability">Code Analysis</div>
+          <div class="brand-proof">GitHub integration • Repo search • File parsing</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">🎮</div>
+          <div class="brand-name">EquityGame</div>
+          <div class="brand-capability">Gamification</div>
+          <div class="brand-proof">Tier systems • Equity visualization • Engagement loops</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">💬</div>
+          <div class="brand-name">MatrixChat</div>
+          <div class="brand-capability">Real-time Collaboration</div>
+          <div class="brand-proof">Self-hosted • Room management • Community building</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">📧</div>
+          <div class="brand-name">GmailRelay</div>
+          <div class="brand-capability">Email Infrastructure</div>
+          <div class="brand-proof">Zero-cost relay • Google Sheets DB • Rate limiting</div>
+        </div>
+
+        <div class="brand-card">
+          <div class="brand-icon">📊</div>
+          <div class="brand-name">PitchDeck</div>
+          <div class="brand-capability">Business Development</div>
+          <div class="brand-proof">Auto-generated decks • Contract matching • Reverse applications</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: THE ASK -->
+  <div class="slide ask" data-slide="7">
+    <div class="slide-content">
+      <h2>The Ask</h2>
+      <h3>Partner to secure government infrastructure</h3>
+
+      <ul>
+        <li>$500K SBIR/STTR contract for secure AI tooling</li>
+        <li>Access to government developer communities</li>
+        <li>Partnership on cybersecurity initiatives</li>
+      </ul>
+
+      <div class="cta-box">
+        <h2>Interested?</h2>
+        <p>I'm not asking for funding. I'm showing proof I can execute.<br>If you want to partner, apply below.</p>
+        <button onclick="window.location.href='reverse-contract-application.html'">
+          Apply to Fund This Work →
+        </button>
+      </div>
+
+      <p style="margin-top: 40px; font-size: 1.1rem; opacity: 0.9;">
+        This deck was auto-generated from my daily check-ins.<br>
+        Updates weekly as I ship. All code is public on GitHub.
+      </p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <button onclick="prevSlide()">← Prev</button>
+    <button onclick="nextSlide()">Next →</button>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 7;
+
+    function showSlide(n) {
+      currentSlide = Math.max(1, Math.min(n, totalSlides));
+
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        slide.style.display = (idx + 1 === currentSlide) ? 'flex' : 'none';
+      });
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // Calculate days building
+    window.addEventListener('load', () => {
+      const startDate = new Date('2025-01-01');
+      const today = new Date();
+      const daysBuilding = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      document.getElementById('daysBuilding').textContent = daysBuilding;
+
+      // Show first slide
+      showSlide(1);
+    });
+
+    // TODO: Load real metrics from daily-accountability system
+    // For now, metrics are hardcoded
+  </script>
+</body>
+</html>

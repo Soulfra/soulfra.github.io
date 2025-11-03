@@ -1,0 +1,19 @@
+{
+  "sessions": [],
+  "metadata": {
+    "created": "2024-01-01T00:00:00.000Z",
+    "lastUpdated": "2024-01-01T00:00:00.000Z",
+    "version": "1.0.0",
+    "description": "Mirror Lock Runtime session tracking - QR pairing and local execution logs"
+  },
+  "stats": {
+    "totalSessions": 0,
+    "activeSessions": 0,
+    "localOnlySessions": 0,
+    "hybridSessions": 0,
+    "averageSessionDuration": 0,
+    "totalLocalPrompts": 0,
+    "totalCloudPrompts": 0,
+    "costSaved": 0
+  }
+}

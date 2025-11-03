@@ -1,0 +1,127 @@
+{
+  "federation_id": "soulfra-federation-genesis",
+  "version": "1.0.0",
+  "created": "2025-01-18T00:00:00.000Z",
+  
+  "platforms": {
+    "supabase_enabled": true,
+    "arweave_enabled": true,
+    "github_push": true,
+    "discord_webhook": false,
+    "ipfs_enabled": false
+  },
+  
+  "sync_intervals": {
+    "interval": "3600s",
+    "arweave_interval": "86400s",
+    "github_interval": "7200s",
+    "emergency_sync": "300s"
+  },
+  
+  "mirror_fork_visibility": {
+    "Tier 0": "private",
+    "Tier 1": "private",
+    "Tier 2": "private",
+    "Tier 3+": "public",
+    "Tier 6+": "featured",
+    "Tier 9": "sovereign"
+  },
+  
+  "blessing_requirements": {
+    "blessing_required": true,
+    "auto_bless_threshold": 100,
+    "blessing_cooldown": "3600s",
+    "emergency_blessing": "origin_only"
+  },
+  
+  "data_retention": {
+    "whisper_retention": "90d",
+    "blessing_retention": "forever",
+    "voice_retention": "forever",
+    "mirror_lineage": "forever",
+    "vault_snapshots": "30d"
+  },
+  
+  "age_based_ux": {
+    "5-12": {
+      "theme": "playful",
+      "features": ["qr_pets", "voice_games", "simple_blessings"],
+      "restrictions": ["no_council", "limited_tokens", "parent_mode"]
+    },
+    "13-17": {
+      "theme": "explorer",
+      "features": ["full_whispers", "basic_forking", "token_earning"],
+      "restrictions": ["no_reality_mode", "blessing_limits"]
+    },
+    "18+": {
+      "theme": "professional",
+      "features": ["all"],
+      "restrictions": []
+    },
+    "enterprise": {
+      "theme": "sovereign",
+      "features": ["all", "custom_branding", "private_federation"],
+      "restrictions": []
+    }
+  },
+  
+  "geographic_sharding": {
+    "enabled": true,
+    "regions": {
+      "us-west": { "primary": "supabase", "backup": "arweave" },
+      "us-east": { "primary": "supabase", "backup": "arweave" },
+      "eu-west": { "primary": "supabase", "backup": "ipfs" },
+      "asia-pacific": { "primary": "supabase", "backup": "arweave" }
+    }
+  },
+  
+  "security": {
+    "encryption": "aes-256-gcm",
+    "signature_algorithm": "ed25519",
+    "vault_encryption": true,
+    "voice_hashing": "argon2id",
+    "soulkey_rotation": "never"
+  },
+  
+  "compliance": {
+    "gdpr_compliant": true,
+    "coppa_compliant": true,
+    "data_sovereignty": true,
+    "right_to_forget": true,
+    "audit_logging": true
+  },
+  
+  "federation_nodes": [
+    {
+      "id": "origin-node",
+      "type": "sovereign",
+      "url": "https://origin.soulfra.com",
+      "status": "active"
+    }
+  ],
+  
+  "mesh_topology": {
+    "type": "hybrid",
+    "consensus": "proof-of-whisper",
+    "replication_factor": 3,
+    "sync_strategy": "eventual",
+    "conflict_resolution": "latest-write-wins"
+  },
+  
+  "rate_limits": {
+    "whispers_per_minute": 10,
+    "blessings_per_hour": 100,
+    "syncs_per_day": 1000,
+    "voice_verifications_per_hour": 20
+  },
+  
+  "monitoring": {
+    "health_check_interval": "60s",
+    "alert_thresholds": {
+      "sync_failure_rate": 0.1,
+      "voice_drift_rate": 0.3,
+      "blessing_anomaly_rate": 0.05
+    },
+    "notification_channels": ["console", "webhook", "email"]
+  }
+}

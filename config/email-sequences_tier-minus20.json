@@ -1,0 +1,272 @@
+{
+  "sequences": {
+    "welcome_free": {
+      "name": "Free User Onboarding",
+      "trigger": "signup_free",
+      "emails": [
+        {
+          "delay": "immediate",
+          "subject": "Welcome to Soulfra - Your Data is Now Unbreachable 🛡️",
+          "preview": "3 quick steps to protect your first file",
+          "template": "welcome_free_1"
+        },
+        {
+          "delay": "1_day",
+          "subject": "Quick Tip: Protect Your Most Important Files First",
+          "preview": "Start with tax documents, medical records, or passwords",
+          "template": "tips_free_1"
+        },
+        {
+          "delay": "3_days",
+          "subject": "You're Using 0.1% of Your Free Storage",
+          "preview": "Here's what else you can protect",
+          "template": "usage_reminder_free"
+        },
+        {
+          "delay": "7_days",
+          "subject": "How Sarah Protected Her Family's Digital Life",
+          "preview": "Real story from a Soulfra user",
+          "template": "case_study_free"
+        },
+        {
+          "delay": "14_days",
+          "subject": "Did You Know? Your Data Survives Even If We Don't",
+          "preview": "The magic of distributed fragments",
+          "template": "education_free_1"
+        },
+        {
+          "delay": "30_days",
+          "subject": "You've Protected 12 Files This Month 🎉",
+          "preview": "Upgrade to protect unlimited files",
+          "template": "upgrade_prompt_free"
+        }
+      ]
+    },
+    
+    "welcome_paid": {
+      "name": "Paid User Onboarding",
+      "trigger": "signup_paid",
+      "emails": [
+        {
+          "delay": "immediate",
+          "subject": "Welcome to Soulfra Premium - Let's Secure Everything 🚀",
+          "preview": "Your quick-start guide and exclusive benefits",
+          "template": "welcome_paid_1"
+        },
+        {
+          "delay": "immediate",
+          "subject": "Your Receipt - Soulfra {{plan}} Subscription",
+          "preview": "Invoice #{{invoice_number}}",
+          "template": "receipt"
+        },
+        {
+          "delay": "1_day",
+          "subject": "Set Up Family Sharing in 2 Minutes",
+          "preview": "Protect your whole family with one subscription",
+          "template": "family_setup"
+        },
+        {
+          "delay": "3_days",
+          "subject": "Pro Tip: Use Soulfra's Browser Extension",
+          "preview": "Protect files without leaving your browser",
+          "template": "browser_extension"
+        },
+        {
+          "delay": "7_days",
+          "subject": "Your First Week Stats: {{files_protected}} Files Secured",
+          "preview": "You're in the top 10% of security-conscious users",
+          "template": "weekly_stats"
+        },
+        {
+          "delay": "30_days",
+          "subject": "Your Soulfra Monthly Report",
+          "preview": "{{total_protected}} files protected, {{storage_used}} used",
+          "template": "monthly_report"
+        }
+      ]
+    },
+    
+    "trial_nurture": {
+      "name": "Trial User Nurture",
+      "trigger": "trial_started",
+      "emails": [
+        {
+          "delay": "immediate",
+          "subject": "Your 30-Day Soulfra Trial Starts Now",
+          "preview": "Make the most of your premium features",
+          "template": "trial_welcome"
+        },
+        {
+          "delay": "3_days",
+          "subject": "Day 3: Try Sharing a Protected File",
+          "preview": "It's easier than you think",
+          "template": "trial_feature_sharing"
+        },
+        {
+          "delay": "7_days",
+          "subject": "You've Protected {{count}} Files - Here's What's Next",
+          "preview": "Advanced features you haven't tried yet",
+          "template": "trial_milestone_1"
+        },
+        {
+          "delay": "14_days",
+          "subject": "Halfway Through Your Trial - Questions?",
+          "preview": "Book a free 15-min demo with our team",
+          "template": "trial_midpoint"
+        },
+        {
+          "delay": "21_days",
+          "subject": "7 Days Left - Special Offer Inside 🎁",
+          "preview": "Save 20% if you upgrade now",
+          "template": "trial_offer"
+        },
+        {
+          "delay": "28_days",
+          "subject": "Your Trial Ends in 2 Days",
+          "preview": "Don't lose access to your protected files",
+          "template": "trial_ending"
+        },
+        {
+          "delay": "30_days",
+          "subject": "Your Trial Has Ended - But Your Data is Still Safe",
+          "preview": "Upgrade to regain full access",
+          "template": "trial_ended"
+        }
+      ]
+    },
+    
+    "enterprise_onboarding": {
+      "name": "Enterprise Customer Onboarding",
+      "trigger": "enterprise_signup",
+      "emails": [
+        {
+          "delay": "immediate",
+          "subject": "Welcome {{company_name}} to Soulfra Enterprise",
+          "preview": "Your dedicated success manager is {{manager_name}}",
+          "template": "enterprise_welcome"
+        },
+        {
+          "delay": "immediate",
+          "subject": "Schedule Your Onboarding Call",
+          "preview": "Let's get your team up and running",
+          "template": "enterprise_scheduling"
+        },
+        {
+          "delay": "1_day",
+          "subject": "Your Soulfra Admin Portal is Ready",
+          "preview": "Manage users, view analytics, and more",
+          "template": "enterprise_admin"
+        },
+        {
+          "delay": "7_days",
+          "subject": "Week 1 Report: {{users_active}} Users Protected {{files_count}} Files",
+          "preview": "Your team is adopting Soulfra faster than 85% of companies",
+          "template": "enterprise_week1"
+        },
+        {
+          "delay": "30_days",
+          "subject": "Monthly Business Review - {{company_name}}",
+          "preview": "ROI analysis and usage insights",
+          "template": "enterprise_monthly"
+        }
+      ]
+    },
+    
+    "re_engagement": {
+      "name": "Dormant User Re-engagement",
+      "trigger": "inactive_30_days",
+      "emails": [
+        {
+          "delay": "immediate",
+          "subject": "We Miss You at Soulfra",
+          "preview": "Your protected files are waiting",
+          "template": "reengagement_1"
+        },
+        {
+          "delay": "7_days",
+          "subject": "2,365 Data Breaches Last Year. Were You Affected?",
+          "preview": "Check if your data was exposed",
+          "template": "reengagement_breach_check"
+        },
+        {
+          "delay": "14_days",
+          "subject": "What's New at Soulfra Since You Left",
+          "preview": "Mobile app, faster speeds, new features",
+          "template": "reengagement_features"
+        },
+        {
+          "delay": "30_days",
+          "subject": "Final Notice: Your Protected Files",
+          "preview": "Export your data before we archive your account",
+          "template": "reengagement_final"
+        }
+      ]
+    },
+    
+    "security_education": {
+      "name": "Security Education Series",
+      "trigger": "active_user",
+      "emails": [
+        {
+          "delay": "7_days",
+          "subject": "Why Even Quantum Computers Can't Break Your Soulfra Vault",
+          "preview": "The math behind your protection",
+          "template": "education_quantum"
+        },
+        {
+          "delay": "14_days",
+          "subject": "True Story: How Soulfra Saved a Hospital from Ransomware",
+          "preview": "Even infected, their data stayed safe",
+          "template": "education_ransomware"
+        },
+        {
+          "delay": "21_days",
+          "subject": "Your Data Report: {{storage_used}} Protected Across {{device_count}} Devices",
+          "preview": "Plus tips to maximize your security",
+          "template": "education_report"
+        }
+      ]
+    }
+  },
+  
+  "templates": {
+    "welcome_free_1": {
+      "html": "<!DOCTYPE html><html><head><style>body{font-family:-apple-system,sans-serif;line-height:1.6;color:#333;}.header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:40px;text-align:center;}.content{padding:40px;max-width:600px;margin:0 auto;}.button{display:inline-block;padding:12px 30px;background:#667eea;color:white;text-decoration:none;border-radius:50px;margin:20px 0;}.footer{text-align:center;color:#999;font-size:14px;padding:20px;}</style></head><body><div class='header'><h1>Welcome to Soulfra!</h1><p>Your data is now protected by math that can't be broken</p></div><div class='content'><p>Hi {{name}},</p><p>Welcome to a world where data breaches don't matter - because even if hackers get in, they get nothing.</p><h2>🚀 Get Started in 3 Steps:</h2><ol><li><strong>Protect Your First File</strong><br>Drag any file into Soulfra. We recommend starting with something important like tax documents or passwords.</li><li><strong>See The Magic Happen</strong><br>Watch as your file gets split into mathematical fragments that are meaningless alone.</li><li><strong>Access Anywhere</strong><br>Your protected data follows you to any device - just scan your face!</li></ol><a href='https://app.soulfra.com' class='button'>Open Soulfra</a><h3>💡 Quick Tip</h3><p>Start with your most sensitive files first. You have 1GB free - that's about 250 documents or 500 photos!</p><p>Questions? Just reply to this email.</p><p>Stay sovereign,<br>The Soulfra Team</p></div><div class='footer'>Soulfra Inc. | Your data, your sovereignty<br><a href='{{unsubscribe_link}}'>Unsubscribe</a> | <a href='https://soulfra.com/privacy'>Privacy</a></div></body></html>",
+      "text": "Welcome to Soulfra!\n\nHi {{name}},\n\nWelcome to a world where data breaches don't matter - because even if hackers get in, they get nothing.\n\nGet Started in 3 Steps:\n\n1. Protect Your First File - Drag any file into Soulfra\n2. See The Magic Happen - Watch your file become unbreachable\n3. Access Anywhere - Use your face to access from any device\n\nOpen Soulfra: https://app.soulfra.com\n\nQuestions? Just reply to this email.\n\nStay sovereign,\nThe Soulfra Team"
+    },
+    
+    "trial_offer": {
+      "html": "<!DOCTYPE html><html><head><style>body{font-family:-apple-system,sans-serif;}.offer-box{background:#f0f7ff;border:2px solid #667eea;border-radius:12px;padding:30px;margin:20px 0;text-align:center;}.offer-code{font-size:32px;font-weight:bold;color:#667eea;background:white;padding:10px 20px;border-radius:8px;display:inline-block;margin:10px 0;}.countdown{color:#e74c3c;font-weight:bold;}</style></head><body><div style='max-width:600px;margin:0 auto;padding:20px;'><h1>7 Days Left in Your Trial</h1><p>Hi {{name}},</p><p>Your Soulfra trial ends in 7 days. You've protected <strong>{{files_count}} files</strong> so far - fantastic!</p><div class='offer-box'><h2>🎁 Exclusive Trial Offer</h2><p>Upgrade now and save 20% forever</p><div class='offer-code'>TRIAL20</div><p class='countdown'>Expires when your trial ends</p><a href='https://app.soulfra.com/upgrade?code=TRIAL20' style='display:inline-block;padding:15px 40px;background:#667eea;color:white;text-decoration:none;border-radius:50px;margin:20px 0;'>Claim Your Discount</a></div><h3>What happens when your trial ends?</h3><ul><li>✅ Your protected files remain safe</li><li>❌ You can't protect new files</li><li>❌ You lose family sharing</li><li>❌ No more priority support</li></ul><p>Don't lose momentum on your security journey!</p><p>Questions? Reply to this email or <a href='https://calendly.com/soulfra/demo'>book a quick call</a>.</p><p>Best,<br>The Soulfra Team</p></div></body></html>",
+      "text": "7 Days Left in Your Trial\n\nHi {{name}},\n\nYour Soulfra trial ends in 7 days. You've protected {{files_count}} files so far!\n\nEXCLUSIVE OFFER: Save 20% Forever\nUse code: TRIAL20\n(Expires when your trial ends)\n\nUpgrade now: https://app.soulfra.com/upgrade?code=TRIAL20\n\nWhat happens when your trial ends?\n✅ Your protected files remain safe\n❌ You can't protect new files\n❌ You lose family sharing\n❌ No more priority support\n\nDon't lose momentum on your security journey!\n\nThe Soulfra Team"
+    }
+  },
+  
+  "triggers": {
+    "signup_free": {
+      "description": "When user signs up for free account",
+      "conditions": {
+        "event": "user.created",
+        "plan": "free"
+      }
+    },
+    "signup_paid": {
+      "description": "When user signs up for paid plan",
+      "conditions": {
+        "event": "user.created",
+        "plan": ["family", "business", "enterprise"]
+      }
+    },
+    "trial_started": {
+      "description": "When user starts a trial",
+      "conditions": {
+        "event": "trial.started"
+      }
+    },
+    "inactive_30_days": {
+      "description": "User hasn't logged in for 30 days",
+      "conditions": {
+        "last_login": ">30_days"
+      }
+    }
+  }
+}

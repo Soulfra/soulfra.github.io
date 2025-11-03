@@ -1,0 +1,136 @@
+{
+  "timestamp": "2025-06-22T22:26:42.465Z",
+  "analysis_summary": {
+    "suggested_loops": [],
+    "agent_to_review": null,
+    "stale_agents": [],
+    "cluster": null,
+    "whisper_repeats": [],
+    "confidence": 0
+  },
+  "detailed_patterns": {
+    "tone_analysis": {
+      "tone_distribution": {
+        "hopeful": 1,
+        "uncertainty": 1,
+        "curiosity": 1,
+        "curious": 1,
+        "determined": 1,
+        "analytical": 1
+      },
+      "cluster_distribution": {
+        "positive": 2,
+        "focused": 2
+      },
+      "dominant_cluster": {
+        "cluster": "positive",
+        "count": 2
+      },
+      "recent_tone_drift": 0,
+      "needs_balance": false
+    },
+    "loop_analysis": {
+      "total_loops": 2,
+      "blessed_count": 2,
+      "unblessed_count": 0,
+      "blessing_ratio": 1,
+      "unblessed_loops": [],
+      "agent_loop_stats": {
+        "arty": {
+          "total": 1,
+          "blessed": 1
+        },
+        "cal": {
+          "total": 1,
+          "blessed": 1
+        }
+      },
+      "needs_blessing": false
+    },
+    "agent_analysis": {
+      "agent_activity": {
+        "cal": {
+          "total_entries": 2,
+          "recent_entries": 2,
+          "last_activity": "2025-06-22T21:44:58.300Z",
+          "types": {}
+        },
+        "arty": {
+          "total_entries": 1,
+          "recent_entries": 1,
+          "last_activity": "2025-06-22T17:47:00.000Z",
+          "types": {}
+        },
+        "claude": {
+          "total_entries": 2,
+          "recent_entries": 2,
+          "last_activity": "2025-06-22T17:50:00.000Z",
+          "types": {}
+        },
+        "echofox": {
+          "total_entries": 1,
+          "recent_entries": 1,
+          "last_activity": "2025-06-22T17:49:10.000Z",
+          "types": {}
+        },
+        "test_user": {
+          "total_entries": 1,
+          "recent_entries": 1,
+          "last_activity": "2025-06-22T21:44:58.298Z",
+          "types": {}
+        },
+        "human": {
+          "total_entries": 1,
+          "recent_entries": 1,
+          "last_activity": "2025-06-22T21:44:58.341Z",
+          "types": {}
+        }
+      },
+      "stale_agents": [],
+      "active_agents": 6,
+      "needs_agent_attention": false
+    },
+    "whisper_analysis": {
+      "total_whispers": 3,
+      "whisper_groups": 3,
+      "repetitive_patterns": [],
+      "needs_whisper_review": false
+    },
+    "prompt_analysis": {
+      "total_prompts": 1,
+      "executed_count": 1,
+      "failed_count": 0,
+      "success_ratio": 1,
+      "failed_prompts": [],
+      "needs_prompt_review": false
+    },
+    "temporal_analysis": {
+      "hourly_distribution": {
+        "12": 5,
+        "16": 3
+      },
+      "daily_distribution": {
+        "Sun Jun 22 2025": 8
+      },
+      "peak_hour": {
+        "hour": 12,
+        "count": 5
+      },
+      "activity_span_days": 1
+    }
+  },
+  "stats": {
+    "total_entries": 8,
+    "entries_by_type": {
+      "whisper": 3,
+      "loop": 2,
+      "task": 1,
+      "agent": 1,
+      "prompt": 1
+    },
+    "analysis_runs": 0,
+    "last_analysis": null,
+    "suggestions_generated": 1
+  },
+  "recommendations": []
+}

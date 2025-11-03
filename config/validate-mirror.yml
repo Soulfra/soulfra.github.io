@@ -1,0 +1,227 @@
+name: Validate Mirror Vault
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Check vault structure
+      id: vault_check
+      run: |
+        echo "🔍 Validating vault structure..."
+        
+        # Check for required directories
+        if [ ! -d "vault/logs" ]; then
+          echo "❌ Missing vault/logs directory"
+          exit 1
+        fi
+        
+        if [ ! -d "vault/obfuscated" ]; then
+          echo "⚠️  vault/obfuscated directory not found (may be empty)"
+          mkdir -p vault/obfuscated
+        fi
+        
+        echo "✅ Vault structure valid"
+    
+    - name: Validate reflection activity log
+      id: activity_check
+      run: |
+        echo "📊 Checking reflection activity log..."
+        
+        ACTIVITY_LOG="vault/logs/reflection-activity.json"
+        
+        if [ ! -f "$ACTIVITY_LOG" ]; then
+          echo "❌ Missing reflection-activity.json"
+          exit 1
+        fi
+        
+        # Validate JSON structure
+        if ! jq empty "$ACTIVITY_LOG" 2>/dev/null; then
+          echo "❌ Invalid JSON in reflection-activity.json"
+          exit 1
+        fi
+        
+        # Extract metadata
+        DEVICE_COUNT=$(jq -r '.devices // [] | length' "$ACTIVITY_LOG")
+        LAST_PUSH=$(jq -r '.last_push // "never"' "$ACTIVITY_LOG")
+        
+        echo "✅ Activity log valid"
+        echo "📱 Devices: $DEVICE_COUNT"
+        echo "🕐 Last push: $LAST_PUSH"
+        
+        echo "device_count=$DEVICE_COUNT" >> $GITHUB_OUTPUT
+        echo "last_push=$LAST_PUSH" >> $GITHUB_OUTPUT
+    
+    - name: Check for junk files
+      id: junk_check
+      run: |
+        echo "🗑️  Scanning for junk files..."
+        
+        JUNK_PATTERNS=(
+          ".DS_Store"
+          "*.tmp"
+          "*.log"
+          "*.bak"
+          ".bound-to"
+          "mirror-trace-token.json"
+          "cal-reflection-log.json"
+        )
+        
+        JUNK_FOUND=0
+        for pattern in "${JUNK_PATTERNS[@]}"; do
+          if find . -name "$pattern" -type f | grep -q .; then
+            echo "⚠️  Found junk files: $pattern"
+            find . -name "$pattern" -type f
+            JUNK_FOUND=$((JUNK_FOUND + 1))
+          fi
+        done
+        
+        if [ $JUNK_FOUND -gt 0 ]; then
+          echo "⚠️  Found $JUNK_FOUND types of junk files"
+        else
+          echo "✅ No junk files detected"
+        fi
+        
+        echo "junk_count=$JUNK_FOUND" >> $GITHUB_OUTPUT
+    
+    - name: Count obfuscated sessions
+      id: session_count
+      run: |
+        echo "👥 Counting obfuscated sessions..."
+        
+        SESSION_COUNT=0
+        if [ -d "vault/obfuscated" ]; then
+          SESSION_COUNT=$(find vault/obfuscated -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+        fi
+        
+        echo "📊 Found $SESSION_COUNT obfuscated sessions"
+        echo "session_count=$SESSION_COUNT" >> $GITHUB_OUTPUT
+    
+    - name: Validate mirror components
+      id: mirror_check
+      run: |
+        echo "🔧 Checking mirror components..."
+        
+        REQUIRED_FILES=(
+          "cal-riven-operator.js"
+          "blessing.json"
+          "soul-chain.sig"
+        )
+        
+        MISSING_FILES=()
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ ! -f "$file" ]; then
+            MISSING_FILES+=("$file")
+            echo "❌ Missing: $file"
+          else
+            echo "✅ Found: $file"
+          fi
+        done
+        
+        if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+          echo "❌ Missing ${#MISSING_FILES[@]} required files"
+          exit 1
+        fi
+        
+        # Validate blessing.json
+        if jq empty blessing.json 2>/dev/null; then
+          STATUS=$(jq -r '.status // "unknown"' blessing.json)
+          CAN_PROPAGATE=$(jq -r '.can_propagate // false' blessing.json)
+          echo "📋 Blessing status: $STATUS"
+          echo "🌐 Can propagate: $CAN_PROPAGATE"
+        else
+          echo "⚠️  Invalid blessing.json format"
+        fi
+    
+    - name: Generate verification report
+      id: verification
+      run: |
+        echo "📝 Generating verification report..."
+        
+        TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        COMMIT_SHA="${GITHUB_SHA:0:8}"
+        
+        # Create verification report
+        cat > vault/logs/backup-verification.json << EOF
+        {
+          "verification_id": "verify_${GITHUB_RUN_ID}",
+          "timestamp": "$TIMESTAMP",
+          "commit": "$COMMIT_SHA",
+          "github_run": "$GITHUB_RUN_ID",
+          "triggered_by": "$GITHUB_ACTOR",
+          "validation_results": {
+            "vault_structure": "passed",
+            "reflection_activity": "passed",
+            "device_count": ${{ steps.activity_check.outputs.device_count }},
+            "session_count": ${{ steps.session_count.outputs.session_count }},
+            "junk_files": ${{ steps.junk_check.outputs.junk_count }},
+            "mirror_components": "passed"
+          },
+          "score": $(( 100 - ${{ steps.junk_check.outputs.junk_count }} * 5 )),
+          "status": "verified",
+          "github_workflow": {
+            "run_id": "$GITHUB_RUN_ID",
+            "run_number": "$GITHUB_RUN_NUMBER",
+            "repository": "$GITHUB_REPOSITORY",
+            "ref": "$GITHUB_REF",
+            "sha": "$GITHUB_SHA"
+          }
+        }
+        EOF
+        
+        echo "✅ Verification report generated"
+        cat vault/logs/backup-verification.json | jq .
+    
+    - name: Create validation summary
+      run: |
+        echo "## 🪞 Mirror Vault Validation Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### ✅ Validation Passed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Devices | ${{ steps.activity_check.outputs.device_count }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Sessions | ${{ steps.session_count.outputs.session_count }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Junk Files | ${{ steps.junk_check.outputs.junk_count }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Last Push | ${{ steps.activity_check.outputs.last_push }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Score | $(( 100 - ${{ steps.junk_check.outputs.junk_count }} * 5 ))/100 |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🔗 [View Full Report](vault/logs/backup-verification.json)" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Upload verification artifact
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: mirror-verification-${{ github.run_id }}
+        path: |
+          vault/logs/backup-verification.json
+          vault/logs/reflection-activity.json
+        retention-days: 30
+    
+    - name: Commit verification report
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        git add vault/logs/backup-verification.json
+        git diff --cached --quiet || git commit -m "[Validation] Automated verification report - Run #$GITHUB_RUN_NUMBER"
+        
+        git push || echo "No changes to push"

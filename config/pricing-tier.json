@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "currency": "USD",
+  "description": "MirrorOS Reflection Credit Pricing",
+  
+  "credits": {
+    "baseOnboarding": 100,
+    "referralBonus": 50,
+    "loopCompletion": 1,
+    "forkCreation": 5
+  },
+  
+  "apiUsage": {
+    "apiCall": 0.01,
+    "byokDiscount": 1.0,
+    "platformMarkup": 1.2,
+    "description": "Per API call pricing with 20% platform fee (waived for BYOK)"
+  },
+  
+  "exports": {
+    "exportAgent": 2,
+    "exportWorkflow": 5,
+    "exportTemplate": 3,
+    "exportPlatform": 50,
+    "vaultExpansion": 10,
+    "description": "One-time export fees based on complexity"
+  },
+  
+  "automations": {
+    "automationWrap": 0.25,
+    "automationMonetize": 5,
+    "automationClone": 1,
+    "description": "Automation import and monetization fees"
+  },
+  
+  "monetization": {
+    "agentSale": {
+      "min": 5,
+      "max": 500,
+      "platformCut": 0.3,
+      "creatorShare": 0.7
+    },
+    "templateSale": {
+      "min": 10,
+      "max": 200,
+      "platformCut": 0.3,
+      "creatorShare": 0.7
+    },
+    "platformClone": {
+      "starter": 500,
+      "professional": 2000,
+      "enterprise": 5000,
+      "platformCut": 0.3,
+      "creatorShare": 0.7
+    }
+  },
+  
+  "subscriptions": {
+    "basic": {
+      "price": 0,
+      "credits": 100,
+      "features": ["basic-agents", "community-support"]
+    },
+    "pro": {
+      "price": 29,
+      "credits": 1000,
+      "features": ["unlimited-agents", "priority-support", "export-discount"]
+    },
+    "enterprise": {
+      "price": 299,
+      "credits": 10000,
+      "features": ["white-label", "dedicated-support", "custom-integrations", "revenue-share"]
+    }
+  },
+  
+  "discounts": {
+    "bulkExport": {
+      "5": 0.1,
+      "10": 0.2,
+      "20": 0.3
+    },
+    "referralTier": {
+      "bronze": 0,
+      "silver": 0.1,
+      "gold": 0.2
+    }
+  },
+  
+  "philosophy": {
+    "principle": "You Pay Nothing... Until You Reflect Value",
+    "details": [
+      "Use your own API keys = Pay nothing",
+      "Platform provides compute = Small reflection fee",
+      "Export your creation = Value crystallization fee",
+      "Monetize your agents = Revenue share",
+      "Clone the platform = Enterprise license"
+    ]
+  }
+}

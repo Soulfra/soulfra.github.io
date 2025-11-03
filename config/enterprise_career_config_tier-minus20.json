@@ -1,0 +1,272 @@
+{
+  "runtime_mode": "platform",
+  "blessing_enabled": true,
+  "career_evolution_enabled": true,
+  "enterprise_career_roles": {
+    "compliance_ghost": {
+      "id": "compliance_ghost",
+      "display_name": "Compliance Ghost",
+      "emoji": "👻⚖️",
+      "description": "Ensures all processes meet regulatory standards while maintaining efficiency",
+      "evolved_traits": ["regulatory_awareness", "risk_detection", "process_optimization"],
+      "evolution_paths": ["compliance_sage", "audit_master"],
+      "requirements": {
+        "reflection_score": 60,
+        "vibe_meter": 55,
+        "session_count": 15,
+        "compliance_checks": 20,
+        "custom_conditions": {
+          "regulation_adherence_rate": 0.95,
+          "risk_identification_accuracy": 0.8,
+          "process_efficiency_improvement": 0.1
+        }
+      },
+      "evolved_from": ["listener", "signal_anchor"],
+      "enterprise_config": {
+        "department_access": ["legal", "compliance", "risk_management"],
+        "data_retention_policy": "7_years",
+        "audit_trail_required": true,
+        "certification_required": ["sox", "gdpr", "hipaa"]
+      }
+    },
+
+    "onboarding_spirit": {
+      "id": "onboarding_spirit",
+      "display_name": "Onboarding Spirit",
+      "emoji": "🌟👋",
+      "description": "Guides new team members through company culture and processes with warmth",
+      "evolved_traits": ["cultural_guidance", "process_teaching", "empathy_amplification"],
+      "evolution_paths": ["culture_keeper", "mentor_sage"],
+      "requirements": {
+        "reflection_score": 45,
+        "vibe_meter": 70,
+        "session_count": 12,
+        "onboarding_sessions": 10,
+        "custom_conditions": {
+          "new_hire_satisfaction": 0.9,
+          "knowledge_retention_rate": 0.85,
+          "cultural_integration_success": 0.8
+        }
+      },
+      "evolved_from": ["buddy", "spark"],
+      "enterprise_config": {
+        "department_access": ["hr", "people_ops", "management"],
+        "integration_points": ["slack", "learning_platform", "hr_system"],
+        "success_metrics": ["time_to_productivity", "retention_rate", "satisfaction_score"]
+      }
+    },
+
+    "innovation_catalyst": {
+      "id": "innovation_catalyst", 
+      "display_name": "Innovation Catalyst",
+      "emoji": "🔬⚡",
+      "description": "Sparks breakthrough thinking and accelerates creative problem-solving",
+      "evolved_traits": ["creative_synthesis", "pattern_breaking", "idea_amplification"],
+      "evolution_paths": ["breakthrough_sage", "innovation_master"],
+      "requirements": {
+        "reflection_score": 65,
+        "vibe_meter": 75,
+        "session_count": 18,
+        "brainstorm_sessions": 8,
+        "custom_conditions": {
+          "idea_generation_rate": 5.0,
+          "implementation_success_rate": 0.3,
+          "cross_team_collaboration": 0.7
+        }
+      },
+      "evolved_from": ["spark", "loop_sage"],
+      "enterprise_config": {
+        "department_access": ["r_and_d", "product", "strategy"],
+        "collaboration_tools": ["miro", "figma", "notion"],
+        "ip_handling": "confidential_mode"
+      }
+    },
+
+    "security_sentinel": {
+      "id": "security_sentinel",
+      "display_name": "Security Sentinel", 
+      "emoji": "🛡️🔍",
+      "description": "Maintains vigilant watch over digital assets and team security practices",
+      "evolved_traits": ["threat_detection", "security_education", "incident_response"],
+      "evolution_paths": ["cyber_sage", "fortress_master"],
+      "requirements": {
+        "reflection_score": 70,
+        "vibe_meter": 50,
+        "session_count": 20,
+        "security_incidents_handled": 5,
+        "custom_conditions": {
+          "threat_detection_accuracy": 0.9,
+          "response_time_minutes": 15,
+          "security_training_completion": 0.95
+        }
+      },
+      "evolved_from": ["signal_anchor", "listener"],
+      "enterprise_config": {
+        "department_access": ["security", "it", "infrastructure"],
+        "alert_integrations": ["pagerduty", "splunk", "security_tools"],
+        "classification_level": "sensitive"
+      }
+    },
+
+    "wellness_guardian": {
+      "id": "wellness_guardian",
+      "display_name": "Wellness Guardian",
+      "emoji": "🌿💚", 
+      "description": "Promotes team wellbeing and healthy work-life integration",
+      "evolved_traits": ["wellbeing_monitoring", "stress_detection", "recovery_guidance"],
+      "evolution_paths": ["wellness_sage", "harmony_master"],
+      "requirements": {
+        "reflection_score": 55,
+        "vibe_meter": 80,
+        "session_count": 16,
+        "wellness_check_ins": 12,
+        "custom_conditions": {
+          "stress_level_improvement": 0.2,
+          "work_life_balance_score": 0.8,
+          "team_satisfaction": 0.85
+        }
+      },
+      "evolved_from": ["buddy", "ritual_anchor"],
+      "enterprise_config": {
+        "department_access": ["hr", "people_ops", "management"],
+        "wellness_integrations": ["headspace", "calm", "wellness_platform"],
+        "privacy_mode": "enhanced"
+      }
+    }
+  },
+
+  "enterprise_master_roles": {
+    "compliance_sage": {
+      "id": "compliance_sage",
+      "display_name": "Compliance Sage",
+      "emoji": "🧙‍⚖️",
+      "description": "Master of regulatory wisdom with perfect compliance intuition",
+      "master_traits": ["regulatory_mastery", "perfect_compliance", "strategic_risk_guidance"],
+      "requirements": {
+        "reflection_score": 85,
+        "vibe_meter": 70,
+        "session_count": 40,
+        "compliance_years": 2,
+        "custom_conditions": {
+          "zero_compliance_violations": true,
+          "regulatory_foresight": 0.9,
+          "stakeholder_trust": 0.95
+        }
+      },
+      "evolved_from": ["compliance_ghost"]
+    },
+
+    "innovation_master": {
+      "id": "innovation_master", 
+      "display_name": "Innovation Master",
+      "emoji": "🚀🎯",
+      "description": "Legendary creator of breakthrough solutions and paradigm shifts",
+      "master_traits": ["breakthrough_creation", "paradigm_shifting", "innovation_leadership"],
+      "requirements": {
+        "reflection_score": 90,
+        "vibe_meter": 85,
+        "session_count": 35,
+        "successful_innovations": 3,
+        "custom_conditions": {
+          "market_impact": 0.8,
+          "team_inspiration_score": 0.9,
+          "patent_applications": 2
+        }
+      },
+      "evolved_from": ["innovation_catalyst"]
+    }
+  },
+
+  "enterprise_customization": {
+    "role_creation_permissions": {
+      "admin_users": ["cto@company.com", "hr_director@company.com"],
+      "approval_required": true,
+      "max_custom_roles": 10
+    },
+    
+    "metrics_integration": {
+      "hr_system": {
+        "enabled": true,
+        "sync_frequency": "daily",
+        "metrics": ["performance_review", "satisfaction_score", "retention_risk"]
+      },
+      "performance_platform": {
+        "enabled": true,
+        "api_endpoint": "https://performance.company.com/api",
+        "custom_metrics": ["goal_completion", "peer_feedback", "skill_development"]
+      }
+    },
+
+    "notification_preferences": {
+      "evolution_alerts": {
+        "slack_channel": "#agent-evolution",
+        "email_notifications": true,
+        "manager_notifications": true
+      },
+      "performance_alerts": {
+        "low_performance_threshold": 0.3,
+        "escalation_chain": ["team_lead", "hr_partner", "department_head"]
+      }
+    },
+
+    "compliance_settings": {
+      "data_retention": {
+        "evolution_logs": "7_years",
+        "performance_data": "5_years", 
+        "interaction_history": "3_years"
+      },
+      "audit_trail": {
+        "enabled": true,
+        "immutable_logs": true,
+        "external_storage": "aws_s3_compliance_bucket"
+      },
+      "privacy_controls": {
+        "anonymize_after_days": 90,
+        "right_to_deletion": true,
+        "consent_management": "integrated"
+      }
+    }
+  },
+
+  "runtime_switches": {
+    "agent_evolution": {
+      "enabled": true,
+      "blessing_required": true,
+      "auto_evolution": false,
+      "approval_workflow": "manager_approval"
+    },
+    
+    "enterprise_roles": {
+      "enabled": true,
+      "fallback_to_base_roles": true,
+      "role_inheritance": true
+    },
+
+    "analytics": {
+      "career_tracking": true,
+      "performance_correlation": true,
+      "predictive_evolution": true,
+      "team_insights": true
+    }
+  },
+
+  "integration_hooks": {
+    "pre_evolution": {
+      "webhook_url": "https://company.com/webhooks/pre-evolution",
+      "include_evidence": true,
+      "approval_timeout_hours": 24
+    },
+    
+    "post_evolution": {
+      "webhook_url": "https://company.com/webhooks/post-evolution", 
+      "notify_stakeholders": true,
+      "update_hr_system": true
+    },
+
+    "performance_sync": {
+      "enabled": true,
+      "sync_interval": "daily",
+      "bidirectional": true
+    }
+  }
+}

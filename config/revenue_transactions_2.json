@@ -1,0 +1,20 @@
+[
+  [
+    "wealth-tx-001",
+    {
+      "id": "wealth-tx-001",
+      "agent_id": "lifecycle-agent-001",
+      "marketplace_id": "test-marketplace-001",
+      "gross_amount": 100,
+      "splits": {
+        "platform": 2,
+        "marketplace": 6,
+        "creator": 55.2,
+        "agent": 36.8
+      },
+      "type": "subscription",
+      "stored_at": 1750101702987,
+      "version": 1
+    }
+  ]
+]

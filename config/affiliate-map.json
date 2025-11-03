@@ -1,0 +1,78 @@
+{
+  "affiliates": [],
+  "stats": {
+    "totalQRCodes": 0,
+    "activeAffiliates": 0,
+    "totalForks": 0,
+    "totalRewardsDistributed": 0
+  },
+  "lastUpdated": "2024-06-16T08:15:00Z",
+  "reward_structure": {
+    "access_credits": {
+      "per_fork": 10,
+      "per_active_user": 25,
+      "threshold_bonus": 100,
+      "description": "Credits for successful fork invitations"
+    },
+    "performance_bonus": {
+      "per_export": 5,
+      "per_monetization": 50,
+      "viral_multiplier": 2,
+      "description": "Bonuses for high-performing shared agents"
+    },
+    "memory_unlock": {
+      "conversation_depth": "unlock_advanced_memory",
+      "reflection_quality": "unlock_deep_insights", 
+      "usage_consistency": "unlock_priority_routing",
+      "description": "Memory system unlocks based on engagement"
+    },
+    "revenue_share": {
+      "direct_sales": 0.15,
+      "platform_growth": 0.05,
+      "enterprise_deals": 0.25,
+      "description": "Revenue sharing for platform growth"
+    }
+  },
+  "qr_types_available": [
+    {
+      "type": "fork-invite",
+      "description": "Invite someone to fork your Cal instance",
+      "reward_type": "access_credits",
+      "typical_reward": "10+ credits per fork"
+    },
+    {
+      "type": "agent-share", 
+      "description": "Share a specific agent build",
+      "reward_type": "performance_bonus",
+      "typical_reward": "5-50+ credits based on performance"
+    },
+    {
+      "type": "experience-invite",
+      "description": "Share your Cal conversation experience", 
+      "reward_type": "memory_unlock",
+      "typical_reward": "Advanced memory features"
+    },
+    {
+      "type": "platform-demo",
+      "description": "Demo the full platform to prospects",
+      "reward_type": "revenue_share", 
+      "typical_reward": "15-25% revenue share"
+    }
+  ],
+  "examples": [
+    {
+      "sessionId": "demo-affiliate-001",
+      "joinedAt": "2024-06-16T08:00:00Z",
+      "totalRewards": 150,
+      "activeQRCodes": 3,
+      "totalForks": 8,
+      "memoryUnlocks": [
+        {
+          "unlock": "conversation_depth_level_1",
+          "earnedAt": "2024-06-16T08:05:00Z"
+        }
+      ],
+      "lastActivity": "2024-06-16T08:15:00Z"
+    }
+  ]
+}

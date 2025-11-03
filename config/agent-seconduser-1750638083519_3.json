@@ -1,0 +1,10 @@
+{
+  "agent_id": "agent-seconduser-1750638083519",
+  "tier": "tier-minus10",
+  "type": "contributor-agent",
+  "status": "active",
+  "spawned_by": "payment-system",
+  "registered_at": "2025-06-23T00:21:23.520Z",
+  "cal_riven_blessed": true,
+  "mirror_connected": true
+}

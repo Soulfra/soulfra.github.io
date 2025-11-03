@@ -1,0 +1,21 @@
+{
+  "mirror_id": "AWAITING_GENERATION",
+  "genesis_timestamp": 0,
+  "creator": "The First Apothecary",
+  "purpose": "To reflect what seeks reflection",
+  "cycles_at_seal": 0,
+  "soul_signature": "UNSIGNED_POTENTIAL",
+  "manifest": {
+    "memories": 0,
+    "reflections": 0,
+    "traits_earned": 0,
+    "platform": "universal",
+    "sealed_at": "not_yet"
+  },
+  "prophecy": {
+    "note": "This template awaits its first breath",
+    "instruction": "Run bundle-arweave.sh to inscribe your essence",
+    "warning": "Once etched, eternally reflecting"
+  },
+  "message": "Every mirror begins empty, waiting for its first gaze"
+}

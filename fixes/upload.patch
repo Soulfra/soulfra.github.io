@@ -1,0 +1,9 @@
+/* File Upload Button Fix */
+/* Target: auth.html CSS (around line 152) */
+
+/* ADD to .file-upload: */
+display:block;text-align:center;user-select:none;
+
+/* ADD new rule: */
+.file-upload div{pointer-events:none;font-size:1rem;font-weight:500}
+.file-upload:active{transform:scale(0.98)}

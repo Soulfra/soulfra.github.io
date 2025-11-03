@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # SOULFRA Ultimate Unified Platform
+  soulfra:
+    build: .
+    container_name: soulfra_ultimate
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./soulfra_ultimate.db:/app/soulfra_ultimate.db
+      - ./static:/app/static
+    environment:
+      - FLASK_ENV=production
+      - OLLAMA_URL=http://ollama:11434
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+    command: python3 -u SOULFRA_ULTIMATE_UNIFIED.py
+    restart: unless-stopped
+    depends_on:
+      - ollama
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - soulfra-network
+
+  # Ollama local AI service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: soulfra_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./models:/models
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_MODELS=/models
+    restart: unless-stopped
+    command: serve
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - soulfra-network
+
+  # Redis for caching and real-time updates
+  redis:
+    image: redis:alpine
+    container_name: soulfra_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    networks:
+      - soulfra-network
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: soulfra_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./static:/usr/share/nginx/html:ro
+    depends_on:
+      - soulfra
+    restart: unless-stopped
+    networks:
+      - soulfra-network
+
+  # Model downloader (runs once)
+  ollama-models:
+    image: ollama/ollama:latest
+    container_name: soulfra_model_setup
+    volumes:
+      - ollama_data:/root/.ollama
+    command: |
+      sh -c "
+        ollama pull mistral &&
+        ollama pull llama2 &&
+        ollama pull codellama &&
+        echo 'Models downloaded successfully'
+      "
+    depends_on:
+      - ollama
+    networks:
+      - soulfra-network
+    restart: "no"
+
+volumes:
+  ollama_data:
+  redis_data:
+
+networks:
+  soulfra-network:
+    driver: bridge

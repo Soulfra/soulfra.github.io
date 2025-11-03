@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "platforms": [
+    "youtube",
+    "twitch",
+    "twitter"
+  ],
+  "obfuscation": true,
+  "demo_mode": true,
+  "collaboration_mode": true
+}

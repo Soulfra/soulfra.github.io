@@ -1,0 +1,5 @@
+User: I want to create an emotion detection system
+Assistant: I can help with that.
+User: It should analyze text and detect emotions
+User: Also track emotional patterns over time
+Human: Can we make it learn from user feedback?

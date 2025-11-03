@@ -1,0 +1,6 @@
+type,timestamp,tone,agent,source,status,file
+whisper,2025-06-22T17:42:00Z,hopeful,cal,chatlog_22.md,pending,/whispers/088.json
+loop,2025-06-22T17:47:00Z,uncertainty,arty,autospawn,blessed,/loop/Loop_108.json
+task,2025-06-22T17:48:20Z,null,claude,ClaudeTestRunner.js,complete,/docs/PRD_ClaudePortLock.md
+agent,2025-06-22T17:49:10Z,curiosity,echofox,summon,stable,/agents/echofox.json
+prompt,2025-06-22T17:50:00Z,null,claude,test-prompt-004.txt,executed,/test-prompts/test_004.txt

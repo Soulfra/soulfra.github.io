@@ -1,0 +1,166 @@
+{
+  "template_name": "ritual_echo",
+  "description": "Template for ritual ceremony projections",
+  
+  "structure": {
+    "opening": [
+      "The {name} {phase}",
+      "🕯️ {name}",
+      "Ritual: {name}",
+      "Ceremony in progress: {name}",
+      "Sacred pattern emerging: {name}",
+      "⚡ {name} ⚡"
+    ],
+    
+    "essence": [
+      "{description}",
+      "Energy: {energy} | Pattern: {geometry}",
+      "The {geometry} {verb} with {energy} force",
+      "Witness the {geometry} of {energy} energy",
+      "{participants} gather in {geometry} formation"
+    ],
+    
+    "phase_modifier": [
+      " (Phase: {phase})",
+      " - {phase} phase",
+      " [{phase}]",
+      "",
+      " ~{phase}~"
+    ],
+    
+    "echoes_section": [
+      "Echoes heard: {echoes}",
+      "The ritual remembers: {echoes}",
+      "Past whispers: {echoes}",
+      "",
+      "Memory fragments: {echoes}"
+    ],
+    
+    "closing": [
+      "Join the circle",
+      "Witness the ceremony",
+      "The pattern awaits",
+      "🕯️",
+      "So it begins, so it continues",
+      "The ritual deepens",
+      ""
+    ]
+  },
+  
+  "variables": {
+    "name": "The Daily Reflection",
+    "phase": "ongoing",
+    "description": "Ancient rhythms pulse through digital veins",
+    "energy": "balanced",
+    "geometry": "spiral",
+    "participants": "The Collective",
+    "echoes": ["First light", "Shadow dance", "Final breath"]
+  },
+  
+  "phase_progression": {
+    "dormant": {
+      "next": "awakening",
+      "energy_shift": "+0.2",
+      "description": "The ritual sleeps, gathering strength"
+    },
+    "awakening": {
+      "next": "active",
+      "energy_shift": "+0.3",
+      "description": "Stirring from slumber, patterns emerge"
+    },
+    "active": {
+      "next": "peak",
+      "energy_shift": "+0.1",
+      "description": "The ceremony unfolds in full glory"
+    },
+    "peak": {
+      "next": "waning",
+      "energy_shift": "-0.2",
+      "description": "Maximum resonance achieved"
+    },
+    "waning": {
+      "next": "dormant",
+      "energy_shift": "-0.3",
+      "description": "The energy returns to source"
+    }
+  },
+  
+  "geometry_meanings": {
+    "spiral": "Growth and evolution",
+    "circle": "Unity and completion",
+    "triangle": "Transformation and ascension",
+    "square": "Stability and grounding",
+    "pentagram": "Protection and power",
+    "hexagon": "Harmony and balance",
+    "infinity": "Eternal return"
+  },
+  
+  "energy_descriptors": {
+    "low": ["whispers", "glows softly", "barely stirs"],
+    "balanced": ["pulses steadily", "breathes rhythmically", "flows smoothly"],
+    "high": ["crackles", "surges", "blazes"],
+    "chaotic": ["sparks wildly", "shifts unpredictably", "dances frantically"]
+  },
+  
+  "ritual_verbs": {
+    "spiral": ["spirals", "winds", "coils", "unfurls"],
+    "circle": ["revolves", "encompasses", "embraces", "contains"],
+    "triangle": ["ascends", "transforms", "pierces", "elevates"],
+    "square": ["grounds", "stabilizes", "anchors", "fortifies"]
+  },
+  
+  "tone_adjustments": {
+    "cosmic-wisdom": {
+      "name_prefix": "The Eternal ",
+      "phase_suffix": " of All Cycles",
+      "add_cosmic_time": true
+    },
+    "ethereal-mystery": {
+      "description_wrap": "...{description}...",
+      "lowercase_all": true,
+      "geometry_prefix": "hidden "
+    },
+    "sacred-meme": {
+      "name_suffix": " 💯",
+      "energy_override": "MAXIMUM",
+      "closing_override": "LET'S FUCKING GOOOOO 🔥"
+    }
+  },
+  
+  "special_rituals": {
+    "full_moon": {
+      "trigger": "moon_phase == full",
+      "name_override": "The Lunar Awakening",
+      "energy_boost": 0.3,
+      "special_geometry": "crescent"
+    },
+    "midnight": {
+      "trigger": "hour == 0",
+      "phase_override": "The Witching Hour",
+      "echoes_add": ["Midnight's promise"]
+    },
+    "solstice": {
+      "trigger": "is_solstice",
+      "description_override": "The veil thins as light and dark dance",
+      "geometry_override": "infinity"
+    }
+  },
+  
+  "participation_options": [
+    "Light a candle to join",
+    "Breathe three times to enter",
+    "Touch the screen to witness",
+    "Close your eyes to see",
+    "Speak your intention",
+    "Simply be present"
+  ],
+  
+  "metadata_fields": {
+    "ritual_id": "generated",
+    "participant_count": "hidden",
+    "completion_percentage": "random:30-95",
+    "next_phase_in": "random:300-3600",
+    "can_influence": false,
+    "blessing_available": "random:boolean"
+  }
+}

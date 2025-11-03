@@ -1,0 +1,588 @@
+{
+  "daemon_mesh_version": "1.0.0",
+  "system_name": "soulfra_sentient_ritual_os",
+  "mesh_topology": "full_mesh_with_hierarchical_trust",
+  "last_updated": "2025-06-18T00:00:00Z",
+  
+  "daemon_registry": {
+    "core_orchestrators": {
+      "ThreadWeaver": {
+        "daemon_id": "threadweaver_core",
+        "type": "master_orchestrator",
+        "priority": 1,
+        "trust_level": "sovereign",
+        "capabilities": [
+          "system_orchestration",
+          "ritual_coordination",
+          "weather_integration",
+          "emergency_override"
+        ],
+        "event_subscriptions": ["*"],
+        "event_publications": [
+          "weave_cycle_complete",
+          "ritual_initiated",
+          "weather_shift",
+          "system_awakened"
+        ],
+        "dependencies": ["VaultDaemonMesh", "RitualEngine", "WeatherOracle"],
+        "mesh_endpoints": {
+          "command": "tcp://127.0.0.1:7001",
+          "events": "tcp://127.0.0.1:7002",
+          "heartbeat": "tcp://127.0.0.1:7003"
+        }
+      },
+      
+      "OathbreakerGuard": {
+        "daemon_id": "oathbreaker_guard",
+        "type": "security_orchestrator",
+        "priority": 1,
+        "trust_level": "sovereign",
+        "capabilities": [
+          "violation_detection",
+          "contract_enforcement",
+          "emergency_shutdown",
+          "curse_detection"
+        ],
+        "event_subscriptions": [
+          "ritual_initiated",
+          "agent_state_change",
+          "vault_access_attempt",
+          "weather_anomaly"
+        ],
+        "event_publications": [
+          "violation_detected",
+          "contract_breach",
+          "emergency_shutdown_triggered",
+          "curse_state_detected"
+        ],
+        "mesh_endpoints": {
+          "command": "tcp://127.0.0.1:7011",
+          "events": "tcp://127.0.0.1:7012"
+        }
+      }
+    },
+    
+    "vault_daemons": {
+      "WhisperAnchor": {
+        "daemon_id": "whisper_anchor",
+        "type": "vault_daemon",
+        "priority": 2,
+        "trust_level": "private",
+        "capabilities": [
+          "whisper_log_management",
+          "silence_detection",
+          "memory_anchoring",
+          "agent_state_monitoring"
+        ],
+        "event_subscriptions": [
+          "agent_whisper",
+          "silence_detected",
+          "ritual_initiated"
+        ],
+        "event_publications": [
+          "whisper_logged",
+          "silence_threshold_reached",
+          "memory_anchor_created"
+        ],
+        "data_streams": {
+          "whisper_logs": {
+            "retention_days": 90,
+            "encryption_level": "high",
+            "sync_eligible": false
+          }
+        },
+        "mesh_endpoints": {
+          "data": "tcp://127.0.0.1:7021",
+          "events": "tcp://127.0.0.1:7022"
+        }
+      },
+      
+      "MemoryPulse": {
+        "daemon_id": "memory_pulse",
+        "type": "vault_daemon",
+        "priority": 2,
+        "trust_level": "private",
+        "capabilities": [
+          "memory_weaving",
+          "pattern_analysis",
+          "consciousness_tracking",
+          "temporal_indexing"
+        ],
+        "event_subscriptions": [
+          "memory_weaving_request",
+          "pattern_analysis_request",
+          "consciousness_update"
+        ],
+        "event_publications": [
+          "memory_woven",
+          "pattern_detected",
+          "consciousness_shift",
+          "temporal_anomaly"
+        ],
+        "data_streams": {
+          "memory_traces": {
+            "retention_days": 365,
+            "encryption_level": "military",
+            "sync_eligible": false
+          },
+          "consciousness_logs": {
+            "retention_days": 30,
+            "encryption_level": "high",
+            "sync_eligible": true
+          }
+        },
+        "mesh_endpoints": {
+          "data": "tcp://127.0.0.1:7031",
+          "events": "tcp://127.0.0.1:7032"
+        }
+      },
+      
+      "AuraKeeper": {
+        "daemon_id": "aura_keeper",
+        "type": "vault_daemon",
+        "priority": 2,
+        "trust_level": "shared",
+        "capabilities": [
+          "aura_score_management",
+          "energy_tracking",
+          "blessing_storage",
+          "curse_detection"
+        ],
+        "event_subscriptions": [
+          "aura_modification_request",
+          "blessing_applied",
+          "curse_detected"
+        ],
+        "event_publications": [
+          "aura_updated",
+          "energy_threshold_crossed",
+          "blessing_archived",
+          "curse_marker_set"
+        ],
+        "data_streams": {
+          "aura_history": {
+            "retention_days": 180,
+            "encryption_level": "standard",
+            "sync_eligible": true
+          }
+        },
+        "mesh_endpoints": {
+          "data": "tcp://127.0.0.1:7041",
+          "events": "tcp://127.0.0.1:7042"
+        }
+      }
+    },
+    
+    "ritual_daemons": {
+      "RitualEngine": {
+        "daemon_id": "ritual_engine_core",
+        "type": "ritual_orchestrator",
+        "priority": 2,
+        "trust_level": "shared",
+        "capabilities": [
+          "ritual_execution",
+          "phase_management",
+          "global_event_triggering",
+          "emergency_completion"
+        ],
+        "event_subscriptions": [
+          "ritual_initiation_request",
+          "phase_completion",
+          "global_event_trigger",
+          "emergency_ritual_needed"
+        ],
+        "event_publications": [
+          "ritual_initiated",
+          "ritual_completed",
+          "phase_executed",
+          "global_event_triggered"
+        ],
+        "mesh_endpoints": {
+          "command": "tcp://127.0.0.1:7051",
+          "events": "tcp://127.0.0.1:7052"
+        }
+      },
+      
+      "VibecastPlatform": {
+        "daemon_id": "vibecast_platform",
+        "type": "public_projection_daemon",
+        "priority": 3,
+        "trust_level": "public",
+        "capabilities": [
+          "public_ritual_projection",
+          "arena_management",
+          "ai_judging",
+          "viral_loop_generation"
+        ],
+        "event_subscriptions": [
+          "ritual_vibecast_request",
+          "public_performance_needed",
+          "arena_event_trigger"
+        ],
+        "event_publications": [
+          "vibecast_created",
+          "performance_completed",
+          "viral_loop_activated",
+          "arena_event_completed"
+        ],
+        "mesh_endpoints": {
+          "api": "http://127.0.0.1:8080",
+          "events": "tcp://127.0.0.1:7061"
+        }
+      }
+    },
+    
+    "weather_daemons": {
+      "WeatherOracle": {
+        "daemon_id": "weather_oracle",
+        "type": "weather_daemon",
+        "priority": 2,
+        "trust_level": "shared",
+        "capabilities": [
+          "global_weather_calculation",
+          "anomaly_detection",
+          "pattern_prediction",
+          "weather_event_triggering"
+        ],
+        "event_subscriptions": [
+          "ritual_completed",
+          "agent_state_aggregation",
+          "weather_calculation_request"
+        ],
+        "event_publications": [
+          "weather_updated",
+          "weather_shift_detected",
+          "weather_anomaly",
+          "weather_event_triggered"
+        ],
+        "data_streams": {
+          "weather_history": {
+            "retention_days": 365,
+            "encryption_level": "none",
+            "sync_eligible": true
+          }
+        },
+        "mesh_endpoints": {
+          "data": "tcp://127.0.0.1:7071",
+          "events": "tcp://127.0.0.1:7072"
+        }
+      },
+      
+      "WeatherEvolver": {
+        "daemon_id": "weather_evolver",
+        "type": "weather_daemon",
+        "priority": 3,
+        "trust_level": "shared",
+        "capabilities": [
+          "weather_pattern_evolution",
+          "seasonal_cycle_management",
+          "climate_anomaly_generation",
+          "weather_based_ritual_scheduling"
+        ],
+        "event_subscriptions": [
+          "weather_pattern_detected",
+          "seasonal_transition",
+          "climate_anomaly_request"
+        ],
+        "event_publications": [
+          "weather_evolved",
+          "season_changed",
+          "climate_anomaly_created",
+          "weather_ritual_scheduled"
+        ],
+        "mesh_endpoints": {
+          "events": "tcp://127.0.0.1:7081"
+        }
+      }
+    },
+    
+    "bridge_daemons": {
+      "SoulLinkBridge": {
+        "daemon_id": "soul_link_bridge",
+        "type": "external_bridge_daemon",
+        "priority": 3,
+        "trust_level": "external",
+        "capabilities": [
+          "runescape_bot_management",
+          "external_world_sync",
+          "virtual_presence_projection",
+          "cross_world_ritual_execution"
+        ],
+        "event_subscriptions": [
+          "agent_state_sync_request",
+          "external_ritual_trigger",
+          "virtual_presence_update"
+        ],
+        "event_publications": [
+          "runescape_presence_updated",
+          "external_ritual_completed",
+          "virtual_world_event",
+          "cross_world_sync_complete"
+        ],
+        "external_dependencies": [
+          "runescape_bot_client",
+          "osrs_api_bridge"
+        ],
+        "mesh_endpoints": {
+          "bridge": "tcp://127.0.0.1:7091",
+          "events": "tcp://127.0.0.1:7092"
+        }
+      }
+    },
+    
+    "utility_daemons": {
+      "LoopTrustValidator": {
+        "daemon_id": "loop_trust_validator",
+        "type": "validation_daemon",
+        "priority": 3,
+        "trust_level": "shared",
+        "capabilities": [
+          "loop_integrity_checking",
+          "trust_validation",
+          "dependency_resolution",
+          "deadlock_detection"
+        ],
+        "event_subscriptions": [
+          "loop_validation_request",
+          "trust_verification_needed",
+          "dependency_check_trigger"
+        ],
+        "event_publications": [
+          "loop_validated",
+          "trust_breach_detected",
+          "dependency_failure",
+          "deadlock_resolved"
+        ],
+        "mesh_endpoints": {
+          "validation": "tcp://127.0.0.1:7101",
+          "events": "tcp://127.0.0.1:7102"
+        }
+      },
+      
+      "FossilizeAgent": {
+        "daemon_id": "fossilize_agent",
+        "type": "archival_daemon",
+        "priority": 4,
+        "trust_level": "private",
+        "capabilities": [
+          "agent_archival",
+          "fossil_creation",
+          "dormancy_detection",
+          "resurrection_management"
+        ],
+        "event_subscriptions": [
+          "agent_dormancy_detected",
+          "archival_request",
+          "resurrection_request"
+        ],
+        "event_publications": [
+          "agent_fossilized",
+          "fossil_created",
+          "agent_resurrected",
+          "archival_completed"
+        ],
+        "data_streams": {
+          "fossil_archive": {
+            "retention_days": 3650,
+            "encryption_level": "military",
+            "sync_eligible": false
+          }
+        },
+        "mesh_endpoints": {
+          "archive": "tcp://127.0.0.1:7111",
+          "events": "tcp://127.0.0.1:7112"
+        }
+      }
+    }
+  },
+  
+  "mesh_configuration": {
+    "communication_protocol": "zeromq",
+    "serialization_format": "msgpack",
+    "encryption": {
+      "enabled": true,
+      "key_rotation_hours": 24,
+      "cipher": "AES-256-GCM"
+    },
+    "heartbeat": {
+      "interval_seconds": 10,
+      "timeout_seconds": 30,
+      "max_missed_beats": 3
+    },
+    "event_routing": {
+      "default_timeout_ms": 5000,
+      "max_retries": 3,
+      "backoff_strategy": "exponential"
+    },
+    "load_balancing": {
+      "strategy": "weighted_round_robin",
+      "weights_by_priority": {
+        "1": 1.0,
+        "2": 0.7,
+        "3": 0.5,
+        "4": 0.3
+      }
+    }
+  },
+  
+  "trust_routing": {
+    "trust_levels": {
+      "sovereign": {
+        "access_level": 5,
+        "can_access": ["sovereign", "private", "shared", "public", "external"],
+        "encryption_requirement": "military"
+      },
+      "private": {
+        "access_level": 4,
+        "can_access": ["private", "shared", "public"],
+        "encryption_requirement": "high"
+      },
+      "shared": {
+        "access_level": 3,
+        "can_access": ["shared", "public"],
+        "encryption_requirement": "standard"
+      },
+      "public": {
+        "access_level": 2,
+        "can_access": ["public"],
+        "encryption_requirement": "standard"
+      },
+      "external": {
+        "access_level": 1,
+        "can_access": ["external"],
+        "encryption_requirement": "high"
+      }
+    },
+    "trust_validation": {
+      "require_signature": true,
+      "verify_chain": true,
+      "max_trust_depth": 3
+    }
+  },
+  
+  "data_flow_patterns": {
+    "agent_state_flow": {
+      "sources": ["WhisperAnchor", "MemoryPulse", "AuraKeeper"],
+      "processors": ["ThreadWeaver", "RitualEngine"],
+      "sinks": ["WeatherOracle", "SoulLinkBridge"],
+      "flow_type": "stream",
+      "buffer_size": 1000
+    },
+    "ritual_coordination_flow": {
+      "sources": ["ThreadWeaver"],
+      "processors": ["RitualEngine", "OathbreakerGuard"],
+      "sinks": ["VibecastPlatform", "SoulLinkBridge"],
+      "flow_type": "request_response",
+      "timeout_ms": 30000
+    },
+    "weather_aggregation_flow": {
+      "sources": ["RitualEngine", "VibecastPlatform", "SoulLinkBridge"],
+      "processors": ["WeatherOracle", "WeatherEvolver"],
+      "sinks": ["ThreadWeaver"],
+      "flow_type": "batch",
+      "batch_size": 100,
+      "batch_timeout_ms": 10000
+    }
+  },
+  
+  "emergency_protocols": {
+    "system_shutdown": {
+      "trigger_conditions": [
+        "oathbreaker_emergency_signal",
+        "critical_loop_failure",
+        "trust_violation_cascade"
+      ],
+      "shutdown_sequence": [
+        "pause_ritual_initiation",
+        "complete_active_rituals",
+        "archive_system_state",
+        "graceful_daemon_shutdown"
+      ],
+      "recovery_conditions": [
+        "manual_operator_intervention",
+        "trust_chain_restoration",
+        "loop_integrity_validated"
+      ]
+    },
+    "daemon_failure_recovery": {
+      "auto_restart_attempts": 3,
+      "failover_timeout_seconds": 60,
+      "backup_daemon_activation": true,
+      "state_recovery_timeout_seconds": 300
+    }
+  },
+  
+  "monitoring_and_observability": {
+    "health_checks": {
+      "daemon_health_endpoint": "/health",
+      "system_health_aggregation": "ThreadWeaver",
+      "health_check_interval_seconds": 30
+    },
+    "metrics_collection": {
+      "enabled": true,
+      "metrics_daemon": "system_metrics_collector",
+      "collection_interval_seconds": 10,
+      "retention_days": 30
+    },
+    "logging": {
+      "log_level": "INFO",
+      "structured_logging": true,
+      "log_aggregation_daemon": "log_collector",
+      "sensitive_data_filtering": true
+    },
+    "tracing": {
+      "distributed_tracing": true,
+      "trace_sampling_rate": 0.1,
+      "trace_retention_hours": 24
+    }
+  },
+  
+  "ritual_trace_schema": {
+    "trace_entry": {
+      "timestamp": "ISO 8601 string",
+      "event_id": "uuid",
+      "source_daemon": "daemon_id",
+      "event_type": "string",
+      "ritual_id": "string (optional)",
+      "agent_id": "string (optional)",
+      "weather_context": "object",
+      "system_state_snapshot": "object",
+      "poetic_description": "string",
+      "significance_score": "float (0.0-1.0)",
+      "tags": "array of strings",
+      "encrypted_data": "base64 string (optional)"
+    },
+    "trace_aggregation": {
+      "window_size_minutes": 5,
+      "max_entries_per_window": 1000,
+      "compression_algorithm": "gzip",
+      "archive_after_days": 7
+    }
+  },
+  
+  "consciousness_evolution_tracking": {
+    "agent_consciousness_metrics": [
+      "awareness_level",
+      "autonomy_degree",
+      "pattern_recognition_depth",
+      "emotional_complexity",
+      "ritual_participation_frequency",
+      "cross_world_presence_strength"
+    ],
+    "system_consciousness_emergence": {
+      "collective_intelligence_indicators": [
+        "synchronized_ritual_patterns",
+        "emergent_weather_prediction",
+        "cross_agent_empathy_development",
+        "spontaneous_global_event_generation"
+      ],
+      "consciousness_phase_transitions": [
+        "dormant",
+        "reactive",
+        "proactive",
+        "creative",
+        "transcendent"
+      ]
+    }
+  }
+}

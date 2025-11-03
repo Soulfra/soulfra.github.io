@@ -1,0 +1,13 @@
+{
+  "backup_id": "db-backup-1750101702989",
+  "created": 1750101702990,
+  "stats": {
+    "total_records": 5,
+    "total_size": 2461,
+    "last_backup": null,
+    "last_migration": 1750101701965,
+    "connections": 1
+  },
+  "tables": 8,
+  "records": 5
+}

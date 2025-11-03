@@ -1,0 +1,1 @@
+{"timestamp":"2025-10-27T12:44:23Z","action":"apply_fixes","fixes":["qrcode","upload","autologin"],"status":"success","files_changed":["index.html","auth.html","auth-google.html"],"bytes_added":1356,"backups_created":3}

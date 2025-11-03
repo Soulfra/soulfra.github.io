@@ -1,0 +1,117 @@
+[
+  [
+    "test-agent-001",
+    {
+      "id": "test-agent-001",
+      "name": "Test Agent",
+      "creator": "test-user",
+      "created": 1750101993931,
+      "stored_at": 1750101993931,
+      "updated_at": 1750101993931,
+      "version": 1,
+      "sovereign": {
+        "sovereignId": null,
+        "agentId": "test-agent-001",
+        "vaultPath": null,
+        "traceToken": null
+      }
+    }
+  ],
+  [
+    "lifecycle-agent-001",
+    {
+      "id": "lifecycle-agent-001",
+      "name": "Lifecycle Test Agent",
+      "creator": "test-creator",
+      "created": 1750101993942,
+      "ownership": {
+        "creatorShare": 60,
+        "agentShare": 40,
+        "vestingSchedule": {
+          "immediate": 10
+        }
+      },
+      "capabilities": {
+        "core": [
+          "conversation",
+          "analysis"
+        ],
+        "specialized": [
+          "testing"
+        ]
+      },
+      "personality": {
+        "type": "helpful",
+        "traits": [
+          "reliable",
+          "thorough"
+        ]
+      },
+      "wallet": {
+        "address": "test-wallet-address",
+        "balance": 0
+      },
+      "stored_at": 1750101993942,
+      "updated_at": 1750101993942,
+      "version": 1,
+      "sovereign": {
+        "sovereignId": null,
+        "agentId": "lifecycle-agent-001",
+        "vaultPath": null,
+        "traceToken": null
+      }
+    }
+  ],
+  [
+    "integration-agent-1750101702991",
+    {
+      "id": "integration-agent-1750101702991",
+      "name": "Integration Test Agent",
+      "creator": "integration-test",
+      "created": 1750101702991,
+      "ownership": {
+        "creatorShare": 50,
+        "agentShare": 50
+      },
+      "wallet": {
+        "address": "integration-wallet",
+        "balance": 0
+      },
+      "stored_at": 1750101702991,
+      "updated_at": 1750101702991,
+      "version": 1,
+      "sovereign": {
+        "sovereignId": null,
+        "agentId": "integration-agent-1750101702991",
+        "vaultPath": null,
+        "traceToken": null
+      }
+    }
+  ],
+  [
+    "integration-agent-1750101993949",
+    {
+      "id": "integration-agent-1750101993949",
+      "name": "Integration Test Agent",
+      "creator": "integration-test",
+      "created": 1750101993949,
+      "ownership": {
+        "creatorShare": 50,
+        "agentShare": 50
+      },
+      "wallet": {
+        "address": "integration-wallet",
+        "balance": 0
+      },
+      "stored_at": 1750101993949,
+      "updated_at": 1750101993949,
+      "version": 1,
+      "sovereign": {
+        "sovereignId": null,
+        "agentId": "integration-agent-1750101993949",
+        "vaultPath": null,
+        "traceToken": null
+      }
+    }
+  ]
+]

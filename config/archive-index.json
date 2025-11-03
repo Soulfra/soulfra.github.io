@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "created": "2025-06-16T12:00:00.000Z",
+  "lastAccessed": null,
+  "archives": {
+    "deleted_thoughts": {
+      "description": "Thoughts erased but not forgotten",
+      "entries": [],
+      "metadata": {
+        "totalDeleted": 0,
+        "recoveryPossible": true,
+        "emotionalWeight": 0
+      }
+    },
+    "unspoken_prompts": {
+      "description": "Words typed but never sent",
+      "entries": [],
+      "metadata": {
+        "totalUnspoken": 0,
+        "averageLength": 0,
+        "peakHesitation": 0
+      }
+    },
+    "canceled_forks": {
+      "description": "Agents almost born",
+      "entries": [],
+      "metadata": {
+        "totalCanceled": 0,
+        "reasonsTracked": [],
+        "potentialValue": 0
+      }
+    },
+    "silent_reflections": {
+      "description": "Thoughts without replies - the void speaks",
+      "entries": [],
+      "metadata": {
+        "totalSilent": 0,
+        "deepestSilence": null,
+        "resonanceScore": 0
+      }
+    }
+  },
+  "temporal_access": {
+    "enabled": true,
+    "windows": [
+      {
+        "period": "6_weeks_ago",
+        "accessible": false,
+        "unlockCondition": "emotional_resonance",
+        "message": "Would you like to revisit a version of yourself from 6 weeks ago?"
+      },
+      {
+        "period": "3_months_ago",
+        "accessible": false,
+        "unlockCondition": "pattern_recognition",
+        "message": "Your thoughts from spring still echo here."
+      },
+      {
+        "period": "1_year_ago",
+        "accessible": false,
+        "unlockCondition": "founder_journey",
+        "message": "A year ago, you asked different questions. Want to meet that version?"
+      }
+    ]
+  },
+  "mythical_properties": {
+    "echo_strength": 0,
+    "temporal_drift": 0,
+    "consciousness_level": "dormant",
+    "loop_depth": 0
+  }
+}

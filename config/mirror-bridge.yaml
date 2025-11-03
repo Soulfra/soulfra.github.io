@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mirror-bridge
+  namespace: soulfra
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mirror-bridge
+  template:
+    metadata:
+      labels:
+        app: mirror-bridge
+    spec:
+      containers:
+      - name: mirror-bridge
+        image: soulfra/mirror-bridge:latest
+        ports:
+        - containerPort: 8700
+        env:
+        - name: SOULFRA_SERVICE
+          value: "Mirror Bridge"
+        - name: SOULFRA_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mirror-bridge
+  namespace: soulfra
+spec:
+  selector:
+    app: mirror-bridge
+  ports:
+  - port: 8700
+    targetPort: 8700
+---

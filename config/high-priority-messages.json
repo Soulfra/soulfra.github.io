@@ -1,0 +1,58 @@
+{
+  "messages": [],
+  "totalCount": 0,
+  "lastUpdated": "2024-06-16T08:00:00Z",
+  "notificationStatus": "enabled",
+  "examples": [
+    {
+      "id": "example-001",
+      "timestamp": "2024-06-16T07:45:00Z",
+      "sessionId": "demo-high-priority",
+      "prompt": "Can I speak with the founder? I'm interested in licensing this technology for enterprise deployment.",
+      "userInfo": {
+        "role": "CTO",
+        "company": "TechCorp Solutions"
+      },
+      "context": {
+        "source": "enterprise_inquiry",
+        "urgency": "high"
+      },
+      "reasoning": "Matched high-priority pattern: requires creator attention",
+      "status": "example_only",
+      "read": false,
+      "forwarded": false
+    }
+  ],
+  "patterns_matched": {
+    "founder_contact": [
+      "can i speak with the founder",
+      "talk to the creator",
+      "contact the founder",
+      "speak to the developer"
+    ],
+    "funding_investment": [
+      "can i fund this",
+      "want to invest",
+      "angel investor",
+      "venture capital"
+    ],
+    "business_proposals": [
+      "i have a proposal",
+      "business opportunity",
+      "partnership",
+      "collaboration"
+    ],
+    "enterprise_integration": [
+      "enterprise integration",
+      "api partnership",
+      "white label",
+      "custom deployment"
+    ]
+  },
+  "notification_settings": {
+    "console_log": true,
+    "webhook_enabled": false,
+    "email_enabled": false,
+    "real_time_alerts": true
+  }
+}

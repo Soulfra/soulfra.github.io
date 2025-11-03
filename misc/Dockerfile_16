@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="d4641f9f-d374-4868-899b-8f51eb24f355"
+LABEL site.domain="d4641f9f.aimarket.exchange"
+LABEL site.type="marketplace"

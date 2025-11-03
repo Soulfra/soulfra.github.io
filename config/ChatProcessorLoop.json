@@ -1,0 +1,94 @@
+{
+  "name": "ChatProcessorLoop",
+  "type": "service",
+  "version": "1.0.0",
+  "description": "Universal message processing and routing system",
+  
+  "input_from": [
+    "CLI_Interface",
+    "Web_Interface", 
+    "API_Gateway",
+    "WebSocket_Server",
+    "Mobile_Apps"
+  ],
+  
+  "outputs_to": [
+    "StatusMonitor",
+    "QRValidator",
+    "ServiceLauncher",
+    "EmotionAnalyzer",
+    "ConversationMemory"
+  ],
+  
+  "data_flow": {
+    "1_receive": {
+      "accepts": ["text", "voice", "structured_json"],
+      "validates": ["message_format", "session_id", "source_type"]
+    },
+    "2_analyze": {
+      "extracts": ["intent", "emotion", "entities", "context"],
+      "enriches": ["user_history", "session_state", "preferences"]
+    },
+    "3_route": {
+      "decides": "best_handler_for_intent",
+      "considers": ["capability_match", "emotional_state", "user_preference"]
+    },
+    "4_process": {
+      "executes": "selected_handler",
+      "monitors": ["execution_time", "success_status", "side_effects"]
+    },
+    "5_respond": {
+      "formats": "response_for_source",
+      "includes": ["answer", "emotion", "suggestions", "follow_ups"]
+    },
+    "6_persist": {
+      "stores": ["conversation", "metrics", "learnings"],
+      "indexes": ["by_user", "by_intent", "by_outcome"]
+    }
+  },
+  
+  "approval_required": false,
+  "tone_sensitive": true,
+  
+  "emotional_states": {
+    "default": "helpful",
+    "on_confusion": "patient",
+    "on_error": "apologetic",
+    "on_success": "encouraging",
+    "on_frustration": "empathetic"
+  },
+  
+  "tests_required": [
+    "intent_extraction_accuracy",
+    "routing_correctness",
+    "response_appropriateness",
+    "emotional_consistency",
+    "memory_persistence"
+  ],
+  
+  "performance_requirements": {
+    "max_response_time_ms": 200,
+    "min_accuracy": 0.95,
+    "availability": "99.9%"
+  },
+  
+  "dependencies": {
+    "services": ["DatabaseConnector", "CacheManager", "EmotionEngine"],
+    "databases": ["unified_chat.db", "conversation_memory.db"],
+    "external": ["NLP_models", "sentiment_analyzer"]
+  },
+  
+  "error_handling": {
+    "on_parse_error": "request_clarification",
+    "on_routing_error": "fallback_to_general",
+    "on_handler_error": "graceful_degradation",
+    "on_database_error": "cache_and_retry"
+  },
+  
+  "sacred_rules": [
+    "Never ignore a message",
+    "Always preserve emotional context",
+    "Maintain conversation continuity",
+    "Learn from every interaction"
+  ]
+}

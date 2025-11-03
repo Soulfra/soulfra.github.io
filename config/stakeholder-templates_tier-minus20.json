@@ -1,0 +1,291 @@
+{
+  "templates": {
+    "c_suite": {
+      "title": "Executive Brief",
+      "sections": {
+        "executive_summary": {
+          "heading": "Executive Summary",
+          "prompt": "Generate a 3-paragraph executive summary focusing on business impact, competitive advantage, and ROI potential. Include revenue projections and market opportunity.",
+          "length": "200-300 words",
+          "tone": "Strategic, confident, results-focused"
+        },
+        "business_impact": {
+          "heading": "Business Impact & ROI",
+          "prompt": "Detail quantifiable business outcomes, revenue impact, cost savings, and market position advantages. Include timeline for ROI realization.",
+          "length": "150-200 words",
+          "tone": "Data-driven, compelling"
+        },
+        "competitive_advantage": {
+          "heading": "Competitive Differentiation",
+          "prompt": "Explain how this creates sustainable competitive advantage, market barriers, and unique positioning vs competitors.",
+          "length": "100-150 words",
+          "tone": "Strategic, forward-looking"
+        },
+        "resource_requirements": {
+          "heading": "Investment Requirements",
+          "prompt": "Outline required budget, team resources, timeline, and expected returns. Include risk mitigation strategies.",
+          "length": "100-150 words",
+          "tone": "Realistic, comprehensive"
+        },
+        "strategic_alignment": {
+          "heading": "Strategic Alignment",
+          "prompt": "Connect this initiative to company vision, growth objectives, and long-term strategic goals.",
+          "length": "75-100 words",
+          "tone": "Vision-aligned, purposeful"
+        }
+      },
+      "output_format": "executive_deck",
+      "visual_elements": ["revenue_charts", "competitive_matrix", "roi_timeline"],
+      "priority_keywords": ["ROI", "revenue", "competitive advantage", "market opportunity", "strategic"]
+    },
+    "product_manager": {
+      "title": "Product Requirements Document",
+      "sections": {
+        "product_overview": {
+          "heading": "Product Overview",
+          "prompt": "Provide comprehensive product description, target users, problem statement, and solution overview.",
+          "length": "200-250 words",
+          "tone": "Clear, user-focused"
+        },
+        "user_stories": {
+          "heading": "User Stories & Acceptance Criteria",
+          "prompt": "Generate detailed user stories with acceptance criteria, edge cases, and success metrics for each feature.",
+          "length": "300-500 words",
+          "tone": "Precise, testable"
+        },
+        "feature_requirements": {
+          "heading": "Feature Requirements",
+          "prompt": "Detail core features, nice-to-have features, and technical requirements with priority levels.",
+          "length": "250-350 words",
+          "tone": "Comprehensive, prioritized"
+        },
+        "user_experience": {
+          "heading": "User Experience Flow",
+          "prompt": "Describe user journey, interaction flows, UI/UX considerations, and usability requirements.",
+          "length": "200-300 words",
+          "tone": "User-centric, intuitive"
+        },
+        "success_metrics": {
+          "heading": "Success Metrics & KPIs",
+          "prompt": "Define measurable success criteria, KPIs, analytics requirements, and performance benchmarks.",
+          "length": "150-200 words",
+          "tone": "Measurable, achievable"
+        },
+        "dependencies": {
+          "heading": "Dependencies & Constraints",
+          "prompt": "Identify technical dependencies, external integrations, resource constraints, and risk factors.",
+          "length": "100-150 words",
+          "tone": "Realistic, comprehensive"
+        }
+      },
+      "output_format": "prd_document",
+      "visual_elements": ["user_flow_diagrams", "feature_matrix", "mockups"],
+      "priority_keywords": ["features", "user experience", "requirements", "acceptance criteria", "metrics"]
+    },
+    "engineering": {
+      "title": "Technical Specification",
+      "sections": {
+        "architecture_overview": {
+          "heading": "System Architecture",
+          "prompt": "Detail system architecture, component interactions, data flow, and technical stack decisions.",
+          "length": "300-400 words",
+          "tone": "Technical, precise"
+        },
+        "api_specifications": {
+          "heading": "API Specifications",
+          "prompt": "Define API endpoints, request/response formats, authentication, error handling, and rate limiting.",
+          "length": "250-350 words",
+          "tone": "Detailed, standardized"
+        },
+        "database_schema": {
+          "heading": "Database Design",
+          "prompt": "Describe database schema, relationships, indexing strategy, and data migration requirements.",
+          "length": "200-300 words",
+          "tone": "Structured, optimized"
+        },
+        "security_requirements": {
+          "heading": "Security & Compliance",
+          "prompt": "Detail security measures, authentication/authorization, data protection, and compliance requirements.",
+          "length": "200-250 words",
+          "tone": "Security-focused, compliant"
+        },
+        "performance_requirements": {
+          "heading": "Performance & Scalability",
+          "prompt": "Define performance benchmarks, scalability requirements, load handling, and optimization strategies.",
+          "length": "150-200 words",
+          "tone": "Performance-oriented, scalable"
+        },
+        "deployment_strategy": {
+          "heading": "Deployment & DevOps",
+          "prompt": "Outline deployment pipeline, infrastructure requirements, monitoring, and maintenance procedures.",
+          "length": "150-200 words",
+          "tone": "Operational, reliable"
+        }
+      },
+      "output_format": "technical_spec",
+      "visual_elements": ["architecture_diagrams", "api_documentation", "database_erd"],
+      "priority_keywords": ["architecture", "API", "database", "security", "performance", "deployment"]
+    },
+    "copywriters": {
+      "title": "Marketing & Messaging Guide",
+      "sections": {
+        "value_proposition": {
+          "heading": "Core Value Proposition",
+          "prompt": "Create compelling value proposition statements, unique selling points, and benefit-driven messaging.",
+          "length": "150-200 words",
+          "tone": "Compelling, benefit-focused"
+        },
+        "target_audience": {
+          "heading": "Target Audience Personas",
+          "prompt": "Define detailed user personas, pain points, motivations, and communication preferences.",
+          "length": "200-300 words",
+          "tone": "Empathetic, persona-driven"
+        },
+        "messaging_framework": {
+          "heading": "Messaging Framework",
+          "prompt": "Develop key messages, supporting points, proof points, and call-to-action strategies.",
+          "length": "250-350 words",
+          "tone": "Persuasive, action-oriented"
+        },
+        "content_strategy": {
+          "heading": "Content Strategy",
+          "prompt": "Plan content types, distribution channels, content calendar, and engagement strategies.",
+          "length": "200-250 words",
+          "tone": "Strategic, engaging"
+        },
+        "brand_voice": {
+          "heading": "Brand Voice & Tone",
+          "prompt": "Define brand personality, voice characteristics, tone guidelines, and communication style.",
+          "length": "150-200 words",
+          "tone": "Brand-aligned, consistent"
+        },
+        "campaign_ideas": {
+          "heading": "Campaign Concepts",
+          "prompt": "Generate creative campaign ideas, promotional strategies, and launch tactics.",
+          "length": "200-300 words",
+          "tone": "Creative, innovative"
+        }
+      },
+      "output_format": "marketing_guide",
+      "visual_elements": ["persona_profiles", "messaging_hierarchy", "campaign_mockups"],
+      "priority_keywords": ["messaging", "audience", "campaigns", "brand voice", "value proposition"]
+    },
+    "qa_testing": {
+      "title": "Quality Assurance Test Plan",
+      "sections": {
+        "test_strategy": {
+          "heading": "Testing Strategy",
+          "prompt": "Define testing approach, test types, coverage requirements, and quality gates.",
+          "length": "200-250 words",
+          "tone": "Methodical, comprehensive"
+        },
+        "test_cases": {
+          "heading": "Test Cases & Scenarios",
+          "prompt": "Generate detailed test cases, test scenarios, expected results, and pass/fail criteria.",
+          "length": "400-600 words",
+          "tone": "Precise, thorough"
+        },
+        "edge_cases": {
+          "heading": "Edge Cases & Error Handling",
+          "prompt": "Identify edge cases, error conditions, boundary testing, and exception handling scenarios.",
+          "length": "250-350 words",
+          "tone": "Critical, thorough"
+        },
+        "performance_testing": {
+          "heading": "Performance Testing",
+          "prompt": "Define load testing scenarios, stress testing requirements, and performance benchmarks.",
+          "length": "200-250 words",
+          "tone": "Performance-focused, measurable"
+        },
+        "automation_strategy": {
+          "heading": "Test Automation",
+          "prompt": "Plan automation approach, tool selection, test data management, and CI/CD integration.",
+          "length": "150-200 words",
+          "tone": "Efficient, automated"
+        },
+        "validation_criteria": {
+          "heading": "Acceptance Validation",
+          "prompt": "Define acceptance criteria, sign-off requirements, and quality metrics for release readiness.",
+          "length": "100-150 words",
+          "tone": "Quality-assured, reliable"
+        }
+      },
+      "output_format": "test_plan",
+      "visual_elements": ["test_matrix", "coverage_reports", "automation_pipeline"],
+      "priority_keywords": ["testing", "quality", "validation", "automation", "edge cases"]
+    },
+    "junior_staff": {
+      "title": "Getting Started Guide",
+      "sections": {
+        "simple_overview": {
+          "heading": "What This Is",
+          "prompt": "Explain in simple terms what this system does, why it's important, and how it helps users.",
+          "length": "150-200 words",
+          "tone": "Simple, encouraging"
+        },
+        "key_concepts": {
+          "heading": "Key Concepts",
+          "prompt": "Break down important concepts, terminology, and how different parts work together in easy-to-understand language.",
+          "length": "200-300 words",
+          "tone": "Educational, approachable"
+        },
+        "getting_started": {
+          "heading": "Getting Started Steps",
+          "prompt": "Provide step-by-step instructions for basic setup, first tasks, and initial exploration.",
+          "length": "250-350 words",
+          "tone": "Step-by-step, supportive"
+        },
+        "common_tasks": {
+          "heading": "Common Tasks",
+          "prompt": "List frequent activities, how to perform them, and what to expect as results.",
+          "length": "200-250 words",
+          "tone": "Practical, helpful"
+        },
+        "troubleshooting": {
+          "heading": "Common Issues & Solutions",
+          "prompt": "Identify typical problems newcomers face and provide clear solutions or who to ask for help.",
+          "length": "150-200 words",
+          "tone": "Supportive, problem-solving"
+        },
+        "next_steps": {
+          "heading": "Learning Path",
+          "prompt": "Suggest learning progression, advanced topics to explore, and resources for deeper understanding.",
+          "length": "100-150 words",
+          "tone": "Growth-oriented, motivating"
+        }
+      },
+      "output_format": "getting_started_guide",
+      "visual_elements": ["step_by_step_diagrams", "concept_illustrations", "quick_reference"],
+      "priority_keywords": ["simple", "getting started", "basics", "learn", "help"]
+    }
+  },
+  "global_settings": {
+    "ai_analysis_prompts": {
+      "code_analysis": "Analyze this code file to understand its purpose, key functions, main features, technical architecture, dependencies, and business value. Focus on extracting actionable insights for documentation.",
+      "feature_extraction": "Extract core features, user benefits, technical capabilities, integration points, and business impact from this system. Identify what makes it unique and valuable.",
+      "business_value": "Determine the business value, market opportunity, competitive advantages, and revenue potential of this system. Consider both direct and indirect benefits.",
+      "technical_complexity": "Assess the technical complexity, scalability considerations, security implications, and architectural decisions. Identify key engineering challenges and solutions.",
+      "user_impact": "Analyze how this system affects end users, what problems it solves, what experience it provides, and what outcomes it enables.",
+      "implementation_scope": "Determine implementation requirements, timeline estimates, resource needs, dependencies, and potential risks or challenges."
+    },
+    "output_customization": {
+      "tone_modifiers": {
+        "executive": "authoritative, strategic, results-focused",
+        "technical": "precise, detailed, solution-oriented",
+        "marketing": "compelling, benefit-driven, action-oriented",
+        "educational": "clear, supportive, step-by-step"
+      },
+      "length_guidelines": {
+        "brief": "75-150 words",
+        "standard": "150-300 words",
+        "detailed": "300-500 words",
+        "comprehensive": "500+ words"
+      },
+      "visual_suggestions": {
+        "diagrams": ["flowcharts", "architecture_diagrams", "user_journeys", "data_flows"],
+        "charts": ["metrics_dashboards", "roi_projections", "timeline_charts", "comparison_matrices"],
+        "mockups": ["ui_wireframes", "user_interfaces", "mobile_screens", "dashboard_views"]
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+# CramPal MAX - Production Docker Container
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy core files (excluding sensitive AI logic)
+COPY CRAMPAL_ENGINE.py .
+COPY CRAMPAL_MAX_DOCKER.py .
+
+# Create required directories
+RUN mkdir -p logs data encrypted_core
+
+# Encrypted AI cores (production would have real encryption)
+RUN echo '{"encrypted": true, "version": "1.0"}' > encrypted_core/cal.enc
+RUN echo '{"encrypted": true, "version": "1.0"}' > encrypted_core/arty.enc
+
+# Environment variables
+ENV CRAMPAL_ENV=production
+ENV AI_CORE_ENCRYPTED=true
+ENV LC_ALL=C
+
+# Expose ports
+EXPOSE 7000 8000 8888
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Start script
+RUN cat > start.sh << 'EOF'
+#!/bin/bash
+echo "Starting CramPal MAX Platform..."
+
+# Start all services
+python3 CRAMPAL_ENGINE.py &
+python3 CRAMPAL_MAX_DOCKER.py &
+
+# Keep container running
+tail -f /dev/null
+EOF
+
+RUN chmod +x start.sh
+
+# Run as non-root user
+RUN useradd -m crampal
+USER crampal
+
+CMD ["./start.sh"]

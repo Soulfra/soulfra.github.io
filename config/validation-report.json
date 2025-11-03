@@ -1,0 +1,120 @@
+{
+  "timestamp": "2025-06-25T00:00:01.466Z",
+  "summary": {
+    "totalViolations": 13875,
+    "criticalViolations": 12,
+    "filesWithViolations": 858,
+    "directoriesWithViolations": 173
+  },
+  "violationsByType": {
+    "Directories must be lowercase with hyphens": 143,
+    "Remove console.log statements": 13475,
+    "Potential SQL injection risk": 61,
+    "Components should not make direct API calls": 17,
+    "Do not hardcode secrets or API keys": 12,
+    "Directories should use hyphens instead of underscores": 54,
+    "Imports should be sorted alphabetically": 19,
+    "Standard directory names": 30,
+    "React components must be PascalCase": 16,
+    "Component files should be less than 300 lines": 14,
+    "Services must be camelCase and end with \"Service\"": 2,
+    "TypeScript files should be less than 500 lines": 19,
+    "File names should be less than 50 characters": 9,
+    "File names must not contain spaces": 4
+  },
+  "topViolations": [
+    {
+      "rule": "Remove console.log statements",
+      "count": 13475
+    },
+    {
+      "rule": "Potential SQL injection risk",
+      "count": 61
+    },
+    {
+      "rule": "Imports should be sorted alphabetically",
+      "count": 19
+    },
+    {
+      "rule": "TypeScript files should be less than 500 lines",
+      "count": 19
+    },
+    {
+      "rule": "Components should not make direct API calls",
+      "count": 17
+    },
+    {
+      "rule": "React components must be PascalCase",
+      "count": 16
+    },
+    {
+      "rule": "Component files should be less than 300 lines",
+      "count": 14
+    },
+    {
+      "rule": "Do not hardcode secrets or API keys",
+      "count": 12
+    },
+    {
+      "rule": "File names should be less than 50 characters",
+      "count": 9
+    },
+    {
+      "rule": "File names must not contain spaces",
+      "count": 4
+    }
+  ],
+  "criticalFiles": [
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/CLAUDE_CODE_INTEGRATION.py",
+      "criticalViolations": 4,
+      "totalViolations": 5
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/ENTERPRISE_PLATFORM_MAX.py",
+      "criticalViolations": 1,
+      "totalViolations": 2
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/handoff/LAUNCH_MY_IDEAS.py",
+      "criticalViolations": 1,
+      "totalViolations": 1
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/launch-sovereign-infinity.js",
+      "criticalViolations": 1,
+      "totalViolations": 54
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/platforms/src/agent-zero/integration-test.js",
+      "criticalViolations": 1,
+      "totalViolations": 41
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/platforms/src/biometric/biometric-integration-test.js",
+      "criticalViolations": 1,
+      "totalViolations": 26
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/router/licensing-payout.js",
+      "criticalViolations": 1,
+      "totalViolations": 23
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/soulfra_sdk.py",
+      "criticalViolations": 1,
+      "totalViolations": 1
+    },
+    {
+      "file": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/neo4j_agent_graph.js",
+      "criticalViolations": 1,
+      "totalViolations": 4
+    }
+  ],
+  "trends": {
+    "improving": false,
+    "newViolations": 13875,
+    "fixedViolations": 0,
+    "trendsAvailable": false
+  }
+}

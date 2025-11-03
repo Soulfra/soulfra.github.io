@@ -1,0 +1,14 @@
+{
+  "id": "op-1750167478787-0ecdeb09",
+  "type": "insert",
+  "path": "automation_1.json",
+  "data": {
+    "type": "email",
+    "active": true,
+    "time_saved": 15
+  },
+  "metadata": {},
+  "timestamp": 1750167478787,
+  "author": "shell-1750167477777-ffe317e1073c6ec5",
+  "checksum": "38a1da0a911c7c3587bcec4b2882dab48b91d9cce691b2f7b6e912b3cfd78339"
+}

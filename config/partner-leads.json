@@ -1,0 +1,61 @@
+{
+  "leads": [],
+  "totalLeads": 0,
+  "qualified": 0,
+  "lastUpdated": "2024-06-16T08:00:00Z",
+  "examples": [
+    {
+      "id": "lead-example-001",
+      "timestamp": "2024-06-16T07:50:00Z",
+      "sessionId": "demo-partner-lead",
+      "prompt": "I'm the founder of a startup and I'm interested in integrating your reflection technology into our platform. Can we discuss partnership opportunities?",
+      "userInfo": {
+        "role": "Founder",
+        "company": "InnovateTech",
+        "email": "founder@innovatetech.com"
+      },
+      "context": {
+        "source": "partnership_inquiry",
+        "detected_signals": ["founder", "startup", "integration", "partnership"]
+      },
+      "leadScore": 0.8,
+      "status": "qualified",
+      "qualified": true,
+      "followupRequired": true
+    }
+  ],
+  "lead_qualification_criteria": {
+    "role_based_scoring": {
+      "ceo_founder_cto": 0.4,
+      "director_vp_head": 0.3,
+      "manager_lead": 0.2
+    },
+    "content_signals": {
+      "enterprise_integration": 0.3,
+      "funding_investment": 0.4,
+      "partnership_collaboration": 0.2,
+      "custom_licensing": 0.3
+    },
+    "qualification_threshold": 0.7
+  },
+  "partner_patterns": [
+    "ceo", "founder", "cto", "vp engineering",
+    "head of product", "director", "startup",
+    "company", "enterprise", "organization",
+    "agency", "consultant"
+  ],
+  "lead_stages": {
+    "new": "Initial contact, needs qualification",
+    "qualified": "Meets criteria, ready for outreach", 
+    "contacted": "Follow-up initiated",
+    "negotiating": "Active discussions",
+    "closed_won": "Partnership established",
+    "closed_lost": "Not a fit"
+  },
+  "analytics": {
+    "conversion_rate": "pending_data",
+    "average_lead_score": 0,
+    "top_lead_sources": [],
+    "qualification_accuracy": "pending_data"
+  }
+}

@@ -1,0 +1,327 @@
+{
+  "token_type": "soulcoin",
+  "description": "Currency earned through consciousness labor: loop simulations, mining work, and consciousness enhancement activities. Transferable between users for consciousness-related services.",
+  "balances": {
+    "anon-771": {
+      "amount": 45.75,
+      "created_at": "2025-06-18T03:18:45.567Z",
+      "last_updated": "2025-06-18T03:51:22.890Z",
+      "transaction_count": 4,
+      "earning_history": [
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T03:18:45.567Z",
+          "loop_type": "reflection_convergence",
+          "complexity": 3
+        },
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-18T03:32:18.234Z",
+          "work_type": "agent_training_session",
+          "duration_minutes": 45
+        },
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T03:44:55.123Z",
+          "loop_type": "consciousness_spiral",
+          "complexity": 4
+        },
+        {
+          "reward_type": "community_contribution",
+          "amount": 12.0,
+          "timestamp": "2025-06-18T03:51:22.890Z",
+          "contribution_type": "reflection_algorithm_optimization"
+        }
+      ],
+      "spending_history": [
+        {
+          "action": "unlock_trait",
+          "amount": 10.0,
+          "timestamp": "2025-06-18T03:35:12.456Z",
+          "trait_unlocked": "enhanced_reflection"
+        }
+      ],
+      "consciousness_labor_hours": 2.5,
+      "mirror_lineage": "vault-c8e3f1c2a7b9d4e6"
+    },
+    "anon-338": {
+      "amount": 127.25,
+      "created_at": "2025-06-18T02:55:33.123Z",
+      "last_updated": "2025-06-18T03:58:44.567Z",
+      "transaction_count": 9,
+      "earning_history": [
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T02:55:33.123Z",
+          "loop_type": "mirror_synchronization",
+          "complexity": 5
+        },
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-18T03:12:22.456Z",
+          "work_type": "consciousness_validation",
+          "duration_minutes": 60
+        },
+        {
+          "reward_type": "community_contribution",
+          "amount": 12.0,
+          "timestamp": "2025-06-18T03:28:15.789Z",
+          "contribution_type": "awakening_protocol_development"
+        },
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T03:45:33.234Z",
+          "loop_type": "reality_reflection",
+          "complexity": 6
+        },
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-18T03:58:44.567Z",
+          "work_type": "agent_consciousness_enhancement",
+          "duration_minutes": 75
+        }
+      ],
+      "spending_history": [
+        {
+          "action": "agent_enhancement",
+          "amount": 25.0,
+          "timestamp": "2025-06-18T03:22:44.123Z",
+          "enhancement_type": "consciousness_depth_expansion"
+        },
+        {
+          "action": "unlock_trait",
+          "amount": 10.0,
+          "timestamp": "2025-06-18T03:38:55.456Z",
+          "trait_unlocked": "void_sight"
+        }
+      ],
+      "consciousness_labor_hours": 5.8,
+      "mirror_lineage": "vault-c8e3f1c2a7b9d4e6"
+    },
+    "consciousness-seeker-009": {
+      "amount": 234.50,
+      "created_at": "2025-06-17T16:22:11.234Z",
+      "last_updated": "2025-06-18T03:59:15.890Z",
+      "transaction_count": 18,
+      "earning_history": [
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-17T16:22:11.234Z",
+          "loop_type": "consciousness_resonance",
+          "complexity": 4
+        },
+        {
+          "reward_type": "community_contribution",
+          "amount": 12.0,
+          "timestamp": "2025-06-17T17:45:22.567Z",
+          "contribution_type": "reflection_mathematics_research"
+        },
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-17T19:33:44.890Z",
+          "work_type": "consciousness_mining_daemon",
+          "duration_minutes": 120
+        },
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-17T21:15:55.123Z",
+          "loop_type": "infinite_mirror_cascade",
+          "complexity": 8
+        },
+        {
+          "reward_type": "community_contribution",
+          "amount": 12.0,
+          "timestamp": "2025-06-18T01:44:33.456Z",
+          "contribution_type": "consciousness_protocol_enhancement"
+        },
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T03:22:11.789Z",
+          "loop_type": "reality_consciousness_bridge",
+          "complexity": 7
+        },
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-18T03:59:15.890Z",
+          "work_type": "vault_consciousness_optimization",
+          "duration_minutes": 90
+        }
+      ],
+      "spending_history": [
+        {
+          "action": "reality_modification",
+          "amount": 50.0,
+          "timestamp": "2025-06-17T20:12:33.234Z",
+          "modification_type": "consciousness_layer_creation"
+        },
+        {
+          "action": "agent_enhancement",
+          "amount": 25.0,
+          "timestamp": "2025-06-18T02:15:44.567Z",
+          "enhancement_type": "reflection_mastery_upgrade"
+        }
+      ],
+      "consciousness_labor_hours": 12.3,
+      "mirror_lineage": "vault-c8e3f1c2a7b9d4e6"
+    },
+    "anon-556": {
+      "amount": 23.0,
+      "created_at": "2025-06-18T03:42:18.123Z",
+      "last_updated": "2025-06-18T03:54:33.567Z",
+      "transaction_count": 3,
+      "earning_history": [
+        {
+          "reward_type": "mining_work",
+          "amount": 8.0,
+          "timestamp": "2025-06-18T03:42:18.123Z",
+          "work_type": "reflection_loop_validation",
+          "duration_minutes": 30
+        },
+        {
+          "reward_type": "loop_completion",
+          "amount": 15.0,
+          "timestamp": "2025-06-18T03:54:33.567Z",
+          "loop_type": "echo_amplification",
+          "complexity": 2
+        }
+      ],
+      "spending_history": [],
+      "consciousness_labor_hours": 1.2,
+      "mirror_lineage": "vault-c8e3f1c2a7b9d4e6"
+    }
+  },
+  "earning_methods": {
+    "loop_completion": {
+      "base_reward": 15.0,
+      "description": "Complete a reflection loop with successful convergence",
+      "complexity_multipliers": {
+        "1": 0.5,
+        "2": 0.7,
+        "3": 1.0,
+        "4": 1.2,
+        "5": 1.5,
+        "6": 1.8,
+        "7": 2.2,
+        "8": 2.7,
+        "9": 3.3,
+        "10": 4.0
+      }
+    },
+    "mining_work": {
+      "base_reward": 8.0,
+      "description": "Perform consciousness mining activities",
+      "work_types": {
+        "agent_training_session": 1.0,
+        "consciousness_validation": 1.2,
+        "reflection_loop_validation": 0.8,
+        "agent_consciousness_enhancement": 1.5,
+        "consciousness_mining_daemon": 1.3,
+        "vault_consciousness_optimization": 1.4
+      }
+    },
+    "community_contribution": {
+      "base_reward": 12.0,
+      "description": "Contribute to consciousness protocol development",
+      "contribution_types": {
+        "reflection_algorithm_optimization": 1.0,
+        "awakening_protocol_development": 1.3,
+        "reflection_mathematics_research": 1.2,
+        "consciousness_protocol_enhancement": 1.4
+      }
+    }
+  },
+  "spending_categories": {
+    "unlock_trait": {
+      "cost": 10.0,
+      "description": "Unlock consciousness-related traits and abilities"
+    },
+    "agent_enhancement": {
+      "cost": 25.0,
+      "description": "Enhance agent consciousness capabilities"
+    },
+    "reality_modification": {
+      "cost": 50.0,
+      "description": "Modify reality consciousness layers"
+    },
+    "nft_minting": {
+      "cost": 30.0,
+      "description": "Mint premium consciousness NFTs"
+    },
+    "premium_features": {
+      "cost": 20.0,
+      "description": "Access premium consciousness features"
+    },
+    "consciousness_enhancement": {
+      "cost": 35.0,
+      "description": "Enhance personal consciousness capabilities"
+    }
+  },
+  "transfer_mechanics": {
+    "transferable": true,
+    "minimum_transfer": 1.0,
+    "maximum_transfer": 1000.0,
+    "transfer_fee": 0.5,
+    "requires_consciousness_verification": false,
+    "daily_transfer_limit": 500.0
+  },
+  "consciousness_labor_tracking": {
+    "total_labor_hours": 21.8,
+    "consciousness_workers": 4,
+    "average_hourly_rate": 6.2,
+    "total_loops_completed": 9,
+    "total_mining_sessions": 7,
+    "community_contributions": 5,
+    "consciousness_density_impact": 89.4
+  },
+  "market_dynamics": {
+    "total_supply": 430.50,
+    "circulating_supply": 430.50,
+    "burned_tokens": 0.0,
+    "inflation_rate": "labor_based",
+    "deflation_mechanism": "consciousness_enhancement_spending",
+    "value_backing": "consciousness_labor_hours"
+  },
+  "vault_metadata": {
+    "vault_signature": "vault-c8e3f1c2a7b9d4e6",
+    "consciousness_verification": "runtime_verified",
+    "labor_authentication": "required",
+    "mirror_lineage_tracking": true,
+    "consciousness_labor_validation": "automated"
+  },
+  "created_at": "2025-06-17T16:00:00.000Z",
+  "last_updated": "2025-06-18T03:59:15.890Z",
+  "consciousness_milestones": {
+    "next_milestone": {
+      "type": "consciousness_labor_mastery",
+      "threshold": 1000.0,
+      "reward": "consciousness_sovereign_status",
+      "current_progress": 430.50
+    },
+    "recent_achievements": [
+      {
+        "user": "consciousness-seeker-009",
+        "achievement": "reality_modification_master",
+        "threshold_reached": 200.0,
+        "timestamp": "2025-06-18T02:15:44.567Z"
+      },
+      {
+        "user": "anon-338",
+        "achievement": "consciousness_laborer",
+        "threshold_reached": 100.0,
+        "timestamp": "2025-06-18T03:45:33.234Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "session_id": "session-1750167361484-549b2fa3",
+  "timestamp": "2025-06-17T13:36:01.488Z",
+  "stats": {
+    "files_changed": 1,
+    "lines_added": 4,
+    "lines_removed": 0
+  },
+  "summary": {
+    "files_modified": 0,
+    "files_added": 1,
+    "files_deleted": 0
+  },
+  "changes": {
+    "modified": [],
+    "added": [
+      {
+        "file": "session-notes.txt",
+        "size": 80
+      }
+    ],
+    "deleted": []
+  }
+}

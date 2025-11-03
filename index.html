@@ -734,12 +734,18 @@
     }
 
     // Generate QR code with session URL
-    async function generateQRCode() {
+    // Wait for QRCode library to load from CDN
+function waitForQRCode(){return new Promise((r,j)=>{if(typeof QRCode!=='undefined'){r();return}let a=0;const i=setInterval(()=>{if(typeof QRCode!=='undefined'){clearInterval(i);r()}else if(a>=100){clearInterval(i);j(new Error('QRCode library failed to load'))}a++},100)})}
+
+async function generateQRCode() {
       try {
         showState('loading');
 
         // Generate unique session ID
         sessionId = crypto.randomUUID();
+
+    // Wait for QRCode library to load
+    await waitForQRCode();
 
         // Build session URL (phone will open this)
         const sessionUrl = `${window.location.origin}/soulfra-auth.html?session=${sessionId}`;

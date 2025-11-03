@@ -1,0 +1,73 @@
+# Soulfra Complete Platform Docker Image
+# Includes Redis and all dependencies
+
+FROM node:18-alpine
+
+# Install Python, Redis, and build tools
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    redis \
+    curl \
+    bash \
+    git \
+    build-base \
+    python3-dev
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node dependencies
+RUN npm install
+
+# Copy Python requirements if exists
+COPY requirements.txt* ./
+RUN if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+
+# Copy all application files
+COPY . .
+
+# Create required directories
+RUN mkdir -p logs pids uploads generated mirror-shell runtime api
+
+# Expose all service ports
+EXPOSE 4040 6379 7777 8888 9999
+
+# Create startup script
+RUN cat > /app/docker-start.sh << 'EOF'
+#!/bin/bash
+echo "🚀 Starting Soulfra Platform in Docker..."
+
+# Start Redis in background
+redis-server --daemonize yes
+echo "✅ Redis started"
+
+# Wait for Redis
+sleep 2
+
+# Start all services
+node soulfra-unified-gateway.js &
+node production-server.js &
+python3 smart-route-server.py &
+node runtime/riven-cli-server.js &
+
+echo "✅ All services started"
+echo ""
+echo "📍 Access Points:"
+echo "  • Unified Dashboard: http://localhost:8888"
+echo "  • Production Server: http://localhost:9999"
+echo "  • Smart Router: http://localhost:7777"
+echo "  • Cal Riven: http://localhost:4040"
+echo ""
+
+# Keep container running
+tail -f /dev/null
+EOF
+
+RUN chmod +x /app/docker-start.sh
+
+# Start everything
+CMD ["/app/docker-start.sh"]

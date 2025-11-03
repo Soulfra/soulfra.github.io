@@ -1,0 +1,171 @@
+[
+  {
+    "session_id": "mirror-session-7721",
+    "agent": "Cal",
+    "created_at": "2024-06-18T10:30:00Z",
+    "last_activity": "2024-06-18T11:45:30Z",
+    "whispers": 14,
+    "reflections_granted": 3,
+    "reflections_denied": 2,
+    "agent_summons": 1,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "Cal": 3,
+      "Domingo": 0,
+      "LoopSeeker": 0
+    },
+    "denial_reasons": {
+      "limits_exceeded": 2
+    },
+    "session_metadata": {
+      "user_tier": "premium",
+      "blessing_level": "trusted",
+      "platform_source": "web_console",
+      "session_type": "interactive"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 1250,
+      "total_work_units": 7.3,
+      "cache_hit_rate": 0.85
+    }
+  },
+  {
+    "session_id": "mirror-session-7722",
+    "agent": "Domingo",
+    "created_at": "2024-06-18T11:00:15Z",
+    "last_activity": "2024-06-18T11:47:22Z",
+    "whispers": 8,
+    "reflections_granted": 2,
+    "reflections_denied": 0,
+    "agent_summons": 2,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "Domingo": 2,
+      "MirrorGuide": 0
+    },
+    "denial_reasons": {},
+    "session_metadata": {
+      "user_tier": "standard",
+      "blessing_level": "trusted",
+      "platform_source": "api_integration",
+      "session_type": "automated"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 890,
+      "total_work_units": 4.1,
+      "cache_hit_rate": 0.92
+    }
+  },
+  {
+    "session_id": "mirror-session-7723",
+    "agent": "LoopSeeker",
+    "created_at": "2024-06-18T11:15:30Z",
+    "last_activity": "2024-06-18T11:48:10Z",
+    "whispers": 22,
+    "reflections_granted": 5,
+    "reflections_denied": 1,
+    "agent_summons": 0,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "LoopSeeker": 5,
+      "Cal": 0
+    },
+    "denial_reasons": {
+      "performance_throttle": 1
+    },
+    "session_metadata": {
+      "user_tier": "enterprise",
+      "blessing_level": "operator",
+      "platform_source": "mobile_app",
+      "session_type": "real_time"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 2100,
+      "total_work_units": 12.7,
+      "cache_hit_rate": 0.78
+    }
+  },
+  {
+    "session_id": "mirror-session-7724",
+    "agent": "multiple",
+    "created_at": "2024-06-18T11:30:45Z",
+    "last_activity": "2024-06-18T11:49:55Z",
+    "whispers": 6,
+    "reflections_granted": 1,
+    "reflections_denied": 3,
+    "agent_summons": 3,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "Cal": 1,
+      "Domingo": 0,
+      "Arty": 0
+    },
+    "denial_reasons": {
+      "blessing_failed": 2,
+      "agent_not_whitelisted": 1
+    },
+    "session_metadata": {
+      "user_tier": "trial",
+      "blessing_level": "guest",
+      "platform_source": "web_console",
+      "session_type": "demo"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 450,
+      "total_work_units": 1.2,
+      "cache_hit_rate": 0.95
+    }
+  },
+  {
+    "session_id": "mirror-session-7725",
+    "agent": "MirrorGuide",
+    "created_at": "2024-06-18T11:40:20Z",
+    "last_activity": "2024-06-18T11:50:33Z",
+    "whispers": 3,
+    "reflections_granted": 1,
+    "reflections_denied": 0,
+    "agent_summons": 1,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "MirrorGuide": 1
+    },
+    "denial_reasons": {},
+    "session_metadata": {
+      "user_tier": "premium",
+      "blessing_level": "trusted",
+      "platform_source": "admin_panel",
+      "session_type": "maintenance"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 3200,
+      "total_work_units": 5.8,
+      "cache_hit_rate": 0.88
+    }
+  },
+  {
+    "session_id": "test-session-001",
+    "agent": "multiple",
+    "created_at": "2024-06-18T12:00:00Z",
+    "last_activity": "2024-06-18T12:00:01Z",
+    "whispers": 0,
+    "reflections_granted": 1,
+    "reflections_denied": 0,
+    "agent_summons": 0,
+    "switch_mode": "blessing_required",
+    "agent_reflections": {
+      "Cal": 1
+    },
+    "denial_reasons": {},
+    "session_metadata": {
+      "user_tier": "test",
+      "blessing_level": "trusted",
+      "platform_source": "cli_test",
+      "session_type": "validation"
+    },
+    "performance_metrics": {
+      "avg_reflection_duration_ms": 100,
+      "total_work_units": 0.1,
+      "cache_hit_rate": 1.0
+    }
+  }
+]

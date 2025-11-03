@@ -1,0 +1,90 @@
+{
+  "currency": "Resonance",
+  "symbol": "◉",
+  "treasury": 996745,
+  "last_updated": "2025-06-19T16:33:20.105Z",
+  "total_transactions": 9,
+  "transactions": [
+    {
+      "id": "2a3920d3-5c64-4544-a3de-54b4ce0c845c",
+      "from": "domingo",
+      "to": "cal-semantic-1",
+      "amount": 1000,
+      "description": "Bounty: URGENT: Fix Memory Leak",
+      "timestamp": "2025-06-19T16:32:05.098Z",
+      "type": "payment"
+    },
+    {
+      "id": "6ebc39cc-36c7-45a9-9baf-39b400984214",
+      "from": "domingo",
+      "to": "cal-health-2",
+      "amount": 600,
+      "description": "Bounty: Optimize Response Times",
+      "timestamp": "2025-06-19T16:32:05.101Z",
+      "type": "payment"
+    },
+    {
+      "id": "26fc66ca-21de-4471-8fc5-8c1858d0a2d5",
+      "from": "domingo",
+      "to": "cal-semantic-1",
+      "amount": 360,
+      "description": "Bounty: Performance Optimization",
+      "timestamp": "2025-06-19T16:32:20.099Z",
+      "type": "payment"
+    },
+    {
+      "id": "30ee5bce-ced4-49b1-b107-1c22562e5c6c",
+      "from": "domingo",
+      "to": "cal-health-2",
+      "amount": 300,
+      "description": "Bounty: Drift Reduction",
+      "timestamp": "2025-06-19T16:32:20.102Z",
+      "type": "payment"
+    },
+    {
+      "id": "0d78bb27-3687-4111-afa4-ce897ec271ff",
+      "from": "domingo",
+      "to": "cal-deploy-3",
+      "amount": 120,
+      "description": "Bounty: Chain Synchronization",
+      "timestamp": "2025-06-19T16:32:20.104Z",
+      "type": "payment"
+    },
+    {
+      "id": "4012130e-752e-455d-b032-b4fa8af22a78",
+      "from": "domingo",
+      "to": "cal-semantic-1",
+      "amount": 150,
+      "description": "Bounty: Health Check Analysis",
+      "timestamp": "2025-06-19T16:32:35.098Z",
+      "type": "payment"
+    },
+    {
+      "id": "da648afc-eb44-462b-973b-70d42f681ffd",
+      "from": "domingo",
+      "to": "cal-semantic-1",
+      "amount": 225,
+      "description": "Bounty: Health Check Analysis",
+      "timestamp": "2025-06-19T16:33:05.103Z",
+      "type": "payment"
+    },
+    {
+      "id": "55005375-23ba-4034-b769-e110b7478d34",
+      "from": "domingo",
+      "to": "cal-health-2",
+      "amount": 300,
+      "description": "Bounty: Drift Reduction",
+      "timestamp": "2025-06-19T16:33:05.115Z",
+      "type": "payment"
+    },
+    {
+      "id": "67546b1e-41b1-4799-8233-476d74390954",
+      "from": "domingo",
+      "to": "cal-semantic-1",
+      "amount": 200,
+      "description": "Bounty: Drift Reduction",
+      "timestamp": "2025-06-19T16:33:20.105Z",
+      "type": "payment"
+    }
+  ]
+}

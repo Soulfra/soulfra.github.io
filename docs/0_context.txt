@@ -1,0 +1,15 @@
+## Initial Context for Multi-Part Generation
+
+Original Request: "Generate core router, loop bridges, and agent scene simulators for the mythic engine"
+
+This will be generated in 5 parts:
+1. Core router that observes all surfaces and routes users
+2. Bridge that makes all surfaces aware of each other
+3. Define all game surfaces and their conditions
+
+Please acknowledge this plan and prepare for component generation.
+
+Session Context:
+- Each component will reference previous outputs
+- Final output will be stitched together
+- Maintain consistency across all parts

@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="13ddcea9-0f90-497c-a89d-64e4ea7ec779"
+LABEL site.domain="13ddcea9.mirrormind.ai"
+LABEL site.type="ai"

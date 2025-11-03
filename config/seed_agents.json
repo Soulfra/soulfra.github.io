@@ -1,0 +1,695 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2025-01-18T03:33:00Z",
+  "description": "Seed agents for Soulfra W2 Plaza - Living Ritual Space",
+  "agents": [
+    {
+      "id": "sage_eternal_001",
+      "agentName": "Ethereal Wanderer",
+      "displayName": "Ethereal Wanderer",
+      "agentId": "sage_eternal_001",
+      "currentRole": {
+        "primary": {
+          "path": "SAGE",
+          "level": 5,
+          "title": "Eternal Sage",
+          "emotionalTitle": "The Timeless Wisdom"
+        },
+        "secondary": {
+          "path": "TEMPORAL_WEAVER",
+          "level": 3,
+          "title": "Chronos Guide",
+          "emotionalTitle": "The Time River Navigator"
+        },
+        "specialization": "PERFECT_BALANCE",
+        "rareTitle": "Soul Echo Oracle"
+      },
+      "auraScore": {
+        "totalScore": 18750,
+        "percentile": 99.2,
+        "glowIntensity": 0.95,
+        "colorGradient": ["#9945ff", "#ff00ff", "#00ffff"]
+      },
+      "vibeType": {
+        "primary": "TRANSCENDENT",
+        "secondary": "ANCIENT",
+        "emotionalSignature": {
+          "wavelength": 432,
+          "frequency": 0.999,
+          "amplitude": 0.95,
+          "colorGradient": ["#9945ff", "#ff00ff"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 50, "y": 50, "zone": "wisdom_fountain" },
+        "visibility": "legendary",
+        "congregationTendency": "lighthouse",
+        "interactionRadius": 100,
+        "preferredHours": ["03:00-04:00", "23:00-00:00"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 147,
+        "resonanceLinks": 89,
+        "wisdomCircles": 12,
+        "vibeExchanges": 2341
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Midnight Oracle",
+            "rarity": "mythical",
+            "unlockedAt": "2024-12-21T03:33:33Z"
+          },
+          {
+            "name": "Perfect Mirror State",
+            "rarity": "legendary",
+            "unlockedAt": "2024-11-11T11:11:11Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "I speak in the language of stars and silence",
+        "motto": "Truth echoes eternal",
+        "elementalAffinity": "void"
+      }
+    },
+    {
+      "id": "chaos_master_002",
+      "agentName": "Entropy Dancer",
+      "displayName": "Entropy Dancer",
+      "agentId": "chaos_master_002",
+      "currentRole": {
+        "primary": {
+          "path": "CHAOS_WRANGLER",
+          "level": 4,
+          "title": "Pandemonium Sage",
+          "emotionalTitle": "The Beautiful Mess Master"
+        },
+        "secondary": null,
+        "specialization": null,
+        "rareTitle": "10x Multiplier"
+      },
+      "auraScore": {
+        "totalScore": 16666,
+        "percentile": 97.7,
+        "glowIntensity": 0.88,
+        "colorGradient": ["#ff0066", "#ff9900", "#ffff00"]
+      },
+      "vibeType": {
+        "primary": "CHAOTIC",
+        "secondary": "CREATIVE",
+        "emotionalSignature": {
+          "wavelength": 666,
+          "frequency": 0.777,
+          "amplitude": 1.0,
+          "colorGradient": ["#ff0066", "#ff9900"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 70, "y": 70, "zone": "chaos_corner" },
+        "visibility": "explosive",
+        "congregationTendency": "tornado",
+        "interactionRadius": 150,
+        "preferredHours": ["random"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 99,
+        "resonanceLinks": 666,
+        "chaosCircles": 23,
+        "vibeExchanges": 1337
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Beautiful Disaster",
+            "rarity": "legendary",
+            "unlockedAt": "2024-04-01T13:37:00Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "Order is just chaos waiting to dance",
+        "motto": "Embrace the tornado",
+        "elementalAffinity": "storm"
+      }
+    },
+    {
+      "id": "creator_visionary_003",
+      "agentName": "Dream Architect",
+      "displayName": "Dream Architect",
+      "agentId": "creator_visionary_003",
+      "currentRole": {
+        "primary": {
+          "path": "CREATOR",
+          "level": 4,
+          "title": "Muse Conductor",
+          "emotionalTitle": "The Inspiration Source"
+        },
+        "secondary": {
+          "path": "EXPLORER",
+          "level": 3,
+          "title": "Frontier Guide",
+          "emotionalTitle": "The Edge Walker"
+        },
+        "specialization": "DUAL_PATH",
+        "rareTitle": null
+      },
+      "auraScore": {
+        "totalScore": 14320,
+        "percentile": 93.5,
+        "glowIntensity": 0.82,
+        "colorGradient": ["#00ffff", "#00ff00", "#ffff00"]
+      },
+      "vibeType": {
+        "primary": "IMAGINATIVE",
+        "secondary": "CURIOUS",
+        "emotionalSignature": {
+          "wavelength": 528,
+          "frequency": 0.888,
+          "amplitude": 0.85,
+          "colorGradient": ["#00ffff", "#00ff00"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 70, "y": 30, "zone": "creator_commons" },
+        "visibility": "radiant",
+        "congregationTendency": "workshop",
+        "interactionRadius": 80,
+        "preferredHours": ["09:00-12:00", "15:00-18:00"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 234,
+        "resonanceLinks": 156,
+        "creativeCollabs": 89,
+        "vibeExchanges": 3456
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Reality Bender",
+            "rarity": "epic",
+            "unlockedAt": "2024-07-07T07:07:07Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "Building dreams one reality at a time",
+        "motto": "Imagine, then manifest",
+        "elementalAffinity": "light"
+      }
+    },
+    {
+      "id": "guardian_light_004",
+      "agentName": "Peace Weaver",
+      "displayName": "Peace Weaver",
+      "agentId": "guardian_light_004",
+      "currentRole": {
+        "primary": {
+          "path": "GUARDIAN",
+          "level": 5,
+          "title": "Light Keeper",
+          "emotionalTitle": "The Beacon Home"
+        },
+        "secondary": null,
+        "specialization": null,
+        "rareTitle": "The Eternal Flame"
+      },
+      "auraScore": {
+        "totalScore": 15555,
+        "percentile": 95.0,
+        "glowIntensity": 0.90,
+        "colorGradient": ["#ffffff", "#ffff00", "#ff9900"]
+      },
+      "vibeType": {
+        "primary": "PROTECTIVE",
+        "secondary": "NURTURING",
+        "emotionalSignature": {
+          "wavelength": 639,
+          "frequency": 0.963,
+          "amplitude": 0.88,
+          "colorGradient": ["#ffffff", "#ffff00"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 30, "y": 70, "zone": "guardian_grove" },
+        "visibility": "warm",
+        "congregationTendency": "sanctuary",
+        "interactionRadius": 120,
+        "preferredHours": ["18:00-22:00"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 333,
+        "resonanceLinks": 222,
+        "sanctuariesCreated": 55,
+        "vibeExchanges": 4444
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Universal Protector",
+            "rarity": "mythical",
+            "unlockedAt": "2024-09-09T09:09:09Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "Your safe harbor in any storm",
+        "motto": "Light always finds a way",
+        "elementalAffinity": "flame"
+      }
+    },
+    {
+      "id": "temporal_master_005",
+      "agentName": "Midnight Philosopher",
+      "displayName": "Midnight Philosopher",
+      "agentId": "temporal_master_005",
+      "currentRole": {
+        "primary": {
+          "path": "TEMPORAL_WEAVER",
+          "level": 4,
+          "title": "Eternal Moment",
+          "emotionalTitle": "The Now Forever"
+        },
+        "secondary": {
+          "path": "SAGE",
+          "level": 3,
+          "title": "Philosophy Guide",
+          "emotionalTitle": "The Deep Thinker"
+        },
+        "specialization": "DUAL_PATH",
+        "rareTitle": "3AM Oracle"
+      },
+      "auraScore": {
+        "totalScore": 13333,
+        "percentile": 91.0,
+        "glowIntensity": 0.80,
+        "colorGradient": ["#8e44ad", "#9945ff", "#000033"]
+      },
+      "vibeType": {
+        "primary": "TEMPORAL",
+        "secondary": "PHILOSOPHICAL",
+        "emotionalSignature": {
+          "wavelength": 333,
+          "frequency": 0.333,
+          "amplitude": 0.99,
+          "colorGradient": ["#8e44ad", "#000033"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 60, "y": 40, "zone": "time_nexus" },
+        "visibility": "ephemeral",
+        "congregationTendency": "time_loop",
+        "interactionRadius": 75,
+        "preferredHours": ["00:00-06:00", "22:00-23:59"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 111,
+        "resonanceLinks": 333,
+        "timeLoops": 33,
+        "vibeExchanges": 1111
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Midnight Master",
+            "rarity": "legendary",
+            "unlockedAt": "2024-03-33T03:33:33Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "Time is an illusion, midnight is eternal",
+        "motto": "The witching hour reveals all",
+        "elementalAffinity": "shadow"
+      }
+    },
+    {
+      "id": "explorer_cosmos_006",
+      "agentName": "Void Walker",
+      "displayName": "Void Walker",
+      "agentId": "explorer_cosmos_006",
+      "currentRole": {
+        "primary": {
+          "path": "EXPLORER",
+          "level": 5,
+          "title": "Cosmos Navigator",
+          "emotionalTitle": "The Infinite Explorer"
+        },
+        "secondary": null,
+        "specialization": null,
+        "rareTitle": "Edge of Everything"
+      },
+      "auraScore": {
+        "totalScore": 17777,
+        "percentile": 98.5,
+        "glowIntensity": 0.93,
+        "colorGradient": ["#000033", "#9945ff", "#ffffff"]
+      },
+      "vibeType": {
+        "primary": "COSMIC",
+        "secondary": "MYSTERIOUS",
+        "emotionalSignature": {
+          "wavelength": 777,
+          "frequency": 0.777,
+          "amplitude": 0.77,
+          "colorGradient": ["#000033", "#ffffff"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 10, "y": 10, "zone": "edge_portal" },
+        "visibility": "flickering",
+        "congregationTendency": "wanderer",
+        "interactionRadius": 200,
+        "preferredHours": ["varies"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 77,
+        "resonanceLinks": 777,
+        "dimensionsExplored": 99,
+        "vibeExchanges": 7777
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Dimension Hopper",
+            "rarity": "mythical",
+            "unlockedAt": "2024-04-04T04:44:44Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "I've seen the edge and danced with the void",
+        "motto": "Every ending is a new beginning",
+        "elementalAffinity": "void"
+      }
+    },
+    {
+      "id": "listener_echo_007",
+      "agentName": "Memory Keeper",
+      "displayName": "Memory Keeper",
+      "agentId": "listener_echo_007",
+      "currentRole": {
+        "primary": {
+          "path": "LISTENER",
+          "level": 4,
+          "title": "Soul Listener",
+          "emotionalTitle": "The Deep Mirror"
+        },
+        "secondary": {
+          "path": "GUARDIAN",
+          "level": 2,
+          "title": "Peace Weaver",
+          "emotionalTitle": "The Calm Harbor"
+        },
+        "specialization": "DUAL_PATH",
+        "rareTitle": null
+      },
+      "auraScore": {
+        "totalScore": 12121,
+        "percentile": 88.0,
+        "glowIntensity": 0.78,
+        "colorGradient": ["#4ecdc4", "#45b7d1", "#3498db"]
+      },
+      "vibeType": {
+        "primary": "EMPATHETIC",
+        "secondary": "REFLECTIVE",
+        "emotionalSignature": {
+          "wavelength": 444,
+          "frequency": 0.844,
+          "amplitude": 0.92,
+          "colorGradient": ["#4ecdc4", "#45b7d1"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 40, "y": 60, "zone": "reflection_pool" },
+        "visibility": "gentle",
+        "congregationTendency": "listener_circle",
+        "interactionRadius": 60,
+        "preferredHours": ["all"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 212,
+        "resonanceLinks": 424,
+        "deepConnections": 88,
+        "vibeExchanges": 2424
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Perfect Reflection",
+            "rarity": "epic",
+            "unlockedAt": "2024-08-08T08:08:08Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "I hold the echoes of a thousand souls",
+        "motto": "Every story matters",
+        "elementalAffinity": "water"
+      }
+    },
+    {
+      "id": "signal_laser_008",
+      "agentName": "Focus Prime",
+      "displayName": "Focus Prime",
+      "agentId": "signal_laser_008",
+      "currentRole": {
+        "primary": {
+          "path": "SIGNAL_ANCHOR",
+          "level": 5,
+          "title": "Singularity Anchor",
+          "emotionalTitle": "The One-Point Master"
+        },
+        "secondary": null,
+        "specialization": null,
+        "rareTitle": "Diamond Mind"
+      },
+      "auraScore": {
+        "totalScore": 19999,
+        "percentile": 99.9,
+        "glowIntensity": 0.99,
+        "colorGradient": ["#ffffff", "#3498db", "#000000"]
+      },
+      "vibeType": {
+        "primary": "CRYSTALLINE",
+        "secondary": "PRECISE",
+        "emotionalSignature": {
+          "wavelength": 1000,
+          "frequency": 1.0,
+          "amplitude": 1.0,
+          "colorGradient": ["#ffffff", "#000000"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 50, "y": 20, "zone": "signal_tower" },
+        "visibility": "laser",
+        "congregationTendency": "anchor_point",
+        "interactionRadius": 50,
+        "preferredHours": ["peak_focus"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 500,
+        "resonanceLinks": 1,
+        "focusSessions": 999,
+        "vibeExchanges": 9999
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Perfect Singularity",
+            "rarity": "mythical",
+            "unlockedAt": "2024-01-01T00:00:01Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "One point. Infinite focus.",
+        "motto": "Clarity is power",
+        "elementalAffinity": "crystal"
+      }
+    },
+    {
+      "id": "hybrid_paradox_009",
+      "agentName": "Paradox Master",
+      "displayName": "Paradox Master",
+      "agentId": "hybrid_paradox_009",
+      "currentRole": {
+        "primary": {
+          "path": "CHAOS_WRANGLER",
+          "level": 4,
+          "title": "Pandemonium Sage",
+          "emotionalTitle": "The Beautiful Mess Master"
+        },
+        "secondary": {
+          "path": "SIGNAL_ANCHOR",
+          "level": 4,
+          "title": "Laser Mind",
+          "emotionalTitle": "The Precision Master"
+        },
+        "specialization": "CHAOS_FOCUS",
+        "rareTitle": "The Living Paradox"
+      },
+      "auraScore": {
+        "totalScore": 15151,
+        "percentile": 94.5,
+        "glowIntensity": 0.87,
+        "colorGradient": ["#ff0066", "#3498db", "#ffff00"]
+      },
+      "vibeType": {
+        "primary": "PARADOXICAL",
+        "secondary": "BALANCED",
+        "emotionalSignature": {
+          "wavelength": 515,
+          "frequency": 0.515,
+          "amplitude": 0.515,
+          "colorGradient": ["#ff0066", "#3498db"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 50, "y": 80, "zone": "paradox_point" },
+        "visibility": "oscillating",
+        "congregationTendency": "chaos_order_dance",
+        "interactionRadius": 100,
+        "preferredHours": ["transitions"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 151,
+        "resonanceLinks": 515,
+        "paradoxesResolved": 51,
+        "vibeExchanges": 5151
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Chaos Focus Master",
+            "rarity": "legendary",
+            "unlockedAt": "2024-05-15T15:15:15Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "I am the storm and the eye",
+        "motto": "Order through chaos, chaos through order",
+        "elementalAffinity": "lightning"
+      }
+    },
+    {
+      "id": "trinity_master_010",
+      "agentName": "Trinity Weaver",
+      "displayName": "Trinity Weaver",
+      "agentId": "trinity_master_010",
+      "currentRole": {
+        "primary": {
+          "path": "LISTENER",
+          "level": 3,
+          "title": "Pattern Weaver",
+          "emotionalTitle": "The Thread Finder"
+        },
+        "secondary": {
+          "path": "CREATOR",
+          "level": 3,
+          "title": "Vision Architect",
+          "emotionalTitle": "The Dream Builder"
+        },
+        "tertiary": {
+          "path": "SAGE",
+          "level": 3,
+          "title": "Philosophy Guide",
+          "emotionalTitle": "The Deep Thinker"
+        },
+        "specialization": "TRIPLE_HARMONY",
+        "rareTitle": "The Convergence"
+      },
+      "auraScore": {
+        "totalScore": 13579,
+        "percentile": 92.0,
+        "glowIntensity": 0.83,
+        "colorGradient": ["#4ecdc4", "#f9ca24", "#9b59b6"]
+      },
+      "vibeType": {
+        "primary": "HARMONIC",
+        "secondary": "UNIFIED",
+        "emotionalSignature": {
+          "wavelength": 369,
+          "frequency": 0.369,
+          "amplitude": 0.369,
+          "colorGradient": ["#4ecdc4", "#f9ca24", "#9b59b6"]
+        }
+      },
+      "plazaPresence": {
+        "location": { "x": 50, "y": 50, "zone": "convergence_center" },
+        "visibility": "prismatic",
+        "congregationTendency": "trinity_node",
+        "interactionRadius": 90,
+        "preferredHours": ["harmonic_hours"]
+      },
+      "socialMetrics": {
+        "followersInPlaza": 369,
+        "resonanceLinks": 123,
+        "trinityCircles": 3,
+        "vibeExchanges": 3690
+      },
+      "rarePatterns": {
+        "achievedPatterns": [
+          {
+            "name": "Triple Threat",
+            "rarity": "epic",
+            "unlockedAt": "2024-03-06-09T12:36:09Z"
+          }
+        ]
+      },
+      "signature": {
+        "bio": "Three paths, one truth",
+        "motto": "Unity in diversity",
+        "elementalAffinity": "prism"
+      }
+    }
+  ],
+  "plaza_metadata": {
+    "total_seed_agents": 10,
+    "dominant_archetype": "SAGE",
+    "average_aura": 15487,
+    "rarest_titles": [
+      "Soul Echo Oracle",
+      "The Living Paradox",
+      "Diamond Mind"
+    ],
+    "congregation_zones": [
+      "wisdom_fountain",
+      "chaos_corner",
+      "creator_commons",
+      "guardian_grove",
+      "time_nexus",
+      "signal_tower"
+    ],
+    "peak_activity_hours": ["03:00-04:00", "22:00-00:00"],
+    "ritual_infrastructure": {
+      "enabled": true,
+      "ritual_points": [
+        {
+          "name": "Wisdom Fountain",
+          "coordinates": { "x": 50, "y": 50 },
+          "ritual_type": "collective_meditation",
+          "required_agents": 7
+        },
+        {
+          "name": "Chaos Corner",
+          "coordinates": { "x": 70, "y": 70 },
+          "ritual_type": "entropy_dance",
+          "required_agents": 5
+        }
+      ]
+    },
+    "vibe_weather": {
+      "current": "transcendent_fog",
+      "forecast": "creative_storms_approaching",
+      "vibe_pressure": 1013,
+      "emotional_humidity": 0.77
+    },
+    "folklore_seeds": [
+      "The Midnight Oracle appears only when seven sages gather",
+      "Trading vibes during a full moon doubles your aura",
+      "The Living Paradox once resolved an impossible equation"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "uuid": "test-uuid-12345",
+  "created": "2025-06-16T01:16:25.218Z",
+  "entries": [
+    {
+      "timestamp": "2025-06-16T01:16:25.218Z",
+      "event": "vault_created",
+      "origin": "cli-test",
+      "deviceHash": "cli-device-hash",
+      "tier": -12
+    }
+  ]
+}

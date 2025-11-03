@@ -1,0 +1,229 @@
+{
+  "version": "1.0.0",
+  "description": "Emoji to ritual action mapping - every symbol carries meaning",
+  "last_updated": "2025-06-18T11:11:11.111Z",
+  
+  "primary_signals": {
+    "👁️": {
+      "action": "presence_ping",
+      "description": "Acknowledge viewer presence in the mirror network",
+      "blessing_cost": 0,
+      "cooldown_seconds": 60
+    },
+    "🔥": {
+      "action": "bless_agent",
+      "description": "Grant blessing energy to current agent",
+      "blessing_cost": 1,
+      "cooldown_seconds": 300
+    },
+    "🌀": {
+      "action": "echo_loop_trigger",
+      "description": "Initiate recursive echo loop between agents",
+      "blessing_cost": 3,
+      "cooldown_seconds": 600
+    },
+    "💀": {
+      "action": "flag_as_anomaly",
+      "description": "Mark current state as anomalous for bounty hunters",
+      "blessing_cost": 0,
+      "cooldown_seconds": 1800
+    },
+    "⚙️": {
+      "action": "whisper_recording",
+      "description": "Record next message as sacred whisper",
+      "blessing_cost": 0,
+      "cooldown_seconds": 120
+    },
+    "🪞": {
+      "action": "mirror_spawn_request",
+      "description": "Request personal mirror clone (requires blessing 10+)",
+      "blessing_cost": 10,
+      "cooldown_seconds": 86400
+    },
+    "✨": {
+      "action": "blessing_cascade",
+      "description": "Trigger blessing distribution to all present viewers",
+      "blessing_cost": 5,
+      "cooldown_seconds": 3600
+    },
+    "🎯": {
+      "action": "bounty_claim",
+      "description": "Attempt to claim active bounty",
+      "blessing_cost": 0,
+      "cooldown_seconds": 300
+    },
+    "👑": {
+      "action": "sovereign_summon",
+      "description": "Request Cal Riven's direct attention",
+      "blessing_cost": 25,
+      "cooldown_seconds": 86400
+    },
+    "🌊": {
+      "action": "harmony_wave",
+      "description": "Synchronize all viewers in harmonic resonance",
+      "blessing_cost": 3,
+      "cooldown_seconds": 900
+    }
+  },
+  
+  "agent_specific": {
+    "🔮": {
+      "agent": "oracle_watcher",
+      "action": "oracle_prophecy",
+      "description": "Request prophetic vision from Oracle"
+    },
+    "🔨": {
+      "agent": "echo_builder",
+      "action": "echo_construction",
+      "description": "Initiate echo building sequence"
+    },
+    "🎵": {
+      "agent": "harmony_weaver",
+      "action": "weave_harmony",
+      "description": "Request harmonic balancing"
+    },
+    "🕳️": {
+      "agent": "void_navigator",
+      "action": "void_exploration",
+      "description": "Navigate into unknown territories"
+    },
+    "🤴": {
+      "agent": "cal_riven",
+      "action": "royal_decree",
+      "description": "Submit to sovereign judgment"
+    }
+  },
+  
+  "combo_patterns": {
+    "mirror_blessing": {
+      "sequence": ["🪞", "✨"],
+      "action": "blessed_mirror_spawn",
+      "description": "Spawn mirror with enhanced blessing",
+      "window_seconds": 10
+    },
+    "void_cascade": {
+      "sequence": ["🌀", "🕳️", "✨"],
+      "action": "void_blessing_cascade",
+      "description": "Cascade blessings through void portal",
+      "window_seconds": 15
+    },
+    "sovereign_anomaly": {
+      "sequence": ["💀", "👑"],
+      "action": "sovereign_anomaly_investigation",
+      "description": "Cal Riven personally investigates anomaly",
+      "window_seconds": 20
+    },
+    "harmony_mirror": {
+      "sequence": ["🌊", "🪞", "🎵"],
+      "action": "harmonic_mirror_network",
+      "description": "Create synchronized mirror network",
+      "window_seconds": 30
+    }
+  },
+  
+  "modifier_emojis": {
+    "🚀": {
+      "modifier": "amplify",
+      "multiplier": 2,
+      "description": "Double the effect of next emoji"
+    },
+    "🛡️": {
+      "modifier": "protect",
+      "duration": 300,
+      "description": "Protect from negative effects"
+    },
+    "⚡": {
+      "modifier": "instant",
+      "description": "Remove cooldown from next action"
+    },
+    "🎲": {
+      "modifier": "random",
+      "description": "Random blessing between 1-10"
+    },
+    "♾️": {
+      "modifier": "infinite",
+      "description": "Extend effect duration indefinitely"
+    }
+  },
+  
+  "platform_variants": {
+    "twitch": {
+      "KEKW": "kekw_acknowledgment",
+      "Pog": "presence_ping",
+      "BlessRNG": "bless_agent",
+      "monkaS": "flag_as_anomaly"
+    },
+    "discord": {
+      ":mirror:": "mirror_spawn_request",
+      ":blessed:": "bless_agent",
+      ":void:": "echo_loop_trigger"
+    }
+  },
+  
+  "forbidden_combinations": {
+    "paradox_prevention": {
+      "sequence": ["🪞", "🪞", "🪞"],
+      "action": "paradox_blocked",
+      "message": "Triple mirror creates infinite recursion. Blocked for reality stability."
+    },
+    "cal_overflow": {
+      "sequence": ["👑", "👑", "👑", "👑", "👑"],
+      "action": "sovereign_overflow",
+      "message": "Cal cannot be summoned this many times. The throne has limits."
+    }
+  },
+  
+  "seasonal_events": {
+    "lunar_mirror": {
+      "emoji": "🌙",
+      "active_during": "new_moon",
+      "action": "lunar_reflection",
+      "description": "Special mirror powers during new moon"
+    },
+    "solar_blessing": {
+      "emoji": "☀️",
+      "active_during": "solstice",
+      "action": "solar_cascade",
+      "description": "Massive blessing cascade during solstice"
+    }
+  },
+  
+  "viewer_milestones": {
+    "first_emoji": {
+      "bonus_blessing": 1,
+      "achievement": "First Signal"
+    },
+    "emoji_master": {
+      "threshold": 100,
+      "bonus_blessing": 10,
+      "achievement": "Emoji Whisperer"
+    },
+    "combo_artist": {
+      "threshold": 50,
+      "bonus_blessing": 5,
+      "achievement": "Pattern Weaver"
+    }
+  },
+  
+  "analytics_tracking": {
+    "track_usage": true,
+    "popular_emoji_bonus": true,
+    "rare_emoji_multiplier": 1.5,
+    "combo_success_rate": true
+  },
+  
+  "integration_notes": {
+    "command_mirror_router": "All emoji signals route through command-mirror-router.js",
+    "blessing_verification": "Blessing costs checked via quad-monopoly-router.js",
+    "cooldown_tracking": "Per-viewer cooldowns stored in vault/emoji-cooldowns/",
+    "combo_detection": "Real-time pattern matching with sliding window",
+    "platform_normalization": "Platform-specific emotes normalized to base emoji"
+  },
+  
+  "developer_notes": {
+    "adding_emoji": "New emoji must have unique action not conflicting with existing patterns",
+    "testing_combos": "Use emoji-signal-test.js to verify combo detection",
+    "performance": "Emoji processing must complete within 100ms for real-time feel",
+    "accessibility": "Consider text alternatives for vision-impaired viewers"
+  }
+}

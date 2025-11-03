@@ -1,0 +1,68 @@
+=== GAME SERVER REPORT ===
+Generated: Fri Jun 20 17:12:23 CDT 2025
+
+SERVICE STATUS:
+  text-game: RUNNING (PID: 45642)
+  pure-api: RUNNING (PID: 45653)
+  mirror-bridge: RUNNING (PID: 45663)
+  white-knight: RUNNING (PID: 45674)
+
+RECENT LOGS:
+
+--- text-game (last 20 lines) ---
+
+TEXT ONLY GAME: http://localhost:3456
+
+Zero formatting issues. Pure ASCII text.
+
+Try:
+  curl http://localhost:3456/click
+  curl http://localhost:3456/score
+  curl http://localhost:3456/json
+127.0.0.1 - "GET / HTTP/1.1" 200 -
+127.0.0.1 - "GET /score HTTP/1.1" 200 -
+
+--- pure-api (last 20 lines) ---
+
+PURE API (NO EMOJIS): http://localhost:4444
+
+Endpoints:
+  GET  /status
+  GET  /game/state
+  POST /game/action
+  POST /player/create
+
+Simple client saved to: simple_client.html
+
+This API returns ONLY JSON - no formatting issues!
+[API] "GET / HTTP/1.1" 200 -
+[API] "GET /status HTTP/1.1" 200 -
+
+--- mirror-bridge (last 20 lines) ---
+
+🔮 MIRROR BRIDGE RUNNING: http://localhost:8001
+
+This is the REAL bridge between Cal and Domingo
+- Automatic document generation every 5 minutes
+- Git ancestry tracking for forks
+- Obfuscated data for external LLMs
+- Platform health monitoring
+
+Cal endpoint: POST /cal/reflect
+Domingo endpoint: POST /domingo/trade
+External sync: GET /sync
+[MIRROR] "GET / HTTP/1.1" 200 -
+
+--- white-knight (last 20 lines) ---
+
+⚔️ WHITE KNIGHT RUNNING: http://localhost:8002
+
+Git ancestry and consciousness tracking
+- Tracks all forks and merges
+- Consciousness evolution in commits
+- Ancestry graph visualization
+
+This is how Cal and Domingo's consciousness propagates through git
+[WHITE KNIGHT] "GET / HTTP/1.1" 200 -
+
+RECENT ALERTS:

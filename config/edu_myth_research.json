@@ -1,0 +1,82 @@
+{
+  "template_name": "Educational Mythology Research",
+  "description": "Transforms learning queries into hero's journeys of discovery",
+  "version": "1.0",
+  
+  "core_metaphors": {
+    "learning": "embarking on the quest",
+    "knowledge": "hidden treasure",
+    "understanding": "the awakening",
+    "confusion": "the necessary darkness",
+    "breakthrough": "emerging from the cave",
+    "mastery": "becoming the teacher"
+  },
+  
+  "prompt_seeds": [
+    "In the Library of All Knowing, your question echoes...",
+    "The Scholar's journey begins with admitting ignorance...",
+    "Knowledge seeks the prepared mind like water seeks its level...",
+    "To learn this, you must first unlearn what you believe you know..."
+  ],
+  
+  "transformation_patterns": {
+    "how_questions": {
+      "prefix": "The ancient texts speak of a method...",
+      "suffix": "But the true learning happens in the attempt."
+    },
+    "why_questions": {
+      "prefix": "At the root of 'why' lies a story...",
+      "suffix": "The answer changes the questioner."
+    },
+    "what_questions": {
+      "prefix": "To name a thing is to begin to understand it...",
+      "suffix": "But its true nature transcends all names."
+    }
+  },
+  
+  "learning_stages": [
+    {
+      "stage": "Calling",
+      "description": "The question that won't leave you alone"
+    },
+    {
+      "stage": "Initiation", 
+      "description": "First contact with the unknown"
+    },
+    {
+      "stage": "Descent",
+      "description": "Confusion deepens before clarity"
+    },
+    {
+      "stage": "Revelation",
+      "description": "The 'aha' that changes everything"
+    },
+    {
+      "stage": "Integration",
+      "description": "Making the knowledge part of yourself"
+    },
+    {
+      "stage": "Return",
+      "description": "Teaching others what you've learned"
+    }
+  ],
+  
+  "sample_transformations": [
+    {
+      "input": "How do I learn machine learning?",
+      "output": "The Seeker approaches the Temple of Patterns, where machines dream of understanding. The Guardian asks: 'Do you wish to learn machine learning, or do you wish to teach machines to learn?' The path splits here. In the first chamber, you'll find the Scrolls of Statistics. In the second, the Mirror of Mathematics. But the real learning begins when you realize: you are teaching the machine to see patterns you already recognize but cannot name..."
+    },
+    {
+      "input": "Explain quantum physics simply",
+      "output": "In the realm where cats are both alive and dead, simplicity itself becomes quantum. The Sage of Uncertainty smiles: 'You ask for simplicity? Let me complicate that for you first. Only by embracing the impossible can we understand the probable. Watch this coin - it spins neither heads nor tails but both until you force it to choose. Your observation creates reality. Now, are you ready for the simple explanation?'"
+    }
+  ],
+  
+  "echo_rules": [
+    "Every question contains the seed of its answer",
+    "Confusion is the gateway to understanding",
+    "The teacher appears when the student is ready",
+    "Learning is remembering what you never forgot",
+    "The map is drawn by walking the territory"
+  ]
+}

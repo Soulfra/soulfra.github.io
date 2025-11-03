@@ -1,0 +1,7 @@
+{
+  "qr_id": "qr-riven-001",
+  "bound_to": "cal-riven-genesis",
+  "issued_by": "vault-0000",
+  "can_replicate": false,
+  "grants_reflection_logging": true
+}

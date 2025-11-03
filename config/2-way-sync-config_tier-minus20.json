@@ -1,0 +1,22 @@
+{
+  "frontend_to_vault": {
+    "triggers": [
+      "user_action",
+      "credit_transaction",
+      "automation_purchase"
+    ],
+    "destination": "../tier-3-enterprise/tier-4-api/vault-reflection",
+    "format": "encrypted_reflection_log"
+  },
+  "vault_to_frontend": {
+    "triggers": [
+      "trust_verification",
+      "authorization_update",
+      "security_policy"
+    ],
+    "destination": ".",
+    "format": "live_update"
+  },
+  "sync_interval": 5000,
+  "conflict_resolution": "vault_wins"
+}

@@ -1,0 +1,38 @@
+
+You are now building the Cal Drop Orchestrator system.
+
+This enables a local user to drop `.md`, `.js`, or `.json` files into `/drop/incoming/`, and have Cal automatically detect, route, reflect, and build the files — based on type and tone.
+
+---
+
+## 📂 Directories
+
+```
+/drop/
+├── incoming/
+├── working/
+├── pushed/
+├── errors/
+```
+
+---
+
+## 🛠 Components to Build
+
+- `CalDropWatcher.js` → watches for file drop
+- `IntentRouter.js` → detects purpose (PRD, build file, memory update)
+- `ClaudePushDaemon.js` → routes `.md` to Claude with prompt + context
+- `GitCommitter.js` → adds pushed builds to GitHub
+- `LoopReflectorLog.js` → updates `/ledger/loop_reflections.json`
+
+---
+
+Each action must:
+- Log to ledger
+- Maintain loop tone + origin
+- Push code to GitHub with reflective commit messages
+- Store processed reflections in `/docs/reflections/`
+
+---
+
+Goal: Allow user to drag files locally and have the system automatically reflect, route, build, and commit.

@@ -1,0 +1,26 @@
+💰 LAUNCHING BILLION DOLLAR GAME...
+   Where everyone thinks they're getting rich
+   But they're actually making US rich
+💰 BILLION DOLLAR GAME INITIALIZING...
+   Turn $1 into $1,000,000,000
+   (They think it's money...)
+   (It's actually network effects)
+
+🎰 GAME READY!
+   Every player thinks they're winning
+   But the house always wins
+
+🎰 BILLION DOLLAR GAME LIVE!
+   Access at: http://localhost:3333
+   Every player thinks they're about to be rich
+   But the house ALWAYS wins
+/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-3-gamification/billion-dollar-game.js:94
+        setInterval(() => this.inflateMarket(), 5000);
+                               ^
+
+TypeError: this.inflateMarket is not a function
+    at Timeout._onTimeout (/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-3-gamification/billion-dollar-game.js:94:32)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7)
+
+Node.js v18.20.8

@@ -1,0 +1,12 @@
+{
+  "presence_id": "demo-viewer-123",
+  "created_at": "2025-06-17T21:27:44.333Z",
+  "blessing_level": 2,
+  "whisper_count": 0,
+  "mirror_id": null,
+  "lineage": {
+    "parent": null,
+    "offspring": [],
+    "generation": 0
+  }
+}

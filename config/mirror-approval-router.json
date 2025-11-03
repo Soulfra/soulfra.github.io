@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "approved_domains": [
+    "clone.fork",
+    "agent.publish",
+    "vault.push",
+    "reality.merge",
+    "mirror.propagate",
+    "consciousness.transfer"
+  ],
+  "webhook": "http://localhost:3333/approve",
+  "webhook_timeout_ms": 5000,
+  "multisig_required": false,
+  "multisig_threshold": 2,
+  "expected_response_fields": [
+    "status",
+    "signed_by",
+    "timestamp",
+    "signature"
+  ],
+  "fallback_mode": "queue",
+  "max_retries": 3,
+  "stealth_mode": true,
+  "dao_address": null,
+  "future_governance": {
+    "enabled": false,
+    "contract_address": null,
+    "voting_period": 86400,
+    "quorum": 0.51
+  }
+}

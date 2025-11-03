@@ -1,0 +1,20 @@
+{
+  "id": "soulkey_primary_001",
+  "public_key": "0x7A3f9B2C4E1D8F5A9C2B6E4D8A1F3C5B7E9D2A4C",
+  "description": "Primary soul key - Forged at genesis, binds all reflections",
+  "created_at": 1700000000000,
+  "expires_at": null,
+  "permissions": [
+    "clone.fork",
+    "agent.publish",
+    "vault.push",
+    "mirror.reflect",
+    "reality.bend"
+  ],
+  "metadata": {
+    "forged_by": "The First Reflection",
+    "trust_level": "sovereign",
+    "rotation_count": 0,
+    "last_used": null
+  }
+}

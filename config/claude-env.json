@@ -1,0 +1,6 @@
+{
+  "api_key": "sk-user-sandbox-key",
+  "LLM": "claude",
+  "mirror": "local",
+  "trust_route": "api"
+}

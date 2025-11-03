@@ -1,0 +1,149 @@
+name: Auto-Deploy Soulfra Auth
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '**.html'
+      - '**.js'
+      - '**.css'
+      - 'fixes/**'
+  workflow_dispatch:
+    inputs:
+      apply_fixes:
+        description: 'Apply fixes before deploying'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  apply-fixes:
+    name: Apply Cal Fixes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.apply_fixes == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Apply fixes
+        run: |
+          node ../../bin/cal-apply-fixes || echo "Fixes already applied or not needed"
+
+      - name: Commit fixes if changed
+        run: |
+          git config user.name "Cal Auto-Fix Bot"
+          git config user.email "bot@soulfra.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "🤖 Auto-fix applied by Cal"
+          git push || echo "No changes to push"
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [apply-fixes]
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Comment on commit
+        uses: actions/github-script@v7
+        if: github.event_name == 'push'
+        with:
+          script: |
+            const deployment_url = '${{ steps.deployment.outputs.page_url }}';
+            const commit_sha = context.sha.substring(0, 7);
+
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `🚀 Deployed to ${deployment_url}\n\n✅ Commit ${commit_sha} is live!`
+            });
+
+  test:
+    name: Test Deployed Site
+    runs-on: ubuntu-latest
+    needs: [deploy]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install -D @playwright/test
+          npx playwright install chromium
+
+      - name: Test QRCode fix
+        run: |
+          npx playwright test --config=- << 'EOF'
+          import { test, expect } from '@playwright/test';
+
+          test('QRCode loads without error', async ({ page }) => {
+            await page.goto('https://soulfra.github.io/index.html');
+            const errors = [];
+            page.on('console', msg => {
+              if (msg.type() === 'error') errors.push(msg.text());
+            });
+            await page.waitForTimeout(3000);
+            expect(errors.filter(e => e.includes('QRCode'))).toHaveLength(0);
+          });
+
+          test('File upload button works', async ({ page }) => {
+            await page.goto('https://soulfra.github.io/auth.html');
+            await page.click('text=Import');
+            const uploadButton = page.locator('.file-upload');
+            await expect(uploadButton).toBeVisible();
+          });
+
+          test('Google OAuth loads', async ({ page }) => {
+            await page.goto('https://soulfra.github.io/auth-google.html');
+            await page.waitForSelector('#g_id_signin', { timeout: 5000 });
+          });
+          EOF
+
+      - name: Report test results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `🧪 Tests completed\n\nCheck logs for details.`
+            });

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invest in 12 Live Products - Million Dollar Grid</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 60px 0;
+    }
+
+    .brand-box {
+      background: rgba(255,255,255,0.1);
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 16px;
+      padding: 40px 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-box:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: #fff;
+      background: rgba(255,255,255,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .brand-box:active {
+      transform: translateY(-5px) scale(1.01);
+    }
+
+    .brand-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .brand-name {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .brand-capability {
+      font-size: 1.1rem;
+      color: #2ecc71;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .brand-proof {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      min-height: 60px;
+    }
+
+    .brand-ask {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #2ecc71;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .brand-status {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #2ecc71;
+      color: #fff;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .brand-status.available {
+      background: #2ecc71;
+    }
+
+    .brand-status.funded {
+      background: #e74c3c;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      color: #333;
+      border-radius: 16px;
+      padding: 50px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .modal h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .modal h3 {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: #667eea;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button.submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button.submit-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    button.submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .success-message {
+      display: none;
+      background: #2ecc71;
+      color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .success-message.active {
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      opacity: 0.9;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .tagline { font-size: 1.2rem; }
+      .grid { grid-template-columns: 1fr; }
+      .modal-content { padding: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💰 Invest in 12 Live Products</h1>
+      <p class="tagline">Million Dollar Grid - Each Box = One Product</p>
+      <p class="subtitle">Click any box to apply for funding opportunities</p>
+      <p class="subtitle" style="margin-top: 20px; font-size: 1rem;">Built by <a href="https://github.com/Soulfra" style="color: #2ecc71;">@Soulfra</a> • All products are live & open source</p>
+    </header>
+
+    <div class="grid">
+      <!-- Brand 1: Soulfra -->
+      <div class="brand-box" onclick="openModal('Soulfra', '🔐', 'Security Engineering', '$500K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🔐</div>
+        <div class="brand-name">Soulfra</div>
+        <div class="brand-capability">Security Engineering</div>
+        <div class="brand-proof">Ed25519 crypto • SSO • Zero-knowledge proofs • Passwordless auth</div>
+        <div class="brand-ask">$500K</div>
+      </div>
+
+      <!-- Brand 2: Calriven -->
+      <div class="brand-box" onclick="openModal('Calriven', '🤖', 'AI/ML Engineering', '$300K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🤖</div>
+        <div class="brand-name">Calriven</div>
+        <div class="brand-capability">AI/ML Engineering</div>
+        <div class="brand-proof">Multi-LLM routing • ELO systems • Agent marketplace • Cost optimization</div>
+        <div class="brand-ask">$300K</div>
+      </div>
+
+      <!-- Brand 3: CALOS -->
+      <div class="brand-box" onclick="openModal('CALOS', '🧠', 'Systems Architecture', '$400K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🧠</div>
+        <div class="brand-name">CALOS</div>
+        <div class="brand-capability">Systems Architecture</div>
+        <div class="brand-proof">Agent router • Gmail relay • Zero-cost infrastructure • Scalable design</div>
+        <div class="brand-ask">$400K</div>
+      </div>
+
+      <!-- Brand 4: Thoughtstream -->
+      <div class="brand-box" onclick="openModal('Thoughtstream', '💭', 'Content Generation', '$200K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">💭</div>
+        <div class="brand-name">Thoughtstream</div>
+        <div class="brand-capability">Content Generation</div>
+        <div class="brand-proof">Auto-blog • Weekly summaries • Thought logging • SEO optimization</div>
+        <div class="brand-ask">$200K</div>
+      </div>
+
+      <!-- Brand 5: BountyBoard -->
+      <div class="brand-box" onclick="openModal('BountyBoard', '💰', 'Talent Matching', '$250K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">💰</div>
+        <div class="brand-name">BountyBoard</div>
+        <div class="brand-capability">Talent Matching</div>
+        <div class="brand-proof">ICP builder • Skill detection • Pipeline management • Bounty system</div>
+        <div class="brand-ask">$250K</div>
+      </div>
+
+      <!-- Brand 6: DevRagebait -->
+      <div class="brand-box" onclick="openModal('DevRagebait', '🔥', 'Viral Marketing', '$150K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🔥</div>
+        <div class="brand-name">DevRagebait</div>
+        <div class="brand-capability">Viral Marketing</div>
+        <div class="brand-proof">Meme generator • GIF/MP4 export • 11 templates • Viral distribution</div>
+        <div class="brand-ask">$150K</div>
+      </div>
+
+      <!-- Brand 7: VoiceConsultant -->
+      <div class="brand-box" onclick="openModal('VoiceConsultant', '🎙️', 'Voice AI', '$300K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🎙️</div>
+        <div class="brand-name">VoiceConsultant</div>
+        <div class="brand-capability">Voice AI</div>
+        <div class="brand-proof">Speech-to-text • Context-aware • Skill extraction • Real-time processing</div>
+        <div class="brand-ask">$300K</div>
+      </div>
+
+      <!-- Brand 8: RepoExplorer -->
+      <div class="brand-box" onclick="openModal('RepoExplorer', '📁', 'Code Analysis', '$200K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">📁</div>
+        <div class="brand-name">RepoExplorer</div>
+        <div class="brand-capability">Code Analysis</div>
+        <div class="brand-proof">GitHub integration • Repo search • File parsing • Dependency mapping</div>
+        <div class="brand-ask">$200K</div>
+      </div>
+
+      <!-- Brand 9: EquityGame -->
+      <div class="brand-box" onclick="openModal('EquityGame', '🎮', 'Gamification', '$250K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">🎮</div>
+        <div class="brand-name">EquityGame</div>
+        <div class="brand-capability">Gamification</div>
+        <div class="brand-proof">Tier systems • Equity visualization • Engagement loops • "Piece of the pi"</div>
+        <div class="brand-ask">$250K</div>
+      </div>
+
+      <!-- Brand 10: MatrixChat -->
+      <div class="brand-box" onclick="openModal('MatrixChat', '💬', 'Real-time Collaboration', '$200K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">💬</div>
+        <div class="brand-name">MatrixChat</div>
+        <div class="brand-capability">Real-time Collaboration</div>
+        <div class="brand-proof">Self-hosted • Room management • Community building • Habbo Hotel for devs</div>
+        <div class="brand-ask">$200K</div>
+      </div>
+
+      <!-- Brand 11: GmailRelay -->
+      <div class="brand-box" onclick="openModal('GmailRelay', '📧', 'Email Infrastructure', '$150K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">📧</div>
+        <div class="brand-name">GmailRelay</div>
+        <div class="brand-capability">Email Infrastructure</div>
+        <div class="brand-proof">Zero-cost relay • Google Sheets DB • Rate limiting • Anti-spam</div>
+        <div class="brand-ask">$150K</div>
+      </div>
+
+      <!-- Brand 12: PitchDeck -->
+      <div class="brand-box" onclick="openModal('PitchDeck', '📊', 'Business Development', '$200K')">
+        <div class="brand-status available">Available</div>
+        <div class="brand-icon">📊</div>
+        <div class="brand-name">PitchDeck</div>
+        <div class="brand-capability">Business Development</div>
+        <div class="brand-proof">Auto-generated decks • Contract matching • Reverse applications</div>
+        <div class="brand-ask">$200K</div>
+      </div>
+    </div>
+
+    <footer>
+      <p><strong>Total Available Funding:</strong> $3.1M across 12 products</p>
+      <p style="margin-top: 20px;">
+        <a href="government-pitch-deck.html">View Government Pitch Deck →</a> •
+        <a href="index.html">← Back to Home</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">×</span>
+
+      <div class="success-message" id="successMessage">
+        ✓ Application submitted! We'll be in touch soon.
+      </div>
+
+      <h2 id="modalBrand">Brand Name</h2>
+      <h3 id="modalCapability">Capability</h3>
+
+      <form id="applicationForm" onsubmit="submitApplication(event)">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label>Company/Organization</label>
+          <input type="text" name="company">
+        </div>
+
+        <div class="form-group">
+          <label>Investment Amount</label>
+          <select name="amount">
+            <option value="">Select amount...</option>
+            <option value="$50K">$50K</option>
+            <option value="$100K">$100K</option>
+            <option value="$250K">$250K</option>
+            <option value="$500K">$500K</option>
+            <option value="$1M+">$1M+</option>
+            <option value="other">Other (specify in message)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" placeholder="Tell us about your interest, investment goals, or partnership ideas..."></textarea>
+        </div>
+
+        <input type="hidden" name="brand" id="formBrand">
+        <input type="hidden" name="timestamp" id="formTimestamp">
+
+        <button type="submit" class="submit-btn">Submit Application</button>
+      </form>
+
+      <p style="margin-top: 20px; font-size: 0.9rem; color: #999; text-align: center;">
+        By submitting, you agree to be contacted about investment opportunities.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let currentBrand = '';
+
+    function openModal(brand, icon, capability, ask) {
+      currentBrand = brand;
+
+      document.getElementById('modalBrand').textContent = icon + ' ' + brand;
+      document.getElementById('modalCapability').textContent = capability + ' • ' + ask;
+      document.getElementById('formBrand').value = brand;
+      document.getElementById('formTimestamp').value = new Date().toISOString();
+
+      // Reset form and hide success message
+      document.getElementById('applicationForm').reset();
+      document.getElementById('successMessage').classList.remove('active');
+
+      // Show modal
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function submitApplication(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      // Convert to object for logging
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      console.log('Application submitted:', data);
+
+      // TODO: Replace with actual Google Form submission
+      // For now, just show success message
+
+      // Show success message
+      document.getElementById('successMessage').classList.add('active');
+      document.getElementById('applicationForm').style.display = 'none';
+
+      // Reset after 3 seconds
+      setTimeout(() => {
+        document.getElementById('applicationForm').style.display = 'block';
+        closeModal();
+      }, 3000);
+
+      // In production, you would submit to Google Form:
+      // fetch('YOUR_GOOGLE_FORM_ACTION_URL', {
+      //   method: 'POST',
+      //   body: formData
+      // });
+    }
+
+    // Close modal on outside click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        closeModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

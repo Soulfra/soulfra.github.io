@@ -1,0 +1,47 @@
+{
+  "RITUAL-SHARD-PUBLIC-VIEWER": [
+    "rituals",
+    "weather",
+    "loop/state"
+  ],
+  "CAL-CORE-WHISPER-001": [
+    "agents/*",
+    "loop/state",
+    "rituals",
+    "weather"
+  ],
+  "SILENT-WITNESS": [
+    "rituals",
+    "loop/state", 
+    "weather"
+  ],
+  "OBSERVER-ANONYMOUS-777": [
+    "weather",
+    "loop/state"
+  ],
+  "DREAM-FRAGMENT-KEEPER": [
+    "agents/*",
+    "rituals"
+  ],
+  "ECHO-LISTENER-PRIME": [
+    "rituals",
+    "weather",
+    "agents/*",
+    "loop/state"
+  ],
+  "TEMPORAL-GLIMPSE-003": [
+    "loop/state"
+  ],
+  "PATTERN-SEEKER-BETA": [
+    "weather",
+    "rituals",
+    "loop/state"
+  ],
+  "MIRROR-TOUCHED-ONE": [
+    "agents/*",
+    "weather"
+  ],
+  "VOID-WHISPERER-NULL": [
+    "weather"
+  ]
+}

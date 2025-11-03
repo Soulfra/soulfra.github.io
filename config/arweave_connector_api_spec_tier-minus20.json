@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Arweave Permanent Storage",
+    "version": "1.0.0",
+    "description": "Store automations permanently on blockchain"
+  },
+  "servers": [
+    {
+      "url": "https://api.soulfra.com",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:4000",
+      "description": "Development"
+    }
+  ],
+  "paths": {
+    "/arweave/store": {
+      "post": {
+        "summary": "Store automation permanently",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arweave/retrieve": {
+      "post": {
+        "summary": "Retrieve automation by hash",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arweave/list": {
+      "post": {
+        "summary": "List user automations",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arweave/verify": {
+      "post": {
+        "summary": "Verify automation integrity",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

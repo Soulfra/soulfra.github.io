@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Companion - Simple & Caring</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* High contrast, large text styling */
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 22px;
+            line-height: 1.8;
+            background: #FFFEF0;
+            color: #2B2B2B;
+            padding: 20px;
+        }
+        
+        /* Simple header */
+        header {
+            background: #FFFFFF;
+            border: 3px solid #4A5568;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .greeting {
+            font-size: 36px;
+            color: #2D3748;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+        
+        .companion-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .companion-avatar {
+            width: 100px;
+            height: 100px;
+            background: #E6FFFA;
+            border: 3px solid #4A5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+        
+        .companion-message {
+            font-size: 24px;
+            color: #4A5568;
+            max-width: 600px;
+        }
+        
+        /* Main content area */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* Large, easy-to-click buttons */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .large-button {
+            background: #FFFFFF;
+            border: 3px solid #4A5568;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .large-button:hover {
+            background: #F0FFF4;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .large-button:active {
+            transform: translateY(0);
+        }
+        
+        .button-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .button-label {
+            font-size: 26px;
+            color: #2D3748;
+            font-weight: bold;
+        }
+        
+        .button-description {
+            font-size: 20px;
+            color: #718096;
+            margin-top: 10px;
+        }
+        
+        /* Status cards */
+        .status-section {
+            background: #FFFFFF;
+            border: 3px solid #4A5568;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 32px;
+            color: #2D3748;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #F7FAFC;
+            border-radius: 15px;
+            border: 2px solid #E2E8F0;
+        }
+        
+        .status-label {
+            font-size: 24px;
+            color: #4A5568;
+        }
+        
+        .status-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2D3748;
+        }
+        
+        .status-ok { color: #38A169; }
+        .status-warning { color: #D69E2E; }
+        .status-alert { color: #E53E3E; }
+        
+        /* Reminders section */
+        .reminder-card {
+            background: #FEF5E7;
+            border: 3px solid #D68910;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .reminder-icon {
+            font-size: 40px;
+            color: #D68910;
+        }
+        
+        .reminder-content {
+            flex: 1;
+        }
+        
+        .reminder-time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2D3748;
+        }
+        
+        .reminder-text {
+            font-size: 24px;
+            color: #4A5568;
+            margin-top: 5px;
+        }
+        
+        .reminder-button {
+            background: #38A169;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 22px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .reminder-button:hover {
+            background: #2F855A;
+        }
+        
+        /* Voice interaction area */
+        .voice-section {
+            background: #EBF8FF;
+            border: 3px solid #3182CE;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .voice-button {
+            width: 150px;
+            height: 150px;
+            background: #FFFFFF;
+            border: 4px solid #3182CE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            cursor: pointer;
+            margin: 0 auto 20px;
+            transition: all 0.3s;
+        }
+        
+        .voice-button:hover {
+            background: #3182CE;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .voice-button.listening {
+            background: #E53E3E;
+            border-color: #E53E3E;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .voice-text {
+            font-size: 26px;
+            color: #2D3748;
+            margin-top: 20px;
+        }
+        
+        /* Emergency button */
+        .emergency-section {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .emergency-button {
+            background: #E53E3E;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 25px 40px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(229, 62, 62, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .emergency-button:hover {
+            background: #C53030;
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(229, 62, 62, 0.4);
+        }
+        
+        /* Modal for activities */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            font-size: 36px;
+            color: #2D3748;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .modal-close {
+            float: right;
+            font-size: 40px;
+            color: #718096;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .modal-close:hover {
+            color: #2D3748;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body { font-size: 20px; }
+            .greeting { font-size: 28px; }
+            .button-grid { grid-template-columns: 1fr; }
+            .large-button { padding: 30px; }
+            .button-icon { font-size: 50px; }
+            .button-label { font-size: 22px; }
+            .emergency-section { 
+                bottom: 20px; 
+                right: 20px;
+                left: 20px;
+            }
+            .emergency-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            body {
+                background: #FFFFFF;
+                color: #000000;
+            }
+            .large-button,
+            .status-section,
+            header {
+                border-width: 4px;
+                border-color: #000000;
+            }
+        }
+        
+        /* Print friendly */
+        @media print {
+            .emergency-section,
+            .voice-section,
+            .large-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="greeting">Good Morning, Margaret!</h1>
+        <div class="companion-info">
+            <div class="companion-avatar">👩‍🦳</div>
+            <div class="companion-message">
+                Hello! I'm Mary, your companion today. How are you feeling?
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <!-- Voice Interaction -->
+        <div class="voice-section">
+            <button class="voice-button" id="voiceButton" onclick="toggleVoice()">
+                🎤
+            </button>
+            <div class="voice-text">Click to talk with Mary</div>
+        </div>
+        
+        <!-- Main Action Buttons -->
+        <div class="button-grid">
+            <button class="large-button" onclick="openMedications()">
+                <span class="button-icon">💊</span>
+                <div class="button-label">Medications</div>
+                <div class="button-description">View and manage your pills</div>
+            </button>
+            
+            <button class="large-button" onclick="openHealth()">
+                <span class="button-icon">❤️</span>
+                <div class="button-label">Health Check</div>
+                <div class="button-description">Record vitals and symptoms</div>
+            </button>
+            
+            <button class="large-button" onclick="openFamily()">
+                <span class="button-icon">👥</span>
+                <div class="button-label">Family & Friends</div>
+                <div class="button-description">Call or message loved ones</div>
+            </button>
+            
+            <button class="large-button" onclick="openActivities()">
+                <span class="button-icon">🎉</span>
+                <div class="button-label">Activities</div>
+                <div class="button-description">Games, exercises, and fun</div>
+            </button>
+            
+            <button class="large-button" onclick="openSchedule()">
+                <span class="button-icon">📅</span>
+                <div class="button-label">Schedule</div>
+                <div class="button-description">Appointments and reminders</div>
+            </button>
+            
+            <button class="large-button" onclick="openMemories()">
+                <span class="button-icon">📷</span>
+                <div class="button-label">Memories</div>
+                <div class="button-description">Photos and stories</div>
+            </button>
+        </div>
+        
+        <!-- Today's Reminders -->
+        <div class="status-section">
+            <h2 class="section-title">🔔 Today's Reminders</h2>
+            
+            <div class="reminder-card">
+                <span class="reminder-icon">💊</span>
+                <div class="reminder-content">
+                    <div class="reminder-time">8:00 AM</div>
+                    <div class="reminder-text">Morning medications - Blood pressure pill</div>
+                </div>
+                <button class="reminder-button" onclick="markComplete(this)">Done</button>
+            </div>
+            
+            <div class="reminder-card">
+                <span class="reminder-icon">🧘</span>
+                <div class="reminder-content">
+                    <div class="reminder-time">10:00 AM</div>
+                    <div class="reminder-text">Morning exercise - Chair yoga</div>
+                </div>
+                <button class="reminder-button" onclick="markComplete(this)">Done</button>
+            </div>
+            
+            <div class="reminder-card">
+                <span class="reminder-icon">👨‍⚕️</span>
+                <div class="reminder-content">
+                    <div class="reminder-time">2:00 PM</div>
+                    <div class="reminder-text">Doctor appointment - Dr. Johnson</div>
+                </div>
+                <button class="reminder-button" onclick="markComplete(this)">Done</button>
+            </div>
+        </div>
+        
+        <!-- Health Status -->
+        <div class="status-section">
+            <h2 class="section-title">❤️ Health Status</h2>
+            
+            <div class="status-item">
+                <span class="status-label">Blood Pressure</span>
+                <span class="status-value status-ok">120/80 - Good</span>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-label">Last Medication</span>
+                <span class="status-value status-ok">Taken at 8:15 AM</span>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-label">Activity Today</span>
+                <span class="status-value status-warning">15 minutes - Need more</span>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-label">Mood</span>
+                <span class="status-value status-ok">Happy 😊</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emergency Button -->
+    <div class="emergency-section">
+        <button class="emergency-button" onclick="emergency()">
+            🆘 HELP
+        </button>
+    </div>
+    
+    <!-- Modal for different sections -->
+    <div class="modal" id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-header" id="modalTitle">Title</h2>
+            <div id="modalContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Voice interaction
+        let isListening = false;
+        
+        function toggleVoice() {
+            const button = document.getElementById('voiceButton');
+            isListening = !isListening;
+            
+            if (isListening) {
+                button.classList.add('listening');
+                speakMessage("I'm listening. How can I help you?");
+                // In production, would start speech recognition
+            } else {
+                button.classList.remove('listening');
+            }
+        }
+        
+        // Text-to-speech helper
+        function speakMessage(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8; // Slower speech
+                utterance.pitch = 1.1; // Slightly higher pitch
+                utterance.volume = 1.0;
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // Reminder completion
+        function markComplete(button) {
+            button.textContent = 'Completed ✓';
+            button.style.background = '#718096';
+            button.disabled = true;
+            speakMessage("Great job! Marked as complete.");
+        }
+        
+        // Modal functions
+        function openModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').style.display = 'flex';
+        }
+        
+        function closeModal(event) {
+            if (!event || event.target.id === 'modal' || event.target.className === 'modal-close') {
+                document.getElementById('modal').style.display = 'none';
+            }
+        }
+        
+        // Section functions
+        function openMedications() {
+            const content = `
+                <div class="status-section">
+                    <h3 style="font-size: 28px; margin-bottom: 20px;">Morning Medications</h3>
+                    <div class="reminder-card">
+                        <span class="reminder-icon">💊</span>
+                        <div class="reminder-content">
+                            <div class="reminder-text">Lisinopril - 10mg (Blood Pressure)</div>
+                            <div style="color: #38A169; margin-top: 10px;">✓ Taken at 8:15 AM</div>
+                        </div>
+                    </div>
+                    <div class="reminder-card" style="background: #FEF5E7;">
+                        <span class="reminder-icon">💊</span>
+                        <div class="reminder-content">
+                            <div class="reminder-text">Metformin - 500mg (Diabetes)</div>
+                            <div style="color: #D69E2E; margin-top: 10px;">⚠️ Due at 12:00 PM</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            openModal('Your Medications', content);
+            speakMessage("Here are your medications for today.");
+        }
+        
+        function openHealth() {
+            const content = `
+                <div class="status-section">
+                    <h3 style="font-size: 28px; margin-bottom: 20px;">Record Your Vitals</h3>
+                    <button class="large-button" style="margin-bottom: 20px;" onclick="recordVital('bp')">
+                        <span class="button-icon">🩺</span>
+                        <div class="button-label">Blood Pressure</div>
+                    </button>
+                    <button class="large-button" style="margin-bottom: 20px;" onclick="recordVital('weight')">
+                        <span class="button-icon">⚖️</span>
+                        <div class="button-label">Weight</div>
+                    </button>
+                    <button class="large-button" onclick="recordVital('mood')">
+                        <span class="button-icon">😊</span>
+                        <div class="button-label">How You Feel</div>
+                    </button>
+                </div>
+            `;
+            openModal('Health Check', content);
+            speakMessage("Let's check your health. What would you like to record?");
+        }
+        
+        function openFamily() {
+            const content = `
+                <div class="button-grid">
+                    <button class="large-button" onclick="callContact('daughter')">
+                        <span class="button-icon">👩</span>
+                        <div class="button-label">Sarah (Daughter)</div>
+                        <div class="button-description">Last talked yesterday</div>
+                    </button>
+                    <button class="large-button" onclick="callContact('son')">
+                        <span class="button-icon">👨</span>
+                        <div class="button-label">Michael (Son)</div>
+                        <div class="button-description">Last talked 3 days ago</div>
+                    </button>
+                    <button class="large-button" onclick="callContact('friend')">
+                        <span class="button-icon">👵</span>
+                        <div class="button-label">Betty (Friend)</div>
+                        <div class="button-description">Bridge club friend</div>
+                    </button>
+                </div>
+            `;
+            openModal('Family & Friends', content);
+            speakMessage("Who would you like to contact?");
+        }
+        
+        function openActivities() {
+            const content = `
+                <div class="button-grid">
+                    <button class="large-button" onclick="startActivity('memory')">
+                        <span class="button-icon">🧩</span>
+                        <div class="button-label">Memory Games</div>
+                        <div class="button-description">Keep your mind sharp</div>
+                    </button>
+                    <button class="large-button" onclick="startActivity('music')">
+                        <span class="button-icon">🎵</span>
+                        <div class="button-label">Listen to Music</div>
+                        <div class="button-description">Your favorite oldies</div>
+                    </button>
+                    <button class="large-button" onclick="startActivity('exercise')">
+                        <span class="button-icon">🧘</span>
+                        <div class="button-label">Gentle Exercise</div>
+                        <div class="button-description">Chair yoga and stretches</div>
+                    </button>
+                    <button class="large-button" onclick="startActivity('stories')">
+                        <span class="button-icon">📖</span>
+                        <div class="button-label">Story Time</div>
+                        <div class="button-description">Listen to stories</div>
+                    </button>
+                </div>
+            `;
+            openModal('Activities', content);
+            speakMessage("What would you like to do? I have games, music, and exercises.");
+        }
+        
+        function openSchedule() {
+            const content = `
+                <div class="status-section">
+                    <h3 style="font-size: 28px; margin-bottom: 20px;">Today - Tuesday, March 5</h3>
+                    <div class="status-item">
+                        <span class="status-label">2:00 PM</span>
+                        <span class="status-value">Doctor Appointment</span>
+                    </div>
+                    <h3 style="font-size: 28px; margin: 30px 0 20px;">Tomorrow - Wednesday</h3>
+                    <div class="status-item">
+                        <span class="status-label">10:00 AM</span>
+                        <span class="status-value">Virtual Coffee Hour</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">3:00 PM</span>
+                        <span class="status-value">Grocery Delivery</span>
+                    </div>
+                </div>
+            `;
+            openModal('Your Schedule', content);
+            speakMessage("You have a doctor appointment at 2 PM today.");
+        }
+        
+        function openMemories() {
+            const content = `
+                <div style="text-align: center;">
+                    <p style="font-size: 24px; margin-bottom: 30px;">
+                        Would you like to look at family photos or share a memory?
+                    </p>
+                    <button class="large-button" style="display: inline-block; margin: 10px;">
+                        <span class="button-icon">📷</span>
+                        <div class="button-label">View Photos</div>
+                    </button>
+                    <button class="large-button" style="display: inline-block; margin: 10px;">
+                        <span class="button-icon">📝</span>
+                        <div class="button-label">Share a Story</div>
+                    </button>
+                </div>
+            `;
+            openModal('Memories', content);
+            speakMessage("Let's look at some wonderful memories together.");
+        }
+        
+        // Emergency function
+        function emergency() {
+            if (confirm('Do you need emergency help?')) {
+                speakMessage("I'm calling for help right away. Stay calm.");
+                // In production, would trigger emergency protocols
+                alert('Emergency contact has been notified. Help is on the way.');
+            }
+        }
+        
+        // Helper functions
+        function recordVital(type) {
+            const messages = {
+                bp: "Please use your blood pressure monitor. I'll wait for the reading.",
+                weight: "Please step on the scale when you're ready.",
+                mood: "How are you feeling today? You can say happy, okay, or not so good."
+            };
+            speakMessage(messages[type]);
+        }
+        
+        function callContact(person) {
+            speakMessage(`Calling your ${person}. One moment please.`);
+            // In production, would initiate video call
+        }
+        
+        function startActivity(type) {
+            const messages = {
+                memory: "Let's play a memory game to keep your mind sharp!",
+                music: "I'll play some of your favorite songs from the 60s.",
+                exercise: "Let's do some gentle chair exercises together.",
+                stories: "Would you like to hear a nice story?"
+            };
+            speakMessage(messages[type]);
+        }
+        
+        // Welcome message on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                speakMessage("Good morning Margaret! I'm Mary, your companion. How are you feeling today?");
+            }, 1000);
+        });
+        
+        // Periodic check-ins
+        setInterval(() => {
+            const hour = new Date().getHours();
+            if (hour === 12) {
+                speakMessage("It's noon. Time for your afternoon medication.");
+            } else if (hour === 15) {
+                speakMessage("How about a little afternoon activity? Would you like to play a game?");
+            }
+        }, 3600000); // Check every hour
+    </script>
+</body>
+</html>

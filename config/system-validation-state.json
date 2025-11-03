@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-06-22T22:26:44.186Z",
+  "stats": {
+    "total_checks": 35,
+    "passed_checks": 35,
+    "failed_checks": 0,
+    "critical_failures": 0,
+    "last_full_validation": "2025-06-22T22:26:44.186Z",
+    "uptime_start": "2025-06-22T21:15:52.504Z",
+    "validation_cycles": 5
+  },
+  "checks": {
+    "memory": {
+      "last_check": "2025-06-22T22:26:44.181Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "loops": {
+      "last_check": "2025-06-22T22:26:44.183Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "heartbeat": {
+      "last_check": "2025-06-22T22:26:44.184Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "prompt_queue": {
+      "last_check": "2025-06-22T22:26:44.184Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "paths": {
+      "last_check": "2025-06-22T22:26:44.185Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "symlinks": {
+      "last_check": "2025-06-22T22:26:44.186Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    },
+    "claude_runner": {
+      "last_check": "2025-06-22T22:26:44.186Z",
+      "status": "healthy",
+      "consecutive_failures": 0
+    }
+  }
+}

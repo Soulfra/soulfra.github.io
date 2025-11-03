@@ -1,0 +1,35 @@
+{
+  "user": "test_voice_integration_006",
+  "voice_hash": "ebdd0016b4137fff",
+  "characteristics": {
+    "cadence": "flowing",
+    "depth": "deep",
+    "clarity": "clear",
+    "emotion": "passionate",
+    "patterns": {
+      "questions": 2,
+      "statements": 5,
+      "exclamations": 0,
+      "repetitions": [
+        {
+          "word": "the",
+          "count": 5
+        }
+      ],
+      "themes": []
+    },
+    "unique_markers": []
+  },
+  "archetype_affinity": {
+    "oracle": 0,
+    "trickster": 0,
+    "healer": 0.6,
+    "glitchkeeper": 0,
+    "shadow-walker": 0
+  },
+  "whisper_count": 4,
+  "first_whisper": 1750117393251,
+  "last_whisper": 1750117393248,
+  "soul_frequency": 0.8200000000000001,
+  "analyzed_at": 1750117393254
+}

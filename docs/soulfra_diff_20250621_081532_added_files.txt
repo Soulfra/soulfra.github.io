@@ -1,0 +1,5 @@
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/CHAT_LOG_PROCESSOR.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/EXISTING_SYSTEM_LAUNCHER.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/SIMPLE_CHAT_PROCESSOR.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/TIER_STRUCTURE_MAP.md
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/sample_chat.txt

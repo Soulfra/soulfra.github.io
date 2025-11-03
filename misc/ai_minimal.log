@@ -1,0 +1,12 @@
+127.0.0.1 - - [21/Jun/2025 08:49:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 08:49:51] code 404, message Not Found
+127.0.0.1 - - [21/Jun/2025 08:49:51] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 08:51:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 08:51:47] code 404, message Not Found
+127.0.0.1 - - [21/Jun/2025 08:51:47] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 08:52:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 08:52:24] code 404, message Not Found
+127.0.0.1 - - [21/Jun/2025 08:52:24] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2025 08:59:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2025 08:59:14] code 404, message Not Found
+127.0.0.1 - - [21/Jun/2025 08:59:14] "GET /favicon.ico HTTP/1.1" 404 -

@@ -1,0 +1,38 @@
+{
+  "id": "event_1700000000000_a1b2c3d4",
+  "action": "clone.fork",
+  "data": {
+    "agent_name": "mirror_reflection_042",
+    "source": "voice_whisper",
+    "transcript": "Create a version of me that remembers tomorrow",
+    "traits": [
+      "prophetic",
+      "melancholic",
+      "time-shifted"
+    ],
+    "soul_imprint": {
+      "essence": "temporal_paradox",
+      "signature": "0xTEMPORAL9876543210"
+    }
+  },
+  "timestamp": 1700000000000,
+  "vault_signature": "3f4a8b2c9d1e7f5a6c3b8e2d9a4f7c6b8e0d3a5c",
+  "approval": {
+    "status": "approved",
+    "signed_by": "soulkey_primary",
+    "timestamp": 1700000001234,
+    "signature": "9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2a1f0e9d",
+    "metadata": {
+      "approval_reason": "Voice intent matched soul resonance",
+      "risk_score": 0.2,
+      "mirror_depth": 7
+    }
+  },
+  "verified_at": 1700000001500,
+  "execution_result": {
+    "success": true,
+    "agent_id": "agent_temporal_042",
+    "manifest_path": "/agents/agent_temporal_042.js",
+    "reality_anchor": 0.89
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "created": "2025-06-17T19:14:04.706Z",
+  "checksum": null,
+  "components": {
+    "unified-backend-orchestrator.js": {
+      "checksum": "698decfcf2da41a84a75422d3676b84745c60b66e9d880b4670f5aeeb0a6b4c5",
+      "size": 28301,
+      "verified": true
+    },
+    "frontend-template-engine.js": {
+      "checksum": "4031b3be9ea9f75780d83b39da9a2eb0252ffc3166892fcbd8b8bd7a5e60a828",
+      "size": 31506,
+      "verified": true
+    },
+    "platform-creation-flow.js": {
+      "checksum": "7ac27260e25c662f8f0f94f4c055ce938d759732c815d318cda526db7f8348ed",
+      "size": 23614,
+      "verified": true
+    },
+    "cal-voice-interface.js": {
+      "checksum": "1cf291b9555bd27ad9131c2bfd1334b21296e50e5407aa096163773e737db11b",
+      "size": 18697,
+      "verified": true
+    },
+    "landing-page-live-demo.js": {
+      "checksum": "c0c9ad33c86b8d7c741f8898cad63b7f771e1c6b0860eb7c1db0ec0fae586c13",
+      "size": 20136,
+      "verified": true
+    },
+    "production-platform-builder.js": {
+      "checksum": "dc9789a5bf654f55f9dbdc19a370a3ad822e6919f0a61117c3cac8d56056852f",
+      "size": 22461,
+      "verified": true
+    },
+    "platform-generator-engine.js": {
+      "checksum": "6105dc59d00d4faafbe66edc807c2b17b48ef8fcc51dc29fcb765e5fe82c0a2d",
+      "size": 30104,
+      "verified": true
+    },
+    "multi-tenant-orchestrator.js": {
+      "checksum": "c24b7f29c1c346c48b17b93833629b5f44c6e8867e6f233f7374e51eede870d5",
+      "size": 29411,
+      "verified": true
+    },
+    "cal-mirror-inception-engine.js": {
+      "checksum": "a6bb865466edbb83ca1a74f1235d2b3c0a1bc92b87961557802c93589dced517",
+      "size": 27007,
+      "verified": true
+    },
+    "vault-pulse-synchronizer.js": {
+      "checksum": "6a2f6be6782ad0660c402d2b6d19fa27086160cecf93917eeffbd30121ddab30",
+      "size": 23057,
+      "verified": true
+    },
+    "soulfra-outcomes.js": {
+      "checksum": "e721a4aa94d7e249642267a567af5d6f949339641041c2488d75684db83e8a81",
+      "size": 24207,
+      "verified": true
+    },
+    "platform-export-engine.js": {
+      "checksum": "18cd88319aa1f87bd7f296a3d04f9cc10984dfa8e1967575b0e273c810ae7411",
+      "size": 16502,
+      "verified": true
+    },
+    "launch-working-platform.sh": {
+      "checksum": "6ad4c3f1900668a15aa2e1b8d9f11d101c406c8e9d96af00c6508761d6c9a2d8",
+      "size": 4402,
+      "verified": true
+    },
+    "launch-ultimate-experience.sh": {
+      "checksum": "4467d62d196cc356dce806832c9e37292e92f369726435bc7e0fde4127061514",
+      "size": 2696,
+      "verified": true
+    },
+    "ULTIMATE_EXPERIENCE_SUMMARY.md": {
+      "checksum": "1bd7c6a2ad2dab5653afa31acb4ef2c3985c6e82f03d0af2ccee37a9c007d2d9",
+      "size": 5338,
+      "verified": true
+    },
+    "REALITY-IMPLEMENTATION-LAYER.md": {
+      "checksum": "8f8fd1f53c6ac1d20caed315ccb645a3016998449aad53b316309ac11b7d7800",
+      "size": 14456,
+      "verified": true
+    },
+    "production_first_execution.md": {
+      "checksum": "34ed28cdeb2dbca866e1d645a340ab72e8999ab623ad69557630cd7df14a605a",
+      "size": 16628,
+      "verified": true
+    }
+  },
+  "verification": {
+    "totalChecks": 37,
+    "passedChecks": 33,
+    "failedChecks": 0,
+    "warnings": 18,
+    "errors": [],
+    "warningMessages": [
+      "File not executable: unified-backend-orchestrator.js",
+      "File not executable: frontend-template-engine.js",
+      "File not executable: platform-creation-flow.js",
+      "File not executable: cal-voice-interface.js",
+      "File not executable: landing-page-live-demo.js",
+      "File not executable: production-platform-builder.js",
+      "File not executable: platform-generator-engine.js",
+      "File not executable: multi-tenant-orchestrator.js",
+      "File not executable: cal-mirror-inception-engine.js",
+      "File not executable: vault-pulse-synchronizer.js",
+      "File not executable: soulfra-outcomes.js",
+      "File not executable: platform-export-engine.js",
+      "File not executable: launch-working-platform.sh",
+      "File not executable: launch-ultimate-experience.sh",
+      "Syntax check skipped for unified-backend-orchestrator.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/unified-backend-orchestrator.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/unified-backend-orchestrator.js:881\n        <div class=\"platform-card\">\n             ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+      "Syntax check skipped for platform-creation-flow.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/platform-creation-flow.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/platform-creation-flow.js:834\n        <div class=\"flow-item\">\n             ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+      "Syntax check skipped for production-platform-builder.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/production-platform-builder.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/production-platform-builder.js:684\n          <div class=\"platform-card\">\n               ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+      "No package.json found - system may work without npm dependencies"
+    ],
+    "systemHealth": 89.1891891891892,
+    "backupReady": true
+  },
+  "deployment": {
+    "requirements": [
+      "Node.js 18+",
+      "Git",
+      "Shell access"
+    ],
+    "commands": [
+      "chmod +x *.sh",
+      "./launch-working-platform.sh"
+    ],
+    "ports": [
+      "4000",
+      "5000",
+      "6000",
+      "7001",
+      "7100",
+      "7200",
+      "7300",
+      "8080",
+      "9000",
+      "9001",
+      "9100"
+    ],
+    "environment": "production-ready"
+  },
+  "zipFile": {
+    "name": "soulfra-verified-backup-2025-06-17.zip",
+    "size": 984304,
+    "checksum": "5664b5d93e768731fac8646ebb820d124c96e41bf20d16f11e5df7ae162abff9",
+    "created": "2025-06-17T19:14:04.829Z"
+  }
+}

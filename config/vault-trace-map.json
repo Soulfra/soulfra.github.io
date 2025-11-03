@@ -1,0 +1,70 @@
+{
+  "version": "1.0.0",
+  "description": "Master trace map for all vault interactions - Every prompt, edit, and integration",
+  "metadata": {
+    "created": "2025-01-16T09:00:00Z",
+    "lastUpdated": "2025-01-16T09:00:00Z",
+    "tier": 6,
+    "sovereign": "cal-riven"
+  },
+  "traces": [],
+  "imports": {},
+  "integrations": {
+    "github": {
+      "connected": false,
+      "repos": [],
+      "lastSync": null
+    },
+    "supabase": {
+      "connected": false,
+      "lastSync": null,
+      "logsStored": 0
+    },
+    "firebase": {
+      "connected": false,
+      "lastSync": null,
+      "logsStored": 0
+    },
+    "stripe": {
+      "connected": false,
+      "monetizationEnabled": {
+        "agents": false,
+        "automations": false,
+        "platforms": false
+      },
+      "revenue": 0
+    }
+  },
+  "prompts": {
+    "total": 0,
+    "byLLM": {
+      "claude": 0,
+      "openai": 0,
+      "ollama": 0,
+      "local": 0
+    },
+    "traces": []
+  },
+  "edits": {
+    "total": 0,
+    "files": {},
+    "traces": []
+  },
+  "automations": {
+    "imported": 0,
+    "wrapped": 0,
+    "byPlatform": {
+      "n8n": 0,
+      "make": 0,
+      "notion": 0,
+      "zapier": 0,
+      "generic": 0
+    },
+    "traces": []
+  },
+  "reflectionMap": {
+    "description": "All reflections route through this sovereign trace",
+    "depth": -10,
+    "loops": []
+  }
+}

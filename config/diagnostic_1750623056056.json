@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-06-22T20:10:55.957Z",
+  "system": {
+    "node_version": "v18.20.8",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "memory": {
+      "total_mb": 18432,
+      "free_mb": 95
+    },
+    "cpu_count": 11,
+    "uptime_hours": 993
+  },
+  "files": {
+    "required_dirs": 10,
+    "required_files": 10,
+    "missing": 4
+  },
+  "services": {
+    "Unified Server": "running",
+    "API Router": "stopped",
+    "Mirror Shell": "stopped"
+  },
+  "errors": [
+    "Missing directory: heartbeat",
+    "Missing directory: loop/active",
+    "Missing directory: loop/staging",
+    "Missing directory: agents/suggestions"
+  ],
+  "warnings": [
+    "Stale PID file: pids/mirror-bridge.pid",
+    "Stale PID file: pids/pure-api.pid",
+    "Stale PID file: pids/text-game.pid",
+    "Stale PID file: pids/white-knight.pid"
+  ],
+  "recommendations": [
+    "Fix critical errors before proceeding",
+    "Clean stale PIDs: rm pids/*.pid"
+  ]
+}

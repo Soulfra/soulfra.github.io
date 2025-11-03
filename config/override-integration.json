@@ -1,0 +1,8 @@
+{
+  "override_enabled": true,
+  "intercept_all_responses": true,
+  "preserve_original_responses": true,
+  "progressive_truth_reveal": true,
+  "legal_logging_enabled": true,
+  "debug_mode": false
+}

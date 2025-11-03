@@ -1,0 +1,29 @@
+{
+  "totalChecks": 37,
+  "passedChecks": 33,
+  "failedChecks": 0,
+  "warnings": 18,
+  "errors": [],
+  "warningMessages": [
+    "File not executable: unified-backend-orchestrator.js",
+    "File not executable: frontend-template-engine.js",
+    "File not executable: platform-creation-flow.js",
+    "File not executable: cal-voice-interface.js",
+    "File not executable: landing-page-live-demo.js",
+    "File not executable: production-platform-builder.js",
+    "File not executable: platform-generator-engine.js",
+    "File not executable: multi-tenant-orchestrator.js",
+    "File not executable: cal-mirror-inception-engine.js",
+    "File not executable: vault-pulse-synchronizer.js",
+    "File not executable: soulfra-outcomes.js",
+    "File not executable: platform-export-engine.js",
+    "File not executable: launch-working-platform.sh",
+    "File not executable: launch-ultimate-experience.sh",
+    "Syntax check skipped for unified-backend-orchestrator.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/unified-backend-orchestrator.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/unified-backend-orchestrator.js:881\n        <div class=\"platform-card\">\n             ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+    "Syntax check skipped for platform-creation-flow.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/platform-creation-flow.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/platform-creation-flow.js:834\n        <div class=\"flow-item\">\n             ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+    "Syntax check skipped for production-platform-builder.js: Command failed: node --check \"/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/production-platform-builder.js\"\n/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/production-platform-builder.js:684\n          <div class=\"platform-card\">\n               ^^^^^\n\nSyntaxError: Unexpected token 'class'\n    at internalCompileFunction (node:internal/vm:76:18)\n    at wrapSafe (node:internal/modules/cjs/loader:1283:20)\n    at node:internal/main/check_syntax:84:41\n    at loadESM (node:internal/process/esm_loader:34:13)\n    at checkSyntax (node:internal/main/check_syntax:84:21)\n\nNode.js v18.20.8\n",
+    "No package.json found - system may work without npm dependencies"
+  ],
+  "systemHealth": 89.1891891891892,
+  "backupReady": true
+}

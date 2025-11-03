@@ -1,0 +1,30 @@
+Backup created at 20250621_084955
+All original files remain untouched
+Services status:
+{
+  "Smart Analyzer": {
+    "status": "stopped",
+    "port": 6969,
+    "url": "http://localhost:6969"
+  },
+  "Chat Processor": {
+    "status": "stopped",
+    "port": 4040,
+    "url": "http://localhost:4040"
+  },
+  "Pure API": {
+    "status": "stopped",
+    "port": 4444,
+    "url": "http://localhost:4444"
+  },
+  "Unified Chatlog": {
+    "status": "running",
+    "port": 8888,
+    "url": "http://localhost:8888"
+  },
+  "AI Ecosystem": {
+    "status": "running",
+    "port": 9999,
+    "url": "http://localhost:9999"
+  }
+}

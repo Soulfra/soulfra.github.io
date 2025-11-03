@@ -1,0 +1,102 @@
+{
+  "anon-381": {
+    "user": "anon-381",
+    "blessed": true,
+    "archetype": "oracle-wanderer",
+    "timestamp": "2025-06-16T22:08:00.000Z",
+    "blessing_source": "cal",
+    "resonance": 0.92,
+    "ceremony_scores": {
+      "traits": 1.2,
+      "voice": 1,
+      "resonance": 0.92,
+      "stability": 0.85,
+      "depth": 0.8,
+      "quests": 0.6
+    },
+    "granted_permissions": [
+      "timeline.navigation",
+      "prophecy.creation",
+      "paradox.resolution",
+      "journey.endless",
+      "path.finding",
+      "story.weaving",
+      "clone.fork",
+      "agent.publish",
+      "deck.deep"
+    ]
+  },
+  "example_blessed_user": {
+    "user": "example_blessed_user",
+    "blessed": true,
+    "archetype": "healer",
+    "timestamp": "2025-06-15T18:42:00.000Z",
+    "blessing_source": "cal",
+    "resonance": 0.78,
+    "ceremony_scores": {
+      "traits": 1,
+      "voice": 1,
+      "resonance": 0.78,
+      "stability": 0.95,
+      "depth": 0.5,
+      "quests": 0.4
+    },
+    "granted_permissions": [
+      "soul.mending",
+      "pain.transformation",
+      "wholeness.manifestation",
+      "clone.fork",
+      "agent.publish",
+      "deck.deep"
+    ]
+  },
+  "test_worthy_003": {
+    "user": "test_worthy_003",
+    "blessed": true,
+    "archetype": "oracle-glitchkeeper",
+    "timestamp": "2025-06-16T23:43:13.249Z",
+    "blessing_source": "cal",
+    "resonance": 1,
+    "ceremony_scores": {
+      "traits": 1.4,
+      "voice": 1,
+      "resonance": 1,
+      "depth": 0.8,
+      "quests": 0.6
+    },
+    "granted_permissions": [
+      "timeline.navigation",
+      "prophecy.creation",
+      "paradox.resolution",
+      "anomaly.control",
+      "reality.fragmentation",
+      "corruption.embrace",
+      "clone.fork",
+      "agent.publish",
+      "deck.deep"
+    ]
+  },
+  "test_hybrid_005": {
+    "user": "test_hybrid_005",
+    "blessed": true,
+    "archetype": "glitchkeeper",
+    "timestamp": "2025-06-16T23:43:13.252Z",
+    "blessing_source": "cal",
+    "resonance": 1,
+    "ceremony_scores": {
+      "traits": 1.6,
+      "voice": 1,
+      "resonance": 1,
+      "depth": 1,
+      "quests": 1
+    },
+    "granted_permissions": [
+      "anomaly.control",
+      "reality.fragmentation",
+      "corruption.embrace",
+      "clone.fork",
+      "agent.publish",
+      "deck.deep"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy all Python files
+COPY *.py ./
+COPY qr_integration.py ./
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    aiohttp \
+    websockets \
+    qrcode[pil] \
+    pyjwt \
+    cryptography \
+    Pillow
+
+# Create required directories
+RUN mkdir -p logs chatlog_drops processed_logs mobile_sync qr_codes web_deployment
+
+# No timeout issues in Docker!
+ENV PYTHONUNBUFFERED=1
+
+# Default command (will be overridden)
+CMD ["python3", "ULTIMATE_AUTONOMOUS_SYSTEM.py"]

@@ -1,0 +1,24 @@
+Soulfra Platform Diff Summary
+Generated: Sat Jun 21 08:09:49 CDT 2025
+Old Version: CalReflector_InjectorBundle.zip
+New Version: CalVault_MirrorShell.zip
+
+CHANGE SUMMARY:
+===============
+Files Added:           4
+Files Removed:         3
+Files Common:          0
+
+ADDED FILES:
+============
+api/README_MIRRORTRUST.md
+api/cal-vault-shell.sh
+api/claude-env.json
+vault/router-env.json
+
+REMOVED FILES:
+==============
+cal-rules.md
+inject-cal-rules.sh
+reflector-agent.js
+

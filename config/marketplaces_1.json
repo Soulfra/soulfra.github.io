@@ -1,0 +1,26 @@
+[
+  [
+    "test-marketplace-002",
+    {
+      "id": "test-marketplace-002",
+      "domain": "test-marketplace.com",
+      "name": "Test Marketplace",
+      "type": "production",
+      "tier": "standard",
+      "approved": true,
+      "approved_at": 1750101702988,
+      "features": [
+        "sovereign-agents"
+      ],
+      "api_key": "test-api-key",
+      "metrics": {
+        "totalAgents": 0,
+        "activeAgents": 0,
+        "totalRevenue": 0
+      },
+      "stored_at": 1750101702988,
+      "updated_at": 1750101702988,
+      "version": 1
+    }
+  ]
+]

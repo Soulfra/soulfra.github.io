@@ -1,0 +1,27 @@
+{
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Original Cal",
+      "type": "root",
+      "x": 0,
+      "y": 0,
+      "size": 30,
+      "color": "#6366f1",
+      "created": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "edges": [],
+  "clusters": [],
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Live mirror map showing fork relationships",
+    "lastUpdated": "2025-06-16T12:00:00.000Z",
+    "stats": {
+      "totalNodes": 1,
+      "totalEdges": 0,
+      "maxDepth": 0,
+      "averageDegree": 0
+    }
+  }
+}

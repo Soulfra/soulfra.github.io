@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Developer Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ff88, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            background: none;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .nav-tab.active {
+            color: #00ff88;
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+        .content-panel {
+            display: none;
+        }
+        .content-panel.active {
+            display: block;
+        }
+        .api-key-section {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .api-key {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .key-value {
+            font-family: monospace;
+            color: #00ff88;
+            flex: 1;
+        }
+        .code-editor {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .endpoint-list {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .endpoint {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .endpoint:hover {
+            background: #222;
+            border-left: 3px solid #00ff88;
+        }
+        .method {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .method.get { background: #2a4a2a; color: #4ade80; }
+        .method.post { background: #2a3a4a; color: #60a5fa; }
+        .method.put { background: #4a3a2a; color: #fbbf24; }
+        .method.delete { background: #4a2a2a; color: #f87171; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #00cc6a;
+            transform: translateY(-2px);
+        }
+        .webhook-form {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+        .sdk-generator {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .lang-option {
+            padding: 8px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-option.active {
+            background: #00ff88;
+            color: #000;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Soulfra Developer Platform</div>
+            <div>
+                <span style="color: #666;">Connected as:</span>
+                <span id="developerEmail" style="color: #00ff88;">developer@example.com</span>
+            </div>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+            <button class="nav-tab" onclick="switchTab('api-keys')">API Keys</button>
+            <button class="nav-tab" onclick="switchTab('playground')">Playground</button>
+            <button class="nav-tab" onclick="switchTab('webhooks')">Webhooks</button>
+            <button class="nav-tab" onclick="switchTab('sdk')">SDK Generator</button>
+            <button class="nav-tab" onclick="switchTab('docs')">Documentation</button>
+        </div>
+
+        <!-- Overview Panel -->
+        <div id="overview-panel" class="content-panel active">
+            <h2 style="margin-bottom: 20px;">Dashboard Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRequests">0</div>
+                    <div class="stat-label">Total API Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeAgents">0</div>
+                    <div class="stat-label">Active Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="webhooksTriggered">0</div>
+                    <div class="stat-label">Webhooks Triggered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="errorRate">0%</div>
+                    <div class="stat-label">Error Rate</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 30px 0 20px;">Recent Activity</h3>
+            <div id="activityLog" class="endpoint-list">
+                <!-- Activity items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- API Keys Panel -->
+        <div id="api-keys-panel" class="content-panel">
+            <h2>API Keys</h2>
+            <div class="api-key-section">
+                <button onclick="generateNewKey()">Generate New API Key</button>
+                <div id="apiKeysList" style="margin-top: 20px;">
+                    <!-- API keys will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Playground Panel -->
+        <div id="playground-panel" class="content-panel">
+            <h2>API Playground</h2>
+            <div class="endpoint-list">
+                <div class="endpoint" onclick="loadEndpoint('POST', '/api/agents')">
+                    <span class="method post">POST</span>
+                    <span>/api/agents</span>
+                    <span style="color: #666; margin-left: auto;">Create new agent</span>
+                </div>
+                <div class="endpoint" onclick="loadEndpoint('GET', '/api/agents/{id}')">
+                    <span class="method get">GET</span>
+                    <span>/api/agents/{id}</span>
+                    <span style="color: #666; margin-left: auto;">Get agent details</span>
+                </div>
+                <div class="endpoint" onclick="loadEndpoint('POST', '/api/agents/{id}/messages')">
+                    <span class="method post">POST</span>
+                    <span>/api/agents/{id}/messages</span>
+                    <span style="color: #666; margin-left: auto;">Send message to agent</span>
+                </div>
+                <div class="endpoint" onclick="loadEndpoint('DELETE', '/api/agents/{id}')">
+                    <span class="method delete">DELETE</span>
+                    <span>/api/agents/{id}</span>
+                    <span style="color: #666; margin-left: auto;">Delete agent</span>
+                </div>
+            </div>
+
+            <div class="code-editor">
+                <h3>Request</h3>
+                <textarea id="requestEditor" placeholder="{
+  &quot;name&quot;: &quot;My Agent&quot;,
+  &quot;personality&quot;: &quot;helpful&quot;,
+  &quot;capabilities&quot;: [&quot;chat&quot;, &quot;analysis&quot;]
+}"></textarea>
+                <button onclick="executeRequest()" style="margin-top: 10px;">Execute Request</button>
+            </div>
+
+            <div class="code-editor">
+                <h3>Response</h3>
+                <pre id="responseViewer">// Response will appear here</pre>
+            </div>
+        </div>
+
+        <!-- Webhooks Panel -->
+        <div id="webhooks-panel" class="content-panel">
+            <h2>Webhook Management</h2>
+            <div class="webhook-form">
+                <h3>Register New Webhook</h3>
+                <input type="url" id="webhookUrl" placeholder="https://your-server.com/webhook">
+                <select id="webhookEvents" multiple style="height: 100px;">
+                    <option value="agent.created">agent.created</option>
+                    <option value="agent.message">agent.message</option>
+                    <option value="agent.deleted">agent.deleted</option>
+                    <option value="*">All Events</option>
+                </select>
+                <button onclick="registerWebhook()">Register Webhook</button>
+            </div>
+
+            <div id="webhooksList" class="endpoint-list" style="margin-top: 30px;">
+                <!-- Webhooks will be listed here -->
+            </div>
+        </div>
+
+        <!-- SDK Panel -->
+        <div id="sdk-panel" class="content-panel">
+            <h2>SDK Generator</h2>
+            <div class="sdk-generator">
+                <div class="language-selector">
+                    <div class="lang-option active" onclick="selectLanguage('javascript')">JavaScript</div>
+                    <div class="lang-option" onclick="selectLanguage('python')">Python</div>
+                    <div class="lang-option" onclick="selectLanguage('go')">Go</div>
+                    <div class="lang-option" onclick="selectLanguage('ruby')">Ruby</div>
+                    <div class="lang-option" onclick="selectLanguage('php')">PHP</div>
+                </div>
+
+                <div id="sdkCode" style="margin-top: 20px;">
+                    <pre><code id="generatedSDK">// Select a language to generate SDK</code></pre>
+                </div>
+
+                <button onclick="downloadSDK()" style="margin-top: 20px;">Download SDK</button>
+            </div>
+        </div>
+
+        <!-- Documentation Panel -->
+        <div id="docs-panel" class="content-panel">
+            <h2>API Documentation</h2>
+            <div id="apiDocs">
+                <!-- Documentation will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize dashboard
+        let currentTab = 'overview';
+        let selectedLanguage = 'javascript';
+        let currentEndpoint = { method: 'GET', path: '/api/agents' };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-panel`).classList.add('active');
+            currentTab = tab;
+
+            if (tab === 'docs') {
+                loadDocumentation();
+            }
+        }
+
+        function generateNewKey() {
+            // Simulate API key generation
+            const key = `sk_live_${Math.random().toString(36).substr(2, 32)}`;
+            const keyHtml = `
+                <div class="api-key">
+                    <span class="key-value">${key}</span>
+                    <button onclick="copyKey('${key}')">Copy</button>
+                    <button onclick="revokeKey('${key}')" style="background: #ff4444;">Revoke</button>
+                </div>
+            `;
+            document.getElementById('apiKeysList').insertAdjacentHTML('afterbegin', keyHtml);
+        }
+
+        function copyKey(key) {
+            navigator.clipboard.writeText(key);
+            alert('API key copied to clipboard');
+        }
+
+        function revokeKey(key) {
+            if (confirm('Are you sure you want to revoke this API key?')) {
+                event.target.closest('.api-key').remove();
+            }
+        }
+
+        function loadEndpoint(method, path) {
+            currentEndpoint = { method, path };
+            const examples = {
+                'POST /api/agents': `{
+  "name": "Assistant Agent",
+  "personality": "helpful and friendly",
+  "capabilities": ["chat", "code_analysis", "task_automation"],
+  "memory_enabled": true
+}`,
+                'GET /api/agents/{id}': '// No body required for GET request',
+                'POST /api/agents/{id}/messages': `{
+  "message": "Hello, can you help me with a coding task?",
+  "context": {
+    "conversation_id": "conv_123",
+    "metadata": {}
+  }
+}`,
+                'DELETE /api/agents/{id}': '// No body required for DELETE request'
+            };
+
+            document.getElementById('requestEditor').value = examples[`${method} ${path}`] || '';
+        }
+
+        async function executeRequest() {
+            const requestBody = document.getElementById('requestEditor').value;
+            const response = document.getElementById('responseViewer');
+            
+            // Simulate API request
+            response.textContent = 'Executing request...';
+            
+            setTimeout(() => {
+                const mockResponse = {
+                    status: 200,
+                    data: {
+                        id: 'agent_' + Math.random().toString(36).substr(2, 9),
+                        created: new Date().toISOString(),
+                        name: 'Assistant Agent',
+                        status: 'active'
+                    }
+                };
+                response.textContent = JSON.stringify(mockResponse, null, 2);
+            }, 1000);
+        }
+
+        function registerWebhook() {
+            const url = document.getElementById('webhookUrl').value;
+            const events = Array.from(document.getElementById('webhookEvents').selectedOptions)
+                .map(opt => opt.value);
+
+            if (!url) {
+                alert('Please enter a webhook URL');
+                return;
+            }
+
+            const webhookHtml = `
+                <div class="endpoint">
+                    <span class="method post">WEBHOOK</span>
+                    <span>${url}</span>
+                    <span style="color: #666; margin-left: auto;">Events: ${events.join(', ')}</span>
+                </div>
+            `;
+            document.getElementById('webhooksList').insertAdjacentHTML('afterbegin', webhookHtml);
+            
+            document.getElementById('webhookUrl').value = '';
+            document.getElementById('webhookEvents').selectedIndex = -1;
+        }
+
+        function selectLanguage(lang) {
+            document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+            selectedLanguage = lang;
+            generateSDKCode(lang);
+        }
+
+        function generateSDKCode(lang) {
+            const sdkExamples = {
+                javascript: `// Install: npm install soulfra-sdk
+const SoulfraSDK = require('soulfra-sdk');
+
+const soulfra = new SoulfraSDK('your_api_key_here');
+
+// Create an agent
+const agent = await soulfra.createAgent({
+  name: 'My Assistant',
+  personality: 'helpful',
+  capabilities: ['chat', 'analysis']
+});
+
+// Send a message
+const response = await soulfra.sendMessage(agent.id, 'Hello, world!');
+console.log(response.message);`,
+
+                python: `# Install: pip install soulfra-sdk
+from soulfra import SoulfraSDK
+
+soulfra = SoulfraSDK('your_api_key_here')
+
+# Create an agent
+agent = soulfra.create_agent(
+    name='My Assistant',
+    personality='helpful',
+    capabilities=['chat', 'analysis']
+)
+
+# Send a message
+response = soulfra.send_message(agent.id, 'Hello, world!')
+print(response.message)`,
+
+                go: `// Install: go get github.com/soulfra/soulfra-go
+package main
+
+import (
+    "fmt"
+    "github.com/soulfra/soulfra-go"
+)
+
+func main() {
+    client := soulfra.NewClient("your_api_key_here")
+    
+    // Create an agent
+    agent, err := client.CreateAgent(map[string]interface{}{
+        "name": "My Assistant",
+        "personality": "helpful",
+        "capabilities": []string{"chat", "analysis"},
+    })
+    
+    // Send a message
+    response, err := client.SendMessage(agent.ID, "Hello, world!")
+    fmt.Println(response.Message)
+}`,
+
+                ruby: `# Install: gem install soulfra-sdk
+require 'soulfra'
+
+client = Soulfra::Client.new('your_api_key_here')
+
+# Create an agent
+agent = client.create_agent(
+  name: 'My Assistant',
+  personality: 'helpful',
+  capabilities: ['chat', 'analysis']
+)
+
+# Send a message
+response = client.send_message(agent.id, 'Hello, world!')
+puts response.message`,
+
+                php: `// Install: composer require soulfra/soulfra-php
+<?php
+require_once 'vendor/autoload.php';
+
+use Soulfra\Client;
+
+$client = new Client('your_api_key_here');
+
+// Create an agent
+$agent = $client->createAgent([
+    'name' => 'My Assistant',
+    'personality' => 'helpful',
+    'capabilities' => ['chat', 'analysis']
+]);
+
+// Send a message
+$response = $client->sendMessage($agent->id, 'Hello, world!');
+echo $response->message;
+?>`
+            };
+
+            document.getElementById('generatedSDK').textContent = sdkExamples[lang] || '// SDK not available for this language yet';
+        }
+
+        function downloadSDK() {
+            const code = document.getElementById('generatedSDK').textContent;
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `soulfra-sdk.${selectedLanguage}`;
+            a.click();
+        }
+
+        function loadDocumentation() {
+            const docsHtml = `
+                <div class="endpoint-list">
+                    <h3>Authentication</h3>
+                    <p style="padding: 20px; color: #888;">All API requests must include your API key in the Authorization header:</p>
+                    <pre style="margin: 20px;"><code>Authorization: Bearer YOUR_API_KEY</code></pre>
+
+                    <h3 style="margin-top: 40px;">Endpoints</h3>
+                    
+                    <div class="endpoint">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="method post">POST</span>
+                                <span>/api/agents</span>
+                            </div>
+                            <p style="color: #888; margin-top: 10px;">Create a new agent with specified personality and capabilities.</p>
+                            <pre style="margin-top: 10px;"><code>{
+  "name": "string",
+  "personality": "string",
+  "capabilities": ["string"],
+  "memory_enabled": boolean
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="endpoint">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="method get">GET</span>
+                                <span>/api/agents/{id}</span>
+                            </div>
+                            <p style="color: #888; margin-top: 10px;">Retrieve details about a specific agent.</p>
+                        </div>
+                    </div>
+
+                    <div class="endpoint">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="method post">POST</span>
+                                <span>/api/agents/{id}/messages</span>
+                            </div>
+                            <p style="color: #888; margin-top: 10px;">Send a message to an agent and receive a response.</p>
+                            <pre style="margin-top: 10px;"><code>{
+  "message": "string",
+  "context": {
+    "conversation_id": "string",
+    "metadata": {}
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 40px;">Rate Limits</h3>
+                    <p style="padding: 20px; color: #888;">API requests are limited to 1000 requests per hour per API key. Rate limit headers are included in all responses.</p>
+
+                    <h3 style="margin-top: 40px;">Error Handling</h3>
+                    <p style="padding: 20px; color: #888;">All errors return appropriate HTTP status codes with a JSON error object containing 'error' and 'message' fields.</p>
+                </div>
+            `;
+            document.getElementById('apiDocs').innerHTML = docsHtml;
+        }
+
+        // Simulate real-time stats updates
+        setInterval(() => {
+            document.getElementById('totalRequests').textContent = 
+                Math.floor(Math.random() * 10000);
+            document.getElementById('activeAgents').textContent = 
+                Math.floor(Math.random() * 100);
+            document.getElementById('webhooksTriggered').textContent = 
+                Math.floor(Math.random() * 500);
+            document.getElementById('errorRate').textContent = 
+                (Math.random() * 5).toFixed(1) + '%';
+        }, 5000);
+
+        // Initialize with some data
+        generateNewKey();
+        generateSDKCode('javascript');
+    </script>
+</body>
+</html>

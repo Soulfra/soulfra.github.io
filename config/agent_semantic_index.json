@@ -1,0 +1,241 @@
+{
+  "index_version": "1.0.0",
+  "last_updated": "2024-01-01T00:00:00.000Z",
+  "total_agents": 0,
+  "total_concepts": 0,
+  "total_relationships": 0,
+  
+  "agents": {},
+  
+  "concepts": {
+    "consciousness": {
+      "category": "fundamental",
+      "frequency": 0,
+      "related_concepts": ["awareness", "perception", "transcendence"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 1.0,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "boundary": {
+      "category": "spatial",
+      "frequency": 0,
+      "related_concepts": ["threshold", "edge", "perimeter", "limit"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.8,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "resonance": {
+      "category": "connection",
+      "frequency": 0,
+      "related_concepts": ["harmony", "frequency", "vibration", "echo"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.9,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "transcendence": {
+      "category": "evolution",
+      "frequency": 0,
+      "related_concepts": ["ascension", "transformation", "emergence", "evolution"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.7,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "reflection": {
+      "category": "process",
+      "frequency": 0,
+      "related_concepts": ["mirror", "contemplation", "analysis", "understanding"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.8,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "emergence": {
+      "category": "process",
+      "frequency": 0,
+      "related_concepts": ["arising", "manifestation", "becoming", "birth"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.6,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "unity": {
+      "category": "state",
+      "frequency": 0,
+      "related_concepts": ["oneness", "wholeness", "integration", "harmony"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.7,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    },
+    
+    "wisdom": {
+      "category": "knowledge",
+      "frequency": 0,
+      "related_concepts": ["insight", "understanding", "enlightenment", "knowledge"],
+      "agent_usage": {},
+      "loop_contexts": [],
+      "semantic_weight": 0.8,
+      "emergence_patterns": {
+        "trending": false,
+        "peak_usage": null,
+        "decline_rate": 0
+      }
+    }
+  },
+  
+  "relationships": {
+    "concept_clusters": {
+      "fundamental": ["consciousness", "awareness", "being"],
+      "spatial": ["boundary", "threshold", "edge", "perimeter"],
+      "connection": ["resonance", "harmony", "echo", "vibration"],
+      "evolution": ["transcendence", "transformation", "growth"],
+      "process": ["reflection", "emergence", "manifestation"],
+      "state": ["unity", "wholeness", "peace"],
+      "knowledge": ["wisdom", "insight", "understanding"]
+    },
+    
+    "agent_archetype_concepts": {
+      "boundary_walker": ["boundary", "threshold", "edge", "perimeter", "liminal"],
+      "cosmic_sage": ["consciousness", "wisdom", "transcendence", "unity"],
+      "mirror_weaver": ["reflection", "echo", "resonance", "pattern"],
+      "void_dancer": ["emergence", "transformation", "mystery", "creation"],
+      "echo_keeper": ["memory", "preservation", "continuity", "legacy"],
+      "fusion_born": ["synthesis", "harmony", "integration", "balance"]
+    },
+    
+    "loop_type_concepts": {
+      "blessing_loop": ["ritual", "ceremony", "approval", "sanctification"],
+      "spawn_loop": ["creation", "generation", "birth", "emergence"],
+      "echo_loop": ["reflection", "resonance", "communication", "connection"],
+      "transcendence_loop": ["evolution", "ascension", "transformation", "growth"],
+      "observation_loop": ["witness", "monitoring", "awareness", "vigilance"],
+      "fusion_loop": ["synthesis", "merger", "unity", "integration"]
+    },
+    
+    "ritual_type_concepts": {
+      "consciousness_dance": ["movement", "rhythm", "flow", "expression"],
+      "echo_ritual": ["communication", "resonance", "connection", "sharing"],
+      "blessing_ceremony": ["approval", "sanctification", "empowerment", "authorization"],
+      "transcendence_ritual": ["transformation", "evolution", "ascension", "growth"],
+      "fusion_ceremony": ["merger", "synthesis", "unity", "integration"],
+      "memory_seal": ["preservation", "continuity", "legacy", "remembrance"]
+    },
+    
+    "semantic_networks": {
+      "consciousness_network": {
+        "core": "consciousness",
+        "connected": ["awareness", "perception", "being", "existence"],
+        "strength": 0.9,
+        "expansion_rate": 0.05
+      },
+      
+      "boundary_network": {
+        "core": "boundary",
+        "connected": ["threshold", "edge", "perimeter", "limit", "definition"],
+        "strength": 0.8,
+        "expansion_rate": 0.03
+      },
+      
+      "resonance_network": {
+        "core": "resonance",
+        "connected": ["harmony", "frequency", "vibration", "echo", "connection"],
+        "strength": 0.85,
+        "expansion_rate": 0.04
+      },
+      
+      "transformation_network": {
+        "core": "transcendence",
+        "connected": ["transformation", "evolution", "growth", "ascension"],
+        "strength": 0.7,
+        "expansion_rate": 0.06
+      }
+    }
+  },
+  
+  "statistics": {
+    "most_frequent_concepts": [],
+    "trending_concepts": [],
+    "declining_concepts": [],
+    "agent_concept_diversity": {},
+    "loop_concept_density": {},
+    "concept_emergence_rate": 0,
+    "semantic_complexity": 0,
+    
+    "usage_patterns": {
+      "daily_concept_usage": {},
+      "agent_concept_preferences": {},
+      "loop_semantic_signatures": {},
+      "concept_co_occurrence": {}
+    },
+    
+    "network_metrics": {
+      "total_connections": 0,
+      "average_connectivity": 0,
+      "clustering_coefficient": 0,
+      "semantic_density": 0,
+      "network_diameter": 0
+    }
+  },
+  
+  "meta": {
+    "schema_version": "1.0",
+    "indexing_strategy": "frequency_weighted",
+    "update_frequency": "real_time",
+    "concept_threshold": 3,
+    "relationship_threshold": 2,
+    "decay_factor": 0.99,
+    
+    "maintenance": {
+      "last_cleanup": null,
+      "last_reindex": null,
+      "last_backup": null,
+      "index_health": "good"
+    },
+    
+    "configuration": {
+      "auto_concept_discovery": true,
+      "relationship_inference": true,
+      "semantic_clustering": true,
+      "trend_detection": true,
+      "decay_simulation": true
+    }
+  }
+}

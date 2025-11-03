@@ -1,0 +1,21 @@
+# Bulletproof Docker image - no formatting issues
+FROM python:3.11-alpine
+
+# Install only what we need
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copy only Python files (no JS formatting issues)
+COPY NO_EMOJI_API.py .
+COPY MIRROR_BRIDGE.py .
+COPY WHITE_KNIGHT.py .
+
+# Create directories
+RUN mkdir -p logs data
+
+# Expose ports
+EXPOSE 4444 8001 8002
+
+# Run pure API
+CMD ["python3", "NO_EMOJI_API.py"]

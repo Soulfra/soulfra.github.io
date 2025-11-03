@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="f3a51adb-3599-497c-9765-f570adea219c"
+LABEL site.domain="f3a51adb.fitshare.health"
+LABEL site.type="social"

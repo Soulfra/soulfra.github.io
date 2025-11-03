@@ -156,12 +156,25 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
-    }
+    
+  display: block;
+  text-align: center;
+  user-select: none;}
 
     .file-upload:hover {
       border-color: rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.05);
     }
+
+.file-upload:active {
+  transform: scale(0.98);
+}
+
+.file-upload div {
+  pointer-events: none;
+  font-size: 1rem;
+  font-weight: 500;
+}
 
     .file-upload input {
       display: none;

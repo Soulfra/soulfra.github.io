@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "created": "2025-06-16T12:00:00.000Z",
+  "defaultMode": "soft",
+  "activeMode": "soft",
+  "allowUpgrade": true,
+  "allowDowngrade": true,
+  "trustScore": 0.45,
+  "upgradeThreshold": 0.8,
+  "lastModeChange": null,
+  "modeHistory": [],
+  "triggers": {
+    "autoUpgradeEnabled": true,
+    "promptAfterForks": 3,
+    "promptAfterExports": 5,
+    "promptOnHighEntropy": true
+  },
+  "metrics": {
+    "totalInteractions": 0,
+    "exportAttempts": 0,
+    "forkCount": 0,
+    "emotionalDepth": 0,
+    "technicalQueries": 0
+  }
+}

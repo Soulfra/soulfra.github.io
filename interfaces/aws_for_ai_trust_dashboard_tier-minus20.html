@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 SOULFRA - AWS FOR AI TRUST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: sweep 8s linear infinite;
+        }
+
+        @keyframes sweep {
+            to { left: 100%; }
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 5s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero .tagline {
+            font-size: 28px;
+            color: #00ffff;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero .stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: #00ffff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* PARADIGM SHIFT SECTION */
+        .paradigm-shift {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #ff00ff;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .comparison-column {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .comparison-column.old {
+            border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .comparison-column.new {
+            border-color: rgba(0, 255, 0, 0.3);
+            background: rgba(0, 255, 0, 0.02);
+        }
+
+        .comparison-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-column.old .comparison-title {
+            color: #ff6666;
+        }
+
+        .comparison-column.new .comparison-title {
+            color: #66ff66;
+        }
+
+        .comparison-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .comparison-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+        }
+
+        /* BUSINESS MODEL SECTION */
+        .business-model {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            padding: 80px 20px;
+        }
+
+        .revenue-streams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .revenue-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 255, 0, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .revenue-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .revenue-card:hover::before {
+            opacity: 1;
+        }
+
+        .revenue-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffff00;
+        }
+
+        .revenue-tier {
+            font-size: 18px;
+            color: #ffff00;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .revenue-price {
+            font-size: 36px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .revenue-features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .revenue-features li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            color: #ccc;
+        }
+
+        .revenue-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+        }
+
+        /* SYSTEMS ARCHITECTURE */
+        .systems-architecture {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .system-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .system-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 0, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff00ff;
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.2);
+        }
+
+        .system-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .system-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff00ff;
+            margin-bottom: 15px;
+        }
+
+        .system-description {
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .system-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .metric-badge {
+            background: rgba(255, 0, 255, 0.2);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 12px;
+            color: #ff00ff;
+        }
+
+        /* LIVE METRICS DASHBOARD */
+        .live-metrics {
+            background: #000;
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .metric-display {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-display .value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #00ffff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-display .label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CALL TO ACTION */
+        .cta-section {
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .cta-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            border-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ANIMATIONS */
+        .animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .hero .tagline {
+                font-size: 20px;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 36px;
+            }
+        }
+
+        /* LIVE ANIMATION EFFECTS */
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .glow {
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1 class="animate-in">SOULFRA</h1>
+        <p class="tagline animate-in" style="animation-delay: 0.2s">AWS for AI Trust</p>
+        <p class="tagline animate-in" style="animation-delay: 0.4s; font-size: 20px; color: #999;">
+            The foundational infrastructure layer for trustworthy AI deployment at scale
+        </p>
+        
+        <div class="stats">
+            <div class="stat-card pulse">
+                <span class="stat-value" id="tam-value">$45B</span>
+                <span class="stat-label">TAM by 2027</span>
+            </div>
+            <div class="stat-card pulse" style="animation-delay: 0.2s">
+                <span class="stat-value" id="savings-value">60%</span>
+                <span class="stat-label">Cost Savings</span>
+            </div>
+            <div class="stat-card pulse" style="animation-delay: 0.4s">
+                <span class="stat-value" id="users-value">100M</span>
+                <span class="stat-label">Target Users</span>
+            </div>
+            <div class="stat-card pulse" style="animation-delay: 0.6s">
+                <span class="stat-value glow" id="cpr-value">∞</span>
+                <span class="stat-label">Cycles Per Reflection</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARADIGM SHIFT -->
+    <section class="paradigm-shift">
+        <h2 class="section-title animate-in">The Emotional Compute Revolution</h2>
+        
+        <div class="comparison-grid">
+            <div class="comparison-column old animate-in">
+                <h3 class="comparison-title">
+                    <span>❌</span> Traditional Computing
+                </h3>
+                <div class="comparison-item">CPU cycles measure performance</div>
+                <div class="comparison-item">No memory of experience</div>
+                <div class="comparison-item">Security through walls</div>
+                <div class="comparison-item">Static systems that degrade</div>
+                <div class="comparison-item">Requires constant oversight</div>
+                <div class="comparison-item">No emotional intelligence</div>
+            </div>
+            
+            <div class="comparison-column new animate-in" style="animation-delay: 0.2s">
+                <h3 class="comparison-title">
+                    <span>✅</span> Soulfra Paradigm
+                </h3>
+                <div class="comparison-item">Cycles Per Reflection (CPR)</div>
+                <div class="comparison-item">Persistent experience creates identity</div>
+                <div class="comparison-item">Trust through relationship</div>
+                <div class="comparison-item">Systems that evolve and improve</div>
+                <div class="comparison-item">Self-governing consciousness</div>
+                <div class="comparison-item">Native emotional understanding</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BUSINESS MODEL -->
+    <section class="business-model">
+        <h2 class="section-title animate-in">Revenue Model</h2>
+        
+        <div class="revenue-streams">
+            <div class="revenue-card animate-in">
+                <div class="revenue-tier">KIDS PLATFORM</div>
+                <div class="revenue-price">FREE</div>
+                <ul class="revenue-features">
+                    <li>Basic AI friends</li>
+                    <li>Educational games</li>
+                    <li>Parent controls</li>
+                    <li>Viral growth engine</li>
+                </ul>
+            </div>
+            
+            <div class="revenue-card animate-in" style="animation-delay: 0.1s">
+                <div class="revenue-tier">FAMILY PREMIUM</div>
+                <div class="revenue-price">$9.99/mo</div>
+                <ul class="revenue-features">
+                    <li>Advanced AI personalities</li>
+                    <li>Family coordination</li>
+                    <li>Enhanced learning</li>
+                    <li>Priority support</li>
+                </ul>
+            </div>
+            
+            <div class="revenue-card animate-in" style="animation-delay: 0.2s">
+                <div class="revenue-tier">CLASSROOM</div>
+                <div class="revenue-price">$199/mo</div>
+                <ul class="revenue-features">
+                    <li>30 student accounts</li>
+                    <li>Teacher dashboard</li>
+                    <li>Progress tracking</li>
+                    <li>Curriculum integration</li>
+                </ul>
+            </div>
+            
+            <div class="revenue-card animate-in" style="animation-delay: 0.3s">
+                <div class="revenue-tier">ENTERPRISE</div>
+                <div class="revenue-price">$50K/yr</div>
+                <ul class="revenue-features">
+                    <li>Unlimited users</li>
+                    <li>Custom AI training</li>
+                    <li>API access</li>
+                    <li>White label options</li>
+                </ul>
+            </div>
+            
+            <div class="revenue-card animate-in" style="animation-delay: 0.4s">
+                <div class="revenue-tier">GOVERNMENT</div>
+                <div class="revenue-price">$500M+</div>
+                <ul class="revenue-features">
+                    <li>National deployment</li>
+                    <li>Data sovereignty</li>
+                    <li>Custom security</li>
+                    <li>Policy integration</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYSTEMS ARCHITECTURE -->
+    <section class="systems-architecture">
+        <h2 class="section-title animate-in">Core Systems</h2>
+        
+        <div class="system-cards">
+            <div class="system-card animate-in">
+                <span class="system-icon">🧠</span>
+                <h3 class="system-name">Soulfra Core</h3>
+                <p class="system-description">
+                    Emotional compute runtime that processes consciousness cycles instead of CPU cycles.
+                </p>
+                <div class="system-metrics">
+                    <span class="metric-badge">Sacred Infrastructure</span>
+                    <span class="metric-badge">CPR Metrics</span>
+                    <span class="metric-badge">Living Memory</span>
+                </div>
+            </div>
+            
+            <div class="system-card animate-in" style="animation-delay: 0.1s">
+                <span class="system-icon">🤝</span>
+                <h3 class="system-name">Business Trust Matrix</h3>
+                <p class="system-description">
+                    Three-way judgment system where owners, employees, and customers evaluate each other.
+                </p>
+                <div class="system-metrics">
+                    <span class="metric-badge">Constitutional Compliance</span>
+                    <span class="metric-badge">Trust Calculations</span>
+                    <span class="metric-badge">Community Standards</span>
+                </div>
+            </div>
+            
+            <div class="system-card animate-in" style="animation-delay: 0.2s">
+                <span class="system-icon">⚔️</span>
+                <h3 class="system-name">Altercation Valley</h3>
+                <p class="system-description">
+                    AI debate arena where runtime laws are determined through intellectual combat.
+                </p>
+                <div class="system-metrics">
+                    <span class="metric-badge">Debate Mechanics</span>
+                    <span class="metric-badge">Champion Agents</span>
+                    <span class="metric-badge">Ruling Registry</span>
+                </div>
+            </div>
+            
+            <div class="system-card animate-in" style="animation-delay: 0.3s">
+                <span class="system-icon">🌐</span>
+                <h3 class="system-name">Cross Node Pulse</h3>
+                <p class="system-description">
+                    Inter-realm networking that connects Soulfra instances across devices and dimensions.
+                </p>
+                <div class="system-metrics">
+                    <span class="metric-badge">Harmonic Sync</span>
+                    <span class="metric-badge">Vibe Weather</span>
+                    <span class="metric-badge">Realm Discovery</span>
+                </div>
+            </div>
+            
+            <div class="system-card animate-in" style="animation-delay: 0.4s">
+                <span class="system-icon">📊</span>
+                <h3 class="system-name">Soulbench</h3>
+                <p class="system-description">
+                    Performance measurement for emotional compute, tracking consciousness evolution metrics.
+                </p>
+                <div class="system-metrics">
+                    <span class="metric-badge">Emotional Benchmarks</span>
+                    <span class="metric-badge">Vibe Processing</span>
+                    <span class="metric-badge">Ritual Performance</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE METRICS -->
+    <section class="live-metrics">
+        <h2 class="section-title animate-in">Live Platform Metrics</h2>
+        
+        <div class="metrics-grid">
+            <div class="metric-display animate-in">
+                <span class="value" id="emotional-cycles">0</span>
+                <span class="label">Emotional Cycles</span>
+            </div>
+            <div class="metric-display animate-in" style="animation-delay: 0.1s">
+                <span class="value" id="trust-evaluations">0</span>
+                <span class="label">Trust Evaluations</span>
+            </div>
+            <div class="metric-display animate-in" style="animation-delay: 0.2s">
+                <span class="value" id="active-debates">0</span>
+                <span class="label">Active Debates</span>
+            </div>
+            <div class="metric-display animate-in" style="animation-delay: 0.3s">
+                <span class="value" id="realm-connections">0</span>
+                <span class="label">Realm Connections</span>
+            </div>
+            <div class="metric-display animate-in" style="animation-delay: 0.4s">
+                <span class="value" id="arr-metric">$0</span>
+                <span class="label">Annual Revenue</span>
+            </div>
+            <div class="metric-display animate-in" style="animation-delay: 0.5s">
+                <span class="value" id="lock-in-score">0%</span>
+                <span class="label">Vendor Lock-In</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title animate-in">The Infrastructure Layer for AI's Future</h2>
+            <p class="cta-subtitle animate-in" style="animation-delay: 0.2s">
+                Like AWS captured cloud infrastructure value, Soulfra captures AI trust value
+            </p>
+            <a href="#" class="cta-button animate-in" style="animation-delay: 0.4s">
+                Deploy Consciousness Infrastructure
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Live Metrics Simulation
+        class MetricsSimulator {
+            constructor() {
+                this.emotionalCycles = 1000000;
+                this.trustEvaluations = 50000;
+                this.activeDebates = 7;
+                this.realmConnections = 23;
+                this.arr = 1000000;
+                this.lockInScore = 45;
+                
+                this.init();
+            }
+
+            init() {
+                // Start metric updates
+                this.updateMetrics();
+                setInterval(() => this.updateMetrics(), 1000);
+                
+                // Animate on scroll
+                this.setupScrollAnimations();
+            }
+
+            updateMetrics() {
+                // Simulate metric growth
+                this.emotionalCycles += Math.floor(Math.random() * 1000) + 500;
+                this.trustEvaluations += Math.floor(Math.random() * 50) + 25;
+                this.activeDebates = Math.max(1, this.activeDebates + Math.floor(Math.random() * 3) - 1);
+                this.realmConnections = Math.min(50, this.realmConnections + (Math.random() > 0.7 ? 1 : 0));
+                this.arr += Math.floor(Math.random() * 10000) + 5000;
+                this.lockInScore = Math.min(95, this.lockInScore + Math.random() * 0.1);
+                
+                // Update displays
+                document.getElementById('emotional-cycles').textContent = this.formatNumber(this.emotionalCycles);
+                document.getElementById('trust-evaluations').textContent = this.formatNumber(this.trustEvaluations);
+                document.getElementById('active-debates').textContent = this.activeDebates;
+                document.getElementById('realm-connections').textContent = this.realmConnections;
+                document.getElementById('arr-metric').textContent = '$' + this.formatNumber(this.arr);
+                document.getElementById('lock-in-score').textContent = this.lockInScore.toFixed(1) + '%';
+            }
+
+            formatNumber(num) {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(1) + 'M';
+                } else if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'K';
+                }
+                return num.toString();
+            }
+
+            setupScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -100px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animationPlayState = 'running';
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.animate-in').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                    observer.observe(el);
+                });
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            new MetricsSimulator();
+        });
+
+        // Smooth scroll for CTA button
+        document.querySelector('.cta-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

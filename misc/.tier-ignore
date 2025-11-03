@@ -1,0 +1,6 @@
+# Protected runtime tiers (never synced or exported)
+tier-4-api/
+tier-5-vault/
+tier-6-runtime/
+tier-7-crypto/
+tier-8-arweave/

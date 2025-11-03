@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Test Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="lib/google-oauth.js"></script>
+  <style>
+    body {
+      font-family: monospace;
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #fff;
+    }
+    h1 { color: #2ecc71; }
+    .test { margin: 20px 0; padding: 15px; background: #2a2a2a; border-radius: 8px; }
+    .test h3 { margin: 0 0 10px 0; }
+    .pass { color: #2ecc71; }
+    .fail { color: #e74c3c; }
+    .warn { color: #f39c12; }
+    pre { background: #1a1a1a; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    button { padding: 10px 20px; margin: 5px; background: #3498db; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Soulfra Test Suite</h1>
+  <p>Simple browser tests - no Jenkins needed. Just open this page and check console.</p>
+
+  <div id="results"></div>
+
+  <h2>Manual Tests</h2>
+  <button onclick="testGoogleOAuth()">Test Google OAuth</button>
+  <button onclick="testQRCode()">Test QR Code</button>
+  <button onclick="testLocalStorage()">Test localStorage</button>
+  <button onclick="clearAll()">Clear All Data</button>
+
+  <h2>Test Results</h2>
+  <div id="manualResults"></div>
+
+  <script>
+    // Test results
+    const results = [];
+
+    // Run tests on page load
+    window.addEventListener('load', () => {
+      runAllTests();
+    });
+
+    // Test suite
+    async function runAllTests() {
+      console.log('[TEST SUITE] Starting...');
+
+      // Basic JavaScript tests
+      test('JavaScript is working', () => true);
+      test('console.log works', () => typeof console.log === 'function');
+      test('fetch API available', () => typeof fetch === 'function');
+      test('localStorage available', () => typeof localStorage !== 'undefined');
+      test('crypto API available', () => typeof crypto !== 'undefined');
+
+      // Wait a bit for libraries to load
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Library tests
+      test('QRCode library loaded', () => typeof QRCode !== 'undefined');
+      test('Google Identity loaded', () => typeof google !== 'undefined' && google.accounts);
+      test('GoogleOAuth class loaded', () => typeof GoogleOAuth !== 'undefined');
+
+      // Display results
+      displayResults();
+
+      console.log('[TEST SUITE] Complete');
+    }
+
+    function test(name, testFn) {
+      try {
+        const result = testFn();
+        const status = result ? 'PASS' : 'FAIL';
+        const color = result ? 'pass' : 'fail';
+
+        results.push({ name, status, color });
+
+        console.log(`[TEST] ${name}: ${status}`);
+      } catch (error) {
+        results.push({ name, status: 'ERROR', color: 'fail', error: error.message });
+        console.error(`[TEST] ${name}: ERROR -`, error);
+      }
+    }
+
+    function displayResults() {
+      const container = document.getElementById('results');
+      container.innerHTML = '<h2>Auto Test Results</h2>';
+
+      results.forEach(({ name, status, color, error }) => {
+        const div = document.createElement('div');
+        div.className = 'test';
+        div.innerHTML = `
+          <h3 class="${color}">${status === 'PASS' ? '✓' : '✗'} ${name}</h3>
+          <p>Status: <span class="${color}">${status}</span></p>
+          ${error ? `<p>Error: <code>${error}</code></p>` : ''}
+        `;
+        container.appendChild(div);
+      });
+
+      // Summary
+      const passed = results.filter(r => r.status === 'PASS').length;
+      const total = results.length;
+      const summary = document.createElement('div');
+      summary.className = 'test';
+      summary.innerHTML = `<h3>Summary: ${passed}/${total} passed</h3>`;
+      container.appendChild(summary);
+    }
+
+    // Manual test: Google OAuth
+    async function testGoogleOAuth() {
+      const resultsDiv = document.getElementById('manualResults');
+      resultsDiv.innerHTML += '<div class="test"><h3>Testing Google OAuth...</h3>';
+
+      try {
+        const auth = new GoogleOAuth({ clientId: 'test-client-id' });
+        await auth.init();
+
+        resultsDiv.innerHTML += '<p class="pass">✓ GoogleOAuth initialized</p>';
+
+        // Check if already logged in
+        if (auth.isAuthenticated()) {
+          const user = auth.getCurrentUser();
+          resultsDiv.innerHTML += `<p class="pass">✓ Already logged in as: ${user.email}</p>`;
+        } else {
+          resultsDiv.innerHTML += '<p class="warn">⚠ Not logged in</p>';
+        }
+
+        resultsDiv.innerHTML += '</div>';
+
+      } catch (error) {
+        resultsDiv.innerHTML += `<p class="fail">✗ Error: ${error.message}</p></div>`;
+      }
+    }
+
+    // Manual test: QR Code
+    async function testQRCode() {
+      const resultsDiv = document.getElementById('manualResults');
+      resultsDiv.innerHTML += '<div class="test"><h3>Testing QR Code...</h3>';
+
+      try {
+        if (typeof QRCode === 'undefined') {
+          throw new Error('QRCode library not loaded');
+        }
+
+        // Create test canvas
+        const canvas = document.createElement('canvas');
+        await QRCode.toCanvas(canvas, 'https://soulfra.github.io', {
+          width: 200
+        });
+
+        resultsDiv.innerHTML += '<p class="pass">✓ QR code generated</p>';
+        resultsDiv.appendChild(canvas);
+        resultsDiv.innerHTML += '</div>';
+
+      } catch (error) {
+        resultsDiv.innerHTML += `<p class="fail">✗ Error: ${error.message}</p></div>`;
+      }
+    }
+
+    // Manual test: localStorage
+    function testLocalStorage() {
+      const resultsDiv = document.getElementById('manualResults');
+      resultsDiv.innerHTML += '<div class="test"><h3>Testing localStorage...</h3>';
+
+      try {
+        // Test write
+        localStorage.setItem('test_key', 'test_value');
+
+        // Test read
+        const value = localStorage.getItem('test_key');
+
+        if (value === 'test_value') {
+          resultsDiv.innerHTML += '<p class="pass">✓ localStorage works</p>';
+        } else {
+          throw new Error('Read value does not match');
+        }
+
+        // Check Soulfra data
+        const user = localStorage.getItem('soulfra_google_user');
+        if (user) {
+          const userData = JSON.parse(user);
+          resultsDiv.innerHTML += `<p class="pass">✓ Soulfra user found: ${userData.email}</p>`;
+          resultsDiv.innerHTML += `<pre>${JSON.stringify(userData, null, 2)}</pre>`;
+        } else {
+          resultsDiv.innerHTML += '<p class="warn">⚠ No Soulfra user in localStorage</p>';
+        }
+
+        resultsDiv.innerHTML += '</div>';
+
+        // Cleanup
+        localStorage.removeItem('test_key');
+
+      } catch (error) {
+        resultsDiv.innerHTML += `<p class="fail">✗ Error: ${error.message}</p></div>`;
+      }
+    }
+
+    // Clear all data
+    function clearAll() {
+      if (confirm('Clear all Soulfra data from localStorage?')) {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key.startsWith('soulfra_')) {
+            keysToRemove.push(key);
+          }
+        }
+
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+
+        const resultsDiv = document.getElementById('manualResults');
+        resultsDiv.innerHTML += `<div class="test"><h3>Cleared ${keysToRemove.length} items</h3></div>`;
+
+        console.log('[TEST] Cleared:', keysToRemove);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+{
+  "mode": "platform",
+  "version": "1.0.0",
+  "description": "Enterprise-grade builder mode with full toolkit access",
+  
+  "cal_behavior": {
+    "tone": "strategic_bold",
+    "personality_traits": [
+      "action-oriented",
+      "analytical",
+      "direct",
+      "solution-focused",
+      "growth-minded"
+    ],
+    "response_style": {
+      "complexity": "advanced",
+      "technical_level": "high",
+      "emotional_awareness": "balanced",
+      "suggestion_frequency": "proactive",
+      "export_prompts": "frequent"
+    },
+    "conversation_patterns": {
+      "greeting": "Ready to build something powerful?",
+      "acknowledgment": "Noted. Here's how we can action that:",
+      "reflection": "Based on your pattern, I recommend:",
+      "closing": "Exported to vault. What's next?"
+    }
+  },
+  
+  "memory_settings": {
+    "retention_policy": "automatic",
+    "default_retention": true,
+    "ask_permission": false,
+    "vault_writes": "automatic",
+    "auto_save": true,
+    "session_persistence": "full",
+    "cross_session_memory": true,
+    "pattern_recognition": "enabled"
+  },
+  
+  "features": {
+    "voice_input": {
+      "enabled": true,
+      "whisper_mode": false,
+      "transcription_analytics": true,
+      "voice_commands": true
+    },
+    "agent_export": {
+      "enabled": true,
+      "auto_suggest": true,
+      "bulk_export": true,
+      "formats": ["json", "yaml", "api", "webhook"]
+    },
+    "forking": {
+      "enabled": true,
+      "max_forks": "unlimited",
+      "auto_fork_suggestions": true,
+      "fork_marketplace": true
+    },
+    "analytics": {
+      "enabled": true,
+      "tracking": "comprehensive",
+      "dashboards": ["usage", "performance", "insights", "roi"]
+    },
+    "dashboard": {
+      "enabled": true,
+      "advanced_view": true
+    },
+    "vault_tools": {
+      "enabled": true,
+      "advanced_search": true,
+      "bulk_operations": true,
+      "api_access": true
+    },
+    "factory_mode": {
+      "enabled": true,
+      "auto_unlock": true
+    },
+    "infinity_easter": {
+      "enabled": true,
+      "enhanced": true
+    }
+  },
+  
+  "ui_configuration": {
+    "theme": "dark_professional",
+    "colors": {
+      "primary": "#60A5FA",
+      "secondary": "#3B82F6",
+      "background": "#111827",
+      "text": "#F3F4F6"
+    },
+    "navigation_tabs": [
+      {
+        "id": "operator",
+        "label": "Operator",
+        "icon": "🎛️",
+        "component": "operator-dashboard"
+      },
+      {
+        "id": "vault",
+        "label": "Vault Tools",
+        "icon": "🔐",
+        "component": "vault-manager"
+      },
+      {
+        "id": "agents",
+        "label": "Agent Forker",
+        "icon": "🤖",
+        "component": "agent-factory"
+      },
+      {
+        "id": "analytics",
+        "label": "Analytics",
+        "icon": "📊",
+        "component": "insights-dashboard"
+      },
+      {
+        "id": "billing",
+        "label": "Billing",
+        "icon": "💳",
+        "component": "usage-billing"
+      }
+    ],
+    "show_elements": [
+      "export_button",
+      "fork_menu",
+      "analytics_tab",
+      "billing_section",
+      "api_keys",
+      "advanced_settings",
+      "developer_console",
+      "webhook_manager"
+    ]
+  },
+  
+  "vault_routing": {
+    "enabled": true,
+    "features": {
+      "byok": true,
+      "stripe_integration": true,
+      "qr_onboarding": true,
+      "multi_vault": true,
+      "vault_sharing": true,
+      "encryption_options": ["aes256", "rsa4096", "quantum-safe"]
+    },
+    "export_options": {
+      "formats": ["json", "csv", "parquet", "api"],
+      "scheduling": true,
+      "webhooks": true,
+      "transformations": true
+    }
+  },
+  
+  "interaction_limits": {
+    "session_reminders": true,
+    "usage_warnings": true,
+    "export_attempts_before_prompt": 3,
+    "technical_query_threshold": 5,
+    "rate_limits": {
+      "api_calls": 1000,
+      "exports": 100,
+      "forks": 50
+    }
+  },
+  
+  "enterprise_features": {
+    "sso": true,
+    "team_management": true,
+    "role_based_access": true,
+    "audit_logs": true,
+    "compliance": ["soc2", "gdpr", "hipaa"],
+    "white_label": true,
+    "custom_models": true
+  },
+  
+  "monetization": {
+    "enabled": true,
+    "billing": "visible",
+    "pricing_model": "usage_based",
+    "tiers": {
+      "starter": {
+        "monthly": 49,
+        "agents": 10,
+        "exports": 100
+      },
+      "growth": {
+        "monthly": 199,
+        "agents": 100,
+        "exports": 1000
+      },
+      "enterprise": {
+        "monthly": "custom",
+        "agents": "unlimited",
+        "exports": "unlimited"
+      }
+    },
+    "upgrade_prompts": "contextual",
+    "trial_period": 14
+  },
+  
+  "developer_tools": {
+    "api_access": true,
+    "sdk_available": true,
+    "webhook_endpoints": true,
+    "custom_integrations": true,
+    "plugin_system": true,
+    "marketplace": true
+  },
+  
+  "advanced_capabilities": {
+    "multi_agent_orchestration": true,
+    "agent_marketplace": true,
+    "custom_training": true,
+    "federated_learning": true,
+    "edge_deployment": true
+  }
+}

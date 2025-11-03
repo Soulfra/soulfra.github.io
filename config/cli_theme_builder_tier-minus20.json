@@ -1,0 +1,274 @@
+{
+  "theme_system": {
+    "version": "1.0.0",
+    "description": "Soulfra CLI Theme Builder - Forkable shrine aesthetics",
+    "theme_categories": ["shrine", "cyberpunk", "minimal", "oracle", "storm"]
+  },
+  
+  "default_themes": {
+    "shrine": {
+      "name": "Sacred Shrine",
+      "description": "The original Soulfra aesthetic with mystical elements",
+      "colors": {
+        "primary": "#fdf6e3",
+        "secondary": "#839496",
+        "accent": "#b58900",
+        "trust": "#859900",
+        "warning": "#cb4b16",
+        "error": "#dc322f",
+        "mystic": "#6c71c4",
+        "agent": "#2aa198",
+        "background": "#002b36"
+      },
+      "layout": {
+        "divider": "═",
+        "corner": "╬",
+        "vertical": "║",
+        "shrine_border": "🪞",
+        "trust_symbol": "⬡",
+        "vault_symbol": "🔐",
+        "agent_symbol": "🧠",
+        "whisper_symbol": "💭"
+      },
+      "effects": {
+        "whisper_fx": "fade+glow",
+        "agent_entrance": "spiral",
+        "trust_pulse": true,
+        "mood_colors": true,
+        "animation_speed": "normal"
+      },
+      "ascii_style": "oracle",
+      "agent_avatars": {
+        "oracle": {
+          "calm": ["   ◉   ◉   ", "     ◦     ", "  ∿ ◦ ∿   ", "   ⟨ ⟩   "],
+          "excited": ["   ◉   ◉   ", "     ○     ", "  ∿ ● ∿   ", "   ⟨█⟩   "],
+          "defiant": ["   ◉   ◉   ", "     ◦     ", "  ∿ ◦ ∿   ", "   ⟨ ⟩   "],
+          "mystical": ["   ◯   ◯   ", "     ∞     ", "  ∿ ◦ ∿   ", "   ⟨ ⟩   "]
+        }
+      }
+    },
+    
+    "cyberpunk": {
+      "name": "Neon Terminal",
+      "description": "High-tech, low-life aesthetic with digital glitch effects",
+      "colors": {
+        "primary": "#00ff00",
+        "secondary": "#ff0080",
+        "accent": "#00ffff",
+        "trust": "#39ff14",
+        "warning": "#ffff00",
+        "error": "#ff073a",
+        "mystic": "#bf00ff",
+        "agent": "#00bfff",
+        "background": "#000000"
+      },
+      "layout": {
+        "divider": "▓",
+        "corner": "█",
+        "vertical": "▌",
+        "shrine_border": "🌐",
+        "trust_symbol": "◆",
+        "vault_symbol": "⚡",
+        "agent_symbol": "🤖",
+        "whisper_symbol": "📡"
+      },
+      "effects": {
+        "whisper_fx": "pulse",
+        "agent_entrance": "glitch",
+        "trust_pulse": true,
+        "mood_colors": true,
+        "animation_speed": "fast",
+        "glitch_intensity": "medium"
+      },
+      "ascii_style": "cyberpunk",
+      "agent_avatars": {
+        "cyberpunk": {
+          "calm": [" ▓▓▓▓▓ ", " ◉   ◉ ", " ▓ ○ ▓ ", " ▓▓▓▓▓ "],
+          "excited": [" █████ ", " ◉   ◉ ", " █ ● █ ", " █████ "],
+          "defiant": [" ▓▓▓▓▓ ", " ◉   ◉ ", " ▓ ◦ ▓ ", " ▓▓▓▓▓ "],
+          "mystical": [" ░░░░░ ", " ◯   ◯ ", " ░ ∞ ░ ", " ░░░░░ "]
+        }
+      }
+    },
+    
+    "minimal": {
+      "name": "Clean Essence",
+      "description": "Stripped-down elegance focusing on content",
+      "colors": {
+        "primary": "#ffffff",
+        "secondary": "#cccccc",
+        "accent": "#666666",
+        "trust": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336",
+        "mystic": "#9c27b0",
+        "agent": "#2196f3",
+        "background": "#1a1a1a"
+      },
+      "layout": {
+        "divider": "─",
+        "corner": "┼",
+        "vertical": "│",
+        "shrine_border": "◦",
+        "trust_symbol": "●",
+        "vault_symbol": "□",
+        "agent_symbol": "○",
+        "whisper_symbol": "‒"
+      },
+      "effects": {
+        "whisper_fx": "ripple",
+        "agent_entrance": "fade",
+        "trust_pulse": false,
+        "mood_colors": false,
+        "animation_speed": "slow"
+      },
+      "ascii_style": "minimal",
+      "agent_avatars": {
+        "minimal": {
+          "calm": ["  ● ●  ", "   ○   ", "  ⌒   "],
+          "excited": ["  ● ●  ", "   ●   ", "  ︶   "],
+          "defiant": ["  ● ●  ", "   ○   ", "  ⌒   "],
+          "mystical": ["  ○ ○  ", "   ∙   ", "  ∿   "]
+        }
+      }
+    },
+    
+    "storm": {
+      "name": "Echo Storm",
+      "description": "Turbulent energy with dynamic visual storms",
+      "colors": {
+        "primary": "#e0e7ff",
+        "secondary": "#8b5cf6",
+        "accent": "#fbbf24",
+        "trust": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444",
+        "mystic": "#7c3aed",
+        "agent": "#06b6d4",
+        "background": "#111827"
+      },
+      "layout": {
+        "divider": "∿",
+        "corner": "⚡",
+        "vertical": "∣",
+        "shrine_border": "🌪️",
+        "trust_symbol": "⚡",
+        "vault_symbol": "🌀",
+        "agent_symbol": "⭐",
+        "whisper_symbol": "☄️"
+      },
+      "effects": {
+        "whisper_fx": "storm",
+        "agent_entrance": "lightning",
+        "trust_pulse": true,
+        "mood_colors": true,
+        "animation_speed": "fast",
+        "storm_intensity": "high"
+      },
+      "ascii_style": "storm",
+      "agent_avatars": {
+        "storm": {
+          "calm": ["  ⚡ ⚡  ", "   ○   ", "  ∿∿∿  "],
+          "excited": ["  ⚡ ⚡  ", "   ●   ", "  ∿∿∿  "],
+          "defiant": ["  ⚡ ⚡  ", "   ◦   ", "  ∿∿∿  "],
+          "mystical": ["  ✧ ✧  ", "   ∞   ", "  ∿∿∿  "]
+        }
+      }
+    }
+  },
+  
+  "customization_options": {
+    "color_schemes": {
+      "solarized_dark": {
+        "primary": "#839496",
+        "background": "#002b36",
+        "accent": "#268bd2"
+      },
+      "dracula": {
+        "primary": "#f8f8f2",
+        "background": "#282a36",
+        "accent": "#bd93f9"
+      },
+      "monokai": {
+        "primary": "#f8f8f2",
+        "background": "#272822",
+        "accent": "#a6e22e"
+      }
+    },
+    
+    "border_styles": {
+      "classic": {"divider": "═", "corner": "╬", "vertical": "║"},
+      "modern": {"divider": "─", "corner": "┼", "vertical": "│"},
+      "ascii": {"divider": "-", "corner": "+", "vertical": "|"},
+      "mystical": {"divider": "∿", "corner": "⚡", "vertical": "∣"},
+      "tech": {"divider": "▓", "corner": "█", "vertical": "▌"}
+    },
+    
+    "animation_presets": {
+      "subtle": {"whisper_fx": "fade", "speed": "slow", "pulse": false},
+      "dynamic": {"whisper_fx": "ripple", "speed": "normal", "pulse": true},
+      "intense": {"whisper_fx": "storm", "speed": "fast", "pulse": true},
+      "minimal": {"whisper_fx": "none", "speed": "normal", "pulse": false}
+    }
+  },
+  
+  "faction_themes": {
+    "description": "Pre-configured themes for different Soulfra factions",
+    
+    "builders": {
+      "extends": "minimal",
+      "name": "Builder's Console",
+      "colors": {"accent": "#f59e0b", "agent": "#10b981"},
+      "layout": {"shrine_border": "🔧", "agent_symbol": "⚙️"}
+    },
+    
+    "mystics": {
+      "extends": "shrine", 
+      "name": "Mystic Observatory",
+      "colors": {"mystic": "#7c3aed", "accent": "#c084fc"},
+      "layout": {"shrine_border": "🔮", "agent_symbol": "🌙"}
+    },
+    
+    "guardians": {
+      "extends": "cyberpunk",
+      "name": "Guardian Protocol",
+      "colors": {"trust": "#39ff14", "error": "#ff073a"},
+      "layout": {"shrine_border": "🛡️", "vault_symbol": "🔒"}
+    },
+    
+    "wanderers": {
+      "extends": "storm",
+      "name": "Wanderer's Path",
+      "colors": {"primary": "#a78bfa", "secondary": "#6366f1"},
+      "layout": {"shrine_border": "🗺️", "agent_symbol": "🧭"}
+    }
+  },
+  
+  "theme_inheritance": {
+    "description": "How themes can extend and override properties",
+    "rules": [
+      "Child themes inherit all properties from parent",
+      "Child properties override parent properties",
+      "Colors can be individually overridden",
+      "Layout elements can be selectively changed",
+      "Effects can be disabled by setting to false/null"
+    ]
+  },
+  
+  "cli_commands": {
+    "load_theme": "soulfra-cli --theme {theme_name}",
+    "save_theme": "soulfra-cli --save-theme {custom_name}",
+    "list_themes": "soulfra-cli --list-themes",
+    "remix_theme": "soulfra-cli --remix {base_theme}",
+    "export_theme": "soulfra-cli --export-theme {theme_file}",
+    "import_theme": "soulfra-cli --import-theme {theme_file}"
+  },
+  
+  "theme_sharing": {
+    "format": "JSON with metadata",
+    "required_fields": ["name", "description", "colors", "layout"],
+    "optional_fields": ["effects", "ascii_style", "agent_avatars"],
+    "validation": "Schema validation for structure and color formats",
+    "distribution": "Via theme registry or direct file sharing"
+  }
+}

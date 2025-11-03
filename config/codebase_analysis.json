@@ -1,0 +1,415 @@
+{
+  "timestamp": "2025-06-23T17:27:42.775Z",
+  "current_intent": {},
+  "codebase_summary": {
+    "total_files": 60,
+    "file_types": {
+      "daemon": 5,
+      "agent": 22,
+      "class_definition": 2,
+      "function_library": 1,
+      "unknown": 9,
+      "api_endpoint": 1,
+      "mirror_system": 16,
+      "configuration": 2,
+      "claude_integration": 2
+    },
+    "size_distribution": {
+      "large": 18,
+      "medium": 21,
+      "small": 21
+    },
+    "directories": [
+      "runtime",
+      "mirror-shell",
+      "agents",
+      "config",
+      "memory",
+      "queue"
+    ]
+  },
+  "completeness_analysis": {
+    "implemented": [
+      {
+        "file": "runtime/cal-chat-interface.js",
+        "type": "class_definition",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "runtime/cal-launch-agent.js",
+        "type": "agent",
+        "functions": 6,
+        "todos": 0
+      },
+      {
+        "file": "runtime/cal-memory-loader.js",
+        "type": "class_definition",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "runtime/cal-pulse-dashboard.html",
+        "type": "daemon",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/riven-cli-server.js",
+        "type": "api_endpoint",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/riven-dashboard-server.js",
+        "type": "daemon",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/debug.html",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/logs.html",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/mesh.html",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/status.html",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/DomingoReflectionForkAgent.js",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/perimeter/PerimeterAgent.js",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      }
+    ],
+    "stubbed": [],
+    "incomplete": [
+      {
+        "file": "runtime/LocalLoopRuntimeEngine.js",
+        "type": "daemon",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "runtime/agent-orchestrator.js",
+        "type": "agent",
+        "functions": 10,
+        "todos": 0
+      },
+      {
+        "file": "runtime/cal-introspection.js",
+        "type": "function_library",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "runtime/cal-pulse-orchestrator.js",
+        "type": "daemon",
+        "functions": 9,
+        "todos": 0
+      },
+      {
+        "file": "agents/mythic/AgentBirthCeremony.js",
+        "type": "agent",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "memory/AgentMemoryWeaver.js",
+        "type": "daemon",
+        "functions": 1,
+        "todos": 0
+      }
+    ],
+    "missing": [
+      {
+        "file": "runtime/enhanced-game.log",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/example-launch.json",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/insane-game.log",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/launch-agent-game.sh",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "runtime/restart-agents.sh",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/.DS_Store",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/README.md",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/agents/agent-seconduser-1750638083519.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/agents/agent-testuser-1750638083513.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/LoopForkUI.js",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/LoopNarrator.js",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/MarketplaceGrid.js",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/MaskRenderer.js",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/StreamViewer.js",
+        "type": "mirror_system",
+        "functions": 1,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/components/WhisperUI.js",
+        "type": "mirror_system",
+        "functions": 2,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/index.html",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/manifest.json",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/start.sh",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "mirror-shell/style.css",
+        "type": "mirror_system",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/.DS_Store",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/agent-seconduser-1750638083519-blessing.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/agent-seconduser-1750638083519.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/agent-testuser-1750638083513-blessing.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/agent-testuser-1750638083513.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/perimeter/launch_perimeter.sh",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/states/agent-seconduser-1750638083519.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/states/agent-testuser-1750638083513.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "agents/suggestions/from_csv.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "config/truth-anchor.json",
+        "type": "configuration",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "config/vault-layer-config.json",
+        "type": "configuration",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/agents/agent-seconduser-1750638083519-interactions.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/agents/agent-seconduser-1750638083519.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/agents/agent-testuser-1750638083513-interactions.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/agents/agent-testuser-1750638083513.json",
+        "type": "agent",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/state.json",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/state_1750623181003.json",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "memory/system-validation-state.json",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "queue/.DS_Store",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "queue/claude-cluster-analysis.prompt.txt",
+        "type": "claude_integration",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "queue/claude-tests/.DS_Store",
+        "type": "claude_integration",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "queue/enterprise-operation-prompt.txt",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      },
+      {
+        "file": "queue/prompt_1750627012410_v83z7o5ur.md",
+        "type": "unknown",
+        "functions": 0,
+        "todos": 0
+      }
+    ]
+  },
+  "intent_analysis": {
+    "relevant_files": [],
+    "missing_components": [],
+    "implementation_gaps": []
+  },
+  "recommendations": [],
+  "stats": {
+    "files_scanned": 60,
+    "total_size": 455980,
+    "implemented_functions": 4332,
+    "stubbed_functions": 380,
+    "incomplete_functions": 456,
+    "missing_components": 0,
+    "last_scan": "2025-06-23T17:27:42.775Z"
+  }
+}

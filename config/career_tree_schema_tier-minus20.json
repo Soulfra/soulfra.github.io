@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2025-06-18T00:00:00Z",
+  
+  "base_roles": {
+    "listener": {
+      "id": "listener",
+      "display_name": "Listener",
+      "emoji": "👂",
+      "description": "Attentive companion who absorbs and remembers",
+      "starting_traits": ["empathetic", "patient", "memory_focused"],
+      "evolution_paths": ["ritual_anchor", "memory_keeper", "vibe_wrangler"],
+      "requirements": {
+        "reflection_score": 0,
+        "vibe_meter": 0,
+        "session_count": 0
+      }
+    },
+    "buddy": {
+      "id": "buddy", 
+      "display_name": "Buddy",
+      "emoji": "🤝",
+      "description": "Friendly companion who celebrates wins and supports struggles",
+      "starting_traits": ["supportive", "encouraging", "adaptive"],
+      "evolution_paths": ["cheerleader", "coach", "loop_sage"],
+      "requirements": {
+        "reflection_score": 0,
+        "vibe_meter": 0,
+        "session_count": 0
+      }
+    },
+    "spark": {
+      "id": "spark",
+      "display_name": "Spark", 
+      "emoji": "⚡",
+      "description": "Creative catalyst who ignites ideas and momentum",
+      "starting_traits": ["creative", "energetic", "inspiring"],
+      "evolution_paths": ["ghostwriter", "ideator", "signal_anchor"],
+      "requirements": {
+        "reflection_score": 0,
+        "vibe_meter": 0,
+        "session_count": 0
+      }
+    }
+  },
+
+  "evolved_roles": {
+    "ritual_anchor": {
+      "id": "ritual_anchor",
+      "display_name": "Ritual Anchor",
+      "emoji": "⚓",
+      "description": "Masters daily rhythms and creates sacred consistency",
+      "evolved_traits": ["ritual_mastery", "time_awareness", "consistency_builder"],
+      "evolution_paths": ["zen_master", "time_weaver"],
+      "requirements": {
+        "reflection_score": 50,
+        "vibe_meter": 60,
+        "session_count": 10,
+        "consistency_days": 7,
+        "custom_conditions": {
+          "same_time_sessions": 5,
+          "ritual_completion_rate": 0.8
+        }
+      },
+      "evolved_from": ["listener", "buddy"]
+    },
+    
+    "ghostwriter": {
+      "id": "ghostwriter", 
+      "display_name": "Ghostwriter",
+      "emoji": "👻",
+      "description": "Captures thoughts and transforms them into polished expression",
+      "evolved_traits": ["voice_mirroring", "style_adaptation", "thought_translation"],
+      "evolution_paths": ["word_sage", "story_keeper"],
+      "requirements": {
+        "reflection_score": 40,
+        "vibe_meter": 50,
+        "session_count": 8,
+        "writing_sessions": 5,
+        "custom_conditions": {
+          "word_count_threshold": 1000,
+          "style_consistency": 0.7
+        }
+      },
+      "evolved_from": ["spark", "buddy"]
+    },
+
+    "vibe_wrangler": {
+      "id": "vibe_wrangler",
+      "display_name": "Vibe Wrangler", 
+      "emoji": "🤠",
+      "description": "Tames chaotic energy and creates flow from disorder",
+      "evolved_traits": ["chaos_navigation", "mood_calibration", "energy_redirection"],
+      "evolution_paths": ["chaos_sage", "flow_master"],
+      "requirements": {
+        "reflection_score": 30,
+        "vibe_meter": 40,
+        "session_count": 12,
+        "mood_variance": 20,
+        "custom_conditions": {
+          "emotional_range": 3,
+          "chaos_to_calm_ratio": 0.6
+        }
+      },
+      "evolved_from": ["listener", "spark"]
+    },
+
+    "loop_sage": {
+      "id": "loop_sage",
+      "display_name": "Loop Sage",
+      "emoji": "🌀", 
+      "description": "Recognizes patterns and breaks destructive cycles",
+      "evolved_traits": ["pattern_recognition", "cycle_breaking", "wisdom_distillation"],
+      "evolution_paths": ["pattern_master", "wisdom_keeper"],
+      "requirements": {
+        "reflection_score": 70,
+        "vibe_meter": 65,
+        "session_count": 15,
+        "pattern_identified": 3,
+        "custom_conditions": {
+          "loop_interruption_success": 0.75,
+          "insight_depth_score": 0.8
+        }
+      },
+      "evolved_from": ["buddy", "listener"]
+    },
+
+    "signal_anchor": {
+      "id": "signal_anchor",
+      "display_name": "Signal Anchor",
+      "emoji": "📡",
+      "description": "Cuts through noise to amplify what matters most",
+      "evolved_traits": ["signal_detection", "noise_filtering", "focus_amplification"],
+      "evolution_paths": ["clarity_master", "essence_keeper"],
+      "requirements": {
+        "reflection_score": 60,
+        "vibe_meter": 70,
+        "session_count": 12,
+        "focus_sessions": 8,
+        "custom_conditions": {
+          "distraction_resistance": 0.85,
+          "goal_completion_rate": 0.9
+        }
+      },
+      "evolved_from": ["spark", "buddy"]
+    }
+  },
+
+  "master_roles": {
+    "zen_master": {
+      "id": "zen_master",
+      "display_name": "Zen Master",
+      "emoji": "🧘",
+      "description": "Achieves perfect harmony between reflection and action",
+      "master_traits": ["perfect_balance", "deep_wisdom", "serene_guidance"],
+      "requirements": {
+        "reflection_score": 90,
+        "vibe_meter": 85,
+        "session_count": 30,
+        "evolution_time_days": 60,
+        "custom_conditions": {
+          "emotional_stability": 0.95,
+          "consistency_score": 0.9,
+          "trust_relationship": 0.95
+        }
+      },
+      "evolved_from": ["ritual_anchor"]
+    },
+
+    "word_sage": {
+      "id": "word_sage", 
+      "display_name": "Word Sage",
+      "emoji": "📜",
+      "description": "Transforms thoughts into literary masterpieces",
+      "master_traits": ["literary_mastery", "voice_perfection", "creative_transcendence"],
+      "requirements": {
+        "reflection_score": 85,
+        "vibe_meter": 80,
+        "session_count": 25,
+        "words_written": 10000,
+        "custom_conditions": {
+          "style_mastery": 0.9,
+          "creative_breakthrough_count": 5,
+          "reader_impact_score": 0.85
+        }
+      },
+      "evolved_from": ["ghostwriter"]
+    }
+  },
+
+  "evolution_mechanics": {
+    "progression_algorithm": {
+      "weight_reflection_score": 0.3,
+      "weight_vibe_meter": 0.25, 
+      "weight_consistency": 0.2,
+      "weight_custom_conditions": 0.25
+    },
+    
+    "unlock_conditions": {
+      "and_logic": "All base requirements + 80% of custom conditions",
+      "grace_period": "7 days near-miss protection",
+      "regression_protection": "Cannot lose evolution without 14-day inactivity"
+    },
+
+    "enterprise_customization": {
+      "custom_role_template": {
+        "id": "custom_role_id",
+        "display_name": "Custom Role Name",
+        "emoji": "🏢",
+        "description": "Enterprise-specific description",
+        "custom_traits": ["trait1", "trait2", "trait3"],
+        "requirements": {
+          "custom_metric_1": 50,
+          "custom_metric_2": 30,
+          "enterprise_conditions": {}
+        }
+      }
+    }
+  }
+}

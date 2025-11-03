@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="745be8ca-b105-4ce6-aa52-162aee3d3b54"
+LABEL site.domain="745be8ca.codearena.dev"
+LABEL site.type="arena"

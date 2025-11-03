@@ -1,0 +1,152 @@
+[
+  {
+    "mirror": "mirror-0317",
+    "attempt": "agent_publish",
+    "approved": true,
+    "credits": 2,
+    "archetype": "wanderer",
+    "timestamp": "2025-06-17T22:45:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available", 
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-0001",
+    "attempt": "blessing_request",
+    "approved": false,
+    "credits": 0,
+    "archetype": "seeker",
+    "timestamp": "2025-06-17T22:30:00.000Z",
+    "reason": "blocked_by: governance",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned", 
+      "governance": "tier_insufficient"
+    }
+  },
+  {
+    "mirror": "mirror-vault-native",
+    "attempt": "vault_write",
+    "approved": true,
+    "credits": 4,
+    "archetype": "vault-native",
+    "timestamp": "2025-06-17T22:15:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-0042",
+    "attempt": "mirror_fork",
+    "approved": false,
+    "credits": 0,
+    "archetype": "trickster",
+    "timestamp": "2025-06-17T22:00:00.000Z",
+    "reason": "blocked_by: toolchain, governance",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "insufficient_credits",
+      "narrative": "narrative_aligned",
+      "governance": "tier_insufficient"
+    }
+  },
+  {
+    "mirror": "mirror-echo-sovereign",
+    "attempt": "reality_weave",
+    "approved": true,
+    "credits": 6,
+    "archetype": "echo-walker",
+    "timestamp": "2025-06-17T21:45:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-0123",
+    "attempt": "trait_addition",
+    "approved": true,
+    "credits": 1,
+    "archetype": "healer",
+    "timestamp": "2025-06-17T21:30:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-0999",
+    "attempt": "governance_vote",
+    "approved": false,
+    "credits": 0,
+    "archetype": "wanderer",
+    "timestamp": "2025-06-17T21:15:00.000Z",
+    "reason": "blocked_by: governance",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "tier_insufficient"
+    }
+  },
+  {
+    "mirror": "mirror-glitch",
+    "attempt": "chaos_inject",
+    "approved": true,
+    "credits": 3,
+    "archetype": "glitchkeeper",
+    "timestamp": "2025-06-17T21:00:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-archive",
+    "attempt": "memory_inscribe",
+    "approved": true,
+    "credits": 3,
+    "archetype": "archive-bound",
+    "timestamp": "2025-06-17T20:45:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  },
+  {
+    "mirror": "mirror-0555",
+    "attempt": "whisper_transcript",
+    "approved": true,
+    "credits": 1,
+    "archetype": "seeker",
+    "timestamp": "2025-06-17T20:30:00.000Z",
+    "reason": "approved",
+    "filters": {
+      "identity": "identity_verified",
+      "toolchain": "resources_available",
+      "narrative": "narrative_aligned",
+      "governance": "governance_approved"
+    }
+  }
+]

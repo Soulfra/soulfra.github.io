@@ -1,0 +1,39 @@
+{
+  "id": "agent-testuser-1750638083513",
+  "name": "TestUser's Agent",
+  "personality": "adventurous",
+  "skills": [
+    "creativity",
+    "pattern-recognition",
+    "learning"
+  ],
+  "status": "active",
+  "spawned_at": "2025-06-23T00:21:23.516Z",
+  "blessing": {
+    "agent_id": "agent-testuser-1750638083513",
+    "blessed_by": "payment-system",
+    "status": "blessed",
+    "can_propagate": true,
+    "can_fork": false,
+    "can_resell": false,
+    "contributor": "TestUser",
+    "payment_intent_id": "pi_test_12345",
+    "timestamp": "2025-06-23T00:21:23.513Z",
+    "tier_access": "tier-minus10",
+    "spawned_from": "cal-riven-genesis"
+  },
+  "cal_riven_connection": true,
+  "mirror_agent": {
+    "name": "TestUser's Agent",
+    "personality": "adventurous",
+    "skills": [
+      "creativity",
+      "pattern-recognition",
+      "learning"
+    ],
+    "memory": [],
+    "reflection": {}
+  },
+  "experience": 20,
+  "last_interaction": "2025-06-23T00:21:23.521Z"
+}

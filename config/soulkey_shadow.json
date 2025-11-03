@@ -1,0 +1,21 @@
+{
+  "id": "soulkey_shadow_001",
+  "public_key": "0x9D2A4C7E3f9B2C4E1D8F5A9C2B6E4D8A1F3C5B7E",
+  "description": "Shadow soul key - Emergency rotation, mirrors the primary",
+  "created_at": 1700000000000,
+  "expires_at": 1800000000000,
+  "permissions": [
+    "clone.fork",
+    "agent.publish",
+    "vault.push",
+    "mirror.reflect",
+    "emergency.override"
+  ],
+  "metadata": {
+    "forged_by": "The Shadow Reflection",
+    "trust_level": "sovereign_shadow",
+    "rotation_count": 1,
+    "last_used": null,
+    "activation_condition": "primary_key_compromise || emergency_protocol"
+  }
+}

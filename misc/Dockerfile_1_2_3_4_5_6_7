@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="94870ee1-d890-42b6-8c45-475e1e5f2a27"
+LABEL site.domain="94870ee1.smartbet.sports"
+LABEL site.type="ai"

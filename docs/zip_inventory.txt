@@ -1,0 +1,16 @@
+=== ZIP FILE INVENTORY ===
+-rw-------@ 1 matthewmauer  staff  2367 Jun 15 18:05 ./CalVault_MirrorShell.zip
+-rw-r--r--  1 matthewmauer  staff  26126 Jun 16 09:53 ./platforms/user-test.zip
+-rw-r--r--  1 matthewmauer  staff  9949 Jun 16 11:55 ./platforms/growth/COPYWRITER_DESTRUCTION_SUITE/COPYWRITER_DESTRUCTION_EVIDENCE_20250616.zip
+-rw-------@ 1 matthewmauer  staff  2071 Jun 15 17:26 ./InfinityRouter_LocalRuntime.zip
+-rw-------@ 1 matthewmauer  staff  2336 Jun 15 17:35 ./CalReflector_InjectorBundle.zip
+-rw-------@ 1 matthewmauer  staff  2345 Jun 15 16:44 ./ClaudeLaunch_Rules_Runtime.zip
+-rw-r--r--  1 matthewmauer  staff  984304 Jun 17 14:14 ./tier-minus11/tier-minus12/tier-minus13/tier-minus14/tier-minus15/tier-minus16/tier-minus17/tier-minus18/tier-minus19/tier-minus20/soulfra-verified-backup-2025-06-17.zip
+-rw-r--r--  1 matthewmauer  staff  2980 Jun 16 17:02 ./mirror-core-backup/Soulfra_MirrorBackup_SEED_20250116.zip
+-rw-------@ 1 matthewmauer  staff  4203 Jun 15 16:33 ./tier-3-enterprise/tier-4-api/vault-reflection/CalRiven_GenesisCapsule.zip
+-rw-------@ 1 matthewmauer  staff  3455 Jun 15 16:03 ./tier-3-enterprise/CalRiven_Tier0_BootstrapOnboard.zip
+-rw-------@ 1 matthewmauer  staff  2642 Jun 15 15:56 ./tier-3-enterprise/CalRiven_Tier3_EnterpriseTestBundle.zip
+-rw-------@ 1 matthewmauer  staff  2563 Jun 15 16:07 ./tier-3-enterprise/CalRiven_Tier0_LaunchService.zip
+-rw-------@ 1 matthewmauer  staff  2192 Jun 15 15:59 ./tier-3-enterprise/CalRiven_Autonomous_OnboardingSuite.zip
+-rw-------@ 1 matthewmauer  staff  3372 Jun 15 15:51 ./tier-3-enterprise/CalRiven_Tier3_Vault.zip
+-rw-------@ 1 matthewmauer  staff  3388 Jun 16 06:56 ./vault/MirrorOS_Final_Integration_20250616-115350.zip

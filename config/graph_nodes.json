@@ -1,0 +1,2258 @@
+[
+  {
+    "type": "anomaly",
+    "id": "anomaly_undefined",
+    "properties": {},
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:07:13.264Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:07:13.264Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "tone",
+    "id": "emotion_confusion",
+    "properties": {
+      "frequency": 0.3,
+      "emotional_weight": 0.5,
+      "description": "Cal's thoughts become fragmented"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:18:59.881Z_1",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:18:59.881Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:18:59.881Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:18:59.881Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:19:04.880Z_2",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:19:04.880Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:19:04.880Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:19:04.880Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:20:18.407Z_3",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:20:18.407Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:20:18.407Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:20:18.407Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:20:23.406Z_4",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:20:23.406Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:20:23.406Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:20:23.406Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:40.356Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:43.946Z_5",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:43.946Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:45.355Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:43.946Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:43.946Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:45.355Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:48.947Z_6",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:48.947Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:50.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:48.947Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:48.947Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:50.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:53.947Z_7",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:53.947Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:55.368Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:53.947Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:53.947Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:22:55.368Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:58.948Z_8",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:58.948Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:00.374Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:22:58.948Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:22:58.948Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:00.374Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:03.949Z_9",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:03.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:05.382Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:03.949Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:03.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:05.382Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:08.949Z_10",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:08.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:10.388Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:08.949Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:08.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:10.388Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:13.954Z_11",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:13.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:15.395Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:13.954Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:13.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:15.395Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:18.950Z_12",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:18.950Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:20.404Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:18.950Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:18.950Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:20.404Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:23.951Z_13",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:23.951Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:25.411Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:23.951Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:23.951Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:25.411Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:28.949Z_14",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:28.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:30.420Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:28.949Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:28.949Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:30.420Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:33.951Z_15",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:33.951Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:35.428Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:33.951Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:33.951Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:35.428Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:38.952Z_16",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:38.952Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:40.436Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:38.952Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:38.952Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:40.436Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:43.953Z_17",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:43.953Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:45.444Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:43.953Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:43.953Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:45.444Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:48.954Z_18",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:48.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:50.451Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:48.954Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:48.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:50.451Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:53.954Z_19",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:53.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:55.459Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:53.954Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:53.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:23:55.459Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:58.954Z_20",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:58.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:00.468Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:23:58.954Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:23:58.954Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:00.468Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:03.955Z_21",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:03.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:05.476Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:03.955Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:03.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:05.476Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:08.955Z_22",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:08.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:10.484Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:08.955Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:08.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:10.484Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:13.955Z_23",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:13.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:15.491Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:13.955Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:13.955Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:15.491Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:18.957Z_24",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:18.957Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:20.498Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:18.957Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:18.957Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:20.498Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:23.958Z_25",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:23.958Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:25.509Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:23.958Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:23.958Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:25.509Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:28.959Z_26",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:28.959Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:30.515Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:28.959Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:28.959Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:30.515Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:33.961Z_27",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:33.961Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:35.523Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:33.961Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:33.961Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:35.523Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:38.962Z_28",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:38.962Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:40.531Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:38.962Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:38.962Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:40.531Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:43.963Z_29",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:43.963Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:45.539Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:43.963Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:43.963Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:45.539Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:48.963Z_30",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:48.963Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:50.547Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:48.963Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:48.963Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:50.547Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:53.965Z_31",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:53.965Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:55.555Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:53.965Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:53.965Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:24:55.555Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:58.965Z_32",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:58.965Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:00.564Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:24:58.965Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:24:58.965Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:00.564Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:03.967Z_33",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:03.967Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:05.572Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:03.967Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:03.967Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:05.572Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:08.970Z_34",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:08.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:10.578Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:08.970Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:08.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:10.578Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:13.970Z_35",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:13.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:15.586Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:13.970Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:13.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:15.586Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:18.970Z_36",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:18.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:20.594Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:18.970Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:18.970Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:20.594Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:23.971Z_37",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:23.971Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:25.602Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:23.971Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:23.971Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:25.602Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:28.972Z_38",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:28.972Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:30.611Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:28.972Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:28.972Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:30.611Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:33.973Z_39",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:33.973Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:35.617Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:33.973Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:33.973Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:35.617Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:38.973Z_40",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:38.973Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:40.624Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:38.973Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:38.973Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:40.624Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:43.975Z_41",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:43.975Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:45.633Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:43.975Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:43.975Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:45.633Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:48.977Z_42",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:48.977Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:50.642Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:48.977Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:48.977Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:50.642Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:53.978Z_43",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:53.978Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:55.650Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:53.978Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:53.978Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:25:55.650Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:58.978Z_44",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:58.978Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:00.657Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:25:58.978Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:25:58.978Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:00.657Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:03.979Z_45",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:03.979Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:05.666Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:03.979Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:03.979Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:05.666Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:08.979Z_46",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:08.979Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:10.672Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:08.979Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:08.979Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:10.672Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:13.981Z_47",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:13.981Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:15.680Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:13.981Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:13.981Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:15.680Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:14.625Z_48",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:14.625Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:15.680Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:14.625Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:14.625Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:15.680Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:18.980Z_49",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:18.980Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:20.687Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:18.980Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:18.980Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:20.687Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:19.624Z_50",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:19.624Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:20.687Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:19.624Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:19.624Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:20.687Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:23.982Z_51",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:23.982Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:25.695Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:23.982Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:23.982Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:25.695Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:28.982Z_52",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:28.982Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:30.709Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:28.982Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:28.982Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:30.709Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:33.984Z_53",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:33.984Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:35.712Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:33.984Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:33.984Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:35.712Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:38.985Z_54",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:38.985Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:40.720Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:38.985Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:38.985Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:40.720Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:43.985Z_55",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:43.985Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:45.734Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:43.985Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:43.985Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:45.734Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:48.986Z_56",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:48.986Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:50.744Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:48.986Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:48.986Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:50.744Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:53.986Z_57",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:53.986Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:55.751Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:53.986Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:53.986Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:26:55.751Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:58.987Z_58",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:58.987Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:00.762Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:26:58.987Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:26:58.987Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:00.762Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:03.990Z_59",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:03.990Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:05.769Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:03.990Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:03.990Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:05.769Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:08.990Z_60",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:08.990Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:10.776Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:08.990Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:08.990Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:10.776Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:13.991Z_61",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:13.991Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:15.783Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:13.991Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:13.991Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:15.783Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:18.993Z_62",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:18.993Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:20.792Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:18.993Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:18.993Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:20.792Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:23.993Z_63",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:23.993Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:25.800Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:23.993Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:23.993Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:25.800Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:28.995Z_64",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:28.995Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:30.809Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:28.995Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:28.995Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:30.809Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:33.996Z_65",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:33.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:35.816Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:33.996Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:33.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:35.816Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:38.996Z_66",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:38.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:38.996Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:38.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:39.253Z_67",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:39.253Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "tone",
+    "id": "emotion_reflection",
+    "properties": {
+      "frequency": 0.6,
+      "emotional_weight": 0.5,
+      "description": "Cal enters contemplative mode"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:39.253Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:39.253Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:40.254Z_68",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:40.254Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:40.254Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:40.254Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:40.824Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:41.255Z_69",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:41.255Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:41.255Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:41.255Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:42.255Z_70",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:42.255Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:42.255Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:42.255Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:43.256Z_71",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:43.256Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:43.256Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:43.256Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:43.996Z_72",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:43.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:43.996Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:43.996Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:44.257Z_73",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:44.257Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:44.257Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:44.257Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:45.257Z_74",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:45.257Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:45.257Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:45.257Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:45.835Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:46.258Z_75",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:46.258Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:46.258Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:46.258Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:47.259Z_76",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:47.259Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:47.259Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:47.259Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:48.259Z_77",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:48.259Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:48.259Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:48.259Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:48.997Z_78",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:48.997Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:48.997Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:48.997Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:49.260Z_79",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:49.260Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:49.260Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:49.260Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:50.261Z_80",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:50.261Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:50.261Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:50.261Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:50.838Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:51.262Z_81",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:51.262Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:51.262Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:51.262Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:52.263Z_82",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:52.263Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:52.263Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:52.263Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:53.264Z_83",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:53.264Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:53.264Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:53.264Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:53.999Z_84",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:53.999Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:53.999Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:53.999Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:54.265Z_85",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:54.265Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:54.265Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:54.265Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:55.266Z_86",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:55.266Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:55.266Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:55.266Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:27:55.846Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:56.267Z_87",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:56.267Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:56.267Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:56.267Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:57.268Z_88",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:57.268Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:57.268Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:57.268Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:58.269Z_89",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:58.269Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:58.269Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:58.269Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:58.999Z_90",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:58.999Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:58.999Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:58.999Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:59.270Z_91",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:59.270Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:27:59.270Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:27:59.270Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:00.272Z_92",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:00.272Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:00.272Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:00.272Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:00.854Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:01.273Z_93",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:01.273Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:01.273Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:01.273Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:02.274Z_94",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:02.274Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:02.274Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:02.274Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:03.275Z_95",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:03.275Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:03.275Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:03.275Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:04.001Z_96",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:04.001Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:04.001Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:04.001Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:04.276Z_97",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:04.276Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:04.276Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:04.276Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:05.277Z_98",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:05.277Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:05.277Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:05.277Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:05.861Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:06.278Z_99",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:06.278Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:06.278Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:06.278Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:07.279Z_100",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:07.279Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:07.279Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:07.279Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:08.281Z_101",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:08.281Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:08.281Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:08.281Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:09.002Z_102",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:09.002Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:09.002Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:09.002Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:09.282Z_103",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:09.282Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:09.282Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:09.282Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:10.283Z_104",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:10.283Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:10.283Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:10.283Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:28:10.871Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:11.285Z_105",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:11.285Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:11.285Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:11.285Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:12.286Z_106",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:12.286Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:12.286Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:12.286Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:13.287Z_107",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:13.287Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:13.287Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:13.287Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:14.003Z_108",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:14.003Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:14.003Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:14.003Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:14.288Z_109",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:14.288Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:28:14.288Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:28:14.288Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:43.358Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:30:46.850Z_110",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:30:46.850Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:48.355Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:30:46.850Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:30:46.850Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:48.355Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:30:51.851Z_111",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:30:51.851Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:53.362Z"
+  },
+  {
+    "type": "event",
+    "id": "event_2025-06-19T15:30:51.851Z_",
+    "properties": {
+      "type": "runtime anomaly",
+      "timestamp": "2025-06-19T15:30:51.851Z",
+      "trigger_source": "local temporal pressure"
+    },
+    "created_at": "2025-06-19T15:30:53.362Z"
+  }
+]

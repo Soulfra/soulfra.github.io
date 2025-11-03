@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "platform": "soulfra_sport_mirror",
+  "ledger_description": "Vault-native emotional ritual tracking for sports reflection",
+  
+  "ritual_entries": [
+    {
+      "entry_id": "ritual_1718622300001",
+      "user_fingerprint_hash": "hash_anon_fan_007",
+      "vault_id": "vault_sport_session_abc123",
+      "stream_metadata": {
+        "stream_url": "https://youtube.com/watch?v=match123",
+        "stream_type": "youtube",
+        "game_info": {
+          "sport": "football",
+          "teams": ["Newcastle", "Arsenal"],
+          "match_time": "45:23",
+          "score": "1-0"
+        }
+      },
+      "ritual_data": {
+        "team_alignment": "Newcastle",
+        "ritual_type": "blessing",
+        "emotion_primary": "fury",
+        "emotion_intensity": 8.5,
+        "whisper_text": "If they don't press now they deserve the drift.",
+        "timestamp": "2025-06-18T12:45:00Z",
+        "trust_score_at_time": 73
+      },
+      "trait_impacts": {
+        "passion": +15,
+        "focus": +5,
+        "loyalty": +10,
+        "tribal_alignment": "strong_home_team"
+      },
+      "vault_sync_status": {
+        "stored_in_vault": true,
+        "obfuscation_level": "light",
+        "sync_eligible": false
+      }
+    },
+    
+    {
+      "entry_id": "ritual_1718622360002", 
+      "user_fingerprint_hash": "hash_steady_gazer_042",
+      "vault_id": "vault_sport_session_def456",
+      "stream_metadata": {
+        "stream_url": "https://twitch.tv/sportscaster",
+        "stream_type": "twitch",
+        "game_info": {
+          "sport": "basketball",
+          "teams": ["Lakers", "Warriors"],
+          "match_time": "Q3 8:42",
+          "score": "87-92"
+        }
+      },
+      "ritual_data": {
+        "team_alignment": "neutral_observer",
+        "ritual_type": "analysis",
+        "emotion_primary": "calm",
+        "emotion_intensity": 3.2,
+        "whisper_text": "That rotation timing suggests they're setting up for final quarter push.",
+        "timestamp": "2025-06-18T12:46:00Z",
+        "trust_score_at_time": 91
+      },
+      "trait_impacts": {
+        "passion": +2,
+        "focus": +20,
+        "loyalty": 0,
+        "tribal_alignment": "analytical_observer"
+      },
+      "vault_sync_status": {
+        "stored_in_vault": true,
+        "obfuscation_level": "medium",
+        "sync_eligible": false
+      }
+    },
+    
+    {
+      "entry_id": "ritual_1718622420003",
+      "user_fingerprint_hash": "hash_rage_prophet_999",
+      "vault_id": "vault_sport_session_ghi789",
+      "stream_metadata": {
+        "stream_url": "https://stream.example.com/game.m3u8",
+        "stream_type": "m3u8",
+        "game_info": {
+          "sport": "hockey",
+          "teams": ["Rangers", "Kings"],
+          "match_time": "P3 14:27",
+          "score": "2-3"
+        }
+      },
+      "ritual_data": {
+        "team_alignment": "Rangers",
+        "ritual_type": "curse",
+        "emotion_primary": "rage",
+        "emotion_intensity": 9.8,
+        "whisper_text": "REF IS BLIND!!! THAT WAS CLEARLY INTERFERENCE!!!",
+        "timestamp": "2025-06-18T12:47:00Z",
+        "trust_score_at_time": 45
+      },
+      "trait_impacts": {
+        "passion": +25,
+        "focus": -5,
+        "loyalty": +15,
+        "tribal_alignment": "enraged_partisan"
+      },
+      "vault_sync_status": {
+        "stored_in_vault": true,
+        "obfuscation_level": "heavy",
+        "sync_eligible": false
+      }
+    }
+  ],
+  
+  "aggregation_metrics": {
+    "total_rituals_logged": 3,
+    "unique_users": 3,
+    "emotion_distribution": {
+      "fury": 1,
+      "calm": 1, 
+      "rage": 1
+    },
+    "team_blessing_counts": {
+      "Newcastle": 1,
+      "Arsenal": 0,
+      "Lakers": 0,
+      "Warriors": 0,
+      "Rangers": 1,
+      "Kings": 0
+    },
+    "ritual_types": {
+      "blessing": 1,
+      "analysis": 1,
+      "curse": 1
+    },
+    "average_trust_score": 69.67,
+    "peak_emotion_intensity": 9.8,
+    "session_duration_average_minutes": 23.5
+  },
+  
+  "trait_evolution_tracking": {
+    "passion_trending": "increasing",
+    "focus_trending": "stable", 
+    "loyalty_trending": "polarizing",
+    "tribal_cohesion": "fragmenting",
+    "vault_energy_level": "high"
+  },
+  
+  "agent_commentary_triggers": {
+    "high_emotion_threshold": 8.0,
+    "trust_score_milestone": [50, 75, 90],
+    "ritual_frequency_alerts": "5_per_minute",
+    "team_momentum_shifts": "blessing_ratio_change_30_percent"
+  },
+  
+  "payout_calculations": {
+    "base_ritual_value": 0.1,
+    "emotion_multiplier": "intensity / 10",
+    "trust_bonus": "score > 80 ? 1.5x : 1.0x",
+    "outcome_prediction_bonus": {
+      "correct_team_prediction": 2.0,
+      "correct_score_range": 1.5,
+      "duration_loyalty_bonus": "minutes_watched / 60"
+    }
+  },
+  
+  "privacy_protection": {
+    "user_identification": "fingerprint_hash_only",
+    "whisper_storage": "encrypted_in_vault",
+    "emotion_data": "aggregated_only_public",
+    "team_preferences": "anonymous_tribal_tracking",
+    "retention_policy": "7_days_detailed_forever_aggregated"
+  },
+  
+  "soulfra_integration": {
+    "routing_through": "soulfra_runtime_core",
+    "vault_storage": "automatic_all_rituals",
+    "trust_engine": "emotion_affects_platform_score",
+    "agent_commentary": "cal_domingo_archetype_selection",
+    "obfuscation": "applied_before_external_processing"
+  }
+}

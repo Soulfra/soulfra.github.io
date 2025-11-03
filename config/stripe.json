@@ -1,0 +1,59 @@
+{
+  "service": "stripe",
+  "connected": false,
+  "config": {
+    "publishableKey": null,
+    "secretKey": null,
+    "webhookSecret": null
+  },
+  "monetization": {
+    "enabled": false,
+    "features": {
+      "agents": false,
+      "automations": false,
+      "platforms": false
+    },
+    "pricing": {
+      "agents": {
+        "min": 5,
+        "max": 500,
+        "default": 29,
+        "currency": "usd"
+      },
+      "automations": {
+        "min": 10,
+        "max": 200,
+        "default": 49,
+        "currency": "usd"
+      },
+      "platforms": {
+        "starter": 500,
+        "professional": 2000,
+        "enterprise": 5000,
+        "currency": "usd"
+      }
+    },
+    "revenueShare": {
+      "agents": 0.7,
+      "automations": 0.7,
+      "platforms": 0.3
+    }
+  },
+  "transactions": {
+    "total": 0,
+    "revenue": 0,
+    "payouts": 0,
+    "pending": 0
+  },
+  "products": {
+    "agents": [],
+    "automations": [],
+    "platforms": []
+  },
+  "metadata": {
+    "accountId": null,
+    "dashboardUrl": null,
+    "testMode": true,
+    "lastWebhook": null
+  }
+}

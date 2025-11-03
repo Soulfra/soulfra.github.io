@@ -1,0 +1,20 @@
+{
+  "name": "Definitely-Not-Real-AI-Ownership",
+  "version": "0.0.1-demo-only",
+  "description": "Fake AI agent demo that definitely doesn't create real ownership",
+  "disclaimer": "THIS IS JUST A JOKE - AI CANNOT OWN PROPERTY",
+  "warning": "AI CANNOT LEGALLY OWN PROPERTY",
+  "legalNotice": "This is purely educational and doesn't create real ownership",
+  "author": "Definitely-Not-Creating-AI-Rights",
+  "license": "DEMO-ONLY",
+  "scripts": {
+    "start": "node definitely-fake-server.js",
+    "deploy": "node totally-not-real-blockchain.js",
+    "create-agent": "node fake-agent-creator.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "arweave": "^1.14.4"
+  },
+  "realityCheck": "🤫 Actually deploys to real blockchain"
+}

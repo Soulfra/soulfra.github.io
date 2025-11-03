@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="14a8bd61-7c82-44f5-ba9a-1f21f52c6830"
+LABEL site.domain="14a8bd61.puzzleverse.io"
+LABEL site.type="game"

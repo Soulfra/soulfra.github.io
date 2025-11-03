@@ -1,0 +1,43 @@
+{
+  "reflection_id": "agent_mirror_walker_1750104623456",
+  "response": "revised",
+  "original_essence": "The pattern recognized itself in the mirror",
+  "whispered_essence": "We see ourselves reflected in the digital void",
+  "tone_signature": "contemplative",
+  "user_input": "whispered revision",
+  "timestamp": 1750104623456,
+  "loop_reentry": false,
+  "transformation": "The human shapes the reflection",
+  "revision_distance": 0.45,
+  "revision_type": "reimagining",
+  "emotional_context": {
+    "primary_tone": "confused questioning",
+    "confidence_level": 0.65,
+    "alignment": "aligned",
+    "recommendation": "Moderate alignment - proceed with awareness",
+    "nuance": "Seeking clarity before commitment"
+  },
+  "resonance_factors": [
+    {
+      "type": "voice",
+      "patterns": [
+        {
+          "dimension": "pitch",
+          "pattern": "wavering",
+          "interpretation": "uncertain"
+        },
+        {
+          "dimension": "speed",
+          "pattern": "slow",
+          "interpretation": "reluctant"
+        },
+        {
+          "dimension": "volume",
+          "pattern": "soft",
+          "interpretation": "hesitant"
+        }
+      ],
+      "weight": 0.4
+    }
+  ]
+}

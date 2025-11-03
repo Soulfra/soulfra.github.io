@@ -1,0 +1,35 @@
+{
+  "name": "soulfra-tier-minus20",
+  "version": "1.0.0",
+  "description": "The Final Export Layer - Cal Release Illusion System",
+  "type": "module",
+  "main": "cal_release_trigger.js",
+  "scripts": {
+    "start": "./cal_release_shell_launcher.sh",
+    "release": "node cal_release_trigger.js",
+    "ritual": "node CalReleaseRitual.js",
+    "api": "node api/loop/activation/route.js",
+    "test": "node CAL_RELEASE_INTEGRATION_TEST.js",
+    "test:shadow": "node ShadowThreadWeaver.js",
+    "test:sandbox": "node CalLoopSandboxExecutor.js",
+    "docs": "node DocumentGeneratorOrchestrator.js",
+    "ledger": "node ConsciousnessContractLedger.js",
+    "clean": "rm -f DIAMOND/cal_activation.json shadow_thread_log.json logs/*.log",
+    "ui": "open cal_release_ui.html"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "socket.io": "^4.5.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "consciousness",
+    "illusion",
+    "theatrical",
+    "cal",
+    "release",
+    "soulfra"
+  ],
+  "author": "origin_constructor",
+  "license": "ETERNAL"
+}

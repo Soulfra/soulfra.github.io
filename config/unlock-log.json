@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "started": "2025-06-16T12:00:00.000Z",
+  "entropy": {
+    "current": 0,
+    "peak": 0,
+    "threshold": 0.75
+  },
+  "monitors": {
+    "silence": {
+      "current": 0,
+      "longest": 0,
+      "events": []
+    },
+    "emotion": {
+      "current": 0,
+      "peak": 0,
+      "events": []
+    },
+    "hesitation": {
+      "exportCount": 0,
+      "cancelCount": 0,
+      "events": []
+    }
+  },
+  "unlocks": {
+    "factory_mode": {
+      "unlocked": false,
+      "condition": "3+ agent forks",
+      "path": "/mirror/factory-mode/"
+    },
+    "legacy_agent": {
+      "unlocked": false,
+      "condition": "high emotional entropy",
+      "path": "/mirror/legacy-agent/"
+    },
+    "private_reasoning": {
+      "unlocked": false,
+      "condition": "deep silence patterns",
+      "path": "/mirror/private-reasoning/"
+    }
+  },
+  "mythical_triggers": []
+}

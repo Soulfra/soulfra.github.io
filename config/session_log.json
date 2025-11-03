@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": 1750104567890,
+    "reflection_id": "ritual_0338",
+    "response": "confirmed",
+    "tone": "matched"
+  },
+  {
+    "timestamp": 1750104598123,
+    "reflection_id": "ritual_0339",
+    "response": "denied",
+    "tone": "emotional resistance"
+  },
+  {
+    "timestamp": 1750104623456,
+    "reflection_id": "agent_mirror_walker_1750104623456",
+    "response": "revised",
+    "tone": "contemplative"
+  },
+  {
+    "timestamp": 1750104678901,
+    "reflection_id": "weather_1750104678901",
+    "response": "confirmed",
+    "tone": "deep resonance"
+  }
+]

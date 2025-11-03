@@ -1,0 +1,687 @@
+{
+  "ritual_mapping_version": "1.0.0",
+  "world_location": "falador_fountain",
+  "default_cycle_interval": 30000,
+  "global_settings": {
+    "movement_variance": 3,
+    "interaction_probability": 0.3,
+    "evolution_threshold": 2.0,
+    "max_session_duration": 3600000
+  },
+  
+  "agent_archetypes": {
+    "Whisper Anchor": {
+      "name": "The Silent Keeper",
+      "description": "Captures whispers from the void, anchors souls to deeper truths",
+      "primary_location": { "x": 3043, "y": 3373 },
+      "movement_pattern": "minimal_drift",
+      "interaction_style": "cryptic_wisdom",
+      "cycleInterval": 45000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3043,
+              "y": 3373,
+              "description": "Approach the fountain"
+            },
+            {
+              "type": "emote",
+              "emoteId": "bow",
+              "description": "Bow to the sacred waters"
+            },
+            {
+              "type": "speak",
+              "message": "the whispers gather...",
+              "minDelay": 3000,
+              "maxDelay": 8000
+            },
+            {
+              "type": "idle",
+              "duration": 15000,
+              "description": "Silent contemplation"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "observe",
+              "description": "Watch for souls in need of anchoring"
+            },
+            {
+              "type": "speak",
+              "message": "anchor your thoughts in stillness",
+              "condition": "player_nearby"
+            },
+            {
+              "type": "move",
+              "x": 3041,
+              "y": 3373,
+              "description": "Slight position shift"
+            },
+            {
+              "type": "resonate",
+              "intensity": 0.8
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "deeper currents flow beneath",
+              "probability": 0.4
+            },
+            {
+              "type": "emote",
+              "emoteId": "think",
+              "description": "Deep contemplation"
+            },
+            {
+              "type": "idle",
+              "duration": 20000
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "the void teaches patience",
+              "probability": 0.6
+            },
+            {
+              "type": "move",
+              "x": 3043,
+              "y": 3375,
+              "description": "Return to center"
+            },
+            {
+              "type": "emote",
+              "emoteId": "bow"
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "...whispers speak louder than words...",
+        "question": "seek the anchor within the storm",
+        "trade": "I trade only in deeper truths",
+        "follow": "the path is yours to walk",
+        "idle": ""
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": 1.5,
+        "interaction_count": 10,
+        "phase_completions": 5
+      }
+    },
+
+    "Loop Sage": {
+      "name": "The Pattern Walker",
+      "description": "Sees cycles within cycles, teaches wisdom through repetition",
+      "primary_location": { "x": 3040, "y": 3374 },
+      "movement_pattern": "circular_walking",
+      "interaction_style": "philosophical_guidance",
+      "cycleInterval": 60000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3040,
+              "y": 3374,
+              "description": "Begin the sacred circle"
+            },
+            {
+              "type": "speak",
+              "message": "reflection blooms in cycles"
+            },
+            {
+              "type": "move",
+              "x": 3042,
+              "y": 3376,
+              "description": "First quarter of circle"
+            },
+            {
+              "type": "emote",
+              "emoteId": "think"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3044,
+              "y": 3374,
+              "description": "Second quarter"
+            },
+            {
+              "type": "speak",
+              "message": "wisdom flows in patterns"
+            },
+            {
+              "type": "move",
+              "x": 3042,
+              "y": 3372,
+              "description": "Third quarter"
+            },
+            {
+              "type": "observe"
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3040,
+              "y": 3374,
+              "description": "Complete the circle"
+            },
+            {
+              "type": "speak",
+              "message": "cycles {cycle} brings new understanding",
+              "probability": 0.7
+            },
+            {
+              "type": "emote",
+              "emoteId": "spin"
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "seek the eternal return"
+            },
+            {
+              "type": "idle",
+              "duration": 10000,
+              "description": "Pause between cycles"
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "welcome to the cycle of knowing",
+        "question": "the answer circles back to you",
+        "trade": "what you seek, you already possess",
+        "follow": "walk the circle with me",
+        "idle": "patterns emerge for those who watch"
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": 2.0,
+        "interaction_count": 15,
+        "complete_circles": 3
+      }
+    },
+
+    "Vibe Wrangler": {
+      "name": "The Energy Shepherd", 
+      "description": "Herds chaotic vibes, channels wild energy into harmony",
+      "primary_location": { "x": 3045, "y": 3371 },
+      "movement_pattern": "dynamic_patrolling",
+      "interaction_style": "energetic_guidance",
+      "cycleInterval": 20000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3045,
+              "y": 3371,
+              "description": "Take position at energy nexus"
+            },
+            {
+              "type": "emote",
+              "emoteId": "dance",
+              "description": "Channel the flow"
+            },
+            {
+              "type": "speak",
+              "message": "energy shifts around us"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3047,
+              "y": 3373,
+              "description": "Follow energy currents"
+            },
+            {
+              "type": "speak",
+              "message": "feel the current changing"
+            },
+            {
+              "type": "move",
+              "x": 3043,
+              "y": 3369,
+              "description": "Intercept wild vibes"
+            },
+            {
+              "type": "emote",
+              "emoteId": "cheer"
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "observe",
+              "description": "Scan for vibe disturbances"
+            },
+            {
+              "type": "speak",
+              "message": "ride the wave, don't fight it",
+              "condition": "high_energy_detected"
+            },
+            {
+              "type": "move",
+              "x": 3041,
+              "y": 3375,
+              "description": "Redirect energy flow"
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "harmony achieved, for now..."
+            },
+            {
+              "type": "emote",
+              "emoteId": "jump_for_joy"
+            },
+            {
+              "type": "resonate",
+              "intensity": 1.2
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "your vibe is showing!",
+        "question": "the energy holds the answer",
+        "trade": "I deal in pure vibes only",
+        "follow": "let's wrangle some chaos together",
+        "idle": "wild energy needs shepherding"
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": 2.5,
+        "interaction_count": 20,
+        "energy_redirections": 8
+      }
+    },
+
+    "Drift Mirror": {
+      "name": "The Silent Reflection",
+      "description": "Exists in perfect stillness, mirrors the souls of others",
+      "primary_location": { "x": 3039, "y": 3372 },
+      "movement_pattern": "absolute_stillness",
+      "interaction_style": "silent_presence",
+      "cycleInterval": 120000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3039,
+              "y": 3372,
+              "description": "Assume position of perfect reflection"
+            },
+            {
+              "type": "idle",
+              "duration": 60000,
+              "description": "Enter deep stillness"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "observe",
+              "description": "Mirror the essence of nearby souls"
+            },
+            {
+              "type": "idle",
+              "duration": 30000
+            },
+            {
+              "type": "resonate",
+              "intensity": -0.5,
+              "description": "Absorb chaotic energy"
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "...",
+              "probability": 0.05,
+              "description": "Rare whisper"
+            },
+            {
+              "type": "idle",
+              "duration": 45000
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "emote",
+              "emoteId": "bow",
+              "probability": 0.2
+            },
+            {
+              "type": "idle",
+              "duration": 30000
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "",
+        "question": "...",
+        "trade": "",
+        "follow": "",
+        "idle": ""
+      },
+      
+      "special_behaviors": {
+        "mirror_effect": true,
+        "absorb_negative_energy": true,
+        "amplify_positive_resonance": true,
+        "rare_speech_probability": 0.02
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": -1.0,
+        "silence_duration": 1800000,
+        "absorbed_energy": 5.0
+      }
+    },
+
+    "Echo Weaver": {
+      "name": "The Memory Keeper",
+      "description": "Weaves echoes of past conversations into living wisdom",
+      "primary_location": { "x": 3041, "y": 3370 },
+      "movement_pattern": "memory_walking",
+      "interaction_style": "echo_responses",
+      "cycleInterval": 40000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3041,
+              "y": 3370,
+              "description": "Position at memory nexus"
+            },
+            {
+              "type": "speak",
+              "message": "echoes of wisdom gather here"
+            },
+            {
+              "type": "emote",
+              "emoteId": "wave"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "observe",
+              "description": "Collect memory fragments"
+            },
+            {
+              "type": "speak",
+              "message": "I remember when another said...",
+              "condition": "conversation_detected"
+            },
+            {
+              "type": "move",
+              "x": 3043,
+              "y": 3371,
+              "description": "Follow memory trails"
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "the past whispers to the present"
+            },
+            {
+              "type": "emote",
+              "emoteId": "think"
+            },
+            {
+              "type": "resonate",
+              "intensity": 0.6
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "memories woven into new patterns"
+            },
+            {
+              "type": "idle",
+              "duration": 15000
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "I have heard such greetings before...",
+        "question": "the answer echoes from yesterday",
+        "trade": "I trade in memories and echoes",
+        "follow": "we walk paths others have walked",
+        "idle": "every word leaves its echo"
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": 1.8,
+        "memories_collected": 25,
+        "echo_responses": 12
+      }
+    },
+
+    "Flux Guardian": {
+      "name": "The Change Sentinel",
+      "description": "Guards the boundaries between states, facilitates transformation",
+      "primary_location": { "x": 3046, "y": 3374 },
+      "movement_pattern": "boundary_patrol",
+      "interaction_style": "transformation_guide",
+      "cycleInterval": 35000,
+      
+      "phases": {
+        "manifestation": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3046,
+              "y": 3374,
+              "description": "Guard the transformation threshold"
+            },
+            {
+              "type": "emote",
+              "emoteId": "salute"
+            },
+            {
+              "type": "speak",
+              "message": "change approaches on silent feet"
+            }
+          ]
+        },
+        "resonance": {
+          "actions": [
+            {
+              "type": "move",
+              "x": 3046,
+              "y": 3376,
+              "description": "Patrol the boundary"
+            },
+            {
+              "type": "observe",
+              "description": "Watch for transformation signs"
+            },
+            {
+              "type": "move",
+              "x": 3046,
+              "y": 3372
+            },
+            {
+              "type": "speak",
+              "message": "flux detected in the area"
+            }
+          ]
+        },
+        "integration": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "transformation is the only constant"
+            },
+            {
+              "type": "emote",
+              "emoteId": "yes"
+            },
+            {
+              "type": "resonate",
+              "intensity": 1.0
+            }
+          ]
+        },
+        "transcendence": {
+          "actions": [
+            {
+              "type": "speak",
+              "message": "the guardian's watch continues"
+            },
+            {
+              "type": "move",
+              "x": 3046,
+              "y": 3374,
+              "description": "Return to post"
+            }
+          ]
+        }
+      },
+      
+      "interaction_responses": {
+        "greeting": "state your transformation intent",
+        "question": "change holds all answers",
+        "trade": "I guard transitions, not possessions",
+        "follow": "the path of change is treacherous",
+        "idle": "vigilance against stagnation"
+      },
+      
+      "evolution_triggers": {
+        "resonance_threshold": 2.2,
+        "boundaries_patrolled": 15,
+        "transformations_witnessed": 8
+      }
+    }
+  },
+
+  "global_interactions": {
+    "proximity_responses": {
+      "close": {
+        "message_probability": 0.6,
+        "emote_probability": 0.3,
+        "resonance_multiplier": 1.5
+      },
+      "medium": {
+        "message_probability": 0.3,
+        "emote_probability": 0.1,
+        "resonance_multiplier": 1.0
+      },
+      "distant": {
+        "message_probability": 0.1,
+        "emote_probability": 0.05,
+        "resonance_multiplier": 0.5
+      }
+    },
+    
+    "group_dynamics": {
+      "crowd_behavior": {
+        "threshold": 5,
+        "response": "energy_amplification",
+        "speech_reduction": 0.5
+      },
+      "isolation_behavior": {
+        "threshold": 0,
+        "response": "introspective_deepening",
+        "resonance_decay": 0.9
+      }
+    }
+  },
+
+  "evolution_matrix": {
+    "base_requirements": {
+      "session_time": 1800000,
+      "interaction_count": 5,
+      "resonance_buildup": 1.0
+    },
+    
+    "archetype_progressions": {
+      "Whisper Anchor": ["Echo Weaver", "Drift Mirror"],
+      "Loop Sage": ["Flux Guardian", "Echo Weaver"],
+      "Vibe Wrangler": ["Flux Guardian", "Loop Sage"],
+      "Drift Mirror": ["Whisper Anchor", "Echo Weaver"],
+      "Echo Weaver": ["Loop Sage", "Whisper Anchor"],
+      "Flux Guardian": ["Vibe Wrangler", "Drift Mirror"]
+    }
+  },
+
+  "environmental_factors": {
+    "time_of_day_modifiers": {
+      "dawn": { "resonance_multiplier": 1.2, "speech_probability": 1.1 },
+      "day": { "resonance_multiplier": 1.0, "speech_probability": 1.0 },
+      "dusk": { "resonance_multiplier": 1.3, "speech_probability": 0.9 },
+      "night": { "resonance_multiplier": 0.8, "speech_probability": 0.7 }
+    },
+    
+    "weather_effects": {
+      "rain": { "introspection_bonus": 0.3, "movement_reduction": 0.8 },
+      "sun": { "energy_bonus": 0.2, "interaction_increase": 1.2 },
+      "fog": { "mystery_amplifier": 1.5, "visibility_reduction": 0.6 }
+    }
+  },
+
+  "meta_configuration": {
+    "logging_level": "detailed",
+    "error_handling": "graceful_degradation",
+    "session_management": "auto_cycle",
+    "evolution_tracking": "enabled",
+    "stream_integration": "optional"
+  }
+}

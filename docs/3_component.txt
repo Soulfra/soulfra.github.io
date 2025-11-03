@@ -1,0 +1,19 @@
+## Component Generation: WorldManifest
+
+Session: session_1750602155075
+Previous outputs are available in context.
+
+Task: Define all game surfaces and their conditions
+
+Requirements:
+- Include entry/exit conditions for each world
+- Define agent presence
+- Specify mood triggers
+
+Output Format:
+- File path: /worlds/world_manifest.json
+- Type: json
+- Must be complete and functional
+- Reference previous components if needed
+
+Generate only this component now.

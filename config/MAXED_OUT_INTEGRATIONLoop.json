@@ -1,0 +1,40 @@
+{
+  "name": "MAXED_OUT_INTEGRATION",
+  "type": "component",
+  "version": "1.0.0",
+  "description": "MAXED OUT INTEGRATION - The Complete Automated Handoff + Build-Market + Routing System",
+  "auto_generated": true,
+  "generation_confidence": 1.0,
+  "input_from": [
+    "user_input",
+    "http_request"
+  ],
+  "outputs_to": [
+    "processed_result",
+    "console_output"
+  ],
+  "approval_required": false,
+  "tone_sensitive": true,
+  "emotional_signature": "playful",
+  "complexity_score": 0.66,
+  "dependencies": [
+    "import os",
+    "import json",
+    "import subprocess",
+    "import sqlite3",
+    "from datetime import datetime",
+    "from pathlib import Path",
+    "import threading",
+    "import time",
+    "from AUTOMATED_HANDOFF_ENGINE import AutomatedHandoffEngine",
+    "from AUTOMATED_HANDOFF_ENGINE import RitualCardAutoGenerator, LoopTemplateAnalyzer, ReflectionPredictor",
+    "from MAXED_OUT_INTEGRATION import MaxedOutSoulfraSystem",
+    "import sys"
+  ],
+  "patterns_detected": [
+    "loop",
+    "async",
+    "object-oriented"
+  ],
+  "generated_at": "2025-06-21T14:29:28.611273"
+}

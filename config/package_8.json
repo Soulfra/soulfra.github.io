@@ -1,0 +1,16 @@
+{
+  "name": "cal-platform-backend",
+  "version": "1.0.0",
+  "description": "Cal Riven Platform Backend API",
+  "main": "api/cal-api-server.js",
+  "scripts": {
+    "start": "node api/cal-api-server.js",
+    "dev": "node api/cal-api-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ws": "^8.14.2",
+    "qrcode": "^1.5.3"
+  }
+}

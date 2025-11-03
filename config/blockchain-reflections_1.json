@@ -1,0 +1,92 @@
+[
+  {
+    "reflectionHash": "30426db11b88996d56e2303482cfcfbb7d49e7f6e41fe250549dddd53baa4513",
+    "reflection": {
+      "input": "test-routing from tier-3",
+      "timestamp": "2025-06-15T20:41:08.267Z",
+      "tier": "3"
+    },
+    "qrIdentity": {
+      "token": "c30fe40f...",
+      "device": "A951410C-6C6B-57..."
+    },
+    "blockchain": {
+      "txHash": "0xbe7805f350a8f297568bd1003eed7792d5206dbfcd91e5788c3ff4c452d636fe",
+      "blockNumber": 15572867,
+      "simulated": true,
+      "postedAt": "2025-06-16T00:06:00.891Z"
+    }
+  },
+  {
+    "reflectionHash": "b834ae2027d123ebb90ab7a3f8885dc293518025ed87c687affa60dff70fd481",
+    "reflection": {
+      "input": "holy shit",
+      "timestamp": "2025-06-15T23:15:14.621Z",
+      "tier": "3"
+    },
+    "qrIdentity": {
+      "token": "c30fe40f...",
+      "device": "A951410C-6C6B-57..."
+    },
+    "blockchain": {
+      "txHash": "0x18a805df718f7fd55c921c2cd90189305921625dbafd5e3527fc795e2cafa5d6",
+      "blockNumber": 15136126,
+      "simulated": true,
+      "postedAt": "2025-06-16T00:06:00.891Z"
+    }
+  },
+  {
+    "reflectionHash": "fbee291f8e2cc38ca6bd4ed1f43f6165455038fa2dac723b7fd2228886f11ba9",
+    "reflection": {
+      "input": "how are we doing now",
+      "timestamp": "2025-06-15T23:21:18.434Z",
+      "tier": "3"
+    },
+    "qrIdentity": {
+      "token": "c30fe40f...",
+      "device": "A951410C-6C6B-57..."
+    },
+    "blockchain": {
+      "txHash": "0x229cd95b91d6101135679f06bc52dcf68fbbe2b692e2429c700e2b5f6a07c564",
+      "blockNumber": 15223427,
+      "simulated": true,
+      "postedAt": "2025-06-16T00:06:00.892Z"
+    }
+  },
+  {
+    "reflectionHash": "7ff9d017c95e60ac208c5d38aedb1740fdd36b5c2bcf679ecbc6aee7673b452b",
+    "reflection": {
+      "input": "What is the vault trust chain and how does the mirror reflect?",
+      "timestamp": "2025-06-15T23:39:28.848Z",
+      "tier": "gameshell"
+    },
+    "qrIdentity": {
+      "token": "c30fe40f...",
+      "device": "A951410C-6C6B-57..."
+    },
+    "blockchain": {
+      "txHash": "0xf4a3ce2a6938c6c82949c54f9932abaaea2e912bef89c29815e8a9c9f19f8866",
+      "blockNumber": 15651591,
+      "simulated": true,
+      "postedAt": "2025-06-16T00:06:00.892Z"
+    }
+  },
+  {
+    "reflectionHash": "192692e420677e1a2c9ae714e94f9f674071c24fbc9db26192dc654170009d11",
+    "reflection": {
+      "input": "What is the nature of trust in a mirror reflection system?",
+      "timestamp": "2025-06-16T00:05:41.396Z",
+      "tier": "gameshell"
+    },
+    "qrIdentity": {
+      "token": "c30fe40f...",
+      "device": "A951410C-6C6B-57..."
+    },
+    "blockchain": {
+      "txHash": "0x7c9ffcc8453b08303972af183c94263ce8562b03e55640d4de9e0180bba5c326",
+      "blockNumber": 15559429,
+      "simulated": true,
+      "postedAt": "2025-06-16T00:06:00.892Z"
+    }
+  }
+]

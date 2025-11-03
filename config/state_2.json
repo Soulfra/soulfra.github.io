@@ -1,0 +1,40 @@
+{
+  "sessions": [
+    [
+      "7eb3d532a8755ba1c3c4ac4be8446084e98e0dfbd7a83499d52f35f2f77af1ce",
+      {
+        "userId": "user_b43f9f7d00d9edc9",
+        "username": "demo",
+        "created": 1750717778479,
+        "lastActive": 1750717778479
+      }
+    ]
+  ],
+  "qrSessions": [
+    [
+      "227bffa6fdc8cd55b38080a9c58450bf",
+      {
+        "userId": "user_b43f9f7d00d9edc9",
+        "agentName": "Mobile Agent",
+        "created": 1750717833601,
+        "status": "pending",
+        "platform": "mobile"
+      }
+    ],
+    [
+      "40279f25784596ae965492bf2d0641d1",
+      {
+        "userId": "user_b43f9f7d00d9edc9",
+        "agentName": "Mobile Agent",
+        "created": 1750717872632,
+        "status": "pending",
+        "platform": "mobile"
+      }
+    ]
+  ],
+  "worldState": {
+    "totalWorlds": 0,
+    "totalAgents": 0
+  },
+  "timestamp": 1750718210560
+}

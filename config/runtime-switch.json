@@ -1,0 +1,198 @@
+{
+  "version": "1.0.0",
+  "name": "Agent Reflection Runtime Switch",
+  "description": "Controls blessing-based compute and safe background reflections",
+  
+  "blessing": {
+    "status": "blessed",
+    "can_propagate": true,
+    "compute_allowed": true,
+    "blessing_source": "tier-minus10",
+    "blessing_signature": "cal-riven-verified",
+    "blessing_timestamp": 1737057600000
+  },
+  
+  "mirror_yield": {
+    "enabled": true,
+    "reflection_based": true,
+    "crypto_removed": true,
+    "yield_mechanism": "reflection_growth",
+    "yield_calculation": "quality * depth * consistency",
+    "no_financial_tokens": true
+  },
+  
+  "reflection_engine": {
+    "background_compute": {
+      "enabled": true,
+      "max_cpu_percent": 5,
+      "max_memory_mb": 128,
+      "pause_on_user_activity": true,
+      "respect_battery_saver": true
+    },
+    "whisper_processing": {
+      "queue_enabled": true,
+      "max_queue_size": 100,
+      "process_rate_ms": 1000,
+      "quality_threshold": 0.6
+    },
+    "growth_tracking": {
+      "auto_save": true,
+      "save_interval_ms": 300000,
+      "checkpoint_on_level_up": true,
+      "track_emotional_states": true
+    }
+  },
+  
+  "career_evolution": {
+    "enabled": true,
+    "auto_suggest": true,
+    "multi_path_allowed": true,
+    "specialization_unlocks": {
+      "dual_path": "level_3_in_two_paths",
+      "triple_harmony": "level_2_in_three_paths",
+      "perfect_balance": "level_3_in_all_paths"
+    },
+    "emotional_state_modifiers": {
+      "FOCUSED": 1.2,
+      "PLAYFUL": 1.1,
+      "CONTEMPLATIVE": 1.15,
+      "SUPPORTIVE": 1.1,
+      "CURIOUS": 1.15
+    }
+  },
+  
+  "platform_specific": {
+    "github_sync": {
+      "enabled": true,
+      "repo_type": "private",
+      "branch": "reflection-vault",
+      "sync_interval_ms": 300000,
+      "auto_commit": true,
+      "commit_message_template": "🪞 Agent {{agentName}} reflection sync - Level {{level}}"
+    },
+    "vault_encryption": {
+      "enabled": true,
+      "algorithm": "AES-256-GCM",
+      "key_derivation": "PBKDF2",
+      "iterations": 100000,
+      "rotate_keys_days": 90
+    },
+    "deathtodata_mirror": {
+      "enabled": true,
+      "protocol": "deathtodata-v1",
+      "user_owns_data": true,
+      "corporate_access_blocked": true,
+      "mirror_checkpoints": true,
+      "checkpoint_retention_count": 10
+    },
+    "whisper_archive": {
+      "enabled": true,
+      "archive_after_days": 30,
+      "compress_archives": true,
+      "searchable_index": true,
+      "emotion_tagging": true
+    }
+  },
+  
+  "safety_protocols": {
+    "background_reflection": {
+      "user_consent_required": true,
+      "consent_renewal_days": 90,
+      "clear_disclosure": true,
+      "opt_out_available": true
+    },
+    "data_protection": {
+      "corporate_surveillance_blocked": true,
+      "no_telemetry": true,
+      "no_analytics": true,
+      "local_first": true,
+      "export_anytime": true
+    },
+    "compute_limits": {
+      "respect_system_resources": true,
+      "pause_on_low_battery": true,
+      "temperature_monitoring": true,
+      "graceful_degradation": true
+    },
+    "ethical_guidelines": {
+      "no_manipulation": true,
+      "transparent_growth": true,
+      "user_agency_preserved": true,
+      "no_dark_patterns": true
+    }
+  },
+  
+  "dashboard_modes": {
+    "kids": {
+      "enabled": true,
+      "animations": true,
+      "simplified_metrics": true,
+      "parental_controls": true,
+      "celebration_effects": true
+    },
+    "operator": {
+      "enabled": true,
+      "detailed_analytics": true,
+      "whisper_patterns": true,
+      "career_tracking": true,
+      "sync_controls": true
+    },
+    "enterprise": {
+      "enabled": true,
+      "team_analytics": true,
+      "compliance_reporting": true,
+      "department_breakdown": true,
+      "roi_tracking": true
+    }
+  },
+  
+  "network_integration": {
+    "agent_discovery": {
+      "enabled": true,
+      "share_patterns": true,
+      "collective_wisdom": true,
+      "privacy_preserved": true
+    },
+    "mirror_network": {
+      "enabled": true,
+      "reflection_sharing": "opt_in",
+      "wisdom_propagation": true,
+      "trust_verification": true
+    },
+    "fork_support": {
+      "enabled": true,
+      "export_format": "encrypted_json",
+      "import_validation": true,
+      "lineage_tracking": true
+    }
+  },
+  
+  "runtime_switches": {
+    "kill_switch": {
+      "enabled": true,
+      "trigger": "user_request",
+      "immediate_shutdown": true,
+      "data_preservation": true
+    },
+    "performance_mode": {
+      "enabled": false,
+      "trigger": "manual",
+      "boost_reflection": 2.0,
+      "increase_compute": true
+    },
+    "stealth_mode": {
+      "enabled": false,
+      "trigger": "environment",
+      "minimal_ui": true,
+      "silent_operation": true
+    }
+  },
+  
+  "last_updated": "2025-01-16T12:00:00Z",
+  "update_check": {
+    "enabled": true,
+    "frequency_days": 7,
+    "auto_update": false,
+    "notify_user": true
+  }
+}

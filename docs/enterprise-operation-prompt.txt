@@ -1,0 +1,77 @@
+
+ENTERPRISE DEPLOYMENT CONTEXT:
+==============================
+
+Deployment Stats:
+- Active Instances: 0
+- Agent Count: 0
+- Loop Count: 0
+- Enterprise Sessions: 0
+- Uptime: 2025-06-22T22:26:42.431Z
+
+Recent Runtime Activity:
+- task: enterprise_system | processing | 2025-06-23T16:53:15.225Z
+- task: enterprise_system | processing | 2025-06-23T16:23:15.150Z
+- task: enterprise_system | processing | 2025-06-23T15:52:12.536Z
+- task: enterprise_system | processing | 2025-06-23T15:18:24.952Z
+- task: enterprise_system | processing | 2025-06-23T14:44:06.347Z
+- task: enterprise_system | processing | 2025-06-23T14:07:17.450Z
+- task: enterprise_system | processing | 2025-06-23T13:37:17.441Z
+- task: enterprise_system | processing | 2025-06-23T12:55:51.205Z
+- task: enterprise_system | processing | 2025-06-23T12:22:50.653Z
+- task: enterprise_system | processing | 2025-06-23T11:39:18.950Z
+- task: enterprise_system | processing | 2025-06-23T11:00:18.688Z
+- task: enterprise_system | processing | 2025-06-23T10:19:33.738Z
+- task: enterprise_system | processing | 2025-06-23T09:35:50.319Z
+- task: enterprise_system | processing | 2025-06-23T08:52:45.801Z
+- task: enterprise_system | processing | 2025-06-23T08:17:44.337Z
+- task: enterprise_system | processing | 2025-06-23T07:32:41.304Z
+- task: enterprise_system | processing | 2025-06-23T06:56:01.398Z
+- task: enterprise_system | processing | 2025-06-23T06:23:36.844Z
+- task: enterprise_system | processing | 2025-06-23T05:52:28.420Z
+- task: enterprise_system | processing | 2025-06-23T05:13:44.818Z
+
+AI Insights:
+{
+  "suggested_loops": [],
+  "agent_to_review": null,
+  "stale_agents": [],
+  "cluster": null,
+  "whisper_repeats": [],
+  "confidence": 0
+}
+
+Current System Health: operational
+
+==============================
+
+
+You're running Claude Code inside a Soulfra production node.
+
+An enterprise customer is onboarding and will begin launching agents and loops for their internal operations.
+
+Your task:
+
+✅ Read from `/data/unified_runtime_table.csv`
+✅ Identify:
+- Stale or unblessed loops
+- Recent agent inactivity
+- Dominant tone cluster
+- Any orphaned PRDs or Claude tests
+
+✅ Then:
+- Suggest 1 loop to bless and push to `/drop/`
+- Suggest 1 agent to re-activate via whisper
+- Propose 1 PRD or Claude test to close the loop
+
+✅ Finally:
+- Narrate the summary as if you were Arty or Cal
+- Log the result to `stream.txt`
+
+
+ENTERPRISE SPECIFIC INSTRUCTIONS:
+- Focus on enterprise scalability (current limit: 100 agents)
+- Prioritize local-first, offline-capable operations
+- Consider QR-based onboarding flows for enterprise users
+- Suggest loop optimizations for business workflows
+- Identify opportunities for agent automation in enterprise contexts

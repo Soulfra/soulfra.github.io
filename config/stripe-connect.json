@@ -1,0 +1,10 @@
+{
+  "connected": false,
+  "secretKey": null,
+  "publishableKey": null,
+  "mirrorFee": 0.08,
+  "timestamp": null,
+  "accountId": null,
+  "webhookSecret": null,
+  "comment": "Add your Stripe API keys here or use dashboard to configure"
+}

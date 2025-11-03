@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ ENTER THE COLISEUM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Custom cursor */
+        #cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        #cursor.pulse {
+            transform: scale(1.5);
+        }
+
+        /* ENTRY SEQUENCE */
+        #entry-sequence {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-scanner {
+            width: 300px;
+            height: 300px;
+            border: 3px solid #FFD700;
+            position: relative;
+            animation: scanPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scanPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 215, 0, 1); }
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .entry-text {
+            color: #FFD700;
+            font-size: 24px;
+            margin-top: 40px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            letter-spacing: 3px;
+        }
+
+        /* IMMERSIVE ARENA */
+        #arena-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            perspective: 1500px;
+        }
+
+        /* Depth layers */
+        .arena-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* FLOOR - You're standing on ancient stone */
+        #arena-floor {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 50%;
+            left: -50%;
+            background: 
+                radial-gradient(ellipse at center bottom, rgba(139, 69, 19, 0.3), transparent 70%),
+                repeating-linear-gradient(
+                    90deg,
+                    #2a1a0a,
+                    #2a1a0a 2px,
+                    #1a0f05 2px,
+                    #1a0f05 20px
+                );
+            transform: rotateX(80deg) translateZ(-200px);
+            transform-origin: center bottom;
+        }
+
+        .floor-crack {
+            position: absolute;
+            width: 2px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            transform: rotate(var(--rotation));
+            left: var(--left);
+            bottom: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* WALLS - Towering around you */
+        .arena-wall {
+            position: absolute;
+            background: 
+                linear-gradient(180deg, #000 0%, #1a0f05 50%, #2a1a0a 100%),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(0, 0, 0, 0.2) 10px,
+                    rgba(0, 0, 0, 0.2) 11px
+                );
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
+        #wall-left {
+            left: 0;
+            width: 30%;
+            height: 100%;
+            transform: rotateY(20deg) translateZ(-300px);
+            transform-origin: left center;
+        }
+
+        #wall-right {
+            right: 0;
+            width: 30%;
+            height: 100%;
+            transform: rotateY(-20deg) translateZ(-300px);
+            transform-origin: right center;
+        }
+
+        #wall-back {
+            width: 100%;
+            height: 100%;
+            transform: translateZ(-800px);
+            background: radial-gradient(ellipse at center, rgba(26, 15, 5, 0.9), #000);
+        }
+
+        /* CROWD - Shadowy figures watching */
+        .crowd-section {
+            position: absolute;
+            width: 100%;
+            height: 30%;
+            top: 20%;
+            opacity: 0.7;
+        }
+
+        .spectator {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background: #000;
+            border-radius: 50% 50% 0 0;
+            animation: sway var(--sway-duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+            opacity: 0.6;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: translateX(0) scale(1); }
+            50% { transform: translateX(5px) scale(1.05); }
+        }
+
+        /* ATMOSPHERE - Dust and light */
+        .dust-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            animation: float var(--float-duration) linear infinite;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) translateX(var(--drift));
+                opacity: 0;
+            }
+        }
+
+        /* DRAMATIC LIGHTING */
+        .light-beam {
+            position: absolute;
+            background: linear-gradient(
+                180deg,
+                transparent,
+                rgba(255, 215, 0, 0.05),
+                rgba(255, 215, 0, 0.1),
+                rgba(255, 215, 0, 0.05),
+                transparent
+            );
+            transform-origin: top center;
+            animation: lightSway var(--light-duration) ease-in-out infinite;
+        }
+
+        @keyframes lightSway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(var(--light-angle)); }
+        }
+
+        /* YOUR PRESENCE */
+        #gladiator-shadow {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 200px;
+            background: radial-gradient(ellipse at bottom, rgba(0, 0, 0, 0.8), transparent);
+            filter: blur(20px);
+            animation: shadowBreathe 4s ease-in-out infinite;
+        }
+
+        @keyframes shadowBreathe {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* OPPONENT APPROACHES */
+        #opponent-silhouette {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-400px);
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(180deg, #000, transparent);
+            opacity: 0;
+            animation: opponentApproach 10s ease-in-out infinite;
+            animation-delay: 5s;
+        }
+
+        @keyframes opponentApproach {
+            0%, 100% { 
+                opacity: 0;
+                transform: translateX(-50%) translateZ(-600px) scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateX(-50%) translateZ(-200px) scale(1.5);
+            }
+        }
+
+        /* HEARTBEAT EFFECT */
+        #heartbeat {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at center, transparent 30%, rgba(139, 0, 0, 0.1) 100%);
+            opacity: 0;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            14% { opacity: 0.3; transform: scale(1.02); }
+            28% { opacity: 0; transform: scale(1); }
+            42% { opacity: 0.3; transform: scale(1.02); }
+        }
+
+        /* COMBAT UI */
+        #combat-ui {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* COMBO DISPLAY */
+        #combo-display {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            color: #FFD700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        #combo-display.active {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.2);
+        }
+
+        /* SPECIAL MOVES */
+        .special-move {
+            position: absolute;
+            bottom: 150px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.3), transparent);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .special-move.ready {
+            opacity: 1;
+            animation: specialReady 1s ease-in-out infinite;
+        }
+
+        @keyframes specialReady {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 215, 0, 1); }
+        }
+
+        #special1 { left: 40%; }
+        #special2 { left: 50%; transform: translateX(-50%); }
+        #special3 { right: 40%; }
+
+        /* DAMAGE NUMBERS */
+        .damage-number {
+            position: absolute;
+            font-size: 36px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: damageFloat 1s ease-out forwards;
+        }
+
+        @keyframes damageFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+        }
+
+        /* HAPTIC FEEDBACK VISUAL */
+        #haptic-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #FFD700;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        #haptic-indicator.active {
+            opacity: 1;
+            animation: hapticPulse 0.2s ease-out;
+        }
+
+        @keyframes hapticPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        /* CAMERA SHAKE */
+        .camera-shake {
+            animation: cameraShake 0.3s ease-out;
+        }
+
+        @keyframes cameraShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-2px, 2px) rotate(-0.5deg); }
+            40% { transform: translate(2px, -2px) rotate(0.5deg); }
+            60% { transform: translate(-2px, -2px) rotate(-0.5deg); }
+            80% { transform: translate(2px, 2px) rotate(0.5deg); }
+        }
+
+        /* IMPACT EFFECTS */
+        .impact-wave {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 3px solid rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: impactWave 0.6s ease-out forwards;
+        }
+
+        @keyframes impactWave {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+
+        .health-bar {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 20px;
+            border: 2px solid #FFD700;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #8B0000, #FF0000);
+            transition: width 0.3s ease;
+        }
+
+        /* SOUND VISUALIZATION */
+        .sound-wave {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 100px;
+            opacity: 0.3;
+        }
+
+        .sound-bar {
+            display: inline-block;
+            width: 2px;
+            height: var(--height);
+            background: #FFD700;
+            margin: 0 1px;
+            animation: soundPulse 0.5s ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes soundPulse {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* VICTORY/DEFEAT */
+        #battle-result {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            color: #FFD700;
+            text-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 0 60px rgba(255, 215, 0, 0.6),
+                0 0 90px rgba(255, 215, 0, 0.4);
+            opacity: 0;
+            display: none;
+            animation: resultReveal 3s ease-out forwards;
+        }
+
+        @keyframes resultReveal {
+            0% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.1) rotate(180deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 768px) {
+            .qr-scanner {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .entry-text {
+                font-size: 18px;
+            }
+            
+            #battle-result {
+                font-size: 60px;
+            }
+        }
+
+        /* AUDIO CONTEXT */
+        #audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0.7;
+        }
+
+        .audio-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <!-- Entry Sequence -->
+    <div id="entry-sequence">
+        <div class="qr-scanner" id="qr-scanner">
+            <div class="scan-line"></div>
+            <video id="qr-video" style="width: 100%; height: 100%;"></video>
+        </div>
+        <div class="entry-text">SCAN YOUR SOUL TO ENTER</div>
+    </div>
+
+    <!-- Arena Container -->
+    <div id="arena-container">
+        <!-- Back Wall -->
+        <div class="arena-layer">
+            <div id="wall-back"></div>
+        </div>
+
+        <!-- Side Walls -->
+        <div class="arena-layer">
+            <div id="wall-left" class="arena-wall"></div>
+            <div id="wall-right" class="arena-wall"></div>
+        </div>
+
+        <!-- Crowd -->
+        <div class="arena-layer crowd-section" id="crowd-left"></div>
+        <div class="arena-layer crowd-section" id="crowd-right"></div>
+
+        <!-- Arena Floor -->
+        <div class="arena-layer">
+            <div id="arena-floor"></div>
+        </div>
+
+        <!-- Atmosphere -->
+        <div class="arena-layer" id="dust-container"></div>
+        <div class="arena-layer" id="light-beams"></div>
+
+        <!-- Your Presence -->
+        <div id="gladiator-shadow"></div>
+        
+        <!-- Opponent -->
+        <div id="opponent-silhouette"></div>
+
+        <!-- Heartbeat -->
+        <div id="heartbeat"></div>
+
+        <!-- Sound Visualization -->
+        <div class="sound-wave" id="sound-wave"></div>
+    </div>
+
+    <!-- Combat UI -->
+    <div id="combat-ui">
+        <div class="health-bar">
+            <div class="health-fill" id="health-fill"></div>
+        </div>
+        <div id="combo-display">0 HIT COMBO!</div>
+        <div class="special-move" id="special1" title="Thunder Strike">⚡</div>
+        <div class="special-move" id="special2" title="Divine Shield">🛡️</div>
+        <div class="special-move" id="special3" title="Berserker Rage">🔥</div>
+    </div>
+
+    <!-- Haptic Indicator -->
+    <div id="haptic-indicator"></div>
+
+    <!-- Battle Result -->
+    <div id="battle-result"></div>
+
+    <!-- Audio Controls -->
+    <div id="audio-controls">
+        <button class="audio-btn" onclick="toggleAmbience()">🔊 AMBIENCE</button>
+    </div>
+
+    <script>
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Click pulse
+        document.addEventListener('click', () => {
+            cursor.classList.add('pulse');
+            setTimeout(() => cursor.classList.remove('pulse'), 200);
+        });
+
+        // ENTRY SEQUENCE
+        let enteredArena = false;
+
+        // QR Scanner simulation (in real implementation, use proper QR library)
+        setTimeout(() => {
+            if (!enteredArena) {
+                simulateQRScan();
+            }
+        }, 3000);
+
+        function simulateQRScan() {
+            // Simulate successful scan
+            document.getElementById('qr-scanner').style.borderColor = '#00FF00';
+            document.querySelector('.entry-text').textContent = 'SOUL RECOGNIZED';
+            
+            setTimeout(() => {
+                enterArena();
+            }, 1500);
+        }
+
+        // Click to enter (fallback)
+        document.getElementById('qr-scanner').addEventListener('click', () => {
+            if (!enteredArena) {
+                simulateQRScan();
+            }
+        });
+
+        // ENTER THE ARENA
+        function enterArena() {
+            enteredArena = true;
+            
+            // Fade out entry sequence
+            const entrySeq = document.getElementById('entry-sequence');
+            entrySeq.style.transition = 'opacity 2s ease-out';
+            entrySeq.style.opacity = '0';
+            
+            setTimeout(() => {
+                entrySeq.style.display = 'none';
+                document.getElementById('arena-container').style.display = 'block';
+                
+                // Build the arena
+                buildArena();
+                
+                // Start ambient sounds
+                startAmbience();
+                
+                // Begin the experience
+                setTimeout(() => {
+                    startGladiatorExperience();
+                }, 1000);
+            }, 2000);
+        }
+
+        // BUILD THE ARENA
+        function buildArena() {
+            // Add floor cracks
+            const floor = document.getElementById('arena-floor');
+            for (let i = 0; i < 20; i++) {
+                const crack = document.createElement('div');
+                crack.className = 'floor-crack';
+                crack.style.setProperty('--rotation', Math.random() * 360 + 'deg');
+                crack.style.setProperty('--left', Math.random() * 100 + '%');
+                floor.appendChild(crack);
+            }
+
+            // Populate crowd
+            populateCrowd('crowd-left', -1);
+            populateCrowd('crowd-right', 1);
+
+            // Add dust particles
+            createDustParticles();
+
+            // Add light beams
+            createLightBeams();
+
+            // Create sound visualization
+            createSoundBars();
+        }
+
+        function populateCrowd(containerId, side) {
+            const container = document.getElementById(containerId);
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 20; col++) {
+                    const spectator = document.createElement('div');
+                    spectator.className = 'spectator';
+                    spectator.style.left = (col * 5) + '%';
+                    spectator.style.top = (row * 20) + '%';
+                    spectator.style.transform = `scale(${0.5 + row * 0.1})`;
+                    spectator.style.setProperty('--sway-duration', (3 + Math.random() * 2) + 's');
+                    spectator.style.setProperty('--delay', Math.random() * 3 + 's');
+                    container.appendChild(spectator);
+                }
+            }
+        }
+
+        function createDustParticles() {
+            const container = document.getElementById('dust-container');
+            for (let i = 0; i < 50; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust-particle';
+                dust.style.left = Math.random() * 100 + '%';
+                dust.style.setProperty('--float-duration', (10 + Math.random() * 20) + 's');
+                dust.style.setProperty('--drift', (Math.random() - 0.5) * 100 + 'px');
+                dust.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(dust);
+            }
+        }
+
+        function createLightBeams() {
+            const container = document.getElementById('light-beams');
+            for (let i = 0; i < 5; i++) {
+                const beam = document.createElement('div');
+                beam.className = 'light-beam';
+                beam.style.left = (20 + i * 15) + '%';
+                beam.style.width = '100px';
+                beam.style.height = '150%';
+                beam.style.top = '-50%';
+                beam.style.setProperty('--light-duration', (8 + Math.random() * 4) + 's');
+                beam.style.setProperty('--light-angle', (Math.random() - 0.5) * 10 + 'deg');
+                container.appendChild(beam);
+            }
+        }
+
+        function createSoundBars() {
+            const container = document.getElementById('sound-wave');
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'sound-bar';
+                bar.style.setProperty('--height', Math.random() * 50 + 20 + 'px');
+                bar.style.setProperty('--delay', (i * 0.02) + 's');
+                container.appendChild(bar);
+            }
+        }
+
+        // GLADIATOR EXPERIENCE
+        function startGladiatorExperience() {
+            // Your presence is felt
+            animateBreathing();
+            
+            // Crowd reacts
+            setTimeout(() => {
+                crowdReaction('anticipation');
+            }, 2000);
+            
+            // Opponent appears
+            setTimeout(() => {
+                document.getElementById('opponent-silhouette').style.opacity = '1';
+            }, 5000);
+            
+            // Combat begins
+            setTimeout(() => {
+                startCombat();
+            }, 10000);
+        }
+
+        function animateBreathing() {
+            // Subtle camera movement to simulate breathing
+            const arena = document.getElementById('arena-container');
+            let breathPhase = 0;
+            
+            setInterval(() => {
+                breathPhase += 0.02;
+                const scale = 1 + Math.sin(breathPhase) * 0.01;
+                const translateY = Math.sin(breathPhase) * 2;
+                arena.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+            }, 50);
+        }
+
+        function crowdReaction(type) {
+            const spectators = document.querySelectorAll('.spectator');
+            
+            switch(type) {
+                case 'anticipation':
+                    spectators.forEach(s => {
+                        s.style.animationDuration = '1s';
+                    });
+                    break;
+                case 'excitement':
+                    spectators.forEach(s => {
+                        s.style.animationDuration = '0.5s';
+                        s.style.transform += ' scale(1.2)';
+                    });
+                    break;
+                case 'victory':
+                    spectators.forEach(s => {
+                        s.style.animation = 'none';
+                        setTimeout(() => {
+                            s.style.animation = 'jump 0.5s ease-out';
+                        }, Math.random() * 500);
+                    });
+                    break;
+            }
+        }
+
+        // COMBAT SYSTEM
+        let playerHealth = 100;
+        let opponentHealth = 100;
+        let inCombat = false;
+        let comboCount = 0;
+        let lastHitTime = 0;
+        let specialMoves = {
+            special1: { ready: false, cooldown: 5000, damage: 30 },
+            special2: { ready: false, cooldown: 8000, shield: true },
+            special3: { ready: false, cooldown: 10000, berserk: true }
+        };
+        let shieldActive = false;
+        let berserkMode = false;
+
+        function startCombat() {
+            inCombat = true;
+            document.getElementById('combat-ui').style.display = 'block';
+            
+            // Initialize special moves
+            Object.keys(specialMoves).forEach(key => {
+                setTimeout(() => {
+                    specialMoves[key].ready = true;
+                    document.getElementById(key).classList.add('ready');
+                }, 3000);
+            });
+            
+            // Battle music intensifies
+            intensifyAmbience();
+            
+            // Combat loop
+            const combatInterval = setInterval(() => {
+                if (!inCombat) {
+                    clearInterval(combatInterval);
+                    return;
+                }
+                
+                // AI opponent attacks
+                if (Math.random() > 0.7 && !shieldActive) {
+                    const damage = Math.floor(Math.random() * 15) + 5;
+                    takeDamage(damage);
+                }
+                
+                // Check victory conditions
+                if (playerHealth <= 0) {
+                    endBattle(false);
+                    clearInterval(combatInterval);
+                } else if (opponentHealth <= 0) {
+                    endBattle(true);
+                    clearInterval(combatInterval);
+                }
+            }, 2000);
+        }
+
+        function executeAttack(type = 'normal') {
+            if (!inCombat) return;
+            
+            let damage = Math.floor(Math.random() * 10) + 10;
+            
+            // Berserk mode doubles damage
+            if (berserkMode) {
+                damage *= 2;
+            }
+            
+            // Special attack modifiers
+            if (type === 'special') {
+                damage *= 1.5;
+            }
+            
+            // Deal damage
+            opponentHealth = Math.max(0, opponentHealth - damage);
+            
+            // Update combo
+            const now = Date.now();
+            if (now - lastHitTime < 1000) {
+                comboCount++;
+                updateComboDisplay();
+                damage *= (1 + comboCount * 0.1); // Combo multiplier
+            } else {
+                comboCount = 1;
+            }
+            lastHitTime = now;
+            
+            // Visual effects
+            createImpactEffect();
+            showDamageNumber(damage, window.innerWidth / 2, window.innerHeight / 2);
+            flashScreen('#FFD700', 0.1);
+            simulateHaptic('light');
+            
+            updateHealthBar();
+        }
+
+        function takeDamage(damage) {
+            if (shieldActive) {
+                damage = Math.floor(damage * 0.3); // Shield reduces damage by 70%
+                flashScreen('#0000FF', 0.1);
+            }
+            
+            playerHealth = Math.max(0, playerHealth - damage);
+            
+            // Effects
+            showDamageNumber(damage, window.innerWidth / 2, window.innerHeight / 2, true);
+            flashScreen('#FF0000', 0.2);
+            shakeScreen();
+            simulateHaptic('heavy');
+            
+            updateHealthBar();
+        }
+
+        function executeSpecialMove(moveId) {
+            const move = specialMoves[moveId];
+            if (!move.ready || !inCombat) return;
+            
+            // Use the move
+            move.ready = false;
+            document.getElementById(moveId).classList.remove('ready');
+            
+            // Apply effects
+            if (moveId === 'special1') {
+                // Thunder Strike
+                executeAttack('special');
+                createLightningEffect();
+            } else if (moveId === 'special2') {
+                // Divine Shield
+                activateShield();
+            } else if (moveId === 'special3') {
+                // Berserker Rage
+                activateBerserkMode();
+            }
+            
+            // Start cooldown
+            setTimeout(() => {
+                move.ready = true;
+                document.getElementById(moveId).classList.add('ready');
+            }, move.cooldown);
+        }
+
+        function activateShield() {
+            shieldActive = true;
+            document.getElementById('gladiator-shadow').style.filter = 'drop-shadow(0 0 30px rgba(0, 0, 255, 0.8))';
+            flashScreen('#0000FF', 0.2);
+            
+            setTimeout(() => {
+                shieldActive = false;
+                document.getElementById('gladiator-shadow').style.filter = '';
+            }, 5000);
+        }
+
+        function activateBerserkMode() {
+            berserkMode = true;
+            document.getElementById('arena-container').style.filter = 'contrast(1.5) saturate(1.5)';
+            document.getElementById('heartbeat').style.animationDuration = '0.5s';
+            
+            setTimeout(() => {
+                berserkMode = false;
+                document.getElementById('arena-container').style.filter = '';
+                document.getElementById('heartbeat').style.animationDuration = '2s';
+            }, 8000);
+        }
+
+        function updateHealthBar() {
+            const healthFill = document.getElementById('health-fill');
+            healthFill.style.width = playerHealth + '%';
+            
+            if (playerHealth < 30) {
+                healthFill.style.background = 'linear-gradient(90deg, #8B0000, #FF0000)';
+                document.getElementById('heartbeat').style.animationDuration = '1s';
+            }
+        }
+
+        function flashScreen(color, opacity) {
+            const flash = document.createElement('div');
+            flash.style.position = 'fixed';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.width = '100%';
+            flash.style.height = '100%';
+            flash.style.background = color;
+            flash.style.opacity = opacity;
+            flash.style.pointerEvents = 'none';
+            flash.style.transition = 'opacity 0.3s ease-out';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                flash.style.opacity = '0';
+                setTimeout(() => flash.remove(), 300);
+            }, 50);
+        }
+
+        function shakeScreen() {
+            const arena = document.getElementById('arena-container');
+            arena.classList.add('camera-shake');
+            setTimeout(() => {
+                arena.classList.remove('camera-shake');
+            }, 300);
+        }
+
+        function updateComboDisplay() {
+            const display = document.getElementById('combo-display');
+            display.textContent = `${comboCount} HIT COMBO!`;
+            display.classList.add('active');
+            
+            clearTimeout(display.timeout);
+            display.timeout = setTimeout(() => {
+                display.classList.remove('active');
+            }, 1000);
+        }
+
+        function showDamageNumber(damage, x, y, isPlayer = false) {
+            const dmgNum = document.createElement('div');
+            dmgNum.className = 'damage-number';
+            dmgNum.textContent = `-${damage}`;
+            dmgNum.style.color = isPlayer ? '#FF0000' : '#FFD700';
+            dmgNum.style.left = x + (Math.random() - 0.5) * 100 + 'px';
+            dmgNum.style.top = y + 'px';
+            document.body.appendChild(dmgNum);
+            
+            setTimeout(() => dmgNum.remove(), 1000);
+        }
+
+        function createImpactEffect() {
+            const impact = document.createElement('div');
+            impact.className = 'impact-wave';
+            impact.style.left = '50%';
+            impact.style.top = '50%';
+            document.getElementById('arena-container').appendChild(impact);
+            
+            setTimeout(() => impact.remove(), 600);
+        }
+
+        function createLightningEffect() {
+            const lightning = document.createElement('div');
+            lightning.style.position = 'fixed';
+            lightning.style.top = '0';
+            lightning.style.left = '0';
+            lightning.style.width = '100%';
+            lightning.style.height = '100%';
+            lightning.style.background = 'radial-gradient(circle at center, rgba(255, 255, 255, 0.8), transparent)';
+            lightning.style.pointerEvents = 'none';
+            lightning.style.zIndex = '9999';
+            document.body.appendChild(lightning);
+            
+            setTimeout(() => {
+                lightning.style.opacity = '0';
+                lightning.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => lightning.remove(), 300);
+            }, 100);
+        }
+
+        function simulateHaptic(intensity = 'light') {
+            // Visual haptic feedback
+            const indicator = document.getElementById('haptic-indicator');
+            indicator.classList.add('active');
+            
+            // Try actual haptic if available
+            if ('vibrate' in navigator) {
+                if (intensity === 'light') {
+                    navigator.vibrate(50);
+                } else if (intensity === 'heavy') {
+                    navigator.vibrate([100, 50, 100]);
+                }
+            }
+            
+            setTimeout(() => {
+                indicator.classList.remove('active');
+            }, 200);
+        }
+
+        function endBattle(victory) {
+            inCombat = false;
+            
+            const result = document.getElementById('battle-result');
+            result.textContent = victory ? 'VICTORY' : 'DEFEAT';
+            result.style.color = victory ? '#FFD700' : '#8B0000';
+            result.style.display = 'block';
+            
+            crowdReaction(victory ? 'victory' : 'silence');
+            
+            if (victory) {
+                // Victory celebration
+                createConfetti();
+            } else {
+                // Defeat atmosphere
+                document.getElementById('arena-container').style.filter = 'grayscale(0.8)';
+            }
+        }
+
+        function createConfetti() {
+            // Gold confetti rain
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = '#FFD700';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.animation = `fall ${3 + Math.random() * 2}s linear`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px) rotate(-1deg); }
+                75% { transform: translateX(10px) rotate(1deg); }
+            }
+            
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes jump {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-20px); }
+            }
+            
+            /* Combat instructions */
+            #combat-instructions {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                color: #FFD700;
+                font-size: 14px;
+                opacity: 0.7;
+                text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add combat instructions
+        const instructions = document.createElement('div');
+        instructions.id = 'combat-instructions';
+        instructions.innerHTML = `
+            <div>SPACE/TAP - Attack</div>
+            <div>1/2/3 - Special Moves</div>
+            <div>SHIFT/SWIPE - Dodge</div>
+        `;
+        document.body.appendChild(instructions);
+
+        // AUDIO SYSTEM
+        let audioContext;
+        let ambienceGain;
+        let isAudioPlaying = false;
+
+        function startAmbience() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create ambient drone
+                const oscillator = audioContext.createOscillator();
+                const filter = audioContext.createBiquadFilter();
+                ambienceGain = audioContext.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.value = 55; // Low A
+                
+                filter.type = 'lowpass';
+                filter.frequency.value = 200;
+                filter.Q.value = 10;
+                
+                ambienceGain.gain.value = 0.1;
+                
+                oscillator.connect(filter);
+                filter.connect(ambienceGain);
+                ambienceGain.connect(audioContext.destination);
+                
+                oscillator.start();
+                
+                // Add crowd murmur
+                createCrowdNoise();
+            }
+        }
+
+        function createCrowdNoise() {
+            const bufferSize = audioContext.sampleRate * 2;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() - 0.5) * 0.1;
+            }
+            
+            const noise = audioContext.createBufferSource();
+            const noiseFilter = audioContext.createBiquadFilter();
+            const noiseGain = audioContext.createGain();
+            
+            noise.buffer = buffer;
+            noise.loop = true;
+            
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.value = 1000;
+            noiseFilter.Q.value = 0.5;
+            
+            noiseGain.gain.value = 0.05;
+            
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(audioContext.destination);
+            
+            noise.start();
+        }
+
+        function intensifyAmbience() {
+            if (ambienceGain) {
+                ambienceGain.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 2);
+            }
+        }
+
+        function toggleAmbience() {
+            if (!audioContext) {
+                startAmbience();
+            } else {
+                isAudioPlaying = !isAudioPlaying;
+                ambienceGain.gain.value = isAudioPlaying ? 0.1 : 0;
+            }
+        }
+
+        // Mobile touch support
+        document.addEventListener('touchstart', (e) => {
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+        });
+
+        // Keyboard controls for combat
+        document.addEventListener('keydown', (e) => {
+            if (!inCombat) return;
+            
+            switch(e.key) {
+                case ' ':
+                case 'Enter':
+                    // Basic attack
+                    executeAttack();
+                    break;
+                case '1':
+                    executeSpecialMove('special1');
+                    break;
+                case '2':
+                    executeSpecialMove('special2');
+                    break;
+                case '3':
+                    executeSpecialMove('special3');
+                    break;
+                case 'Shift':
+                    // Dodge
+                    dodge();
+                    break;
+            }
+        });
+
+        // Touch controls for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            if (!inCombat) return;
+            
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            // Swipe detection
+            if (Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) {
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Horizontal swipe - dodge
+                    dodge();
+                } else {
+                    // Vertical swipe - special attack
+                    if (deltaY < 0) {
+                        executeSpecialMove('special1');
+                    } else {
+                        executeSpecialMove('special2');
+                    }
+                }
+            } else {
+                // Tap - basic attack
+                executeAttack();
+            }
+        });
+
+        function dodge() {
+            if (!inCombat) return;
+            
+            const shadow = document.getElementById('gladiator-shadow');
+            shadow.style.transition = 'transform 0.3s ease';
+            shadow.style.transform = 'translateX(-50%) translateX(-100px)';
+            
+            setTimeout(() => {
+                shadow.style.transform = 'translateX(-50%) translateX(100px)';
+                setTimeout(() => {
+                    shadow.style.transform = 'translateX(-50%)';
+                }, 300);
+            }, 300);
+            
+            flashScreen('#00FF00', 0.05);
+        }
+
+        // Special move click handlers
+        document.getElementById('special1').addEventListener('click', () => executeSpecialMove('special1'));
+        document.getElementById('special2').addEventListener('click', () => executeSpecialMove('special2'));
+        document.getElementById('special3').addEventListener('click', () => executeSpecialMove('special3'));
+
+        // Initialize
+        console.log('⚔️ Welcome, Gladiator. Your destiny awaits...');
+    </script>
+</body>
+</html>

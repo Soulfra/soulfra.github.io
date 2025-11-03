@@ -1,0 +1,46 @@
+{
+  "entries": [],
+  "totalNoise": 0,
+  "patterns": {
+    "very_short": 0,
+    "short": 0,
+    "medium": 0
+  },
+  "lastCleaned": "2024-06-16T08:00:00Z",
+  "examples": [
+    {
+      "id": "noise-example-001",
+      "timestamp": "2024-06-16T07:30:00Z",
+      "prompt": "hi",
+      "reasoning": "Matched noise pattern: low signal content",
+      "sessionId": "demo-noise"
+    },
+    {
+      "id": "noise-example-002", 
+      "timestamp": "2024-06-16T07:31:00Z",
+      "prompt": "test",
+      "reasoning": "Matched noise pattern: low signal content",
+      "sessionId": "demo-noise-2"
+    }
+  ],
+  "noise_patterns_detected": [
+    "hello (standalone)",
+    "hi (standalone)", 
+    "hey (standalone)",
+    "test (standalone)",
+    "testing (standalone)",
+    "single character messages",
+    "bot check queries",
+    "basic greeting without context"
+  ],
+  "filtering_rules": {
+    "auto_archive_threshold": 1000,
+    "pattern_learning_enabled": true,
+    "manual_review_required": false
+  },
+  "statistics": {
+    "average_noise_length": 0,
+    "most_common_noise": "standalone greetings",
+    "filtering_accuracy": "pending_data"
+  }
+}

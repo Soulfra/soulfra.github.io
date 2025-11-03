@@ -1,0 +1,34 @@
+{
+  "checkoutSessionId": "cs_test_a1b2c3d4e5f6",
+  "paymentIntent": "pi_test_1234567890",
+  "amount": 100,
+  "currency": "usd",
+  "customerEmail": "session_123@mirroros.local",
+  "exportType": "export_basic",
+  "sessionId": "ses_1234567890_abc123",
+  "status": "success",
+  "completedAt": "2024-01-01T12:00:00.000Z",
+  "exportDetails": {
+    "agentId": "example-agent-id",
+    "agentName": "Personal Reflection Agent",
+    "forkCount": 3,
+    "reflectionCount": 12,
+    "totalPrompts": 45
+  },
+  "referrer": {
+    "type": "qr_scan",
+    "deviceId": "dev_mobile_xyz789",
+    "timestamp": "2024-01-01T11:55:00.000Z"
+  },
+  "downloadLinks": {
+    "agent": "/api/export/download/example-agent-id/agent.json",
+    "manifest": "/api/export/download/example-agent-id/manifest.json",
+    "readme": "/api/export/download/example-agent-id/README.md",
+    "expiresAt": "2024-01-08T12:00:00.000Z"
+  },
+  "metadata": {
+    "stripeVersion": "2023-10-16",
+    "mirrorOSVersion": "1.0.0",
+    "exportVersion": "1.0.0"
+  }
+}

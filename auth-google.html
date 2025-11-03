@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - Soulfra</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      max-width: 450px;
+      width: 100%;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 50px 40px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .subtitle {
+      opacity: 0.9;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .google-button-container {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    .status {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-weight: 600;
+      display: none;
+    }
+
+    .status.success {
+      background: rgba(46,204,113,0.3);
+      border: 1px solid rgba(46,204,113,0.5);
+      display: block;
+    }
+
+    .status.error {
+      background: rgba(231,76,60,0.3);
+      border: 1px solid rgba(231,76,60,0.5);
+      display: block;
+    }
+
+    .info-box {
+      background: rgba(52,152,219,0.2);
+      border: 1px solid rgba(52,152,219,0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    .info-box h4 {
+      margin-bottom: 10px;
+      color: #3498db;
+    }
+
+    .info-box ul {
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+
+    .divider {
+      margin: 40px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .divider:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .divider span {
+      background: rgba(255,255,255,0.1);
+      padding: 0 15px;
+      position: relative;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .advanced-link {
+      margin-top: 30px;
+    }
+
+    .advanced-link a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .advanced-link a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .back-link {
+      margin-top: 30px;
+      opacity: 0.9;
+    }
+
+    .back-link a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 40px 30px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <h1>🔐 Sign In</h1>
+      <p class="subtitle">One click, no password needed</p>
+
+      <div id="statusMessage" class="status"></div>
+
+      <!-- Google Sign-in Button -->
+      <div class="google-button-container">
+        <div id="g_id_signin"></div>
+      </div>
+
+      <div class="info-box">
+        <h4>✨ Why Google Sign-in?</h4>
+        <ul>
+          <li>No password to remember</li>
+          <li>Secure (uses Google's auth)</li>
+          <li>Works on all devices</li>
+          <li>Instant access</li>
+        </ul>
+      </div>
+
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <div class="advanced-link">
+        <a href="auth.html">Advanced Options (Ed25519, Import, etc.) →</a>
+      </div>
+
+      <div class="back-link">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google OAuth Handler -->
+  <script src="lib/google-oauth.js"></script>
+
+  <script>
+    let googleAuth = null;
+
+    // Initialize on page load
+    window.addEventListener('load', async () => {
+      await initGoogleAuth();
+    });
+
+    // Initialize Google OAuth
+    async function initGoogleAuth() {
+      try {
+        // TODO: Replace with your actual Google Client ID
+        const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+
+        // TODO: Replace with your Google Sheets config (optional)
+        const SHEETS_CONFIG = {
+          spreadsheetId: 'YOUR_SPREADSHEET_ID',
+          apiKey: 'YOUR_API_KEY'
+        };
+
+        googleAuth = new GoogleOAuth({
+          clientId: CLIENT_ID,
+          sheets: SHEETS_CONFIG
+        });
+
+        await googleAuth.init();
+
+        // Render Google button
+        googleAuth.renderButton('g_id_signin');
+
+    // Enable auto-login (One Tap)
+    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: (response) => {
+          const user = googleAuth._parseJwt(response.credential);
+          if (window.onGoogleLoginSuccess) window.onGoogleLoginSuccess(user);
+        },
+        auto_select: true,
+        cancel_on_tap_outside: false,
+        itp_support: true
+      });
+
+      google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log('[Auth] One Tap not available, showing button');
+        } else {
+          console.log('[Auth] One Tap is showing');
+        }
+      });
+    }
+
+        console.log('[Auth] Google OAuth initialized');
+
+      } catch (error) {
+        console.error('[Auth] Init error:', error);
+        showStatus('Failed to initialize Google Sign-in. Please refresh.', 'error');
+      }
+    }
+
+    // Success callback
+    window.onGoogleLoginSuccess = (user) => {
+      showStatus(`✓ Signed in as ${user.name}`, 'success');
+      console.log('[Auth] Login successful:', user);
+
+      // Redirect handled by GoogleOAuth class
+    };
+
+    // Error callback
+    window.onGoogleLoginError = (error) => {
+      showStatus('Sign-in failed: ' + error.message, 'error');
+      console.error('[Auth] Login error:', error);
+    };
+
+    // Show status message
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = `status ${type}`;
+
+      if (type === 'success') {
+        setTimeout(() => {
+          statusEl.style.display = 'none';
+        }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>

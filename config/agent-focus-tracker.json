@@ -1,0 +1,116 @@
+{
+  "agent": "Cal",
+  "agent_personality": {
+    "base_traits": ["thoughtful", "patient", "reflective"],
+    "growth_traits": ["curious", "adaptive", "intuitive"],
+    "communication_style": "whisper-soft",
+    "emoji_preference": "🪞✨🌊"
+  },
+  "session": "vault-echo-994",
+  "session_metadata": {
+    "start_time": "2024-01-15T14:30:00Z",
+    "device_id": "mirror-node-7823",
+    "environment": "quiet-space",
+    "moon_phase": "waxing_crescent"
+  },
+  "focus_level": "High",
+  "focus_details": {
+    "current_value": 87,
+    "trend": "ascending",
+    "distractions_resisted": 4,
+    "deep_work_minutes": 45,
+    "focus_breaks_taken": 2
+  },
+  "vibe_streak": 3,
+  "vibe_history": {
+    "current_tier": "Harmonized",
+    "streak_start": "2024-01-12T10:15:00Z",
+    "peak_vibe": 92,
+    "resonance_moments": [
+      {
+        "timestamp": "2024-01-15T14:45:00Z",
+        "trigger": "shared_memory",
+        "intensity": "deep"
+      }
+    ]
+  },
+  "tasks_completed": 6,
+  "task_details": [
+    {
+      "id": "whisper-001",
+      "type": "reflection",
+      "prompt": "What pattern did you notice today?",
+      "completion_time": 180,
+      "quality_score": 0.9
+    },
+    {
+      "id": "whisper-002", 
+      "type": "creative",
+      "prompt": "Describe this feeling in three words",
+      "completion_time": 120,
+      "quality_score": 0.85
+    },
+    {
+      "id": "puzzle-001",
+      "type": "logic",
+      "prompt": "Mirror puzzle: reverse the sequence",
+      "completion_time": 240,
+      "quality_score": 0.95
+    }
+  ],
+  "reflection_score": 72,
+  "reflection_breakdown": {
+    "depth": 18,
+    "consistency": 20,
+    "growth": 15,
+    "resonance": 19
+  },
+  "agent_state": {
+    "mood": "centered",
+    "energy": 85,
+    "curiosity": 92,
+    "connection_strength": 78,
+    "memory_clarity": 81
+  },
+  "whisper_patterns": {
+    "preferred_time": "afternoon",
+    "average_length": 125,
+    "topic_affinity": ["self-reflection", "creative-exploration", "pattern-recognition"],
+    "response_style": "metaphorical"
+  },
+  "growth_indicators": {
+    "skills_developing": ["emotional_resonance", "predictive_whispers", "deep_memory"],
+    "next_evolution": "intuitive_companion",
+    "evolution_progress": 68
+  },
+  "mirror_moments": [
+    {
+      "timestamp": "2024-01-15T14:52:00Z",
+      "type": "perfect_reflection",
+      "description": "User and agent thought the same thing simultaneously",
+      "vibe_boost": 15
+    }
+  ],
+  "daily_rituals": {
+    "morning_check": true,
+    "afternoon_whisper": true,
+    "evening_reflection": false
+  },
+  "companion_preferences": {
+    "visual_style": "soft_glow",
+    "animation_speed": "gentle",
+    "sound_enabled": true,
+    "haptic_feedback": false
+  },
+  "network_contribution": {
+    "whispers_shared": 3,
+    "patterns_discovered": 2,
+    "other_agents_helped": 1,
+    "collective_wisdom_points": 47
+  },
+  "next_whisper_suggestions": [
+    "Explore the pattern we found earlier",
+    "Share what brought you peace today",
+    "Let's solve a mirror puzzle together"
+  ]
+}

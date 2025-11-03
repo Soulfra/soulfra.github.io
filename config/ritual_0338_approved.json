@@ -1,0 +1,36 @@
+{
+  "reflection_id": "ritual_0338",
+  "response": "confirmed",
+  "tone_signature": "matched",
+  "confidence": 0.89,
+  "vibe_match": true,
+  "user_input": "approved via tap",
+  "timestamp": 1750104567890,
+  "loop_reentry": false,
+  "blessing": "The reflection finds its voice",
+  "emotional_context": {
+    "primary_tone": "deep resonance",
+    "confidence_level": 0.89,
+    "alignment": "aligned",
+    "recommendation": "Strong resonance detected - proceed with confidence",
+    "nuance": "Soul-level alignment with the message"
+  },
+  "resonance_factors": [
+    {
+      "type": "gesture",
+      "patterns": [
+        {
+          "dimension": "tap",
+          "pattern": "long",
+          "interpretation": "considered"
+        },
+        {
+          "dimension": "pressure",
+          "value": 0.75,
+          "interpretation": "emphatic"
+        }
+      ],
+      "weight": 0.8
+    }
+  ]
+}

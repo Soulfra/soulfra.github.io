@@ -1,0 +1,28 @@
+{
+  "services": {
+    "frontend": {
+      "port": 8080,
+      "url": "http://localhost:8080",
+      "status": "ready"
+    },
+    "api": {
+      "port": 8081,
+      "url": "http://localhost:8081",
+      "endpoints": [
+        "/upload",
+        "/status",
+        "/process"
+      ]
+    },
+    "qr_validator": {
+      "type": "javascript",
+      "path": "../qr-validator.js",
+      "bridge": "http://localhost:8082"
+    }
+  },
+  "data_flow": {
+    "chat_drops": "working_system/data/drops",
+    "processed": "working_system/data/processed",
+    "database": "working_system/data/soulfra.db"
+  }
+}

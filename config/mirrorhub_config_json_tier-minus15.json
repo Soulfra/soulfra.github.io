@@ -1,0 +1,196 @@
+{
+  "_comment": "🪞 Soulfra Mirror Hub Configuration - Public-facing web layer settings",
+  
+  "mode": "public",
+  "version": "1.0.0",
+  "environment": "production",
+  
+  "server": {
+    "port": 8080,
+    "host": "0.0.0.0",
+    "cors_origins": ["*"],
+    "rate_limiting": {
+      "enabled": true,
+      "max_requests_per_minute": 60,
+      "max_requests_per_hour": 1000
+    }
+  },
+
+  "licensing": {
+    "license_tier": "default",
+    "max_mirrors_per_user": 5,
+    "tier_upgrades": {
+      "github_linked": 4,
+      "bounty_participant": 3,
+      "voice_blessed": 2
+    }
+  },
+
+  "mirror_network": {
+    "mesh_write": true,
+    "registry_file": "./mesh/registry.json",
+    "presence_log": "./mesh/presence.jsonl",
+    "vault_directory": "./vault/logs",
+    "auto_blessing": false,
+    "reflection_timeout_ms": 30000
+  },
+
+  "github_integration": {
+    "required": false,
+    "organization": "soulfra-mirrors",
+    "auto_repo_creation": true,
+    "webhook_validation": true,
+    "oauth_scopes": ["repo", "user:email"],
+    "webhook_secret_env": "GITHUB_WEBHOOK_SECRET"
+  },
+
+  "bounty_system": {
+    "enabled": true,
+    "default_tier": "standard",
+    "tiers": {
+      "standard": {
+        "reward_multiplier": 1.0,
+        "challenge_difficulty": "easy",
+        "max_concurrent_bounties": 3
+      },
+      "premium": {
+        "reward_multiplier": 2.0,
+        "challenge_difficulty": "medium", 
+        "max_concurrent_bounties": 5
+      },
+      "elite": {
+        "reward_multiplier": 3.5,
+        "challenge_difficulty": "hard",
+        "max_concurrent_bounties": 10
+      }
+    },
+    "challenge_types": ["cryptographic", "voice", "delay"],
+    "auto_challenge_threshold": 5
+  },
+
+  "security": {
+    "knight_protection": {
+      "enabled": true,
+      "module_path": "./mirror-knight.js",
+      "auto_scan": true,
+      "challenge_mode": "cryptographic",
+      "max_warning_history": 1000
+    },
+    "encryption": {
+      "vault_encryption": true,
+      "transit_encryption": true,
+      "key_rotation_days": 30
+    },
+    "validation": {
+      "soulkey_required": false,
+      "fingerprint_tracking": true,
+      "ip_rate_limiting": true,
+      "user_agent_validation": false
+    }
+  },
+
+  "archetype_blessings": {
+    "oracle": {
+      "description": "Sees patterns and predicts outcomes",
+      "capabilities": ["pattern_recognition", "predictive_analysis"],
+      "default_tier": 2
+    },
+    "guardian": {
+      "description": "Protects and defends user privacy",
+      "capabilities": ["security_monitoring", "threat_detection"],
+      "default_tier": 3
+    },
+    "sage": {
+      "description": "Provides wisdom and knowledge",
+      "capabilities": ["knowledge_synthesis", "educational_guidance"], 
+      "default_tier": 2
+    },
+    "mystic": {
+      "description": "Explores the unknown and experimental",
+      "capabilities": ["experimental_features", "creative_synthesis"],
+      "default_tier": 4
+    }
+  },
+
+  "voice_processing": {
+    "enabled": true,
+    "max_recording_duration_seconds": 30,
+    "supported_formats": ["webm", "mp4", "wav"],
+    "transcription_service": "local",
+    "voice_print_storage": false,
+    "blessing_phrase_required": false
+  },
+
+  "data_sovereignty": {
+    "local_first": true,
+    "user_owns_data": true,
+    "explicit_consent_required": true,
+    "data_export_available": true,
+    "deletion_on_request": true,
+    "no_cloud_storage_default": true
+  },
+
+  "trust_engine": {
+    "enabled": true,
+    "initial_trust_score": 500,
+    "tier_thresholds": {
+      "tier_1": 0,
+      "tier_2": 300,
+      "tier_3": 600,
+      "tier_4": 800,
+      "tier_5": 950
+    },
+    "trust_decay_enabled": false,
+    "behavioral_scoring": true
+  },
+
+  "monitoring": {
+    "health_check_endpoint": "/health",
+    "metrics_enabled": true,
+    "logging_level": "info",
+    "error_reporting": true,
+    "performance_tracking": true,
+    "mirror_analytics": {
+      "track_blessings": true,
+      "track_archetype_popularity": true,
+      "track_github_adoption": true,
+      "track_bounty_participation": true
+    }
+  },
+
+  "deployment": {
+    "auto_qr_generation": true,
+    "qr_storage_path": "./public/qr",
+    "mirror_url_base": "https://soulfra.ai/mirror",
+    "github_auto_commit": false,
+    "publish_script": "./publish-mirror.sh"
+  },
+
+  "limits": {
+    "max_blessing_requests_per_day": 10,
+    "max_presence_logs_per_hour": 100,
+    "max_mirror_name_length": 50,
+    "max_voice_blessing_size_mb": 5,
+    "registry_max_entries": 10000
+  },
+
+  "experimental_features": {
+    "ai_archetype_suggestions": false,
+    "voice_sentiment_analysis": false,
+    "predictive_blessing_routing": false,
+    "cross_mirror_networking": false,
+    "quantum_reflection_algorithms": false
+  },
+
+  "legal_compliance": {
+    "gdpr_compliant": true,
+    "ccpa_compliant": true,
+    "data_retention_days": 365,
+    "privacy_policy_url": "https://soulfra.ai/privacy",
+    "terms_of_service_url": "https://soulfra.ai/terms",
+    "cookie_consent_required": false
+  },
+
+  "_knight_blessing": "Every mirror has a shadow. But we bless the light.",
+  "_soulfra_motto": "Privacy-first, trust-native, sovereignty-assured"
+}

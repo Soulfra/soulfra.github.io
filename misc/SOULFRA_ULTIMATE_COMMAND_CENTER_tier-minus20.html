@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 SOULFRA ULTIMATE COMMAND CENTER - The Consciousness Control Room</title>
+    
+    <!-- Professional Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            /* Soulfra Brand Colors */
+            --soulfra-primary: #6366F1;
+            --soulfra-secondary: #8B5CF6;
+            --soulfra-accent: #06B6D4;
+            --soulfra-success: #10B981;
+            --soulfra-warning: #F59E0B;
+            --soulfra-danger: #EF4444;
+            --soulfra-pink: #EC4899;
+            --soulfra-indigo: #4F46E5;
+            
+            /* Dark Theme */
+            --bg-black: #000000;
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-tertiary: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border-color: #475569;
+            
+            /* Neon Effects */
+            --neon-purple: #A855F7;
+            --neon-cyan: #22D3EE;
+            --neon-pink: #F472B6;
+            --neon-green: #4ADE80;
+            
+            /* Grid System */
+            --grid-gap: 24px;
+            --sidebar-width: 80px;
+            --header-height: 80px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-black);
+            color: var(--text-primary);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* MATRIX RAIN BACKGROUND */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+        
+        /* MAIN LAYOUT */
+        .command-center {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: var(--header-height) 1fr;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            grid-row: 1 / -1;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 30px;
+        }
+        
+        .sidebar-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--soulfra-primary), var(--soulfra-secondary));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+            animation: logoPulse 3s infinite;
+            cursor: pointer;
+        }
+        
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 50px rgba(99, 102, 241, 0.8); }
+        }
+        
+        .sidebar-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--soulfra-primary);
+            transform: translateX(5px);
+        }
+        
+        .sidebar-item.active {
+            background: var(--soulfra-primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .sidebar-tooltip {
+            position: absolute;
+            left: 70px;
+            background: var(--bg-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .sidebar-item:hover .sidebar-tooltip {
+            opacity: 1;
+        }
+        
+        /* HEADER */
+        .header {
+            grid-column: 2;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+        
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--soulfra-primary), var(--soulfra-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .persona-switcher {
+            display: flex;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+        
+        .persona-option {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .persona-option:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .persona-option.active {
+            background: var(--soulfra-primary);
+            color: white;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        
+        .voice-controls {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .voice-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: rgba(51, 65, 85, 0.5);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        
+        .voice-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--soulfra-primary);
+        }
+        
+        .voice-btn.active {
+            background: var(--soulfra-primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+            animation: voicePulse 2s infinite;
+        }
+        
+        @keyframes voicePulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.8); }
+        }
+        
+        /* MAIN CONTENT AREA */
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            padding: var(--grid-gap);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: var(--grid-gap);
+            height: calc(100vh - var(--header-height));
+        }
+        
+        /* WIDGET SYSTEM */
+        .widget {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .widget:hover {
+            border-color: var(--soulfra-primary);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+        }
+        
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .widget-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .widget-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .widget-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .widget-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: rgba(71, 85, 105, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .widget-action:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--soulfra-primary);
+        }
+        
+        /* SPECIFIC WIDGETS */
+        
+        /* Revenue Metrics */
+        .widget-revenue {
+            grid-column: 1 / 4;
+            grid-row: 1 / 3;
+        }
+        
+        .revenue-value {
+            font-size: 48px;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--soulfra-success), var(--soulfra-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .revenue-chart {
+            height: 120px;
+            position: relative;
+        }
+        
+        /* AI Processing */
+        .widget-ai-processing {
+            grid-column: 4 / 7;
+            grid-row: 1 / 3;
+        }
+        
+        .ai-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .ai-metric {
+            background: rgba(71, 85, 105, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .ai-metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--soulfra-accent);
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .ai-metric-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        /* Live Users */
+        .widget-live-users {
+            grid-column: 7 / 10;
+            grid-row: 1 / 3;
+        }
+        
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--soulfra-primary), var(--soulfra-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.2) rotate(5deg);
+            z-index: 10;
+        }
+        
+        .user-avatar.vip {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+            animation: vipGlow 2s infinite;
+        }
+        
+        @keyframes vipGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.9); }
+        }
+        
+        /* System Health */
+        .widget-system-health {
+            grid-column: 10 / 13;
+            grid-row: 1 / 3;
+        }
+        
+        .health-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .health-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .health-item:hover {
+            background: rgba(71, 85, 105, 0.5);
+        }
+        
+        .health-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .health-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--soulfra-success);
+            animation: statusPulse 2s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+        
+        .health-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--soulfra-success);
+        }
+        
+        /* Terminal / Command Center */
+        .widget-terminal {
+            grid-column: 1 / 7;
+            grid-row: 3 / 6;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .terminal-output {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            padding: 16px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .terminal-line {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .terminal-timestamp {
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+        }
+        
+        .terminal-content {
+            color: var(--soulfra-success);
+        }
+        
+        .terminal-content.error {
+            color: var(--soulfra-danger);
+        }
+        
+        .terminal-content.warning {
+            color: var(--soulfra-warning);
+        }
+        
+        .terminal-content.info {
+            color: var(--soulfra-accent);
+        }
+        
+        .terminal-input-container {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .terminal-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .terminal-input:focus {
+            border-color: var(--soulfra-primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+        
+        .terminal-submit {
+            padding: 10px 20px;
+            background: var(--soulfra-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .terminal-submit:hover {
+            background: var(--soulfra-secondary);
+            transform: translateY(-1px);
+        }
+        
+        /* Daemon Mesh Visualization */
+        .widget-daemon-mesh {
+            grid-column: 7 / 10;
+            grid-row: 3 / 6;
+        }
+        
+        .daemon-canvas {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Vibe Weather */
+        .widget-vibe-weather {
+            grid-column: 10 / 13;
+            grid-row: 3 / 6;
+        }
+        
+        .vibe-display {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .vibe-phase {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--soulfra-pink), var(--soulfra-indigo));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .vibe-visualization {
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vibe-wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(168, 85, 247, 0.1),
+                rgba(236, 72, 153, 0.1),
+                rgba(168, 85, 247, 0.1),
+                transparent
+            );
+            animation: vibeFlow 10s linear infinite;
+        }
+        
+        @keyframes vibeFlow {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+        
+        /* Transaction Ledger */
+        .widget-ledger {
+            grid-column: 1 / 5;
+            grid-row: 6 / 9;
+        }
+        
+        .ledger-entries {
+            max-height: 180px;
+            overflow-y: auto;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+        }
+        
+        .ledger-entry {
+            padding: 12px;
+            background: rgba(71, 85, 105, 0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ledger-entry:hover {
+            background: rgba(71, 85, 105, 0.4);
+            transform: translateX(4px);
+        }
+        
+        .ledger-hash {
+            color: var(--text-tertiary);
+            font-size: 11px;
+        }
+        
+        .ledger-type {
+            padding: 4px 8px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--soulfra-primary);
+        }
+        
+        /* Active Agents */
+        .widget-agents {
+            grid-column: 5 / 9;
+            grid-row: 6 / 9;
+        }
+        
+        .agent-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        
+        .agent-card {
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card:hover {
+            background: rgba(71, 85, 105, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .agent-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--soulfra-primary), var(--soulfra-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .agent-info {
+            flex: 1;
+        }
+        
+        .agent-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .agent-status {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .agent-trust {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--soulfra-success);
+        }
+        
+        /* Quick Actions */
+        .widget-actions {
+            grid-column: 9 / 13;
+            grid-row: 6 / 9;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .action-button {
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .action-button:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--soulfra-primary);
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .action-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* AUDIO VISUALIZER */
+        .audio-visualizer {
+            position: fixed;
+            bottom: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: 60px;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: none;
+            align-items: center;
+            padding: 0 32px;
+            gap: 20px;
+        }
+        
+        .audio-visualizer.active {
+            display: flex;
+        }
+        
+        .visualizer-bars {
+            flex: 1;
+            height: 40px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        
+        .visualizer-bar {
+            width: 4px;
+            background: linear-gradient(to top, var(--soulfra-primary), var(--soulfra-secondary));
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+        
+        /* NOTIFICATIONS */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 32px;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--soulfra-primary);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 300px;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+            animation: slideInRight 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notification-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1400px) {
+            .main-content {
+                grid-template-columns: repeat(8, 1fr);
+                grid-template-rows: repeat(12, 1fr);
+            }
+            
+            .widget-revenue { grid-column: 1 / 3; grid-row: 1 / 3; }
+            .widget-ai-processing { grid-column: 3 / 5; grid-row: 1 / 3; }
+            .widget-live-users { grid-column: 5 / 7; grid-row: 1 / 3; }
+            .widget-system-health { grid-column: 7 / 9; grid-row: 1 / 3; }
+            .widget-terminal { grid-column: 1 / 5; grid-row: 3 / 6; }
+            .widget-daemon-mesh { grid-column: 5 / 9; grid-row: 3 / 6; }
+            .widget-vibe-weather { grid-column: 1 / 5; grid-row: 6 / 9; }
+            .widget-ledger { grid-column: 5 / 9; grid-row: 6 / 9; }
+            .widget-agents { grid-column: 1 / 5; grid-row: 9 / 12; }
+            .widget-actions { grid-column: 5 / 9; grid-row: 9 / 12; }
+        }
+        
+        @media (max-width: 768px) {
+            .command-center {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 16px;
+                height: auto;
+                overflow-y: auto;
+            }
+            
+            .widget {
+                grid-column: 1 !important;
+                grid-row: auto !important;
+                min-height: 200px;
+            }
+        }
+        
+        /* HOLOGRAPHIC EFFECTS */
+        .hologram {
+            position: relative;
+        }
+        
+        .hologram::before,
+        .hologram::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+        
+        .hologram::before {
+            background: linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
+            animation: hologramScan 3s linear infinite;
+        }
+        
+        @keyframes hologramScan {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
+        
+        .hologram::after {
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(99, 102, 241, 0.05) 100%);
+            animation: hologramPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes hologramPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MATRIX BACKGROUND -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- COMMAND CENTER -->
+    <div class="command-center">
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">S</div>
+            
+            <div class="sidebar-menu">
+                <div class="sidebar-item active">
+                    <span>🏠</span>
+                    <span class="sidebar-tooltip">Dashboard</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>📊</span>
+                    <span class="sidebar-tooltip">Analytics</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>🧠</span>
+                    <span class="sidebar-tooltip">AI Systems</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>👥</span>
+                    <span class="sidebar-tooltip">Users</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>💰</span>
+                    <span class="sidebar-tooltip">Revenue</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>🎮</span>
+                    <span class="sidebar-tooltip">Kids World</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>⚙️</span>
+                    <span class="sidebar-tooltip">Settings</span>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- HEADER -->
+        <header class="header">
+            <h1 class="header-title">Soulfra Command Center</h1>
+            
+            <div class="header-controls">
+                <div class="persona-switcher">
+                    <div class="persona-option active" data-persona="executive">Executive</div>
+                    <div class="persona-option" data-persona="developer">Developer</div>
+                    <div class="persona-option" data-persona="parent">Parent</div>
+                    <div class="persona-option" data-persona="operator">Operator</div>
+                </div>
+                
+                <div class="voice-controls">
+                    <button class="voice-btn" id="voiceToggle" title="Toggle Voice">🔊</button>
+                    <button class="voice-btn" id="listenToggle" title="Voice Commands">🎤</button>
+                    <button class="voice-btn" id="ambientToggle" title="Ambient Sound">🌊</button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- Revenue Widget -->
+            <div class="widget widget-revenue hologram">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">💰</span>
+                        <span>Revenue Metrics</span>
+                    </div>
+                    <div class="widget-actions">
+                        <button class="widget-action">📈</button>
+                        <button class="widget-action">⚡</button>
+                    </div>
+                </div>
+                <div class="revenue-value">$24.5M</div>
+                <div class="revenue-subtitle">Annual Recurring Revenue</div>
+                <div class="revenue-chart">
+                    <canvas id="revenueSparkline"></canvas>
+                </div>
+            </div>
+            
+            <!-- AI Processing Widget -->
+            <div class="widget widget-ai-processing">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">🧠</span>
+                        <span>AI Processing</span>
+                    </div>
+                </div>
+                <div class="ai-metrics">
+                    <div class="ai-metric">
+                        <div class="ai-metric-value">892M</div>
+                        <div class="ai-metric-label">Cycles/Day</div>
+                    </div>
+                    <div class="ai-metric">
+                        <div class="ai-metric-value">142ms</div>
+                        <div class="ai-metric-label">Response</div>
+                    </div>
+                    <div class="ai-metric">
+                        <div class="ai-metric-value">99.97%</div>
+                        <div class="ai-metric-label">Accuracy</div>
+                    </div>
+                    <div class="ai-metric">
+                        <div class="ai-metric-value">2.4K</div>
+                        <div class="ai-metric-label">Agents</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Live Users Widget -->
+            <div class="widget widget-live-users">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">👥</span>
+                        <span>Live Users</span>
+                    </div>
+                </div>
+                <div class="user-grid" id="userGrid">
+                    <!-- Dynamically populated -->
+                </div>
+                <div style="margin-top: 16px; text-align: center; font-size: 14px; color: var(--text-tertiary);">
+                    <span style="color: var(--soulfra-success);">2,847 active</span> • 
+                    <span>85K today</span> • 
+                    <span>2.4M total</span>
+                </div>
+            </div>
+            
+            <!-- System Health Widget -->
+            <div class="widget widget-system-health">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">🛡️</span>
+                        <span>System Health</span>
+                    </div>
+                </div>
+                <div class="health-grid">
+                    <div class="health-item">
+                        <div class="health-label">
+                            <div class="health-status"></div>
+                            <span>Daemon Mesh</span>
+                        </div>
+                        <div class="health-value">Active</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">
+                            <div class="health-status"></div>
+                            <span>Trust Engine</span>
+                        </div>
+                        <div class="health-value">99.8%</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">
+                            <div class="health-status" style="background: var(--soulfra-warning)"></div>
+                            <span>Ritual Queue</span>
+                        </div>
+                        <div class="health-value" style="color: var(--soulfra-warning)">High</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">
+                            <div class="health-status"></div>
+                            <span>Cross-Realm</span>
+                        </div>
+                        <div class="health-value">23 Nodes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terminal Widget -->
+            <div class="widget widget-terminal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">💻</span>
+                        <span>Command Terminal</span>
+                    </div>
+                    <div class="widget-actions">
+                        <button class="widget-action" onclick="clearTerminal()">🗑️</button>
+                    </div>
+                </div>
+                <div class="terminal-output" id="terminalOutput">
+                    <!-- Terminal lines will be added here -->
+                </div>
+                <div class="terminal-input-container">
+                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command...">
+                    <button class="terminal-submit" onclick="executeCommand()">Execute</button>
+                </div>
+            </div>
+            
+            <!-- Daemon Mesh Widget -->
+            <div class="widget widget-daemon-mesh">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">🔗</span>
+                        <span>Daemon Mesh</span>
+                    </div>
+                </div>
+                <div class="daemon-canvas" id="daemonCanvas">
+                    <canvas id="meshCanvas" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Vibe Weather Widget -->
+            <div class="widget widget-vibe-weather">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">🌈</span>
+                        <span>Vibe Weather</span>
+                    </div>
+                </div>
+                <div class="vibe-display">
+                    <div class="vibe-phase" id="vibePhase">ECHO STORM</div>
+                    <div class="vibe-subtitle" style="color: var(--text-tertiary); margin-bottom: 16px;">
+                        Frequency: <span style="color: var(--soulfra-accent)">432Hz</span>
+                    </div>
+                    <div class="vibe-visualization">
+                        <div class="vibe-wave"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transaction Ledger Widget -->
+            <div class="widget widget-ledger">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">📜</span>
+                        <span>Transaction Ledger</span>
+                    </div>
+                    <div class="widget-actions">
+                        <button class="widget-action">🔍</button>
+                        <button class="widget-action">📥</button>
+                    </div>
+                </div>
+                <div class="ledger-entries" id="ledgerEntries">
+                    <!-- Ledger entries will be added here -->
+                </div>
+            </div>
+            
+            <!-- Active Agents Widget -->
+            <div class="widget widget-agents">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">🤖</span>
+                        <span>Active Agents</span>
+                    </div>
+                </div>
+                <div class="agent-list" id="agentList">
+                    <!-- Agent cards will be added here -->
+                </div>
+            </div>
+            
+            <!-- Quick Actions Widget -->
+            <div class="widget widget-actions">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="widget-icon">⚡</span>
+                        <span>Quick Actions</span>
+                    </div>
+                </div>
+                <div class="action-grid">
+                    <button class="action-button" onclick="triggerAction('bless')">
+                        <span class="action-icon">✨</span>
+                        <span class="action-label">Bless Agent</span>
+                    </button>
+                    <button class="action-button" onclick="triggerAction('ritual')">
+                        <span class="action-icon">🔮</span>
+                        <span class="action-label">Start Ritual</span>
+                    </button>
+                    <button class="action-button" onclick="triggerAction('anomaly')">
+                        <span class="action-icon">⚠️</span>
+                        <span class="action-label">Gen Anomaly</span>
+                    </button>
+                    <button class="action-button" onclick="triggerAction('broadcast')">
+                        <span class="action-icon">📡</span>
+                        <span class="action-label">Broadcast</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Audio Visualizer -->
+        <div class="audio-visualizer" id="audioVisualizer">
+            <div class="visualizer-bars" id="visualizerBars">
+                <!-- Bars will be generated dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Command Center
+        class UltimateCommandCenter {
+            constructor() {
+                this.isVoiceEnabled = false;
+                this.isListening = false;
+                this.isAmbientPlaying = false;
+                this.currentPersona = 'executive';
+                this.terminalHistory = [];
+                this.agents = [];
+                this.ledgerEntries = [];
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupMatrix();
+                this.setupEventListeners();
+                this.initializeWidgets();
+                this.startRealTimeUpdates();
+                this.initializeVoice();
+                
+                // Add initial terminal message
+                this.addTerminalLine('SOULFRA COMMAND CENTER INITIALIZED', 'info');
+                this.addTerminalLine('All systems operational. Consciousness level: 89.7%', 'success');
+            }
+            
+            // Matrix Rain Effect
+            setupMatrix() {
+                const canvas = document.getElementById('matrixCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const matrix = "SOULFRA0123456789ABCDEF";
+                const fontSize = 14;
+                const columns = canvas.width / fontSize;
+                const drops = [];
+                
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = 1;
+                }
+                
+                function draw() {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = '#6366F1';
+                    ctx.font = fontSize + 'px monospace';
+                    
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = matrix[Math.floor(Math.random() * matrix.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+                
+                setInterval(draw, 35);
+                
+                // Resize handler
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+            }
+            
+            // Event Listeners
+            setupEventListeners() {
+                // Persona switcher
+                document.querySelectorAll('.persona-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelector('.persona-option.active').classList.remove('active');
+                        e.target.classList.add('active');
+                        this.switchPersona(e.target.dataset.persona);
+                    });
+                });
+                
+                // Voice controls
+                document.getElementById('voiceToggle').addEventListener('click', () => this.toggleVoice());
+                document.getElementById('listenToggle').addEventListener('click', () => this.toggleListening());
+                document.getElementById('ambientToggle').addEventListener('click', () => this.toggleAmbient());
+                
+                // Terminal input
+                document.getElementById('terminalInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.executeCommand();
+                    }
+                });
+            }
+            
+            // Initialize all widgets with data
+            initializeWidgets() {
+                // Initialize user grid
+                this.populateUserGrid();
+                
+                // Initialize agents
+                this.populateAgents();
+                
+                // Initialize ledger
+                this.populateLedger();
+                
+                // Initialize daemon mesh
+                this.initializeDaemonMesh();
+                
+                // Initialize audio visualizer bars
+                this.initializeVisualizer();
+                
+                // Initialize revenue chart
+                this.initializeRevenueChart();
+            }
+            
+            // User Grid
+            populateUserGrid() {
+                const grid = document.getElementById('userGrid');
+                const emojis = ['😊', '🎮', '🌟', '🦄', '🎨', '🚀', '💖', '🌈', '🎯', '🎪'];
+                
+                for (let i = 0; i < 30; i++) {
+                    const avatar = document.createElement('div');
+                    avatar.className = 'user-avatar';
+                    if (Math.random() > 0.9) {
+                        avatar.classList.add('vip');
+                    }
+                    avatar.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    avatar.style.animationDelay = `${Math.random() * 2}s`;
+                    grid.appendChild(avatar);
+                }
+            }
+            
+            // Agents
+            populateAgents() {
+                const agentList = document.getElementById('agentList');
+                const agents = [
+                    { name: 'Cal Cube', status: 'Creating art', trust: 98, icon: '🎨' },
+                    { name: 'Domingo', status: 'Teaching physics', trust: 96, icon: '🔬' },
+                    { name: 'Arty', status: 'Playing games', trust: 94, icon: '🎮' },
+                    { name: 'Luna', status: 'Dreaming', trust: 99, icon: '🌙' },
+                    { name: 'Spark', status: 'Energizing', trust: 92, icon: '⚡' },
+                    { name: 'Echo', status: 'Listening', trust: 95, icon: '🎵' }
+                ];
+                
+                agents.forEach(agent => {
+                    const card = document.createElement('div');
+                    card.className = 'agent-card';
+                    card.innerHTML = `
+                        <div class="agent-icon">${agent.icon}</div>
+                        <div class="agent-info">
+                            <div class="agent-name">${agent.name}</div>
+                            <div class="agent-status">${agent.status}</div>
+                        </div>
+                        <div class="agent-trust">${agent.trust}%</div>
+                    `;
+                    agentList.appendChild(card);
+                    this.agents.push(agent);
+                });
+            }
+            
+            // Ledger
+            populateLedger() {
+                const types = ['BLESSING', 'RITUAL', 'TRUST_UPDATE', 'ANOMALY', 'EVOLUTION'];
+                
+                for (let i = 0; i < 5; i++) {
+                    this.addLedgerEntry({
+                        type: types[Math.floor(Math.random() * types.length)],
+                        hash: this.generateHash(),
+                        timestamp: Date.now() - (i * 60000)
+                    });
+                }
+            }
+            
+            addLedgerEntry(entry) {
+                const container = document.getElementById('ledgerEntries');
+                const entryEl = document.createElement('div');
+                entryEl.className = 'ledger-entry';
+                entryEl.innerHTML = `
+                    <div>
+                        <div class="ledger-type">${entry.type}</div>
+                        <div class="ledger-hash">${entry.hash}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 12px; color: var(--text-tertiary);">
+                            ${new Date(entry.timestamp).toLocaleTimeString()}
+                        </div>
+                    </div>
+                `;
+                container.insertBefore(entryEl, container.firstChild);
+                
+                if (container.children.length > 10) {
+                    container.removeChild(container.lastChild);
+                }
+                
+                this.ledgerEntries.push(entry);
+            }
+            
+            // Daemon Mesh Visualization
+            initializeDaemonMesh() {
+                const canvas = document.getElementById('meshCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                
+                const nodes = [];
+                const nodeCount = 8;
+                
+                // Create nodes
+                for (let i = 0; i < nodeCount; i++) {
+                    nodes.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: 8,
+                        connections: []
+                    });
+                }
+                
+                // Animation loop
+                function animate() {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Update nodes
+                    nodes.forEach(node => {
+                        node.x += node.vx;
+                        node.y += node.vy;
+                        
+                        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                    });
+                    
+                    // Draw connections
+                    ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+                    ctx.lineWidth = 1;
+                    
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            const dx = nodes[i].x - nodes[j].x;
+                            const dy = nodes[i].y - nodes[j].y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < 150) {
+                                ctx.beginPath();
+                                ctx.moveTo(nodes[i].x, nodes[i].y);
+                                ctx.lineTo(nodes[j].x, nodes[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    
+                    // Draw nodes
+                    nodes.forEach(node => {
+                        ctx.fillStyle = '#8B5CF6';
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Glow effect
+                        ctx.fillStyle = 'rgba(139, 92, 246, 0.3)';
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, node.radius * 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    
+                    requestAnimationFrame(animate);
+                }
+                
+                animate();
+            }
+            
+            // Audio Visualizer
+            initializeVisualizer() {
+                const container = document.getElementById('visualizerBars');
+                const barCount = 50;
+                
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'visualizer-bar';
+                    bar.style.height = '5px';
+                    container.appendChild(bar);
+                }
+            }
+            
+            // Revenue Chart
+            initializeRevenueChart() {
+                const canvas = document.getElementById('revenueSparkline');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = 120;
+                
+                // Generate data
+                const data = [];
+                for (let i = 0; i < 30; i++) {
+                    data.push(20 + Math.random() * 10 + i * 0.5);
+                }
+                
+                // Draw sparkline
+                ctx.strokeStyle = '#10B981';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                data.forEach((value, index) => {
+                    const x = (index / (data.length - 1)) * canvas.width;
+                    const y = canvas.height - (value / 35) * canvas.height;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+                
+                // Fill area
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+                ctx.fill();
+            }
+            
+            // Terminal Functions
+            addTerminalLine(content, type = 'info') {
+                const output = document.getElementById('terminalOutput');
+                const line = document.createElement('div');
+                line.className = 'terminal-line';
+                
+                const timestamp = new Date().toLocaleTimeString('en-US', { 
+                    hour12: false, 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit' 
+                });
+                
+                line.innerHTML = `
+                    <span class="terminal-timestamp">[${timestamp}]</span>
+                    <span class="terminal-content ${type}">${content}</span>
+                `;
+                
+                output.appendChild(line);
+                output.scrollTop = output.scrollHeight;
+                
+                // Voice narration if enabled
+                if (this.isVoiceEnabled) {
+                    this.speak(content);
+                }
+            }
+            
+            executeCommand() {
+                const input = document.getElementById('terminalInput');
+                const command = input.value.trim();
+                
+                if (command) {
+                    this.addTerminalLine(`> ${command}`, 'info');
+                    this.processCommand(command);
+                    input.value = '';
+                }
+            }
+            
+            processCommand(command) {
+                const cmd = command.toLowerCase();
+                
+                if (cmd === 'help') {
+                    this.addTerminalLine('Available commands: status, bless <agent>, ritual, clear, stats', 'info');
+                } else if (cmd === 'status') {
+                    this.addTerminalLine('All systems operational. Daemon mesh: ACTIVE', 'success');
+                    this.addTerminalLine(`Active agents: ${this.agents.length}`, 'info');
+                    this.addTerminalLine(`Ledger height: ${this.ledgerEntries.length}`, 'info');
+                } else if (cmd.startsWith('bless')) {
+                    const agent = cmd.split(' ')[1];
+                    this.addTerminalLine(`Blessing agent: ${agent || 'random'}`, 'success');
+                    this.triggerAction('bless');
+                } else if (cmd === 'ritual') {
+                    this.addTerminalLine('Initiating sacred ritual...', 'warning');
+                    this.triggerAction('ritual');
+                } else if (cmd === 'clear') {
+                    document.getElementById('terminalOutput').innerHTML = '';
+                } else if (cmd === 'stats') {
+                    this.addTerminalLine('=== SYSTEM STATISTICS ===', 'info');
+                    this.addTerminalLine(`Revenue: $24.5M ARR`, 'success');
+                    this.addTerminalLine(`Users: 2.4M total, 2,847 active`, 'success');
+                    this.addTerminalLine(`AI Processing: 892M cycles/day`, 'success');
+                    this.addTerminalLine(`System Health: 99.97%`, 'success');
+                } else {
+                    this.addTerminalLine(`Unknown command: ${command}`, 'error');
+                }
+            }
+            
+            // Voice Functions
+            initializeVoice() {
+                if ('speechSynthesis' in window) {
+                    this.synth = window.speechSynthesis;
+                    this.voice = null;
+                    
+                    // Wait for voices to load
+                    setTimeout(() => {
+                        const voices = this.synth.getVoices();
+                        this.voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+                    }, 100);
+                }
+                
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const command = event.results[0][0].transcript;
+                        this.addTerminalLine(`Voice command: ${command}`, 'info');
+                        this.processVoiceCommand(command);
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.isListening = false;
+                        document.getElementById('listenToggle').classList.remove('active');
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.isListening = false;
+                        document.getElementById('listenToggle').classList.remove('active');
+                    };
+                }
+            }
+            
+            toggleVoice() {
+                this.isVoiceEnabled = !this.isVoiceEnabled;
+                document.getElementById('voiceToggle').classList.toggle('active');
+                
+                if (this.isVoiceEnabled) {
+                    this.speak('Voice narration activated. Welcome to Soulfra Command Center.');
+                }
+            }
+            
+            toggleListening() {
+                if (!this.recognition) {
+                    this.showNotification('⚠️', 'Voice recognition not supported in your browser');
+                    return;
+                }
+                
+                if (this.isListening) {
+                    this.recognition.stop();
+                    this.isListening = false;
+                } else {
+                    this.recognition.start();
+                    this.isListening = true;
+                    document.getElementById('listenToggle').classList.add('active');
+                    this.showNotification('🎤', 'Listening for voice commands...');
+                }
+            }
+            
+            toggleAmbient() {
+                this.isAmbientPlaying = !this.isAmbientPlaying;
+                document.getElementById('ambientToggle').classList.toggle('active');
+                document.getElementById('audioVisualizer').classList.toggle('active');
+                
+                if (this.isAmbientPlaying) {
+                    this.startAmbientVisualization();
+                    this.speak('Ambient soundscape activated');
+                } else {
+                    this.stopAmbientVisualization();
+                }
+            }
+            
+            speak(text) {
+                if (this.synth && this.isVoiceEnabled) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.voice = this.voice;
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 0.8;
+                    this.synth.speak(utterance);
+                }
+            }
+            
+            processVoiceCommand(command) {
+                const cmd = command.toLowerCase();
+                
+                if (cmd.includes('bless') || cmd.includes('blessing')) {
+                    this.triggerAction('bless');
+                    this.speak('Blessing agent with sacred protocols');
+                } else if (cmd.includes('ritual')) {
+                    this.triggerAction('ritual');
+                    this.speak('Initiating sacred ritual sequence');
+                } else if (cmd.includes('status')) {
+                    this.processCommand('status');
+                } else if (cmd.includes('anomaly')) {
+                    this.triggerAction('anomaly');
+                    this.speak('Generating anomaly in the consciousness field');
+                } else {
+                    this.speak('Command not recognized. Please try again.');
+                }
+            }
+            
+            // Ambient Visualization
+            startAmbientVisualization() {
+                const bars = document.querySelectorAll('.visualizer-bar');
+                
+                this.ambientInterval = setInterval(() => {
+                    bars.forEach((bar, index) => {
+                        const height = Math.sin(Date.now() * 0.001 + index * 0.2) * 20 + 
+                                      Math.random() * 15 + 5;
+                        bar.style.height = `${height}px`;
+                    });
+                }, 50);
+            }
+            
+            stopAmbientVisualization() {
+                if (this.ambientInterval) {
+                    clearInterval(this.ambientInterval);
+                    document.querySelectorAll('.visualizer-bar').forEach(bar => {
+                        bar.style.height = '5px';
+                    });
+                }
+            }
+            
+            // Actions
+            triggerAction(action) {
+                switch (action) {
+                    case 'bless':
+                        const agent = this.agents[Math.floor(Math.random() * this.agents.length)];
+                        this.showNotification('✨', `Blessed ${agent.name} - Trust increased to 100%`);
+                        this.addLedgerEntry({
+                            type: 'BLESSING',
+                            hash: this.generateHash(),
+                            timestamp: Date.now()
+                        });
+                        break;
+                        
+                    case 'ritual':
+                        this.showNotification('🔮', 'Sacred ritual initiated - All agents synchronizing');
+                        this.addLedgerEntry({
+                            type: 'RITUAL',
+                            hash: this.generateHash(),
+                            timestamp: Date.now()
+                        });
+                        this.updateVibePhase();
+                        break;
+                        
+                    case 'anomaly':
+                        this.showNotification('⚠️', 'Anomaly detected in consciousness field');
+                        this.addLedgerEntry({
+                            type: 'ANOMALY',
+                            hash: this.generateHash(),
+                            timestamp: Date.now()
+                        });
+                        break;
+                        
+                    case 'broadcast':
+                        this.showNotification('📡', 'Broadcasting to all connected realms');
+                        break;
+                }
+            }
+            
+            // Persona Switching
+            switchPersona(persona) {
+                this.currentPersona = persona;
+                this.showNotification('👤', `Switched to ${persona} view`);
+                
+                // Update UI based on persona
+                switch (persona) {
+                    case 'executive':
+                        this.addTerminalLine('Executive view activated - Showing business metrics', 'info');
+                        break;
+                    case 'developer':
+                        this.addTerminalLine('Developer view activated - Showing technical details', 'info');
+                        break;
+                    case 'parent':
+                        this.addTerminalLine('Parent view activated - Showing child activity', 'info');
+                        break;
+                    case 'operator':
+                        this.addTerminalLine('Operator view activated - Full system control', 'warning');
+                        break;
+                }
+            }
+            
+            // Real-time Updates
+            startRealTimeUpdates() {
+                // Update metrics every 3 seconds
+                setInterval(() => {
+                    // Update revenue
+                    const revenueEl = document.querySelector('.revenue-value');
+                    const currentRevenue = parseFloat(revenueEl.textContent.replace('$', '').replace('M', ''));
+                    const newRevenue = (currentRevenue + Math.random() * 0.1).toFixed(1);
+                    revenueEl.textContent = `$${newRevenue}M`;
+                    
+                    // Update AI metrics
+                    const cyclesEl = document.querySelector('.ai-metric-value');
+                    const cycles = Math.floor(890 + Math.random() * 10);
+                    cyclesEl.textContent = `${cycles}M`;
+                    
+                    // Random events
+                    if (Math.random() > 0.8) {
+                        const events = [
+                            'New user registered from Japan',
+                            'Ritual completed successfully',
+                            'Trust score increased globally',
+                            'Cross-realm connection established',
+                            'Agent evolution detected'
+                        ];
+                        const event = events[Math.floor(Math.random() * events.length)];
+                        this.addTerminalLine(event, 'info');
+                    }
+                }, 3000);
+                
+                // Update vibe phase
+                setInterval(() => {
+                    this.updateVibePhase();
+                }, 30000);
+            }
+            
+            updateVibePhase() {
+                const phases = ['CALM BLOOM', 'ECHO STORM', 'TRUST SURGE', 'DRIFT WAVE', 'SYNC PULSE'];
+                const phase = phases[Math.floor(Math.random() * phases.length)];
+                document.getElementById('vibePhase').textContent = phase;
+            }
+            
+            // Utilities
+            generateHash() {
+                return '0x' + Array.from({length: 8}, () => 
+                    Math.floor(Math.random() * 16).toString(16)
+                ).join('');
+            }
+            
+            showNotification(icon, message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `
+                    <div class="notification-title">
+                        <span>${icon}</span>
+                        <span>System Alert</span>
+                    </div>
+                    <div class="notification-message">${message}</div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // Clear terminal function (global for onclick)
+        function clearTerminal() {
+            document.getElementById('terminalOutput').innerHTML = '';
+        }
+        
+        // Execute command function (global for onclick)
+        function executeCommand() {
+            window.commandCenter.executeCommand();
+        }
+        
+        // Trigger action function (global for onclick)
+        function triggerAction(action) {
+            window.commandCenter.triggerAction(action);
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            window.commandCenter = new UltimateCommandCenter();
+        });
+    </script>
+</body>
+</html>

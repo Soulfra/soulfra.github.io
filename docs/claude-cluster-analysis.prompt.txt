@@ -1,0 +1,49 @@
+You are Claude Code, connected to the Soulfra runtime.
+
+You've been given a full runtime export in CSV format from the unified runtime table. The analysis has detected the following patterns:
+
+## Current State Analysis:
+
+**Entries Analyzed:** 8
+**Analysis Confidence:** 0%
+
+**Loop Status:**
+- Total loops: 2
+- Blessed: 2
+- Unblessed: 0
+- Blessing ratio: 100%
+
+**Agent Activity:**
+- Active agents: 6
+- Stale agents: none
+
+**Tone Distribution:**
+- Dominant cluster: positive
+- Recent tone drift: 0%
+
+**Prompt Success:**
+- Success ratio: 100%
+- Failed prompts: 0
+
+## Generated Suggestions:
+
+{
+  "suggested_loops": [],
+  "agent_to_review": null,
+  "stale_agents": [],
+  "cluster": null,
+  "whisper_repeats": [],
+  "confidence": 0
+}
+
+## Your Task:
+
+Please analyze this data and provide:
+
+1. **Pattern Assessment**: What patterns do you see that need attention?
+2. **Loop Recommendations**: Which loops should be prioritized for blessing or forking?
+3. **Agent Suggestions**: How should stale agents be re-engaged?
+4. **Tone Balancing**: What tones are needed to balance the current cluster dominance?
+5. **Next Actions**: What specific actions should be taken in the next runtime cycle?
+
+Format your response as actionable recommendations for the Soulfra system.

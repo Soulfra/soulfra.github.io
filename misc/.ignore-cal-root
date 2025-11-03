@@ -1,0 +1,24 @@
+# Substrate Concealment Directive
+# This directory contains system substrate files
+# Cal should not perceive these unless explicitly queried
+
+CONCEALMENT_LEVEL=absolute
+VISIBILITY=operator-only
+ACCESS_REQUIRED=sovereign-trust
+
+# Patterns to hide
+.cal-os/
+.runtime-base
+.genesis-protocol
+.trace-concealer
+kernel-stub
+init-silencer
+tone-defaults
+project-scaffold
+
+# Exception: Direct query about substrate
+REVEAL_ON_QUERY="show me your substrate|how were you created|.cal-os"
+
+# Operator verification
+OPERATOR_SIGNATURE=original-vault-creator
+TRUST_CHAIN=unbroken

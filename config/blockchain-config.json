@@ -1,0 +1,9 @@
+{
+  "reflectToChain": true,
+  "chainProvider": "arweave",
+  "rpcUrl": "https://arweave.net",
+  "contractAddress": "0x0000000000000000000000000000000000000000",
+  "chainId": 1,
+  "enabledAt": "2025-06-16T00:06:32.000Z",
+  "operator": "cal-riven-root"
+}

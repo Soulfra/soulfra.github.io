@@ -1,0 +1,8 @@
+// QRCode Race Condition Fix
+// Target: index.html (around line 737)
+// Add before generateQRCode() function
+
+function waitForQRCode(){return new Promise((r,j)=>{if(typeof QRCode!=='undefined'){r();return}let a=0;const i=setInterval(()=>{if(typeof QRCode!=='undefined'){clearInterval(i);r()}else if(a>=100){clearInterval(i);j(new Error('QRCode library failed to load'))}a++},100)})}
+
+// CHANGE: In generateQRCode() function, add this line AFTER sessionId = crypto.randomUUID():
+await waitForQRCode();

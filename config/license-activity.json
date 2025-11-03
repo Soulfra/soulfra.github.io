@@ -1,0 +1,557 @@
+{
+  "version": "1.0.0",
+  "logType": "license_activity_registry",
+  "createdAt": 1718567500000,
+  "lastUpdated": 1718567900000,
+  "totalActivities": 127,
+  "totalRevenue": 847293.45,
+  "totalPayouts": 672055.23,
+  
+  "activities": [
+    {
+      "logId": "log_1718567900000_a8b2c4d6",
+      "timestamp": 1718567900000,
+      "type": "revenue_processed",
+      "
+": "Agent export payment processed with revenue sharing",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567890000_xyz123",
+        "amount": 1228.45,
+        "currency": "usd",
+        "vaultSig": "enterprise-vault.sig",
+        "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+        "productType": "agent_export",
+        "customerId": "cus_enterprise_client_456",
+        "stripeCustomerId": "cus_stripe_abc123",
+        "receiptUrl": "https://pay.stripe.com/receipts/xyz123"
+      },
+      
+      "revenueSharing": {
+        "grossAmount": 1228.45,
+        "netAmount": 1192.82,
+        "stripeProcessingFee": 35.63,
+        "partnerPayout": {
+          "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+          "vaultSig": "enterprise-vault.sig",
+          "amount": 1013.90,
+          "percentage": 85.0
+        },
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 178.92,
+          "percentage": 15.0
+        },
+        "referrerPayouts": [],
+        "totalPayout": 1192.82,
+        "totalFees": 35.63
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567892000_partner",
+          "status": "completed",
+          "amount": 1013.90,
+          "stripeTransferId": "tr_1718567893000_abc123",
+          "expectedArrival": 1718740693000
+        },
+        {
+          "transactionId": "txn_1718567892000_master",
+          "status": "completed",
+          "amount": 178.92,
+          "stripeTransferId": "tr_1718567894000_def456",
+          "expectedArrival": 1718740694000
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 1228.45,
+        "netRevenue": 1192.82,
+        "totalPayouts": 1192.82,
+        "successfulPayouts": 2,
+        "failedPayouts": 0,
+        "pendingPayouts": 0
+      },
+      
+      "integrityHash": "revenue_hash_a8b2c4d6e8f0123456789abcdef"
+    },
+    
+    {
+      "logId": "log_1718567850000_b2c3d4e5",
+      "timestamp": 1718567850000,
+      "type": "platform_fork_revenue",
+      "description": "Platform fork payment with referrer chain payout",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567840000_uvw789",
+        "amount": 2500.00,
+        "currency": "usd",
+        "vaultSig": "startup-vault-alpha.sig",
+        "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+        "productType": "platform_fork",
+        "customerId": "cus_startup_team_789",
+        "referralCode": "ENT-VAULT-001"
+      },
+      
+      "revenueSharing": {
+        "grossAmount": 2500.00,
+        "netAmount": 2427.50,
+        "stripeProcessingFee": 72.50,
+        "partnerPayout": {
+          "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+          "vaultSig": "startup-vault-alpha.sig",
+          "amount": 1942.00,
+          "percentage": 80.0
+        },
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 364.13,
+          "percentage": 15.0
+        },
+        "referrerPayouts": [
+          {
+            "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+            "vaultSig": "enterprise-vault.sig",
+            "referralCode": "ENT-VAULT-001",
+            "amount": 121.37,
+            "chainPosition": 1,
+            "chainDepth": 1
+          }
+        ],
+        "totalPayout": 2427.50,
+        "totalFees": 72.50
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567842000_partner",
+          "status": "completed",
+          "amount": 1942.00,
+          "stripeTransferId": "tr_1718567843000_ghi789"
+        },
+        {
+          "transactionId": "txn_1718567842000_master",
+          "status": "completed",
+          "amount": 364.13,
+          "stripeTransferId": "tr_1718567844000_jkl012"
+        },
+        {
+          "transactionId": "txn_1718567842000_referrer_0",
+          "status": "completed",
+          "amount": 121.37,
+          "stripeTransferId": "tr_1718567845000_mno345"
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 2500.00,
+        "netRevenue": 2427.50,
+        "totalPayouts": 2427.50,
+        "successfulPayouts": 3,
+        "failedPayouts": 0,
+        "pendingPayouts": 0
+      },
+      
+      "integrityHash": "revenue_hash_b2c3d4e5f6789012345678abcdef"
+    },
+    
+    {
+      "logId": "log_1718567800000_c3d4e5f6",
+      "timestamp": 1718567800000,
+      "type": "agent_template_sale",
+      "description": "Agent template marketplace sale with high markup",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567790000_rst456",
+        "amount": 875.00,
+        "currency": "usd",
+        "vaultSig": "indie-dev-vault.sig",
+        "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+        "productType": "agent_template",
+        "customerId": "cus_indie_dev_123",
+        "templateId": "template_analytics_bot_v2"
+      },
+      
+      "revenueSharing": {
+        "grossAmount": 875.00,
+        "netAmount": 849.58,
+        "stripeProcessingFee": 25.42,
+        "partnerPayout": {
+          "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+          "vaultSig": "indie-dev-vault.sig",
+          "amount": 637.19,
+          "percentage": 75.0
+        },
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 127.44,
+          "percentage": 15.0
+        },
+        "referrerPayouts": [
+          {
+            "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+            "vaultSig": "startup-vault-alpha.sig",
+            "referralCode": "STARTUP-ALPHA-002",
+            "amount": 42.48,
+            "chainPosition": 1,
+            "chainDepth": 3
+          },
+          {
+            "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+            "vaultSig": "enterprise-vault.sig",
+            "referralCode": "ENT-VAULT-001",
+            "amount": 42.47,
+            "chainPosition": 2,
+            "chainDepth": 3
+          }
+        ],
+        "totalPayout": 849.58,
+        "totalFees": 25.42
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567802000_partner",
+          "status": "completed",
+          "amount": 637.19,
+          "stripeTransferId": "tr_1718567803000_pqr678"
+        },
+        {
+          "transactionId": "txn_1718567802000_master",
+          "status": "completed",
+          "amount": 127.44,
+          "stripeTransferId": "tr_1718567804000_stu901"
+        },
+        {
+          "transactionId": "txn_1718567802000_referrer_0",
+          "status": "completed",
+          "amount": 42.48,
+          "stripeTransferId": "tr_1718567805000_vwx234"
+        },
+        {
+          "transactionId": "txn_1718567802000_referrer_1",
+          "status": "completed",
+          "amount": 42.47,
+          "stripeTransferId": "tr_1718567806000_yza567"
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 875.00,
+        "netRevenue": 849.58,
+        "totalPayouts": 849.58,
+        "successfulPayouts": 4,
+        "failedPayouts": 0,
+        "pendingPayouts": 0
+      },
+      
+      "integrityHash": "revenue_hash_c3d4e5f6789012345678abcdef"
+    },
+    
+    {
+      "logId": "log_1718567750000_d4e5f6g7",
+      "timestamp": 1718567750000,
+      "type": "hosted_mirror_subscription",
+      "description": "Monthly hosted mirror platform subscription payment",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567740000_bcd890",
+        "amount": 499.00,
+        "currency": "usd",
+        "vaultSig": "enterprise-vault.sig",
+        "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+        "productType": "hosted_mirror_monthly",
+        "customerId": "cus_enterprise_monthly_456",
+        "subscriptionId": "sub_hosted_mirror_789"
+      },
+      
+      "revenueSharing": {
+        "grossAmount": 499.00,
+        "netAmount": 484.53,
+        "stripeProcessingFee": 14.47,
+        "partnerPayout": {
+          "operatorUUID": "op_3f8a9b2c4d5e6f7g8h9i0j1k2l3m4n5o",
+          "vaultSig": "enterprise-vault.sig",
+          "amount": 411.85,
+          "percentage": 85.0
+        },
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 72.68,
+          "percentage": 15.0
+        },
+        "referrerPayouts": [],
+        "totalPayout": 484.53,
+        "totalFees": 14.47
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567752000_partner",
+          "status": "completed",
+          "amount": 411.85,
+          "stripeTransferId": "tr_1718567753000_efg123"
+        },
+        {
+          "transactionId": "txn_1718567752000_master",
+          "status": "completed",
+          "amount": 72.68,
+          "stripeTransferId": "tr_1718567754000_hij456"
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 499.00,
+        "netRevenue": 484.53,
+        "totalPayouts": 484.53,
+        "successfulPayouts": 2,
+        "failedPayouts": 0,
+        "pendingPayouts": 0
+      },
+      
+      "integrityHash": "revenue_hash_d4e5f6g7890123456789abcdef"
+    },
+    
+    {
+      "logId": "log_1718567700000_e5f6g7h8",
+      "timestamp": 1718567700000,
+      "type": "payout_failed_retry",
+      "description": "Failed payout retry due to insufficient funds",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567600000_klm789",
+        "amount": 350.00,
+        "currency": "usd",
+        "vaultSig": "indie-dev-vault.sig",
+        "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+        "productType": "agent_loop",
+        "customerId": "cus_indie_loop_789"
+      },
+      
+      "revenueSharing": {
+        "grossAmount": 350.00,
+        "netAmount": 339.85,
+        "stripeProcessingFee": 10.15,
+        "partnerPayout": {
+          "operatorUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+          "vaultSig": "indie-dev-vault.sig",
+          "amount": 254.89,
+          "percentage": 75.0
+        },
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 50.98,
+          "percentage": 15.0
+        },
+        "referrerPayouts": [
+          {
+            "operatorUUID": "op_7b9c1d2e3f4g5h6i7j8k9l0m1n2o3p4q",
+            "vaultSig": "startup-vault-alpha.sig",
+            "referralCode": "STARTUP-ALPHA-002",
+            "amount": 33.98,
+            "chainPosition": 1,
+            "chainDepth": 2
+          }
+        ],
+        "totalPayout": 339.85,
+        "totalFees": 10.15
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567702000_partner",
+          "status": "failed",
+          "amount": 254.89,
+          "error": "insufficient_funds",
+          "retryAttempt": 2
+        },
+        {
+          "transactionId": "txn_1718567702000_master",
+          "status": "completed",
+          "amount": 50.98,
+          "stripeTransferId": "tr_1718567703000_nop012"
+        },
+        {
+          "transactionId": "txn_1718567702000_referrer_0",
+          "status": "completed",
+          "amount": 33.98,
+          "stripeTransferId": "tr_1718567704000_qrs345"
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 350.00,
+        "netRevenue": 339.85,
+        "totalPayouts": 84.96,
+        "successfulPayouts": 2,
+        "failedPayouts": 1,
+        "pendingPayouts": 0
+      },
+      
+      "retryScheduled": {
+        "nextRetryAt": 1718653100000,
+        "retryAttempt": 3,
+        "maxRetries": 3,
+        "backoffMultiplier": 2.0
+      },
+      
+      "integrityHash": "revenue_hash_e5f6g7h8901234567890abcdef"
+    },
+    
+    {
+      "logId": "log_1718567650000_f6g7h8i9",
+      "timestamp": 1718567650000,
+      "type": "unlicensed_vault_payment",
+      "description": "Payment from unlicensed vault routed to master",
+      
+      "revenueEvent": {
+        "paymentId": "pi_1718567640000_tuv012",
+        "amount": 750.00,
+        "currency": "usd",
+        "vaultSig": "unlicensed-vault-xyz.sig",
+        "operatorUUID": "op_unlicensed_xyz123",
+        "productType": "agent_export",
+        "customerId": "cus_unlicensed_012"
+      },
+      
+      "revenueSharing": {
+        "unlicensedUsage": true,
+        "grossAmount": 750.00,
+        "masterPayout": {
+          "operatorUUID": "op_master_vault_000",
+          "vaultSig": "master-vault.sig",
+          "amount": 675.00,
+          "percentage": 90.0
+        },
+        "processingFee": 75.00
+      },
+      
+      "payoutResults": [
+        {
+          "transactionId": "txn_1718567652000_unlicensed",
+          "status": "completed",
+          "amount": 675.00,
+          "stripeTransferId": "tr_1718567653000_wxy678",
+          "reason": "unlicensed_vault_usage"
+        }
+      ],
+      
+      "summary": {
+        "grossRevenue": 750.00,
+        "netRevenue": 675.00,
+        "totalPayouts": 675.00,
+        "successfulPayouts": 1,
+        "failedPayouts": 0,
+        "pendingPayouts": 0
+      },
+      
+      "complianceNote": "Unlicensed vault usage flagged for review",
+      "integrityHash": "revenue_hash_f6g7h8i9012345678901abcdef"
+    }
+  ],
+  
+  "aggregatedMetrics": {
+    "last24Hours": {
+      "totalRevenue": 6202.45,
+      "totalPayouts": 5469.91,
+      "successfulTransactions": 13,
+      "failedTransactions": 1,
+      "averageTransactionValue": 515.20
+    },
+    "last7Days": {
+      "totalRevenue": 28456.78,
+      "totalPayouts": 24188.26,
+      "successfulTransactions": 67,
+      "failedTransactions": 3,
+      "averageTransactionValue": 424.73
+    },
+    "last30Days": {
+      "totalRevenue": 156789.45,
+      "totalPayouts": 125431.56,
+      "successfulTransactions": 342,
+      "failedTransactions": 8,
+      "averageTransactionValue": 448.25
+    }
+  },
+  
+  "payoutStatistics": {
+    "totalPartnerPayouts": 672055.23,
+    "totalMasterPayouts": 127094.02,
+    "totalReferrerPayouts": 48144.20,
+    "averagePayoutTime": 2.3,
+    "payoutSuccessRate": 97.8,
+    "pendingPayoutAmount": 12450.23,
+    "nextScheduledPayout": 1718654400000
+  },
+  
+  "licenseMetrics": {
+    "enterprisePartnerRevenue": 287456.78,
+    "startupPartnerRevenue": 156789.34,
+    "individualPartnerRevenue": 403047.33,
+    "topPerformingLicenseType": "individual_partner",
+    "averageRevenuePerPartner": 224088.41,
+    "totalLicensedVaults": 3,
+    "unlicensedVaultRevenue": 12450.67
+  },
+  
+  "referralMetrics": {
+    "totalReferralEarnings": 48144.20,
+    "totalReferrals": 135,
+    "averageReferralValue": 356.62,
+    "conversionRate": 34.8,
+    "topReferrerUUID": "op_9d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s",
+    "referralBonusPaid": 3456.78
+  },
+  
+  "fraudDetection": {
+    "suspiciousTransactions": [],
+    "flaggedVaults": [],
+    "automatedReviews": 23,
+    "manualReviews": 2,
+    "blockedTransactions": 0,
+    "riskScore": "low"
+  },
+  
+  "complianceStatus": {
+    "taxReportingComplete": true,
+    "kycVerificationRate": 100.0,
+    "payoutComplianceRate": 98.7,
+    "dataRetentionCompliant": true,
+    "auditTrailIntegrity": 100.0,
+    "lastComplianceAudit": 1718567600000,
+    "nextComplianceReview": 1721159450000
+  },
+  
+  "systemHealth": {
+    "processingLatency": {
+      "average": 1234,
+      "median": 987,
+      "p95": 2345,
+      "p99": 4567
+    },
+    "errorRates": {
+      "paymentProcessing": 0.8,
+      "payoutExecution": 2.2,
+      "webhookDelivery": 0.3,
+      "overall": 1.1
+    },
+    "uptime": 99.97,
+    "lastSystemFailure": null
+  },
+  
+  "metadata": {
+    "documentVersion": "1.0.0",
+    "lastBackup": 1718567900000,
+    "backupFrequency": "real_time",
+    "encryptionLevel": "AES-256",
+    "integrityStatus": "verified",
+    "auditTrailComplete": true,
+    "witnessValidation": "license_activity_validated",
+    "nextArchival": 1721159900000
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "supabase": {
+    "connected": false,
+    "config": {
+      "url": null,
+      "anonKey": null
+    },
+    "sync": {
+      "enabled": false,
+      "interval": 60000,
+      "lastSync": null,
+      "logsStored": 0,
+      "tables": {
+        "reflections": "mirror_reflections",
+        "prompts": "mirror_prompts",
+        "agents": "mirror_agents",
+        "forks": "mirror_forks"
+      }
+    }
+  },
+  "firebase": {
+    "connected": false,
+    "config": null,
+    "sync": {
+      "enabled": false,
+      "interval": 60000,
+      "lastSync": null,
+      "logsStored": 0,
+      "collections": {
+        "reflections": "mirrorReflections",
+        "prompts": "mirrorPrompts",
+        "agents": "mirrorAgents",
+        "forks": "mirrorForks"
+      }
+    }
+  },
+  "metadata": {
+    "primaryDatabase": null,
+    "fallbackEnabled": true,
+    "encryptLogs": false,
+    "retentionDays": 90
+  }
+}

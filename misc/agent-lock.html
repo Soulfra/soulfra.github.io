@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MirrorOS Lock - Agent Running</title>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --secondary: #EC4899;
+            --dark: #1A1A1A;
+            --light: #FAFAFA;
+            --glow: rgba(139, 92, 246, 0.5);
+            --pulse: #60A5FA;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            touch-action: none;
+        }
+        
+        /* Ambient background */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 30%, var(--primary) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, var(--secondary) 0%, transparent 50%);
+            opacity: 0.1;
+            animation: ambientShift 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes ambientShift {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        /* Main container */
+        .lock-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Cal presence indicator */
+        .cal-presence {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .cal-orb {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--primary), transparent);
+            animation: breathe 4s ease-in-out infinite;
+            position: relative;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+        
+        .cal-ring {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: ringPulse 2s ease-out infinite;
+        }
+        
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        
+        /* Agent info */
+        .agent-info {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .agent-status {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .agent-name {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .session-info {
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+        
+        /* Focus timer */
+        .focus-timer {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .timer-circle {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .timer-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+        
+        .timer-progress {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 565.48;
+            stroke-dashoffset: 565.48;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .timer-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            display: block;
+        }
+        
+        .timer-label {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+        }
+        
+        /* Action buttons */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+        
+        .action-btn:hover:before {
+            opacity: 0.1;
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        
+        .action-btn.danger {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .action-btn.danger:hover {
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Status messages */
+        .status-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+        
+        .status-message.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Voice input indicator */
+        .voice-indicator {
+            position: fixed;
+            bottom: 8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .voice-indicator.active {
+            opacity: 1;
+        }
+        
+        .voice-bar {
+            width: 4px;
+            height: 20px;
+            background: var(--pulse);
+            border-radius: 2px;
+            animation: voiceWave 1s ease-in-out infinite;
+        }
+        
+        .voice-bar:nth-child(2) { animation-delay: 0.1s; }
+        .voice-bar:nth-child(3) { animation-delay: 0.2s; }
+        .voice-bar:nth-child(4) { animation-delay: 0.3s; }
+        .voice-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes voiceWave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(2); }
+        }
+        
+        /* Metrics display */
+        .metrics {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        
+        .metrics.show {
+            display: block;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            gap: 2rem;
+        }
+        
+        .metric-label {
+            color: #9CA3AF;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* Loading state */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .lock-container {
+                padding: 1rem;
+            }
+            
+            .agent-name {
+                font-size: 1.5rem;
+            }
+            
+            .focus-timer {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .timer-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg"></div>
+    
+    <div class="lock-container">
+        <!-- Cal presence -->
+        <div class="cal-presence">
+            <div class="cal-orb"></div>
+            <div class="cal-ring"></div>
+        </div>
+        
+        <!-- Agent info -->
+        <div class="agent-info">
+            <div class="agent-status">Running Locally</div>
+            <h1 class="agent-name" id="agentName">Echo Assistant</h1>
+            <div class="session-info" id="sessionInfo">Session: lock_1234_abcd</div>
+        </div>
+        
+        <!-- Focus timer (optional) -->
+        <div class="focus-timer" id="focusTimer" style="display: none;">
+            <svg class="timer-circle" viewBox="0 0 200 200">
+                <circle class="timer-bg" cx="100" cy="100" r="90"></circle>
+                <circle class="timer-progress" cx="100" cy="100" r="90" id="timerProgress"></circle>
+            </svg>
+            <div class="timer-text">
+                <span class="timer-value" id="timerValue">25:00</span>
+                <span class="timer-label">Focus Mode</span>
+            </div>
+        </div>
+        
+        <!-- Action buttons -->
+        <div class="actions">
+            <button class="action-btn" onclick="lockUI.pauseAgent()">
+                <span>Pause this agent</span>
+            </button>
+            <button class="action-btn" onclick="lockUI.transferToDesktop()">
+                <span>Move to desktop</span>
+            </button>
+            <button class="action-btn danger" onclick="lockUI.endSession()">
+                <span>Forget this session</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Voice indicator -->
+    <div class="voice-indicator" id="voiceIndicator">
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+    </div>
+    
+    <!-- Metrics display -->
+    <div class="metrics" id="metrics">
+        <div class="metric-row">
+            <span class="metric-label">Prompts:</span>
+            <span class="metric-value" id="promptCount">0</span>
+        </div>
+        <div class="metric-row">
+            <span class="metric-label">Local:</span>
+            <span class="metric-value" id="localCount">0</span>
+        </div>
+        <div class="metric-row">
+            <span class="metric-label">Cloud:</span>
+            <span class="metric-value" id="cloudCount">0</span>
+        </div>
+        <div class="metric-row">
+            <span class="metric-label">Saved:</span>
+            <span class="metric-value" id="savedCost">$0.00</span>
+        </div>
+    </div>
+    
+    <!-- Status message -->
+    <div class="status-message" id="statusMessage"></div>
+    
+    <!-- Loading overlay -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <script>
+        class LockUI {
+            constructor() {
+                this.sessionId = null;
+                this.agentActive = false;
+                this.metrics = {
+                    prompts: 0,
+                    local: 0,
+                    cloud: 0,
+                    saved: 0
+                };
+                this.timerInterval = null;
+                this.timerSeconds = 1500; // 25 minutes default
+                
+                this.init();
+            }
+            
+            init() {
+                // Get session from URL or storage
+                const urlParams = new URLSearchParams(window.location.search);
+                this.sessionId = urlParams.get('session') || localStorage.getItem('lockSessionId');
+                
+                if (!this.sessionId) {
+                    this.showStatus('No active session found', 'error');
+                    return;
+                }
+                
+                // Load session data
+                this.loadSession();
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Start heartbeat
+                this.startHeartbeat();
+                
+                // Enable wake lock if available
+                this.requestWakeLock();
+            }
+            
+            async loadSession() {
+                try {
+                    const response = await fetch(`/api/lock/session/${this.sessionId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.updateUI(data.session);
+                        this.agentActive = data.lockState?.agentActive || false;
+                        this.updateMetrics(data.lockState?.metrics || {});
+                    }
+                } catch (error) {
+                    console.error('Failed to load session:', error);
+                }
+            }
+            
+            updateUI(session) {
+                document.getElementById('agentName').textContent = 
+                    session.activeAgent?.name || 'Agent';
+                document.getElementById('sessionInfo').textContent = 
+                    `Session: ${session.id.substring(0, 16)}...`;
+                
+                // Show timer if configured
+                if (session.metadata?.focusTimer) {
+                    document.getElementById('focusTimer').style.display = 'block';
+                    this.startTimer();
+                }
+            }
+            
+            updateMetrics(metrics) {
+                this.metrics = {
+                    prompts: metrics.promptCount || 0,
+                    local: metrics.localInference || 0,
+                    cloud: metrics.cloudCalls || 0,
+                    saved: this.calculateSaved(metrics)
+                };
+                
+                document.getElementById('promptCount').textContent = this.metrics.prompts;
+                document.getElementById('localCount').textContent = this.metrics.local;
+                document.getElementById('cloudCount').textContent = this.metrics.cloud;
+                document.getElementById('savedCost').textContent = `$${this.metrics.saved.toFixed(4)}`;
+                
+                // Show metrics if there's activity
+                if (this.metrics.prompts > 0) {
+                    document.getElementById('metrics').classList.add('show');
+                }
+            }
+            
+            calculateSaved(metrics) {
+                const localPrompts = metrics.localInference || 0;
+                const avgTokensPerPrompt = 150;
+                const costPerToken = 0.000003;
+                return localPrompts * avgTokensPerPrompt * costPerToken;
+            }
+            
+            async pauseAgent() {
+                this.showLoading(true);
+                
+                try {
+                    const response = await fetch(`/api/lock/pause/${this.sessionId}`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.agentActive = false;
+                        this.showStatus('Agent paused', 'success');
+                        this.stopTimer();
+                    }
+                } catch (error) {
+                    this.showStatus('Failed to pause agent', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            async transferToDesktop() {
+                this.showLoading(true);
+                
+                try {
+                    const response = await fetch(`/api/lock/transfer/${this.sessionId}`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showStatus('Transfer link generated', 'success');
+                        
+                        // Show transfer modal
+                        this.showTransferModal(data.transferUrl);
+                    }
+                } catch (error) {
+                    this.showStatus('Failed to generate transfer', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            async endSession() {
+                if (!confirm('End this session? All local data will be cleared.')) {
+                    return;
+                }
+                
+                this.showLoading(true);
+                
+                try {
+                    const response = await fetch(`/api/lock/end/${this.sessionId}`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showStatus(data.message, 'success');
+                        localStorage.removeItem('lockSessionId');
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
+                    }
+                } catch (error) {
+                    this.showStatus('Failed to end session', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            showTransferModal(url) {
+                const modal = document.createElement('div');
+                modal.className = 'transfer-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Transfer to Desktop</h3>
+                        <p>Open this link on your desktop:</p>
+                        <input type="text" value="${window.location.origin}${url}" readonly>
+                        <button onclick="this.parentElement.parentElement.remove()">Close</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Auto-select text
+                modal.querySelector('input').select();
+            }
+            
+            startTimer() {
+                this.updateTimerDisplay();
+                
+                this.timerInterval = setInterval(() => {
+                    this.timerSeconds--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timerSeconds <= 0) {
+                        this.timerComplete();
+                    }
+                }, 1000);
+            }
+            
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+            
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timerSeconds / 60);
+                const seconds = this.timerSeconds % 60;
+                const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timerValue').textContent = display;
+                
+                // Update progress circle
+                const progress = document.getElementById('timerProgress');
+                const circumference = 565.48;
+                const offset = circumference - (this.timerSeconds / 1500) * circumference;
+                progress.style.strokeDashoffset = offset;
+            }
+            
+            timerComplete() {
+                this.stopTimer();
+                this.showStatus('Focus session complete!', 'success');
+                
+                // Vibrate if available
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+            }
+            
+            setupEventListeners() {
+                // Voice input detection
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    this.setupVoiceInput();
+                }
+                
+                // Visibility change
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.onBackground();
+                    } else {
+                        this.onForeground();
+                    }
+                });
+                
+                // Touch gestures
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                });
+                
+                document.addEventListener('touchend', (e) => {
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diff = touchStartY - touchEndY;
+                    
+                    if (Math.abs(diff) > 100) {
+                        if (diff > 0) {
+                            // Swipe up - show metrics
+                            document.getElementById('metrics').classList.add('show');
+                        } else {
+                            // Swipe down - hide metrics
+                            document.getElementById('metrics').classList.remove('show');
+                        }
+                    }
+                });
+            }
+            
+            setupVoiceInput() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = true;
+                this.recognition.interimResults = true;
+                
+                this.recognition.onstart = () => {
+                    document.getElementById('voiceIndicator').classList.add('active');
+                };
+                
+                this.recognition.onend = () => {
+                    document.getElementById('voiceIndicator').classList.remove('active');
+                };
+                
+                this.recognition.onresult = (event) => {
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
+                    if (event.results[event.results.length - 1].isFinal) {
+                        this.handleVoiceInput(transcript);
+                    }
+                };
+                
+                // Start listening on tap
+                document.querySelector('.cal-orb').addEventListener('click', () => {
+                    if (this.agentActive) {
+                        this.recognition.start();
+                    }
+                });
+            }
+            
+            async handleVoiceInput(transcript) {
+                // Send to sandboxed agent
+                const response = await fetch(`/api/lock/prompt/${this.sessionId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: transcript,
+                        type: 'voice',
+                        preferLocal: true
+                    })
+                });
+                
+                const data = await response.json();
+                this.updateMetrics(data.metrics);
+            }
+            
+            async requestWakeLock() {
+                if ('wakeLock' in navigator) {
+                    try {
+                        this.wakeLock = await navigator.wakeLock.request('screen');
+                        console.log('Wake lock active');
+                    } catch (error) {
+                        console.log('Wake lock failed:', error);
+                    }
+                }
+            }
+            
+            startHeartbeat() {
+                setInterval(async () => {
+                    if (this.sessionId) {
+                        try {
+                            await fetch(`/api/lock/heartbeat/${this.sessionId}`, {
+                                method: 'POST'
+                            });
+                        } catch (error) {
+                            console.error('Heartbeat failed:', error);
+                        }
+                    }
+                }, 30000); // Every 30 seconds
+            }
+            
+            onBackground() {
+                // App went to background
+                if (this.wakeLock) {
+                    this.wakeLock.release();
+                }
+            }
+            
+            onForeground() {
+                // App came to foreground
+                this.requestWakeLock();
+                this.loadSession(); // Refresh session
+            }
+            
+            showStatus(message, type = 'info') {
+                const statusEl = document.getElementById('statusMessage');
+                statusEl.textContent = message;
+                statusEl.className = `status-message show ${type}`;
+                
+                setTimeout(() => {
+                    statusEl.classList.remove('show');
+                }, 3000);
+            }
+            
+            showLoading(show) {
+                document.getElementById('loading').classList.toggle('show', show);
+            }
+        }
+        
+        // Initialize UI
+        const lockUI = new LockUI();
+    </script>
+    
+    <style>
+        /* Transfer modal styles */
+        .transfer-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        .modal-content {
+            background: var(--dark);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            max-width: 90%;
+            width: 400px;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .modal-content p {
+            margin-bottom: 1rem;
+            color: #9CA3AF;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            margin-bottom: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .modal-content button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-content button:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+        }
+    </style>
+</body>
+</html>

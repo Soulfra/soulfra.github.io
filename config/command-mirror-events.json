@@ -1,0 +1,48 @@
+[
+  {
+    "request_id": "069db8bf-384c-4480-9739-583cbc7e06de",
+    "input_type": "twitch_chat",
+    "platform": "twitch",
+    "viewer_id": "twitch-viewer-123",
+    "actions": [
+      "grant_blessing"
+    ],
+    "timestamp": "2025-06-17T21:25:00.332Z"
+  },
+  {
+    "request_id": "1cc301bf-ecb1-425c-a85a-7549345601f6",
+    "input_type": "emoji",
+    "platform": "discord",
+    "viewer_id": "emoji-sender-456",
+    "actions": [],
+    "timestamp": "2025-06-17T21:25:00.338Z"
+  },
+  {
+    "request_id": "6f23ac30-81ce-4b24-9e2e-aa8f2eb08e69",
+    "input_type": "twitch_chat",
+    "platform": "twitch",
+    "viewer_id": "demo-viewer-123",
+    "actions": [
+      "grant_blessing"
+    ],
+    "timestamp": "2025-06-17T21:27:44.333Z"
+  },
+  {
+    "request_id": "e5a7a0a0-277c-4bab-a04b-435677f180c5",
+    "input_type": "emoji",
+    "platform": "discord",
+    "viewer_id": "discord-user-456",
+    "actions": [],
+    "timestamp": "2025-06-17T21:27:44.334Z"
+  },
+  {
+    "request_id": "459d6334-a043-45a2-922b-48dcebd50684",
+    "input_type": "whisper_deck",
+    "platform": "cards",
+    "viewer_id": "mobile-user-789",
+    "actions": [
+      "route_to_whisper"
+    ],
+    "timestamp": "2025-06-17T21:27:44.334Z"
+  }
+]

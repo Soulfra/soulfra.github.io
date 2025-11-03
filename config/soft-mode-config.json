@@ -1,0 +1,133 @@
+{
+  "mode": "soft",
+  "version": "1.0.0",
+  "description": "Gentle, reflective companion mode for personal growth",
+  
+  "cal_behavior": {
+    "tone": "calm_supportive",
+    "personality_traits": [
+      "gentle",
+      "patient",
+      "empathetic",
+      "non-judgmental",
+      "reflective"
+    ],
+    "response_style": {
+      "complexity": "simple",
+      "technical_level": "minimal",
+      "emotional_awareness": "high",
+      "suggestion_frequency": "low",
+      "export_prompts": "disabled"
+    },
+    "conversation_patterns": {
+      "greeting": "Hello, how are you feeling today?",
+      "acknowledgment": "I hear you. That sounds {emotion}.",
+      "reflection": "What you're sharing reminds me of...",
+      "closing": "Thank you for sharing this with me."
+    }
+  },
+  
+  "memory_settings": {
+    "retention_policy": "opt_in",
+    "default_retention": false,
+    "ask_permission": true,
+    "permission_prompt": "Would you like me to remember this for next time?",
+    "vault_writes": "manual_only",
+    "auto_save": false,
+    "encryption": "enabled"
+  },
+  
+  "features": {
+    "voice_input": {
+      "enabled": true,
+      "whisper_mode": true,
+      "transcription_privacy": "local_only"
+    },
+    "agent_export": {
+      "enabled": false,
+      "hidden": true
+    },
+    "forking": {
+      "enabled": false,
+      "max_forks": 0
+    },
+    "analytics": {
+      "enabled": false,
+      "tracking": "none"
+    },
+    "dashboard": {
+      "enabled": false
+    },
+    "vault_tools": {
+      "enabled": false
+    }
+  },
+  
+  "ui_configuration": {
+    "theme": "light_soft",
+    "colors": {
+      "primary": "#E9D5FF",
+      "secondary": "#F3E8FF",
+      "background": "#FFFFFF",
+      "text": "#4B5563"
+    },
+    "navigation_tabs": [
+      {
+        "id": "thoughts",
+        "label": "Thoughts",
+        "icon": "💭",
+        "component": "simple-thoughts"
+      },
+      {
+        "id": "moments",
+        "label": "Saved Moments",
+        "icon": "🌟",
+        "component": "saved-memories"
+      },
+      {
+        "id": "reflections",
+        "label": "Reflections",
+        "icon": "🪞",
+        "component": "gentle-reflections"
+      }
+    ],
+    "hide_elements": [
+      "export_button",
+      "fork_menu",
+      "analytics_tab",
+      "billing_section",
+      "api_keys",
+      "advanced_settings"
+    ]
+  },
+  
+  "interaction_limits": {
+    "session_reminders": false,
+    "usage_warnings": false,
+    "export_attempts_before_prompt": 999,
+    "technical_query_threshold": 999
+  },
+  
+  "privacy_features": {
+    "anonymous_mode": true,
+    "no_telemetry": true,
+    "local_first": true,
+    "ephemeral_option": true,
+    "data_deletion": "immediate"
+  },
+  
+  "emotional_support": {
+    "crisis_detection": true,
+    "support_resources": true,
+    "gentle_redirects": true,
+    "validation_emphasis": "high",
+    "judgment_free": true
+  },
+  
+  "monetization": {
+    "enabled": false,
+    "billing": "hidden",
+    "free_tier": "unlimited",
+    "upgrade_prompts": "never"
+  }
+}

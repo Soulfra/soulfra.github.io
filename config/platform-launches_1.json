@@ -1,0 +1,18 @@
+[
+  {
+    "id": "launch_1750032376395",
+    "timestamp": "2025-06-16T00:06:16.395Z",
+    "genesis": {
+      "qrToken": "c30fe40f5028910daadf8a39bc668a95",
+      "device": "A951410C-6C6B-578D-8CC5-40A39A456BE2",
+      "timestamp": "2025-06-16T00:06:16.394Z",
+      "operator": "cal-riven-root"
+    },
+    "paths": {
+      "config": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/platform-config.json",
+      "website": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/platform-website",
+      "kernel": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/tier-0"
+    },
+    "creator": "cal-riven-self"
+  }
+]

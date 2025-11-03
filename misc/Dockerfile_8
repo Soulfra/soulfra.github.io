@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="1404b025-a3e5-499c-9c8a-9a60d7f0373f"
+LABEL site.domain="1404b025.predictor.sports"
+LABEL site.type="betting"

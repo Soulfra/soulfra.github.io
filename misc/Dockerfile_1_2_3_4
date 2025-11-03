@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="febb9f45-a3dc-493f-a8fd-29a623e89b81"
+LABEL site.domain="febb9f45.familytime.app"
+LABEL site.type="parental"

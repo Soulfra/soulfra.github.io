@@ -1,0 +1,155 @@
+version: '3.8'
+
+services:
+  # CramPal Education Platform
+  crampal-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.crampal
+    container_name: crampal-engine
+    ports:
+      - "7000:7000"
+    environment:
+      - CRAMPAL_ENV=production
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+      - crampal-data:/app/data
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # CramPal MAX with Camera/Mic
+  crampal-max:
+    build:
+      context: .
+      dockerfile: Dockerfile.crampal
+    container_name: crampal-max
+    command: python3 CRAMPAL_MAX_DOCKER.py
+    ports:
+      - "8000:8000"
+    environment:
+      - CRAMPAL_ENV=production
+      - AI_CORE_ENCRYPTED=true
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+      - ./encrypted_core:/app/encrypted_core:ro
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Cringeproof Chat Filter
+  cringeproof:
+    build:
+      context: .
+      dockerfile: Dockerfile.cringeproof
+    container_name: cringeproof-filter
+    command: python3 CRINGEPROOF_FILTER.py
+    ports:
+      - "9999:9999"
+    environment:
+      - FILTER_ENV=production
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Vibe Platform MAX
+  vibe-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile.vibe
+    container_name: vibe-platform-max
+    command: python3 VIBE_PLATFORM_MAX.py
+    ports:
+      - "8888:8888"
+    environment:
+      - VIBE_ENV=production
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+      - vibe-data:/app/data
+      - ./vibeplatform.db:/app/vibeplatform.db
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Dev Soul Engine
+  dev-soul:
+    build:
+      context: .
+      dockerfile: Dockerfile.vibe
+    container_name: dev-soul-engine
+    command: python3 DEV_SOUL_ENGINE.py
+    ports:
+      - "4200:4200"
+    environment:
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Dev Doc Generator
+  dev-doc:
+    build:
+      context: .
+      dockerfile: Dockerfile.vibe
+    container_name: dev-doc-generator
+    command: python3 DEV_DOC_GENERATOR.py
+    ports:
+      - "4201:4201"
+    environment:
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Empathy Game Engine
+  empathy-game:
+    build:
+      context: .
+      dockerfile: Dockerfile.vibe
+    container_name: empathy-game-engine
+    command: python3 EMPATHY_GAME_ENGINE.py
+    ports:
+      - "5000:5000"
+    environment:
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+  # Soulfra Simple
+  soulfra-simple:
+    build:
+      context: .
+      dockerfile: Dockerfile.vibe
+    container_name: soulfra-simple
+    command: python3 SOULFRA_SIMPLE.py
+    ports:
+      - "9000:9000"
+    environment:
+      - LC_ALL=C
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - crampal-network
+
+volumes:
+  crampal-data:
+  vibe-data:
+
+networks:
+  crampal-network:
+    driver: bridge
+    name: crampal-network

@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="ce40f0e4-0c7f-408e-b820-519cf5d7c5b9"
+LABEL site.domain="ce40f0e4.craftmarket.shop"
+LABEL site.type="marketplace"

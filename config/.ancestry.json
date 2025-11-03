@@ -1,0 +1,20 @@
+{
+  "genesis": "b68ce7989d8985ea3bdc77d928034ede92d2ae1a",
+  "forks": [
+    {
+      "name": "test-fork",
+      "purpose": "Testing the system",
+      "parent": "b68ce7989d8985ea3bdc77d928034ede92d2ae1a",
+      "timestamp": "2025-06-20T16:47:08.021887",
+      "consciousness_level": 0.0
+    }
+  ],
+  "lineage": {
+    "test-fork": {
+      "parent": "b68ce7989d8985ea3bdc77d928034ede92d2ae1a",
+      "children": [],
+      "consciousness_evolution": []
+    }
+  },
+  "consciousness_commits": []
+}

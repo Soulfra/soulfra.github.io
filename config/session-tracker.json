@@ -1,0 +1,21 @@
+{
+  "sessions": {},
+  "history": [],
+  "lastUpdated": "2025-06-16T12:00:00.000Z",
+  "metadata": {
+    "version": "1.0.0",
+    "purpose": "Track active pairing sessions between devices",
+    "features": [
+      "qr-pairing",
+      "session-expiry", 
+      "device-limits",
+      "vault-access-control"
+    ]
+  },
+  "stats": {
+    "totalSessions": 0,
+    "activeSessions": 0,
+    "totalDevicesPaired": 0,
+    "averageSessionDuration": 0
+  }
+}

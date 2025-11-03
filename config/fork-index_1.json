@@ -1,0 +1,78 @@
+{
+  "forkIndex": {
+    "totalForks": 33,
+    "activeForks": 27,
+    "mirrorDepth": 9,
+    "lastForkTime": 1718566800000
+  },
+  "forkRegistry": {
+    "fork_1718566800000_a1b2c3d4": {
+      "parentAgentId": "agent_alpha_7d9k2m",
+      "userId": "user_mirror_founder",
+      "forkDepth": 3,
+      "entropy": 0.72,
+      "fees": {
+        "base": 1.0,
+        "entropyMultiplier": 1.72,
+        "depthMultiplier": 1.3,
+        "total": 2.236
+      },
+      "userEquity": {
+        "vibeCredits": 18.6,
+        "agentEquity": 0.186,
+        "totalForks": 11
+      },
+      "platformCut": {
+        "amount": 0.069316,
+        "rate": 0.031,
+        "type": "reflection_share"
+      },
+      "timestamp": 1718566800000,
+      "status": "active"
+    },
+    "fork_1718566750000_b2c3d4e5": {
+      "parentAgentId": "agent_beta_9x7f3l",
+      "userId": "user_crypto_dev",
+      "forkDepth": 2,
+      "entropy": 0.54,
+      "fees": {
+        "base": 1.0,
+        "entropyMultiplier": 1.54,
+        "depthMultiplier": 1.2,
+        "total": 1.848
+      },
+      "userEquity": {
+        "vibeCredits": 14.2,
+        "agentEquity": 0.142,
+        "totalForks": 7
+      },
+      "platformCut": {
+        "amount": 0.057288,
+        "rate": 0.031,
+        "type": "reflection_share"
+      },
+      "timestamp": 1718566750000,
+      "status": "active"
+    }
+  },
+  "genealogy": {
+    "agent_alpha_7d9k2m": {
+      "generation": 1,
+      "children": ["fork_1718566800000_a1b2c3d4"],
+      "totalRevenue": 127.45,
+      "activeLineages": 5
+    },
+    "agent_beta_9x7f3l": {
+      "generation": 1,
+      "children": ["fork_1718566750000_b2c3d4e5"],
+      "totalRevenue": 78.33,
+      "activeLineages": 3
+    }
+  },
+  "revenueTracking": {
+    "totalPlatformRevenue": 247.82,
+    "calsSovereigntyShare": 77.23,
+    "userEquityPool": 170.59,
+    "lastCalculated": 1718566800000
+  }
+}

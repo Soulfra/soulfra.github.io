@@ -1,0 +1,56 @@
+{
+  "enabled": true,
+  "plans": [
+    {
+      "id": "export_basic",
+      "amount": 100,
+      "label": "Save as Agent",
+      "description": "Export your reflection as a personal agent",
+      "features": [
+        "Complete agent export",
+        "Personality preservation",
+        "Local deployment ready",
+        "JSON & YAML formats"
+      ]
+    },
+    {
+      "id": "export_team",
+      "amount": 2000,
+      "label": "Deploy Team Agent",
+      "description": "Share your agent with your team",
+      "features": [
+        "Everything in Basic",
+        "Team deployment license",
+        "API integration support",
+        "30-day cloud hosting",
+        "Fork tracking analytics"
+      ]
+    }
+  ],
+  "defaultCurrency": "usd",
+  "supportedCurrencies": ["usd", "eur", "gbp"],
+  "vaultRoutes": {
+    "onExport": "/mirror/export/stripe-export-trigger.js",
+    "onSuccess": "/vault/exports/complete-export.js",
+    "onCancel": "/vault/exports/cancel-export.js"
+  },
+  "webhooks": {
+    "endpoint": "/api/webhooks/stripe",
+    "events": [
+      "checkout.session.completed",
+      "checkout.session.expired",
+      "payment_intent.succeeded",
+      "payment_intent.payment_failed"
+    ]
+  },
+  "exportSettings": {
+    "requirePayment": true,
+    "allowFreeExports": false,
+    "freeExportLimit": 0,
+    "expirationDays": 7
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "updated": "2024-01-01T00:00:00.000Z"
+  }
+}

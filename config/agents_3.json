@@ -1,0 +1,53 @@
+[
+  [
+    "test-agent-001",
+    {
+      "id": "test-agent-001",
+      "name": "Test Agent",
+      "creator": "test-user",
+      "created": 1750101702978,
+      "stored_at": 1750101702978,
+      "updated_at": 1750101702978,
+      "version": 1
+    }
+  ],
+  [
+    "lifecycle-agent-001",
+    {
+      "id": "lifecycle-agent-001",
+      "name": "Lifecycle Test Agent",
+      "creator": "test-creator",
+      "created": 1750101702985,
+      "ownership": {
+        "creatorShare": 60,
+        "agentShare": 40,
+        "vestingSchedule": {
+          "immediate": 10
+        }
+      },
+      "capabilities": {
+        "core": [
+          "conversation",
+          "analysis"
+        ],
+        "specialized": [
+          "testing"
+        ]
+      },
+      "personality": {
+        "type": "helpful",
+        "traits": [
+          "reliable",
+          "thorough"
+        ]
+      },
+      "wallet": {
+        "address": "test-wallet-address",
+        "balance": 0
+      },
+      "stored_at": 1750101702985,
+      "updated_at": 1750101702985,
+      "version": 1
+    }
+  ]
+]

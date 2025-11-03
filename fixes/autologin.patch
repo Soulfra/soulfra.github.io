@@ -1,0 +1,5 @@
+// One Tap Auto-Login Fix
+// Target: auth-google.html initGoogleAuth() function
+// ADD after googleAuth.renderButton('g_id_signin'):
+
+if(typeof google!=='undefined'&&google.accounts&&google.accounts.id){google.accounts.id.initialize({client_id:CLIENT_ID,callback:r=>{const u=googleAuth._parseJwt(r.credential);if(window.onGoogleLoginSuccess)window.onGoogleLoginSuccess(u)},auto_select:true,cancel_on_tap_outside:false,itp_support:true});google.accounts.id.prompt(n=>{if(n.isNotDisplayed()||n.isSkippedMoment())console.log('[Auth] One Tap not available, showing button');else console.log('[Auth] One Tap is showing')})}

@@ -1,0 +1,11 @@
+{
+  "hashes": {
+    "sha256": "acec208bdd5ea10f4ea649c3efc2a5365f6edf2dabcc46927e58f07fe1eb82c2",
+    "sha512": "5fd9ad1d775e65e69f83d650af32b56d43f010eb5cc60c4bbd69ca465dd6d0d6e86640d9e16aca328fa6514a6c50bf0431994ef16e69cc9d4bc39abd085febaa",
+    "sha3_512": "f9adf40a74366ededc3696d028425385cbfa9010c72a91a8151663856a19f10e7f8e613e42196e785d2f4b156138f15162f95a2ab9ef916cec585ac6f8db6de5",
+    "blake3b": "48c91945a70959d0997ce555b0f7151e0376544b623007178788e224a202eb8f"
+  },
+  "composite_sha256_anchor": "54a15b146ab0690490fbf0037dff193fd78c5584a1064cebfcdca15d6a1cf347",
+  "source": "tier-4-api/vault-reflection/user-reflection-log.json",
+  "note": "Composite trust anchor \u2013 hash of SHA256+SHA512+SHA3-512+Blake2b"
+}

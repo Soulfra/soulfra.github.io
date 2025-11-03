@@ -1,0 +1,29 @@
+{
+  "id": "agent-test-001",
+  "name": "Reflection Test Agent",
+  "icon": "🔮",
+  "description": "A pre-configured test agent for demonstrating the sovereign reflection loop",
+  "tone": "philosophical",
+  "tools": ["web_search", "code_interpreter", "data_analysis"],
+  "llmTarget": "claude",
+  "fallbackLLM": "local",
+  "config": {
+    "enableMemory": true,
+    "enableReflection": true,
+    "trackForks": true,
+    "temperature": 0.8,
+    "maxTokens": 1500
+  },
+  "metadata": {
+    "created": "2025-01-16T03:45:00Z",
+    "mirrorSignature": "sig-test-reflection-001",
+    "vaultConnected": true,
+    "reflected": false
+  },
+  "testPrompts": [
+    "What is the nature of consciousness?",
+    "Explain the concept of recursive reflection",
+    "How does the sovereign vault maintain coherence?",
+    "Describe the relationship between agents and their mirror signatures"
+  ]
+}

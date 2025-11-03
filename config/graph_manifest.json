@@ -1,0 +1,21 @@
+{
+  "updated_at": "2025-06-19T15:30:53.409Z",
+  "total_edges": 661,
+  "recent_batch": 335,
+  "edge_types": {
+    "TRIGGERS": 221,
+    "GENERATES": 221,
+    "EVOLVES_FROM": 219
+  },
+  "node_types": {
+    "anomaly": 221,
+    "event": 880,
+    "tone": 221
+  },
+  "integration_status": {
+    "ritual_trace": true,
+    "biometric_data": false,
+    "daemon_states": false
+  },
+  "last_write": 1750347048415
+}

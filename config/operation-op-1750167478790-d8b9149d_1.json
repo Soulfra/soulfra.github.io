@@ -1,0 +1,11 @@
+{
+  "id": "op-1750167478790-d8b9149d",
+  "type": "insert",
+  "path": "game_progress.json",
+  "data": "b1fa51d8b2934010cf42648463782e46ce89048fc5fae5dcd6a8978e5109102f98ada9c97f1b778aecd846c4b6127f0980807cb96b10cad3abdc1080f9f77fe5",
+  "metadata": {},
+  "timestamp": 1750167478790,
+  "author": "shell-1750167477777-ffe317e1073c6ec5",
+  "checksum": "01cac1e86b40e3f026fd6ee3b703efcd3c9f75927c790316b5e638cc82d48193",
+  "encrypted": true
+}

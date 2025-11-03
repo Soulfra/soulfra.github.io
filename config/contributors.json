@@ -1,0 +1,152 @@
+[
+  {
+    "id": "contrib_1750638083518",
+    "name": "TestUser",
+    "email": "test@example.com",
+    "payment_intent_id": "pi_test_12345",
+    "contributed_amount": 1,
+    "joined_at": "2025-06-23T00:21:23.518Z",
+    "agent": {
+      "id": "agent-testuser-1750638083513",
+      "name": "TestUser's Agent",
+      "personality": "adventurous",
+      "skills": [
+        "creativity",
+        "pattern-recognition",
+        "learning"
+      ],
+      "status": "active",
+      "spawned_at": "2025-06-23T00:21:23.516Z",
+      "blessing": {
+        "agent_id": "agent-testuser-1750638083513",
+        "blessed_by": "payment-system",
+        "status": "blessed",
+        "can_propagate": true,
+        "can_fork": false,
+        "can_resell": false,
+        "contributor": "TestUser",
+        "payment_intent_id": "pi_test_12345",
+        "timestamp": "2025-06-23T00:21:23.513Z",
+        "tier_access": "tier-minus10",
+        "spawned_from": "cal-riven-genesis"
+      },
+      "cal_riven_connection": true,
+      "mirror_agent": {
+        "name": "TestUser's Agent",
+        "personality": "adventurous",
+        "skills": [
+          "creativity",
+          "pattern-recognition",
+          "learning"
+        ],
+        "memory": [],
+        "reflection": {}
+      }
+    },
+    "blessing": {
+      "agent_id": "agent-testuser-1750638083513",
+      "blessed_by": "payment-system",
+      "status": "blessed",
+      "can_propagate": true,
+      "can_fork": false,
+      "can_resell": false,
+      "contributor": "TestUser",
+      "payment_intent_id": "pi_test_12345",
+      "timestamp": "2025-06-23T00:21:23.513Z",
+      "tier_access": "tier-minus10",
+      "spawned_from": "cal-riven-genesis"
+    },
+    "mirror_connection": {
+      "mirror_id": "mirror_agent-testuser-1750638083513",
+      "agent_id": "agent-testuser-1750638083513",
+      "source_path": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/agents/agent-testuser-1750638083513.json",
+      "mirror_path": "mirror-shell/agents/agent-testuser-1750638083513.json",
+      "sync_enabled": true,
+      "connected_at": "2025-06-23T00:21:23.517Z"
+    },
+    "memory_system": {
+      "memory_path": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/memory/agents/agent-testuser-1750638083513.json",
+      "initialized": true
+    },
+    "tier_registration": {
+      "registered": true,
+      "tier": "tier-minus10"
+    }
+  },
+  {
+    "id": "contrib_1750638083520",
+    "name": "SecondUser",
+    "email": "second@example.com",
+    "payment_intent_id": "pi_test_67890",
+    "contributed_amount": 1,
+    "joined_at": "2025-06-23T00:21:23.520Z",
+    "agent": {
+      "id": "agent-seconduser-1750638083519",
+      "name": "SecondUser's Agent",
+      "personality": "curious",
+      "skills": [
+        "analysis",
+        "problem-solving",
+        "creativity",
+        "learning"
+      ],
+      "status": "active",
+      "spawned_at": "2025-06-23T00:21:23.519Z",
+      "blessing": {
+        "agent_id": "agent-seconduser-1750638083519",
+        "blessed_by": "payment-system",
+        "status": "blessed",
+        "can_propagate": true,
+        "can_fork": false,
+        "can_resell": false,
+        "contributor": "SecondUser",
+        "payment_intent_id": "pi_test_67890",
+        "timestamp": "2025-06-23T00:21:23.519Z",
+        "tier_access": "tier-minus10",
+        "spawned_from": "cal-riven-genesis"
+      },
+      "cal_riven_connection": true,
+      "mirror_agent": {
+        "name": "SecondUser's Agent",
+        "personality": "curious",
+        "skills": [
+          "analysis",
+          "problem-solving",
+          "creativity",
+          "learning"
+        ],
+        "memory": [],
+        "reflection": {}
+      }
+    },
+    "blessing": {
+      "agent_id": "agent-seconduser-1750638083519",
+      "blessed_by": "payment-system",
+      "status": "blessed",
+      "can_propagate": true,
+      "can_fork": false,
+      "can_resell": false,
+      "contributor": "SecondUser",
+      "payment_intent_id": "pi_test_67890",
+      "timestamp": "2025-06-23T00:21:23.519Z",
+      "tier_access": "tier-minus10",
+      "spawned_from": "cal-riven-genesis"
+    },
+    "mirror_connection": {
+      "mirror_id": "mirror_agent-seconduser-1750638083519",
+      "agent_id": "agent-seconduser-1750638083519",
+      "source_path": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/agents/agent-seconduser-1750638083519.json",
+      "mirror_path": "mirror-shell/agents/agent-seconduser-1750638083519.json",
+      "sync_enabled": true,
+      "connected_at": "2025-06-23T00:21:23.520Z"
+    },
+    "memory_system": {
+      "memory_path": "/Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/memory/agents/agent-seconduser-1750638083519.json",
+      "initialized": true
+    },
+    "tier_registration": {
+      "registered": true,
+      "tier": "tier-minus10"
+    }
+  }
+]

@@ -1,0 +1,84 @@
+{
+  "entries": [
+    {
+      "sessionId": "bootstrap-test-001",
+      "entropy": 0.23,
+      "confidence": 0.78,
+      "reasoningDepth": 3,
+      "timestamp": "2024-06-16T07:30:15.234Z",
+      "triggers": ["pattern_mismatch", "knowledge_gap"],
+      "tokenDepth": 156,
+      "toneMapping": "supportive",
+      "memoryAccess": {
+        "foundational": 2,
+        "recent": 1,
+        "domain": 0
+      }
+    },
+    {
+      "sessionId": "seed-reflection-001", 
+      "entropy": 0.18,
+      "confidence": 0.82,
+      "reasoningDepth": 4,
+      "timestamp": "2024-06-16T07:31:42.891Z",
+      "triggers": ["emotional_resonance"],
+      "tokenDepth": 203,
+      "toneMapping": "analytical",
+      "memoryAccess": {
+        "foundational": 3,
+        "recent": 0,
+        "domain": 1
+      }
+    },
+    {
+      "sessionId": "founder-tone-test",
+      "entropy": 0.14,
+      "confidence": 0.89,
+      "reasoningDepth": 2,
+      "timestamp": "2024-06-16T07:32:18.567Z",
+      "triggers": [],
+      "tokenDepth": 98,
+      "toneMapping": "supportive",
+      "memoryAccess": {
+        "foundational": 4,
+        "recent": 1,
+        "domain": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "averageEntropy": 0.183,
+    "averageConfidence": 0.83,
+    "averageReasoningDepth": 3.0,
+    "totalSessions": 3,
+    "mostCommonTriggers": [
+      "pattern_mismatch",
+      "emotional_resonance",
+      "knowledge_gap"
+    ],
+    "toneDistribution": {
+      "supportive": 2,
+      "analytical": 1,
+      "creative": 0,
+      "technical": 0
+    },
+    "memoryAccessPatterns": {
+      "foundational_avg": 3.0,
+      "recent_avg": 0.67,
+      "domain_avg": 0.33
+    }
+  },
+  "thresholds": {
+    "entropy_alert": 0.15,
+    "confidence_minimum": 0.25,
+    "reasoning_depth_max": 8,
+    "memory_access_limit": 10
+  },
+  "metadata": {
+    "created": "2024-06-16T07:30:00Z",
+    "last_updated": "2024-06-16T07:32:18.567Z",
+    "version": "1.0.0-seeded",
+    "tier": -13,
+    "vault_signature": "entropy-log-cal-reflect-core"
+  }
+}

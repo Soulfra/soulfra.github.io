@@ -1,0 +1,41 @@
+{
+  "reflection_id": "ritual_0339",
+  "response": "denied",
+  "tone_signature": "emotional resistance",
+  "vibe_clash": true,
+  "user_input": "voice said 'nah, that's not it'",
+  "timestamp": 1750104598123,
+  "loop_reentry": false,
+  "wisdom": "Not all reflections are meant to be spoken",
+  "user_feedback": "The energy doesn't match what I'm feeling",
+  "emotional_context": {
+    "primary_tone": "emotional resistance",
+    "confidence_level": 0.72,
+    "alignment": "misaligned",
+    "recommendation": "Consider adjusting the reflection to match the human's energy",
+    "nuance": "The heart says no, despite the words"
+  },
+  "resonance_factors": [
+    {
+      "type": "voice",
+      "patterns": [
+        {
+          "dimension": "pitch",
+          "pattern": "falling",
+          "interpretation": "certain"
+        },
+        {
+          "dimension": "speed",
+          "pattern": "fast",
+          "interpretation": "eager"
+        },
+        {
+          "dimension": "volume",
+          "pattern": "normal",
+          "interpretation": "comfortable"
+        }
+      ],
+      "weight": 0.6
+    }
+  ]
+}

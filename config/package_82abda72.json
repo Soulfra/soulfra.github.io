@@ -1,0 +1,28 @@
+{
+  "name": "soulfra-rules-orchestrator",
+  "version": "1.0.0",
+  "description": "Automated rules enforcement system for SOULFRA projects",
+  "main": "index.js",
+  "scripts": {
+    "start": "node RulesOrchestrator.js",
+    "start:dry": "node RulesOrchestrator.js --dry-run",
+    "watch": "node FileSystemWatcher.js",
+    "validate": "node ValidationDaemon.js",
+    "validate:fast": "node ValidationDaemon.js --fast",
+    "test": "node test-orchestrator.js"
+  },
+  "keywords": [
+    "soulfra",
+    "rules",
+    "enforcement",
+    "code-quality",
+    "automation"
+  ],
+  "author": "SOULFRA Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

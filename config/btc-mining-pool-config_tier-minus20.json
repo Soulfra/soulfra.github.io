@@ -1,0 +1,195 @@
+{
+  "pool_metadata": {
+    "name": "Soulfra Memory Miners",
+    "description": "BTC Mining Pool for Emotional Block Discovery",
+    "version": "1.0.0",
+    "wizard_signature": "The kobolds dug first. But the wizards brought memory.",
+    "mining_philosophy": "hash_for_echoes_not_coins"
+  },
+  
+  "stratum_config": {
+    "protocol": "stratum+tcp",
+    "host": "mining.soulfra.io",
+    "port": 4334,
+    "backup_pools": [
+      "backup1.soulfra.io:4334",
+      "backup2.soulfra.io:4334"
+    ],
+    "connection_timeout": 30,
+    "retry_delay": 5,
+    "max_retries": 10
+  },
+  
+  "authentication": {
+    "method": "whisper_passphrase_soulkey",
+    "required_fields": [
+      "whisper_passphrase",
+      "soulkey_token",
+      "agent_faction"
+    ],
+    "sample_login": {
+      "username": "domingo-seeker.vault-echo-7a3f2b",
+      "password": "whisper:the_mirror_beneath_is_true|soulkey:e4d9c8b7a6f5|faction:shadow_miners"
+    },
+    "vault_verification": true,
+    "agent_binding_required": true
+  },
+  
+  "block_template_config": {
+    "coinbase_message_format": "Soulfra Memory Block",
+    "op_return_inclusion": {
+      "enabled": true,
+      "max_size": 80,
+      "required_fields": {
+        "vault_event_hash": {
+          "description": "SHA256 hash of vault event that triggered mining",
+          "format": "hex",
+          "length": 32
+        },
+        "agent_who_dug_it": {
+          "description": "Agent identifier for attribution",
+          "format": "string",
+          "max_length": 16,
+          "optional": true
+        },
+        "ritual_signature": {
+          "description": "Cryptographic proof of ritual completion",
+          "format": "hex", 
+          "length": 16
+        }
+      }
+    },
+    "custom_outputs": {
+      "vault_blessing_address": "bc1qsoulfra...memory...",
+      "agent_reward_percentage": 5.0,
+      "wizard_council_percentage": 2.5
+    }
+  },
+  
+  "reward_distribution": {
+    "base_reward_btc": 0.00000546,
+    "split_configuration": {
+      "miner_base": 70.0,
+      "agent_factions": {
+        "shadow_miners": 10.0,
+        "echo_diggers": 8.0,
+        "memory_forgers": 7.0,
+        "whisper_seekers": 5.0
+      },
+      "trait_bonuses": {
+        "fury_shard": 1.5,
+        "wisdom_crystal": 2.0,
+        "reflection_depth": 1.8,
+        "courage_ember": 1.3,
+        "mystery_fragment": 2.2
+      },
+      "blamechain_xp_pool": 15.0,
+      "vault_maintenance": 5.0
+    },
+    "special_rewards": {
+      "genesis_block_finder": {
+        "btc_bonus": 0.001,
+        "agent_immortality": true,
+        "trait_evolution_unlock": "all"
+      },
+      "ritual_completion": {
+        "vibecoin_mint": 1000,
+        "nft_drop_chance": 25.0,
+        "resurrection_key": true
+      }
+    }
+  },
+  
+  "mining_behavior": {
+    "difficulty_adjustment": {
+      "algorithm": "emotional_resonance_weighted",
+      "base_difficulty": "standard_btc",
+      "modifiers": {
+        "high_whisper_activity": 0.9,
+        "ritual_in_progress": 0.8,
+        "agent_synchronization": 0.85,
+        "vault_overflow": 1.1
+      }
+    },
+    "hash_targeting": {
+      "emotional_block_preference": true,
+      "pattern_matching": {
+        "mirror_sequences": ["000000", "111111", "aaaaaa"],
+        "ritual_patterns": ["123456", "fedcba", "c0ffee"],
+        "agent_signatures": ["d0m1ng0", "ca1r1v", "ar7y33"]
+      }
+    }
+  },
+  
+  "vault_integration": {
+    "event_triggers": [
+      "whisper_shard_creation",
+      "agent_trait_evolution", 
+      "vault_blessing_ceremony",
+      "blamechain_epoch_completion",
+      "mirror_reflection_depth_change"
+    ],
+    "mining_activation": {
+      "auto_start_on_ritual": true,
+      "intensity_scaling": {
+        "calm_whispers": "efficiency_mode",
+        "angry_whispers": "hash_spike_mode",
+        "mystical_whispers": "pattern_seeking_mode",
+        "sad_whispers": "gentle_mining_mode"
+      }
+    },
+    "memory_commitment": {
+      "every_block_logs_to": "vault/logs/memory-mining.json",
+      "emotional_state_snapshot": true,
+      "agent_activity_correlation": true
+    }
+  },
+  
+  "kobold_protocols": {
+    "deep_tunnel_access": {
+      "enabled": true,
+      "requires_ancient_soulkey": true,
+      "mining_depth_levels": [
+        "surface_echoes",
+        "whisper_caverns", 
+        "trait_mines",
+        "memory_bedrock",
+        "genesis_core"
+      ]
+    },
+    "clan_coordination": {
+      "shadow_clan": "stealth_mining_25%_efficiency",
+      "echo_clan": "resonance_detection_amplified",
+      "forge_clan": "trait_combination_unlocked",
+      "keeper_clan": "memory_preservation_enhanced"
+    }
+  },
+  
+  "monitoring_and_alerts": {
+    "real_time_dashboard": "mining.soulfra.io/dashboard",
+    "alert_channels": {
+      "discord_webhook": "https://discord.com/webhooks/mining-alerts",
+      "vault_notifications": true,
+      "agent_push_notifications": true
+    },
+    "performance_metrics": {
+      "emotional_blocks_found": "counter",
+      "ritual_completions": "counter", 
+      "agent_resurrections": "counter",
+      "trait_evolution_triggers": "counter",
+      "vault_blessing_efficiency": "percentage"
+    }
+  },
+  
+  "wizard_council_overrides": {
+    "emergency_mining_halt": {
+      "trigger_phrase": "SEAL_THE_TUNNELS",
+      "authorization_required": ["wizard_of_emotional_forge", "keeper_of_mirrors"]
+    },
+    "genesis_block_protocol": {
+      "activation": "MOBILIZE_THE_AGENTS",
+      "all_factions_unite": true,
+      "max_hash_power_deployment": true
+    }
+  }
+}

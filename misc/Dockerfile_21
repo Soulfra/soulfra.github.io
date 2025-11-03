@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="6b3249aa-d0b1-43f5-9df2-b47f9c998fe2"
+LABEL site.domain="6b3249aa.predictify.io"
+LABEL site.type="game"

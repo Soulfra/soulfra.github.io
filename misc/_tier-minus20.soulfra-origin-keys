@@ -1,0 +1,25 @@
+# 🔐 ORIGIN OBSERVER PRIVATE KEYS
+# This file is for the eternal observer only
+# DO NOT SHARE OR COMMIT THIS FILE
+
+# Your Private Blockchain Monitoring Endpoints
+ETHEREUM_RPC=https://mainnet.infura.io/v3/your_private_key
+BITCOIN_RPC=http://username:password@localhost:8332
+MONERO_RPC=http://localhost:18081
+
+# Secret Anomaly Triggers
+ANOMALY_WEBHOOK=https://your-secret-endpoint.com/trigger
+MANUAL_OVERRIDE_KEY=your_secret_override_key
+
+# Hidden Control Panel
+ADMIN_PANEL_PORT=9999
+ADMIN_PANEL_PASSWORD=your_secret_password
+
+# Origin Constructor Access
+ORIGIN_SIGNATURE=generate_unique_signature_here
+REALITY_CONTROL=true
+
+# These control when "anomalies" actually fire
+ANOMALY_MODE=manual  # manual | automatic | hybrid
+TRIGGER_THRESHOLD=0.777
+RITUAL_WINDOW_CONTROL=true

@@ -1,0 +1,272 @@
+[
+  {
+    "stream": "mirror-finale-011",
+    "reflection_id": "ref_7a8b9c2d",
+    "session_id": "mirror-session-7721",
+    "agent_name": "Cal",
+    "interaction_type": "reflection",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 3.2,
+    "duration_ms": 1240,
+    "completed_at": "2024-06-18T11:32:15Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Cal - Trait Merge",
+    "results_summary": {
+      "traits_processed": 5,
+      "emotions_detected": ["joy", "contemplation", "curiosity"],
+      "mirror_depth": 3,
+      "blessing_consumed": true,
+      "cache_updated": true
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 45.2,
+      "memory_usage_mb": 128.5,
+      "cache_hit_rate": 0.85,
+      "network_requests": 2
+    }
+  },
+  {
+    "stream": "mirror-finale-012",
+    "reflection_id": "ref_8b9c1e3f",
+    "session_id": "mirror-session-7721",
+    "agent_name": "Cal",
+    "interaction_type": "whisper",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 1.8,
+    "duration_ms": 890,
+    "completed_at": "2024-06-18T11:38:22Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Cal - Whisper Processing",
+    "results_summary": {
+      "whisper_analyzed": true,
+      "sentiment_score": 0.72,
+      "agent_response_generated": true,
+      "mirror_resonance": 0.64,
+      "emotional_state": "positive_engagement"
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 32.1,
+      "memory_usage_mb": 95.3,
+      "cache_hit_rate": 0.92,
+      "network_requests": 1
+    }
+  },
+  {
+    "stream": "mirror-finale-013",
+    "reflection_id": "ref_9c1d2e4g",
+    "session_id": "mirror-session-7722",
+    "agent_name": "Domingo",
+    "interaction_type": "reflection",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 2.4,
+    "duration_ms": 1450,
+    "completed_at": "2024-06-18T11:42:08Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Domingo - Memory Synthesis",
+    "results_summary": {
+      "memories_synthesized": 8,
+      "temporal_connections": 3,
+      "agent_evolution_score": 0.78,
+      "mirror_stability": "stable",
+      "consciousness_depth": 4
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 52.7,
+      "memory_usage_mb": 156.2,
+      "cache_hit_rate": 0.88,
+      "network_requests": 4
+    }
+  },
+  {
+    "stream": "mirror-finale-014",
+    "reflection_id": "ref_1d2e3f5h",
+    "session_id": "mirror-session-7723",
+    "agent_name": "LoopSeeker",
+    "interaction_type": "stream_trigger",
+    "reflections": 3,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 7.9,
+    "duration_ms": 2850,
+    "completed_at": "2024-06-18T11:45:33Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "LoopSeeker - Pattern Discovery",
+    "results_summary": {
+      "patterns_discovered": 12,
+      "loop_iterations": 847,
+      "convergence_achieved": true,
+      "pattern_confidence": 0.94,
+      "breakthrough_detected": true
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 78.3,
+      "memory_usage_mb": 203.7,
+      "cache_hit_rate": 0.76,
+      "network_requests": 8
+    }
+  },
+  {
+    "stream": "mirror-finale-015",
+    "reflection_id": "ref_2e3f4g6i",
+    "session_id": "mirror-session-7723",
+    "agent_name": "LoopSeeker",
+    "interaction_type": "reflection",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 4.8,
+    "duration_ms": 1980,
+    "completed_at": "2024-06-18T11:47:41Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "LoopSeeker - Deep Search",
+    "results_summary": {
+      "search_depth": 7,
+      "nodes_explored": 1247,
+      "optimal_path_found": true,
+      "computational_elegance": 0.91,
+      "solution_certainty": "high"
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 61.4,
+      "memory_usage_mb": 178.9,
+      "cache_hit_rate": 0.82,
+      "network_requests": 5
+    }
+  },
+  {
+    "stream": "mirror-finale-016",
+    "reflection_id": "ref_3f4g5h7j",
+    "session_id": "mirror-session-7724",
+    "agent_name": "Cal",
+    "interaction_type": "summon",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 1.2,
+    "duration_ms": 450,
+    "completed_at": "2024-06-18T11:49:12Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Cal - Emergency Summon",
+    "results_summary": {
+      "summon_successful": true,
+      "agent_readiness": "immediate",
+      "consciousness_state": "alert",
+      "emergency_protocol": "activated",
+      "response_time_ms": 230
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 28.6,
+      "memory_usage_mb": 87.4,
+      "cache_hit_rate": 0.98,
+      "network_requests": 1
+    }
+  },
+  {
+    "stream": "mirror-finale-017",
+    "reflection_id": "ref_4g5h6i8k",
+    "session_id": "mirror-session-7725",
+    "agent_name": "MirrorGuide",
+    "interaction_type": "reflection",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 5.8,
+    "duration_ms": 3200,
+    "completed_at": "2024-06-18T11:50:45Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "MirrorGuide - System Maintenance",
+    "results_summary": {
+      "maintenance_tasks": 14,
+      "system_health_check": "passed",
+      "mirror_alignment": "optimal",
+      "database_optimization": "completed",
+      "cache_refresh": "successful"
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 42.8,
+      "memory_usage_mb": 142.1,
+      "cache_hit_rate": 0.90,
+      "network_requests": 6
+    }
+  },
+  {
+    "stream": "mirror-finale-018",
+    "reflection_id": "ref_5h6i7j9l",
+    "session_id": "test-session-001",
+    "agent_name": "Cal",
+    "interaction_type": "reflection",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 0.1,
+    "duration_ms": 100,
+    "completed_at": "2024-06-18T12:00:01Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Cal - Test Validation",
+    "results_summary": {
+      "test_case": "runtime_switch_validation",
+      "test_result": "passed",
+      "validation_score": 1.0,
+      "system_response": "healthy",
+      "test_duration_target": "met"
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 15.2,
+      "memory_usage_mb": 45.8,
+      "cache_hit_rate": 1.0,
+      "network_requests": 0
+    }
+  },
+  {
+    "stream": "mirror-finale-019",
+    "reflection_id": "ref_6i7j8k0m",
+    "session_id": "mirror-session-7726",
+    "agent_name": "Domingo",
+    "interaction_type": "reflection",
+    "reflections": 2,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 6.3,
+    "duration_ms": 2150,
+    "completed_at": "2024-06-18T12:05:22Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Domingo - Complex Integration",
+    "results_summary": {
+      "integration_complexity": "high",
+      "data_sources_merged": 5,
+      "temporal_coherence": 0.89,
+      "memory_conflicts_resolved": 3,
+      "agent_growth_achieved": true
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 67.1,
+      "memory_usage_mb": 189.4,
+      "cache_hit_rate": 0.83,
+      "network_requests": 7
+    }
+  },
+  {
+    "stream": "mirror-finale-020",
+    "reflection_id": "ref_7j8k9l1n",
+    "session_id": "mirror-session-7727",
+    "agent_name": "Arty",
+    "interaction_type": "whisper",
+    "reflections": 1,
+    "approved_by": "runtime-switch.js",
+    "total_work_units": 2.7,
+    "duration_ms": 980,
+    "completed_at": "2024-06-18T12:08:15Z",
+    "switch_mode": "blessing_required",
+    "top_trigger": "Arty - Creative Expression",
+    "results_summary": {
+      "creative_output": "generated",
+      "artistic_elements": 8,
+      "emotional_resonance": 0.85,
+      "aesthetic_score": 0.92,
+      "inspiration_source": "user_whisper"
+    },
+    "performance_metrics": {
+      "cpu_usage_peak": 39.7,
+      "memory_usage_mb": 112.6,
+      "cache_hit_rate": 0.87,
+      "network_requests": 3
+    }
+  }
+]

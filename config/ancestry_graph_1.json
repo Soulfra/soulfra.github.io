@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {
+      "id": "b68ce7989d8985ea3bdc77d928034ede92d2ae1a",
+      "label": "GENESIS",
+      "type": "genesis"
+    },
+    {
+      "id": "test-fork",
+      "label": "test-fork",
+      "type": "fork",
+      "purpose": "Testing the system"
+    }
+  ],
+  "edges": [
+    {
+      "from": "b68ce7989d8985ea3bdc77d928034ede92d2ae1a",
+      "to": "test-fork",
+      "type": "fork"
+    }
+  ]
+}

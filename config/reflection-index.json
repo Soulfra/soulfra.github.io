@@ -1,0 +1,126 @@
+{
+  "entries": [
+    {
+      "id": "startup-method-001",
+      "term": "build-measure-learn",
+      "type": "methods",
+      "domain": "startup_methodology",
+      "confidence": 0.85,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.75,
+      "searchTerms": ["build measure learn", "lean", "cycle", "iteration", "feedback", "startup methodology"],
+      "relatedTopics": ["startup-concept-001", "startup-process-001"]
+    },
+    {
+      "id": "learning-tech-001",
+      "term": "spaced repetition", 
+      "type": "methods",
+      "domain": "learning_techniques",
+      "confidence": 0.80,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.70,
+      "searchTerms": ["spaced repetition", "memory", "retention", "learning techniques"],
+      "relatedTopics": ["learning-concept-001"]
+    },
+    {
+      "id": "communication-001",
+      "term": "socratic questioning",
+      "type": "methods",
+      "domain": "communication_patterns", 
+      "confidence": 0.75,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.85,
+      "searchTerms": ["socratic questioning", "questions", "discovery", "communication patterns"],
+      "relatedTopics": []
+    },
+    {
+      "id": "startup-concept-001",
+      "term": "minimum viable product",
+      "type": "concepts",
+      "domain": "startup_methodology",
+      "confidence": 0.90,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z", 
+      "reflectionRelevance": 0.75,
+      "searchTerms": ["minimum viable product", "mvp", "testing", "startup methodology"],
+      "relatedTopics": ["startup-method-001", "startup-process-001"]
+    },
+    {
+      "id": "emotional-001",
+      "term": "imposter syndrome",
+      "type": "concepts",
+      "domain": "emotional_intelligence",
+      "confidence": 0.85,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.80,
+      "searchTerms": ["imposter syndrome", "confidence", "doubt", "emotional intelligence"],
+      "relatedTopics": []
+    },
+    {
+      "id": "learning-concept-001", 
+      "term": "learning velocity",
+      "type": "concepts",
+      "domain": "learning_techniques",
+      "confidence": 0.75,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.70,
+      "searchTerms": ["learning velocity", "speed", "progress", "learning techniques"],
+      "relatedTopics": ["learning-tech-001"]
+    },
+    {
+      "id": "decision-001",
+      "term": "information vs insight",
+      "type": "concepts",
+      "domain": "decision_making",
+      "confidence": 0.80,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.75,
+      "searchTerms": ["information vs insight", "data", "decisions", "decision making"],
+      "relatedTopics": []
+    },
+    {
+      "id": "problem-solving-001",
+      "term": "first principles thinking",
+      "type": "methods",
+      "domain": "problem_solving",
+      "confidence": 0.85,
+      "source": "founder_seed", 
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.70,
+      "searchTerms": ["first principles thinking", "fundamentals", "reasoning", "problem solving"],
+      "relatedTopics": []
+    },
+    {
+      "id": "productivity-001",
+      "term": "systems vs motivation",
+      "type": "concepts",
+      "domain": "productivity_systems",
+      "confidence": 0.80,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.65,
+      "searchTerms": ["systems vs motivation", "discipline", "habits", "productivity systems"],
+      "relatedTopics": []
+    },
+    {
+      "id": "startup-process-001",
+      "term": "user validation",
+      "type": "processes",
+      "domain": "startup_methodology",
+      "confidence": 0.90,
+      "source": "founder_seed",
+      "indexedAt": "2024-06-16T07:30:00Z",
+      "reflectionRelevance": 0.75,
+      "searchTerms": ["user validation", "interviews", "feedback", "startup methodology"],
+      "relatedTopics": ["startup-method-001", "startup-concept-001"]
+    }
+  ],
+  "totalEntries": 10,
+  "lastUpdated": "2024-06-16T07:30:00Z"
+}

@@ -1,0 +1,4 @@
+api/README_MIRRORTRUST.md
+api/cal-vault-shell.sh
+api/claude-env.json
+vault/router-env.json

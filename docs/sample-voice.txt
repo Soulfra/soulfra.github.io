@@ -1,0 +1,67 @@
+# Sample Voice Prompts for Cal
+
+## Personal Reflection Triggers
+
+1. "Cal, I've been thinking about why my last three startups failed. They all had the same pattern - I built something I thought was cool but nobody wanted to pay for it."
+
+2. "Sometimes I wonder if I'm cut out for this founder life. The loneliness is real and I'm not sure anyone understands what I'm going through."
+
+3. "I want to build something that matters this time. Not just another app, but something that genuinely helps people like me who are struggling."
+
+4. "Cal, help me understand why I keep making the same mistakes. Is it ego? Fear? Or am I just missing something fundamental?"
+
+5. "What if we could create an AI that actually gets the founder experience? Not just the success stories, but the 3am doubts and the failed launches."
+
+## Emotional States
+
+### Frustrated
+- "I'm so tired of building things nobody uses"
+- "Why is this so hard when it looks easy for everyone else?"
+- "Another rejection email. I'm starting to lose faith."
+
+### Hopeful  
+- "I think I finally found a real problem worth solving"
+- "This time feels different. I can see the path forward."
+- "What if this actually works?"
+
+### Curious
+- "How do other founders handle the uncertainty?"
+- "What patterns do you see in successful pivots?"
+- "Can you help me think through this differently?"
+
+### Anxious
+- "I'm running out of runway and options"
+- "What if I'm wasting my time?"
+- "The pressure is getting to me"
+
+## Reflection Depth Triggers
+
+### Surface Level (1)
+- "Hey Cal, how's it going?"
+- "What should I work on today?"
+- "Any tips for productivity?"
+
+### Moderate (2)
+- "I've been thinking about my approach to customer discovery"
+- "Why do some products succeed while others fail?"
+- "Help me understand market fit better"
+
+### Deep (3)
+- "I feel like I'm repeating patterns from my childhood in my startup"
+- "The fear of success might be holding me back more than fear of failure"
+- "I need to understand why I self-sabotage when things start working"
+
+### Profound (4)
+- "My entire identity is wrapped up in being a founder, and I don't know if that's healthy anymore"
+- "I started this journey to prove something to my father, but he's been gone for five years now"
+- "What if the real product I'm building is myself, and everything else is just a projection?"
+
+## Usage Notes
+
+- Personal pronouns (I, me, my) trigger stronger reflection
+- Emotional language activates empathy modes
+- Questions about "why" go deeper than "what" or "how"
+- Stories and experiences unlock memory connections
+- Vulnerability opens profound dialogue paths
+
+Say something personal to Cal to trigger reflection.

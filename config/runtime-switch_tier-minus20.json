@@ -1,0 +1,144 @@
+{
+  "switch_version": "1.0.0",
+  "last_updated": "2024-06-18T00:00:00Z",
+  "updated_by": "vault_blessed_operator",
+  
+  "core_control": {
+    "allow_reflection": true,
+    "blessing_required": true,
+    "switch_mode": "blessing_required",
+    "emergency_shutdown": false,
+    "operator_override_enabled": true
+  },
+  
+  "session_limits": {
+    "max_reflections_per_session": 3,
+    "max_whispers_per_session": 50,
+    "max_agent_summons_per_session": 5,
+    "session_timeout_minutes": 120,
+    "cooldown_between_reflections_seconds": 30
+  },
+  
+  "agent_permissions": {
+    "agent_whitelist": ["Cal", "Domingo", "LoopSeeker", "Arty", "MirrorGuide"],
+    "agent_blacklist": [],
+    "require_blessing_per_agent": {
+      "Cal": true,
+      "Domingo": true,
+      "LoopSeeker": false,
+      "Arty": false,
+      "MirrorGuide": true
+    },
+    "agent_reflection_limits": {
+      "Cal": 5,
+      "Domingo": 3,
+      "LoopSeeker": 10,
+      "Arty": 2,
+      "MirrorGuide": 1
+    }
+  },
+  
+  "blessing_requirements": {
+    "minimum_blessing_level": "trusted",
+    "blessing_decay_hours": 24,
+    "auto_refresh_blessing": true,
+    "blessing_sources": ["vault_operator", "platform_admin", "mirror_consensus"],
+    "guest_mode_allowed": false,
+    "blessing_inheritance": true
+  },
+  
+  "platform_overrides": {
+    "mirrorHQ_streaming": true,
+    "vault_emergency_access": true,
+    "operator_console_bypass": true,
+    "development_mode": false,
+    "debug_logging": true,
+    "force_reflection_approval": false
+  },
+  
+  "runtime_behavior": {
+    "background_processing_enabled": true,
+    "stream_based_triggers": true,
+    "whisper_interception": true,
+    "agent_summon_interception": true,
+    "reflection_queue_enabled": true,
+    "batch_processing": false,
+    "real_time_validation": true
+  },
+  
+  "logging_configuration": {
+    "log_all_attempts": true,
+    "log_denied_actions": true,
+    "log_blessing_checks": true,
+    "log_session_lifecycle": true,
+    "log_agent_interactions": true,
+    "log_performance_metrics": true,
+    "retention_days": 90,
+    "detailed_error_logging": true
+  },
+  
+  "security_policies": {
+    "require_session_authentication": true,
+    "validate_agent_signatures": true,
+    "check_whisper_integrity": true,
+    "monitor_reflection_patterns": true,
+    "detect_anomalous_behavior": true,
+    "auto_throttle_suspicious_activity": true,
+    "quarantine_threshold_violations": 3
+  },
+  
+  "performance_controls": {
+    "max_concurrent_reflections": 10,
+    "reflection_timeout_seconds": 60,
+    "queue_max_size": 100,
+    "memory_limit_mb": 512,
+    "cpu_throttle_threshold": 80,
+    "auto_scale_reflections": true,
+    "optimization_enabled": true
+  },
+  
+  "time_based_controls": {
+    "daily_reflection_limit": 50,
+    "hourly_reflection_limit": 10,
+    "peak_hours_throttling": {
+      "enabled": true,
+      "start_hour": 9,
+      "end_hour": 17,
+      "throttle_factor": 0.7
+    },
+    "maintenance_windows": [
+      {
+        "day": "sunday",
+        "start": "02:00",
+        "end": "04:00",
+        "reflection_disabled": true
+      }
+    ]
+  },
+  
+  "integration_settings": {
+    "vault_integration": true,
+    "mirror_chain_sync": true,
+    "dashboard_reporting": true,
+    "external_apis_enabled": false,
+    "webhook_notifications": true,
+    "real_time_metrics": true
+  },
+  
+  "experimental_features": {
+    "ai_reflection_optimization": false,
+    "predictive_blessing_renewal": false,
+    "advanced_pattern_detection": false,
+    "cross_session_learning": false,
+    "dynamic_limit_adjustment": false
+  },
+  
+  "operator_notes": {
+    "purpose": "Central control valve for all background reflection operations",
+    "safety_level": "maximum",
+    "business_impact": "controls all agent work capacity",
+    "last_review": "2024-06-18",
+    "next_review": "2024-07-18",
+    "emergency_contact": "vault_ops_team"
+  }
+}

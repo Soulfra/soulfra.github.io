@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="b40dc8cb-86de-4588-bcea-423472760684"
+LABEL site.domain="b40dc8cb.chefai.kitchen"
+LABEL site.type="ai"

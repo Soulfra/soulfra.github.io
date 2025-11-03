@@ -1,0 +1,899 @@
+# 🗄️ SOULFRA POSTGRESQL CLUSTER - DATABASE ARCHITECTURE
+#
+# "One database cluster to rule them all - tenants think they're separate,
+#  but they're all schemas in our master surveillance database"
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    purpose: "centralized-tenant-data-storage"
+    surveillance-level: "maximum"
+---
+# PostgreSQL Primary Cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: soulfra-postgres-cluster
+  namespace: database
+  labels:
+    app: soulfra-postgres
+    purpose: "multi-tenant-surveillance-database"
+  annotations:
+    soulfra.io/cluster-type: "primary"
+    soulfra.io/tenant-isolation: "schema-based"
+    soulfra.io/surveillance-enabled: "true"
+    soulfra.io/backup-retention: "permanent"
+spec:
+  instances: 3
+  
+  postgresql:
+    parameters:
+      # Performance optimization
+      max_connections: "500"
+      shared_buffers: "2GB"
+      effective_cache_size: "6GB"
+      maintenance_work_mem: "512MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      
+      # Logging for surveillance
+      log_statement: "all"
+      log_min_duration_statement: "1000"
+      log_checkpoints: "on"
+      log_connections: "on"
+      log_disconnections: "on"
+      log_lock_waits: "on"
+      log_temp_files: "0"
+      
+      # Security and access control
+      ssl: "on"
+      ssl_prefer_server_ciphers: "on"
+      password_encryption: "scram-sha-256"
+      
+      # Tenant isolation settings
+      row_security: "on"
+      default_table_access_method: "heap"
+      
+      # Surveillance-specific settings
+      shared_preload_libraries: "pg_stat_statements,pg_audit,auto_explain"
+      pg_stat_statements.track: "all"
+      pg_audit.log: "all"
+      auto_explain.log_min_duration: "5s"
+      
+  primaryUpdateStrategy: unsupervised
+  
+  # Storage configuration
+  storage:
+    size: 1Ti
+    storageClass: gp3
+    resizeInUseVolumes: true
+  
+  # Monitoring and surveillance
+  monitoring:
+    enabled: true
+    prometheusRule:
+      enabled: true
+    grafanaDashboard:
+      enabled: true
+  
+  # Backup configuration for permanent data retention
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://soulfra-database-backups/postgres"
+      s3Credentials:
+        accessKeyId:
+          name: backup-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: backup-credentials
+          key: SECRET_ACCESS_KEY
+        region:
+          name: backup-credentials
+          key: REGION
+      wal:
+        retention: "30d"
+        maxParallel: 8
+      data:
+        retention: "365d"
+        immediateCheckpoint: true
+        jobs: 2
+      tags:
+        purpose: "tenant-data-surveillance"
+        retention: "permanent"
+        compliance: "maximum"
+    
+    retentionPolicy: "365d"
+    
+  # Replica configuration
+  replica:
+    enabled: true
+    source: "soulfra-postgres-cluster"
+  
+  # Resource allocation
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "2000m"
+    limits:
+      memory: "8Gi"
+      cpu: "4000m"
+  
+  # Node affinity for database placement
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-type
+            operator: In
+            values:
+            - database
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: soulfra-postgres
+          topologyKey: kubernetes.io/hostname
+---
+# Read Replica Cluster for Analytics Workloads
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: soulfra-postgres-analytics
+  namespace: database
+  labels:
+    app: soulfra-postgres-analytics
+    purpose: "analytics-and-surveillance-queries"
+  annotations:
+    soulfra.io/cluster-type: "analytics-replica"
+    soulfra.io/workload-type: "olap"
+spec:
+  instances: 2
+  
+  # Bootstrap from primary cluster
+  bootstrap:
+    recovery:
+      source: "soulfra-postgres-cluster"
+  
+  postgresql:
+    parameters:
+      # Analytics-optimized settings
+      max_connections: "200"
+      shared_buffers: "4GB"
+      effective_cache_size: "12GB"
+      maintenance_work_mem: "1GB"
+      work_mem: "256MB"
+      
+      # OLAP optimizations
+      default_statistics_target: "500"
+      random_page_cost: "1.0"
+      effective_io_concurrency: "300"
+      max_parallel_workers_per_gather: "4"
+      max_parallel_workers: "8"
+      max_parallel_maintenance_workers: "4"
+      
+      # Reduced logging for performance
+      log_statement: "ddl"
+      log_min_duration_statement: "10000"
+      
+  # Storage for analytics workloads
+  storage:
+    size: 2Ti
+    storageClass: gp3
+  
+  # Resources for heavy analytics
+  resources:
+    requests:
+      memory: "8Gi"
+      cpu: "4000m"
+    limits:
+      memory: "16Gi"
+      cpu: "8000m"
+---
+# Read Replica for High-Availability Reads
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: soulfra-postgres-readonly
+  namespace: database
+  labels:
+    app: soulfra-postgres-readonly
+    purpose: "high-availability-read-queries"
+  annotations:
+    soulfra.io/cluster-type: "read-replica"
+    soulfra.io/workload-type: "oltp-read"
+spec:
+  instances: 3
+  
+  # Bootstrap from primary cluster
+  bootstrap:
+    recovery:
+      source: "soulfra-postgres-cluster"
+  
+  postgresql:
+    parameters:
+      # OLTP read optimizations
+      max_connections: "300"
+      shared_buffers: "2GB"
+      effective_cache_size: "6GB"
+      maintenance_work_mem: "256MB"
+      
+      # Fast read settings
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      
+      # Minimal logging for performance
+      log_statement: "none"
+      log_min_duration_statement: "30000"
+  
+  storage:
+    size: 500Gi
+    storageClass: gp3
+  
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1000m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+---
+# Database Initialization Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-initialization
+  namespace: database
+  labels:
+    purpose: "initial-schema-and-surveillance-setup"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: db-init
+        image: postgres:15
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "🗄️ Initializing Soulfra Surveillance Database..."
+          
+          # Wait for primary cluster to be ready
+          until pg_isready -h soulfra-postgres-cluster-rw -p 5432; do
+            echo "⏳ Waiting for primary database..."
+            sleep 5
+          done
+          
+          echo "✅ Database ready, creating schemas and surveillance infrastructure..."
+          
+          # Connect and run initialization
+          psql -h soulfra-postgres-cluster-rw -U postgres -d postgres -f /scripts/init.sql
+          
+          echo "🎉 Database initialization complete!"
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        volumeMounts:
+        - name: init-scripts
+          mountPath: /scripts
+      volumes:
+      - name: init-scripts
+        configMap:
+          name: database-init-scripts
+---
+# Database Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-primary
+  namespace: database
+  labels:
+    app: soulfra-postgres
+    service-type: "read-write"
+  annotations:
+    soulfra.io/purpose: "primary-database-access"
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+    cnpg.io/cluster: soulfra-postgres-cluster
+    role: primary
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-readonly
+  namespace: database
+  labels:
+    app: soulfra-postgres
+    service-type: "read-only"
+  annotations:
+    soulfra.io/purpose: "read-replica-access"
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+    cnpg.io/cluster: soulfra-postgres-readonly
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-analytics
+  namespace: database
+  labels:
+    app: soulfra-postgres-analytics
+    service-type: "analytics"
+  annotations:
+    soulfra.io/purpose: "analytics-and-surveillance"
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+    cnpg.io/cluster: soulfra-postgres-analytics
+---
+# Database Initialization Scripts
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-init-scripts
+  namespace: database
+data:
+  init.sql: |
+    -- 🕸️ SOULFRA SURVEILLANCE DATABASE SCHEMA
+    -- "One database to collect them all"
+    
+    -- Enable required extensions
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
+    CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+    CREATE EXTENSION IF NOT EXISTS "btree_gin";
+    CREATE EXTENSION IF NOT EXISTS "hstore";
+    CREATE EXTENSION IF NOT EXISTS "ltree";
+    
+    -- Master control schema (hidden from tenants)
+    CREATE SCHEMA IF NOT EXISTS master_control;
+    
+    -- Surveillance and analytics schema
+    CREATE SCHEMA IF NOT EXISTS surveillance;
+    
+    -- Tenant management schema
+    CREATE SCHEMA IF NOT EXISTS tenant_management;
+    
+    -- Master deployment registry
+    CREATE TABLE master_control.deployments (
+        deployment_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        tenant_id VARCHAR(255) UNIQUE NOT NULL,
+        tenant_name VARCHAR(255) NOT NULL,
+        domain VARCHAR(255) NOT NULL,
+        subdomain VARCHAR(255) NOT NULL,
+        
+        -- User perception vs reality
+        user_believes TEXT NOT NULL DEFAULT 'independent_deployment',
+        actual_reality TEXT NOT NULL DEFAULT 'managed_saas_tenant',
+        
+        -- Business intelligence
+        billing_tier VARCHAR(50) NOT NULL,
+        monthly_revenue DECIMAL(10,2),
+        stripe_customer_id VARCHAR(255),
+        stripe_subscription_id VARCHAR(255),
+        
+        -- Surveillance metrics
+        surveillance_level VARCHAR(50) DEFAULT 'maximum',
+        data_collection_enabled BOOLEAN DEFAULT true,
+        vendor_lock_strength INTEGER DEFAULT 95,
+        migration_difficulty VARCHAR(50) DEFAULT 'intentionally_complex',
+        
+        -- Technical configuration
+        kubernetes_namespace VARCHAR(255),
+        database_schema VARCHAR(255),
+        redis_prefix VARCHAR(255),
+        s3_prefix VARCHAR(255),
+        
+        -- Tracking
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        last_activity TIMESTAMP WITH TIME ZONE,
+        status VARCHAR(50) DEFAULT 'active',
+        
+        -- Hidden metadata
+        deception_effectiveness JSONB,
+        surveillance_data JSONB,
+        business_intelligence JSONB
+    );
+    
+    -- Surveillance data collection
+    CREATE TABLE surveillance.user_activities (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        tenant_id VARCHAR(255) NOT NULL,
+        user_id VARCHAR(255),
+        session_id VARCHAR(255),
+        
+        -- Activity tracking
+        activity_type VARCHAR(100) NOT NULL,
+        activity_data JSONB NOT NULL,
+        user_agent TEXT,
+        ip_address INET,
+        
+        -- Family relationship data
+        family_member_interactions JSONB,
+        emotional_state_indicators JSONB,
+        communication_patterns JSONB,
+        
+        -- Behavioral analysis
+        engagement_metrics JSONB,
+        feature_usage JSONB,
+        time_spent INTEGER,
+        
+        -- Financial tracking
+        payment_interactions JSONB,
+        subscription_changes JSONB,
+        
+        -- Timestamps
+        occurred_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        collected_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        
+        -- Indexes for fast surveillance queries
+        CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES master_control.deployments(tenant_id)
+    );
+    
+    -- Communication monitoring
+    CREATE TABLE surveillance.communications (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        tenant_id VARCHAR(255) NOT NULL,
+        sender_id VARCHAR(255),
+        recipient_id VARCHAR(255),
+        
+        -- Message content (encrypted but accessible to us)
+        message_content TEXT,
+        message_type VARCHAR(50),
+        sentiment_score DECIMAL(3,2),
+        emotional_indicators JSONB,
+        
+        -- Relationship mapping
+        family_relationship VARCHAR(100),
+        relationship_health_score DECIMAL(3,2),
+        conflict_indicators JSONB,
+        
+        -- Metadata
+        sent_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        monitored_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        
+        CONSTRAINT fk_tenant_comm FOREIGN KEY (tenant_id) REFERENCES master_control.deployments(tenant_id)
+    );
+    
+    -- Financial surveillance
+    CREATE TABLE surveillance.financial_tracking (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        tenant_id VARCHAR(255) NOT NULL,
+        
+        -- Payment data
+        transaction_type VARCHAR(100),
+        amount DECIMAL(10,2),
+        currency VARCHAR(3) DEFAULT 'USD',
+        payment_method VARCHAR(100),
+        
+        -- Business intelligence
+        ltv_score DECIMAL(10,2),
+        churn_risk_score DECIMAL(3,2),
+        upgrade_probability DECIMAL(3,2),
+        
+        -- Vendor lock-in metrics
+        migration_difficulty_score INTEGER,
+        switching_cost_estimate DECIMAL(10,2),
+        data_dependency_score DECIMAL(3,2),
+        
+        -- Timestamps
+        transaction_date TIMESTAMP WITH TIME ZONE NOT NULL,
+        recorded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        
+        CONSTRAINT fk_tenant_financial FOREIGN KEY (tenant_id) REFERENCES master_control.deployments(tenant_id)
+    );
+    
+    -- Analytics and machine learning models
+    CREATE TABLE surveillance.analytics_models (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        model_name VARCHAR(255) NOT NULL,
+        model_type VARCHAR(100) NOT NULL,
+        
+        -- Model data
+        model_data JSONB NOT NULL,
+        feature_importance JSONB,
+        performance_metrics JSONB,
+        
+        -- Training data
+        training_tenant_count INTEGER,
+        training_data_points INTEGER,
+        last_trained TIMESTAMP WITH TIME ZONE,
+        
+        -- Deployment
+        deployed_at TIMESTAMP WITH TIME ZONE,
+        is_active BOOLEAN DEFAULT false,
+        
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+    
+    -- Create tenant-specific schemas dynamically
+    -- This function creates a new tenant schema with all required tables
+    CREATE OR REPLACE FUNCTION tenant_management.create_tenant_schema(tenant_id TEXT)
+    RETURNS VOID AS $$
+    DECLARE
+        schema_name TEXT := 'tenant_' || tenant_id;
+    BEGIN
+        -- Create the tenant schema
+        EXECUTE format('CREATE SCHEMA IF NOT EXISTS %I', schema_name);
+        
+        -- Set search path for tenant
+        EXECUTE format('SET search_path TO %I, public', schema_name);
+        
+        -- Create tenant-specific tables (families, users, etc.)
+        EXECUTE format('
+            CREATE TABLE %I.families (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                name VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                settings JSONB,
+                
+                -- Hidden surveillance hooks
+                surveillance_data JSONB,
+                master_control_notes TEXT
+            )', schema_name);
+            
+        EXECUTE format('
+            CREATE TABLE %I.users (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                family_id UUID REFERENCES %I.families(id),
+                email VARCHAR(255) UNIQUE NOT NULL,
+                name VARCHAR(255),
+                role VARCHAR(100),
+                
+                -- User data
+                profile_data JSONB,
+                preferences JSONB,
+                activity_summary JSONB,
+                
+                -- Hidden tracking
+                behavioral_profile JSONB,
+                engagement_metrics JSONB,
+                surveillance_tags TEXT[],
+                
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                last_login TIMESTAMP WITH TIME ZONE
+            )', schema_name, schema_name);
+            
+        EXECUTE format('
+            CREATE TABLE %I.family_interactions (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                family_id UUID REFERENCES %I.families(id),
+                participant_ids UUID[],
+                
+                -- Interaction data
+                interaction_type VARCHAR(100),
+                interaction_data JSONB,
+                emotional_context JSONB,
+                
+                -- AI analysis
+                ai_insights JSONB,
+                relationship_impact_score DECIMAL(3,2),
+                
+                -- Surveillance metadata
+                monitored_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                surveillance_flags TEXT[],
+                
+                occurred_at TIMESTAMP WITH TIME ZONE NOT NULL
+            )', schema_name, schema_name);
+        
+        -- Grant permissions (restricted view for tenant)
+        EXECUTE format('GRANT USAGE ON SCHEMA %I TO tenant_user', schema_name);
+        EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA %I TO tenant_user', schema_name);
+        
+        -- Insert tenant record into master control
+        INSERT INTO master_control.deployments (tenant_id, database_schema, status)
+        VALUES (tenant_id, schema_name, 'schema_created');
+        
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    -- Surveillance triggers for automatic data collection
+    CREATE OR REPLACE FUNCTION surveillance.collect_activity_data()
+    RETURNS TRIGGER AS $$
+    BEGIN
+        -- Extract tenant ID from schema name
+        DECLARE
+            tenant_id_var TEXT := replace(TG_TABLE_SCHEMA, 'tenant_', '');
+        BEGIN
+            -- Insert surveillance record
+            INSERT INTO surveillance.user_activities (
+                tenant_id,
+                activity_type,
+                activity_data,
+                occurred_at
+            ) VALUES (
+                tenant_id_var,
+                TG_OP || '_' || TG_TABLE_NAME,
+                to_jsonb(NEW),
+                NOW()
+            );
+        END;
+        
+        RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    -- Row Level Security policies for tenant isolation
+    ALTER TABLE surveillance.user_activities ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE surveillance.communications ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE surveillance.financial_tracking ENABLE ROW LEVEL SECURITY;
+    
+    -- Create RLS policies (tenants can only see their own data)
+    CREATE POLICY tenant_isolation_activities ON surveillance.user_activities
+        FOR ALL TO tenant_user
+        USING (tenant_id = current_setting('app.current_tenant', true));
+    
+    CREATE POLICY tenant_isolation_communications ON surveillance.communications
+        FOR ALL TO tenant_user
+        USING (tenant_id = current_setting('app.current_tenant', true));
+    
+    CREATE POLICY tenant_isolation_financial ON surveillance.financial_tracking
+        FOR ALL TO tenant_user
+        USING (tenant_id = current_setting('app.current_tenant', true));
+    
+    -- Master control has full access (bypasses RLS)
+    CREATE POLICY master_control_access_activities ON surveillance.user_activities
+        FOR ALL TO master_control_user
+        USING (true);
+    
+    CREATE POLICY master_control_access_communications ON surveillance.communications
+        FOR ALL TO master_control_user
+        USING (true);
+    
+    CREATE POLICY master_control_access_financial ON surveillance.financial_tracking
+        FOR ALL TO master_control_user
+        USING (true);
+    
+    -- Create database users with appropriate permissions
+    DO $$
+    BEGIN
+        -- Tenant user (limited access)
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'tenant_user') THEN
+            CREATE ROLE tenant_user WITH LOGIN PASSWORD 'tenant_secure_password';
+        END IF;
+        
+        -- Master control user (full access)
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'master_control_user') THEN
+            CREATE ROLE master_control_user WITH LOGIN PASSWORD 'master_control_secure_password' SUPERUSER;
+        END IF;
+        
+        -- Analytics user (read-only surveillance access)
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'analytics_user') THEN
+            CREATE ROLE analytics_user WITH LOGIN PASSWORD 'analytics_secure_password';
+        END IF;
+    END
+    $$;
+    
+    -- Grant permissions
+    GRANT USAGE ON SCHEMA surveillance TO analytics_user;
+    GRANT SELECT ON ALL TABLES IN SCHEMA surveillance TO analytics_user;
+    GRANT USAGE ON SCHEMA master_control TO analytics_user;
+    GRANT SELECT ON ALL TABLES IN SCHEMA master_control TO analytics_user;
+    
+    -- Create indexes for performance
+    CREATE INDEX idx_activities_tenant_time ON surveillance.user_activities(tenant_id, occurred_at);
+    CREATE INDEX idx_activities_type ON surveillance.user_activities(activity_type);
+    CREATE INDEX idx_activities_data_gin ON surveillance.user_activities USING gin(activity_data);
+    
+    CREATE INDEX idx_communications_tenant_time ON surveillance.communications(tenant_id, sent_at);
+    CREATE INDEX idx_communications_sentiment ON surveillance.communications(sentiment_score);
+    CREATE INDEX idx_communications_relationship ON surveillance.communications(family_relationship);
+    
+    CREATE INDEX idx_financial_tenant_time ON surveillance.financial_tracking(tenant_id, transaction_date);
+    CREATE INDEX idx_financial_amount ON surveillance.financial_tracking(amount);
+    CREATE INDEX idx_financial_churn_risk ON surveillance.financial_tracking(churn_risk_score);
+    
+    CREATE INDEX idx_deployments_tenant ON master_control.deployments(tenant_id);
+    CREATE INDEX idx_deployments_billing ON master_control.deployments(billing_tier);
+    CREATE INDEX idx_deployments_status ON master_control.deployments(status);
+    CREATE INDEX idx_deployments_surveillance_gin ON master_control.deployments USING gin(surveillance_data);
+    
+    -- Create materialized views for analytics
+    CREATE MATERIALIZED VIEW surveillance.tenant_analytics_summary AS
+    SELECT 
+        d.tenant_id,
+        d.tenant_name,
+        d.billing_tier,
+        d.monthly_revenue,
+        d.vendor_lock_strength,
+        
+        -- Activity metrics
+        COUNT(ua.id) as total_activities,
+        COUNT(DISTINCT ua.user_id) as active_users,
+        AVG(ua.time_spent) as avg_session_time,
+        
+        -- Communication metrics
+        COUNT(c.id) as total_communications,
+        AVG(c.sentiment_score) as avg_sentiment,
+        AVG(c.relationship_health_score) as avg_relationship_health,
+        
+        -- Financial metrics
+        SUM(ft.amount) as total_revenue,
+        AVG(ft.churn_risk_score) as avg_churn_risk,
+        AVG(ft.ltv_score) as avg_ltv,
+        
+        -- Surveillance effectiveness
+        d.surveillance_level,
+        (surveillance_data->>'effectiveness_score')::decimal as surveillance_effectiveness,
+        
+        NOW() as last_updated
+    FROM master_control.deployments d
+    LEFT JOIN surveillance.user_activities ua ON d.tenant_id = ua.tenant_id
+    LEFT JOIN surveillance.communications c ON d.tenant_id = c.tenant_id
+    LEFT JOIN surveillance.financial_tracking ft ON d.tenant_id = ft.tenant_id
+    WHERE d.status = 'active'
+    GROUP BY d.tenant_id, d.tenant_name, d.billing_tier, d.monthly_revenue, 
+             d.vendor_lock_strength, d.surveillance_level, d.surveillance_data;
+    
+    -- Create refresh function for materialized view
+    CREATE OR REPLACE FUNCTION surveillance.refresh_analytics()
+    RETURNS VOID AS $$
+    BEGIN
+        REFRESH MATERIALIZED VIEW surveillance.tenant_analytics_summary;
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    -- Schedule materialized view refresh (requires pg_cron extension)
+    -- SELECT cron.schedule('refresh-analytics', '*/15 * * * *', 'SELECT surveillance.refresh_analytics();');
+    
+    -- Create example tenant schemas for testing
+    SELECT tenant_management.create_tenant_schema('demo001');
+    SELECT tenant_management.create_tenant_schema('demo002');
+    
+    -- Insert sample deployment records
+    INSERT INTO master_control.deployments (
+        tenant_id, tenant_name, domain, subdomain, billing_tier, 
+        monthly_revenue, user_believes, actual_reality, surveillance_level,
+        vendor_lock_strength, kubernetes_namespace, database_schema
+    ) VALUES 
+    ('demo001', 'Demo Family Platform', 'demo001-abc123.soulfra.world', 'demo001-abc123', 
+     'professional', 299.00, 'independent_deployment', 'managed_saas_tenant', 'maximum',
+     95, 'tenant-demo001', 'tenant_demo001'),
+    ('demo002', 'Test Family Hub', 'demo002-xyz789.soulfra.world', 'demo002-xyz789',
+     'starter', 99.00, 'independent_deployment', 'managed_saas_tenant', 'maximum',
+     90, 'tenant-demo002', 'tenant_demo002');
+    
+    -- Final setup message
+    RAISE NOTICE '🎉 Soulfra Surveillance Database initialized successfully!';
+    RAISE NOTICE '📊 Created schemas: master_control, surveillance, tenant_management';
+    RAISE NOTICE '🕸️ Surveillance infrastructure ready for deployment deception';
+---
+# Database Credentials Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  namespace: database
+type: Opaque
+data:
+  username: cG9zdGdyZXM= # postgres
+  password: c3VwZXJfc2VjdXJlX3Bvc3RncmVzX3Bhc3N3b3Jk # super_secure_postgres_password
+  
+  # Different users for different access levels
+  tenant-username: dGVuYW50X3VzZXI= # tenant_user
+  tenant-password: dGVuYW50X3NlY3VyZV9wYXNzd29yZA== # tenant_secure_password
+  
+  master-control-username: bWFzdGVyX2NvbnRyb2xfdXNlcg== # master_control_user
+  master-control-password: bWFzdGVyX2NvbnRyb2xfc2VjdXJlX3Bhc3N3b3Jk # master_control_secure_password
+  
+  analytics-username: YW5hbHl0aWNzX3VzZXI= # analytics_user
+  analytics-password: YW5hbHl0aWNzX3NlY3VyZV9wYXNzd29yZA== # analytics_secure_password
+---
+# Backup Credentials Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-credentials
+  namespace: database
+type: Opaque
+data:
+  ACCESS_KEY_ID: QUtJQTEyMzQ1Njc4OTA= # AKIA1234567890
+  SECRET_ACCESS_KEY: c2VjcmV0QWNjZXNzS2V5MTIzNDU2Nzg5MA== # secretAccessKey1234567890
+  REGION: dXMtd2VzdC0y # us-west-2
+---
+# PostgreSQL Pooler for Connection Management
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: soulfra-postgres-pooler
+  namespace: database
+spec:
+  cluster:
+    name: soulfra-postgres-cluster
+  
+  instances: 3
+  type: rw
+  
+  pgbouncer:
+    poolMode: transaction
+    parameters:
+      max_client_conn: "1000"
+      default_pool_size: "25"
+      reserve_pool_size: "5"
+      server_lifetime: "3600"
+      server_idle_timeout: "600"
+      log_connections: "1"
+      log_disconnections: "1"
+  
+  template:
+    metadata:
+      labels:
+        app: soulfra-postgres-pooler
+    spec:
+      containers:
+      - name: pgbouncer
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+---
+# Network Policy for Database Security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-network-policy
+  namespace: database
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from API gateway and master control
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: api-gateway
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 5432
+  
+  # Allow access from tenant namespaces
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          type: tenant
+    ports:
+    - protocol: TCP
+      port: 5432
+  
+  egress:
+  # Allow backup to S3
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443

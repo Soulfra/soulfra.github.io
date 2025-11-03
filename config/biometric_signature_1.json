@@ -1,0 +1,77 @@
+{
+  "pulse": "steady",
+  "tone_fluctuation": "low",
+  "confirmation_type": "hold_press",
+  "confidence_level": 0.88,
+  "capture_timestamp": 1750104678901,
+  "device_id": "mirror_sensor_001",
+  "biometric_readings": {
+    "heartRate": {
+      "bpm": 72,
+      "baseline": 70,
+      "variance": 0.05,
+      "pattern": "regular",
+      "coherence": 0.91
+    },
+    "breathing": {
+      "depth": 0.85,
+      "rate": 14,
+      "pattern": "rhythmic",
+      "holding": 0.1,
+      "phase": "exhale"
+    },
+    "skinConductance": {
+      "level": 0.45,
+      "variance": 0.08,
+      "trend": "stable"
+    },
+    "temperature": {
+      "surface": 32.5,
+      "delta": 0.2,
+      "zone": "neutral"
+    }
+  },
+  "gesture_dynamics": {
+    "pressure": 0.75,
+    "duration": 3200,
+    "stability": 0.89,
+    "pattern": "sustained_hold",
+    "tremor": 0.02
+  },
+  "emotional_markers": {
+    "arousal": 0.4,
+    "valence": 0.8,
+    "dominance": 0.6,
+    "flow_state": 0.75
+  },
+  "resonance_profile": {
+    "frequency_match": 0.87,
+    "phase_coherence": 0.92,
+    "amplitude_sync": 0.78,
+    "harmonic_depth": 3
+  },
+  "trust_indicators": {
+    "consistency": 0.94,
+    "intentionality": 0.85,
+    "alignment": 0.90,
+    "presence": 0.88
+  },
+  "temporal_dynamics": {
+    "response_latency": 2340,
+    "decision_curve": "smooth",
+    "hesitation_points": 0,
+    "commitment_strength": 0.91
+  },
+  "environmental_context": {
+    "ambient_noise": 0.12,
+    "lighting": "dim",
+    "time_of_day": "evening",
+    "moon_phase": "waxing"
+  },
+  "signature_hash": "a7f3b9c2d5e8f1a4b6c9d2e5f8a1b4c7",
+  "validity": {
+    "expires": 1750108278901,
+    "single_use": true,
+    "bound_to_reflection": "weather_1750104678901"
+  }
+}

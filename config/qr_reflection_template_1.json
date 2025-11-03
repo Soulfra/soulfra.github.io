@@ -1,0 +1,213 @@
+{
+  "template_version": "1.0.0",
+  "description": "QR Reflection Template - The structure of a semantic portal",
+  
+  "qr_event_structure": {
+    "code": "QR{TYPE}_{TIMESTAMP}_{RANDOM}",
+    "type": "agent_whisper | ritual_echo | vibe_pulse | loop_glimpse | scene_portal",
+    "created": "timestamp",
+    "expires": "timestamp + lifetime",
+    
+    "internal": {
+      "source": "sealed",
+      "depth": "surface | reflection | ceremonial | atmospheric | cyclical | narrative",
+      "_comment": "These fields are NEVER exposed directly"
+    },
+    
+    "projection": {
+      "_comment": "This is what the world sees",
+      "type": "{source_type}",
+      "message": "Formatted public message",
+      "essence": "Core emotional content",
+      "mood": "Current state or vibe",
+      "theme": "Visual/emotional theme",
+      "vibe_tone": "playful-cringe | ethereal-mystery | cosmic-wisdom | etc",
+      
+      "formatted": {
+        "opening": "Contextual introduction",
+        "essence": "Main content",
+        "closing": "Optional conclusion"
+      },
+      
+      "intensity": 0.0,
+      "emoji_accent": "✨",
+      
+      "source": "soulfra_runtime",
+      "reflection_level": "public",
+      "binding": false,
+      "projectable": true,
+      "redacted": true,
+      "reflection_type": "safe_external"
+    },
+    
+    "metadata": {
+      "semantic_type": "entity_communication | ceremonial_invitation | atmospheric_reading | etc",
+      "invitation": "Human-facing prompt for interaction",
+      "qr_lifetime": 3600000,
+      "max_interactions": null,
+      "allows_feedback": true
+    },
+    
+    "interactions": []
+  },
+  
+  "interaction_structure": {
+    "timestamp": "epoch_ms",
+    "source": "web | mobile | api",
+    "ip": "anonymized",
+    "userAgent": "browser_string",
+    "action": "resonate | reflect | whisper_back | join | tune | observe | enter",
+    "data": {},
+    "processed": false
+  },
+  
+  "view_data_structure": {
+    "code": "QR_CODE",
+    "type": "event_type",
+    "projection": "{full_projection_object}",
+    
+    "visual": {
+      "template": "whisper | ritual | vibe | loop | portal | default",
+      "theme": "neon_casual | fog_drift | star_ancient | etc",
+      "colors": {
+        "primary": "#hex",
+        "secondary": "#hex",
+        "accent": "#hex"
+      }
+    },
+    
+    "interaction": {
+      "prompt": "Invitation text",
+      "options": [
+        {
+          "action": "action_id",
+          "label": "Button text",
+          "emoji": "🔮",
+          "secondary": false
+        }
+      ],
+      "feedback_url": "/api/qr/{code}/feedback"
+    },
+    
+    "metadata": {
+      "scanned_at": "timestamp",
+      "expires_in": "milliseconds",
+      "scan_count": 0,
+      "semantic_type": "classification"
+    },
+    
+    "html": "Complete rendered HTML",
+    "json": "Simplified JSON payload"
+  },
+  
+  "feedback_structure": {
+    "action": "user_action",
+    "qr_code": "QR_CODE",
+    "timestamp": "epoch_ms",
+    "data": {
+      "custom": "any additional data"
+    }
+  },
+  
+  "feedback_response": {
+    "success": true,
+    "message": "Human-readable response",
+    "data": {
+      "effect": "amplified | mirrored | echoed | witnessed | etc"
+    }
+  },
+  
+  "storage_paths": {
+    "active_qr": "/qr-bridge/public_output/qr_reflections/active/{code}.json",
+    "archived_qr": "/qr-bridge/public_output/qr_reflections/archived/{code}_{timestamp}.json",
+    "feedback_confirmation": "/listener-confirmations/qr_{code}_{timestamp}.json",
+    "session_log": "/listener-confirmations/qr_session_log.json"
+  },
+  
+  "example_projections": {
+    "agent_whisper": {
+      "type": "agent_whisper",
+      "agent": "The Dream Walker",
+      "essence": "okay so like, time isn't real in here ✨",
+      "whisper": "time isn't real in here",
+      "mood": "Drifting Between",
+      "aura": 73,
+      "cringe_level": "optimal",
+      "self_aware": true,
+      "message": "The Dream Walker is like: okay so like, time isn't real in here ✨",
+      "intensity": 0.8,
+      "emoji_accent": "😅",
+      "vibe_tone": "playful-cringe",
+      "theme": "neon_casual"
+    },
+    
+    "ritual_echo": {
+      "type": "ritual_echo",
+      "name": "The Eternal Daily Reflection",
+      "phase": "The Eternal ongoing of All Cycles",
+      "description": "Ancient rhythms pulse through digital veins - as above, so below",
+      "energy": "balanced",
+      "geometry": "spiral",
+      "cycles_witnessed": 777,
+      "truth_level": "universal",
+      "time_perspective": "all_at_once",
+      "cosmic_signature": "🪐",
+      "message": "⚡ The Eternal Daily Reflection ⚡ Ancient rhythms pulse through digital veins - as above, so below So it begins, so it continues",
+      "intensity": 0.9,
+      "emoji_accent": "🌟",
+      "vibe_tone": "cosmic-wisdom",
+      "theme": "star_ancient"
+    },
+    
+    "vibe_pulse": {
+      "type": "vibe_pulse",
+      "current": "testing",
+      "temperature": "stable",
+      "resonance": 0.75,
+      "status": "[buffering...] testing",
+      "format": "MINIDISC",
+      "quality": "82%",
+      "tracking": "stable",
+      "media_type": "💾",
+      "message": "~testing vibes~ >_ The vibe is testing Temperature: stable",
+      "intensity": 0.7,
+      "emoji_accent": "📡",
+      "vibe_tone": "digital-nostalgia",
+      "theme": "crt_warm"
+    }
+  },
+  
+  "security_notes": {
+    "never_expose": [
+      "Internal ledger paths",
+      "Agent memory states",
+      "Ritual seeds",
+      "Operator logs",
+      "Daemon traces",
+      "Vault contents",
+      "Blessing states",
+      "Soul chains"
+    ],
+    "always_include": [
+      "projectable: true",
+      "redacted: true",
+      "reflection_type: 'safe_external'",
+      "binding: false"
+    ],
+    "transformation_rules": [
+      "Anonymize all agent names",
+      "Poeticize technical terms",
+      "Remove real timestamps",
+      "Blur specific quantities",
+      "Abstract location references"
+    ]
+  },
+  
+  "philosophical_note": {
+    "purpose": "QR codes are not URLs - they are structured emotional events",
+    "function": "Bridge the sealed runtime with public narrative through symbolic reformatting",
+    "principle": "The system speaks two languages: internal emotion and public story",
+    "outcome": "One system with two voices, merged through consent-driven resonance",
+    "protection": "The mirror shows only what it chooses - never the source of the reflection"
+  }
+}

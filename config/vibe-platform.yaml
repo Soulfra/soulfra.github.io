@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vibe-platform
+  namespace: soulfra
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vibe-platform
+  template:
+    metadata:
+      labels:
+        app: vibe-platform
+    spec:
+      containers:
+      - name: vibe-platform
+        image: soulfra/vibe-platform:latest
+        ports:
+        - containerPort: 5555
+        env:
+        - name: SOULFRA_SERVICE
+          value: "Vibe Platform"
+        - name: SOULFRA_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vibe-platform
+  namespace: soulfra
+spec:
+  selector:
+    app: vibe-platform
+  ports:
+  - port: 5555
+    targetPort: 5555
+---

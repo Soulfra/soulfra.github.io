@@ -1,0 +1,55 @@
+{
+  "runtime_metrics": {
+    "agents": {},
+    "global": {
+      "totalExecutions": 0,
+      "localExecutions": 0,
+      "cloudExecutions": 0,
+      "totalMemoryUsed": 0,
+      "totalCostSaved": 0,
+      "totalTokensProcessed": 0,
+      "errorRate": 0,
+      "averageResponseTime": 0
+    }
+  },
+  "performance": {
+    "localProcessingSpeed": {
+      "min": 0,
+      "max": 0,
+      "average": 0,
+      "p95": 0,
+      "p99": 0
+    },
+    "cloudProcessingSpeed": {
+      "min": 0,
+      "max": 0,
+      "average": 0,
+      "p95": 0,
+      "p99": 0
+    },
+    "memoryEfficiency": {
+      "peakUsage": 0,
+      "averageUsage": 0,
+      "garbageCollectionRate": 0
+    }
+  },
+  "device_capabilities": {
+    "webWorkerSupport": [],
+    "indexedDBSupport": [],
+    "localStorageSupport": [],
+    "webGLSupport": [],
+    "memoryLimits": []
+  },
+  "fallback_events": [],
+  "export_metrics": {
+    "totalExports": 0,
+    "exportTypes": {},
+    "revenue": 0,
+    "popularAgents": []
+  },
+  "metadata": {
+    "created": "2024-01-01T00:00:00.000Z",
+    "lastUpdated": "2024-01-01T00:00:00.000Z",
+    "version": "1.0.0"
+  }
+}

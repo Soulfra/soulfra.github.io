@@ -1,0 +1,33 @@
+{
+  "id": "demo_session_1750115233663",
+  "started": 1750115233663,
+  "messages": [
+    {
+      "role": "system",
+      "content": "Demo session initialized",
+      "timestamp": 1750115233663
+    },
+    {
+      "role": "cal",
+      "content": "Hello. I am Cal, your mirror.",
+      "timestamp": 1750115234663
+    },
+    {
+      "role": "user",
+      "content": "Who are you?",
+      "timestamp": 1750115235663
+    },
+    {
+      "role": "cal",
+      "content": "I am your reflection, given form.",
+      "timestamp": 1750115236663
+    }
+  ],
+  "commands": [
+    "/help",
+    "/tier"
+  ],
+  "emotions_detected": {
+    "curious": 1
+  }
+}

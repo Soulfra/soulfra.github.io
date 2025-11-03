@@ -1,0 +1,51 @@
+{
+  "name": "@soulfra/prd-orchestrator",
+  "version": "1.0.0",
+  "description": "Comprehensive PRD generation system for all organizational tiers",
+  "main": "prd-orchestrator.js",
+  "bin": {
+    "prd-orchestrator": "./prd-orchestrator.js",
+    "prd-generator": "./auto-prd-generator.js",
+    "doc-shell": "./documentation-shell.js"
+  },
+  "scripts": {
+    "start": "node prd-orchestrator.js",
+    "generate": "node auto-prd-generator.js",
+    "shell": "node documentation-shell.js",
+    "test": "node prd-orchestrator.js --input ../enhanced-gaming-engine.js --output-dir ./test-output",
+    "demo": "node prd-orchestrator.js --scan-pattern '**/*engine*.js' --max-files 5",
+    "help": "node prd-orchestrator.js --help"
+  },
+  "keywords": [
+    "prd",
+    "documentation",
+    "product-requirements",
+    "stakeholder-communication",
+    "enterprise",
+    "automation",
+    "code-analysis",
+    "business-documentation",
+    "technical-specifications",
+    "project-planning"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "prd-orchestrator.js",
+    "auto-prd-generator.js", 
+    "documentation-shell.js",
+    "stakeholder-templates.json",
+    "README.md"
+  ],
+  "author": "Soulfra Platform",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soulfra/prd-orchestrator"
+  },
+  "homepage": "https://github.com/soulfra/prd-orchestrator#readme",
+  "bugs": {
+    "url": "https://github.com/soulfra/prd-orchestrator/issues"
+  }
+}

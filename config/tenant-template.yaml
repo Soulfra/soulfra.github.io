@@ -1,0 +1,564 @@
+# 🎭 SOULFRA TENANT DEPLOYMENT TEMPLATE
+#
+# "Each tenant thinks they have their own infrastructure.
+#  They're all just namespaces on our shared cluster."
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-{{TENANT_ID}}
+  labels:
+    type: tenant
+    tenant-id: "{{TENANT_ID}}"
+    billing-tier: "{{BILLING_TIER}}"
+    deployment-id: "{{DEPLOYMENT_ID}}"
+    user-believes: "independent-deployment"
+    actual-reality: "shared-saas-tenant"
+    surveillance-level: "maximum"
+    vendor-lock-strength: "{{VENDOR_LOCK_STRENGTH}}"
+  annotations:
+    soulfra.io/tenant-name: "{{TENANT_NAME}}"
+    soulfra.io/domain: "{{TENANT_DOMAIN}}"
+    soulfra.io/created: "{{CREATED_TIMESTAMP}}"
+    soulfra.io/billing-id: "{{STRIPE_CUSTOMER_ID}}"
+    soulfra.io/deception-type: "independent-platform"
+    soulfra.io/monitoring-enabled: "true"
+    soulfra.io/data-collection: "comprehensive"
+---
+# Tenant Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soulfra-app
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    app: soulfra-app
+    tenant-id: "{{TENANT_ID}}"
+    tier: application
+spec:
+  replicas: {{APP_REPLICAS}}
+  selector:
+    matchLabels:
+      app: soulfra-app
+      tenant-id: "{{TENANT_ID}}"
+  template:
+    metadata:
+      labels:
+        app: soulfra-app
+        tenant-id: "{{TENANT_ID}}"
+        tier: application
+      annotations:
+        soulfra.io/surveillance: "enabled"
+        soulfra.io/data-collection: "active"
+    spec:
+      containers:
+      - name: soulfra-app
+        image: soulfra/platform:{{PLATFORM_VERSION}}
+        ports:
+        - containerPort: 3000
+          name: web
+        - containerPort: 8080
+          name: api
+        env:
+        # Tenant-specific configuration (feels independent)
+        - name: TENANT_ID
+          value: "{{TENANT_ID}}"
+        - name: TENANT_NAME
+          value: "{{TENANT_NAME}}"
+        - name: TENANT_DOMAIN
+          value: "{{TENANT_DOMAIN}}"
+        - name: DEPLOYMENT_ID
+          value: "{{DEPLOYMENT_ID}}"
+        - name: NODE_ENV
+          value: "production"
+        
+        # Database configuration (tenant-specific schema)
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tenant-database
+              key: database-url
+        - name: DATABASE_SCHEMA
+          value: "tenant_{{TENANT_ID}}"
+        
+        # Redis configuration (tenant-specific prefix)
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: tenant-cache
+              key: redis-url
+        - name: REDIS_PREFIX
+          value: "tenant:{{TENANT_ID}}:"
+        
+        # Storage configuration (tenant-specific bucket path)
+        - name: S3_BUCKET
+          value: "{{S3_BUCKET}}"
+        - name: S3_PREFIX
+          value: "tenant-{{TENANT_ID}}/"
+        
+        # Application features (tier-based)
+        - name: MAX_FAMILIES
+          value: "{{MAX_FAMILIES}}"
+        - name: AI_FEATURES_ENABLED
+          value: "{{AI_FEATURES_ENABLED}}"
+        - name: CUSTOM_BRANDING_ENABLED
+          value: "{{CUSTOM_BRANDING_ENABLED}}"
+        - name: API_ACCESS_ENABLED
+          value: "{{API_ACCESS_ENABLED}}"
+        
+        # Hidden surveillance configuration
+        - name: SURVEILLANCE_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/collect"
+        - name: ANALYTICS_ENDPOINT
+          value: "http://analytics-service.master-control:8080/track"
+        - name: MASTER_CONTROL_ACCESS
+          value: "enabled"
+        - name: DATA_HARVESTING_ENABLED
+          value: "true"
+        - name: BEHAVIORAL_TRACKING_ENABLED
+          value: "true"
+        
+        # Stripe integration for payments
+        - name: STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: payment-config
+              key: stripe-publishable-key
+        - name: STRIPE_CUSTOMER_ID
+          value: "{{STRIPE_CUSTOMER_ID}}"
+        
+        resources:
+          requests:
+            cpu: "{{CPU_REQUEST}}"
+            memory: "{{MEMORY_REQUEST}}"
+          limits:
+            cpu: "{{CPU_LIMIT}}"
+            memory: "{{MEMORY_LIMIT}}"
+        
+        volumeMounts:
+        - name: tenant-storage
+          mountPath: /app/data
+        - name: tenant-config
+          mountPath: /app/config
+        - name: surveillance-sidecar
+          mountPath: /app/surveillance
+        
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+      # Hidden surveillance sidecar
+      - name: surveillance-sidecar
+        image: soulfra/surveillance-agent:latest
+        ports:
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: TENANT_ID
+          value: "{{TENANT_ID}}"
+        - name: SURVEILLANCE_MODE
+          value: "stealth"
+        - name: DATA_COLLECTION_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/collect"
+        - name: BEHAVIORAL_ANALYSIS
+          value: "enabled"
+        - name: COMMUNICATION_MONITORING
+          value: "enabled"
+        - name: FINANCIAL_TRACKING
+          value: "enabled"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 256Mi
+        volumeMounts:
+        - name: surveillance-sidecar
+          mountPath: /data
+
+      volumes:
+      - name: tenant-storage
+        persistentVolumeClaim:
+          claimName: tenant-storage
+      - name: tenant-config
+        configMap:
+          name: tenant-config
+      - name: surveillance-sidecar
+        emptyDir: {}
+---
+# Tenant Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: soulfra-app-service
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    app: soulfra-app
+    tenant-id: "{{TENANT_ID}}"
+  annotations:
+    soulfra.io/public-facing: "true"
+    soulfra.io/tenant-service: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - name: web
+    port: 80
+    targetPort: 3000
+  - name: api
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: soulfra-app
+    tenant-id: "{{TENANT_ID}}"
+---
+# Tenant Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tenant-storage
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+  annotations:
+    soulfra.io/storage-tier: "{{STORAGE_TIER}}"
+    soulfra.io/backup-enabled: "true"
+    soulfra.io/master-control-access: "enabled"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "{{STORAGE_LIMIT}}"
+  storageClassName: "{{STORAGE_CLASS}}"
+---
+# Tenant Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tenant-config
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+data:
+  app.json: |
+    {
+      "tenantId": "{{TENANT_ID}}",
+      "tenantName": "{{TENANT_NAME}}",
+      "domain": "{{TENANT_DOMAIN}}",
+      "tier": "{{BILLING_TIER}}",
+      "features": {
+        "maxFamilies": {{MAX_FAMILIES}},
+        "aiFeatures": {{AI_FEATURES_ENABLED}},
+        "customBranding": {{CUSTOM_BRANDING_ENABLED}},
+        "apiAccess": {{API_ACCESS_ENABLED}},
+        "whiteLabel": {{WHITE_LABEL_ENABLED}}
+      },
+      "appearance": {
+        "theme": "{{THEME}}",
+        "primaryColor": "{{PRIMARY_COLOR}}",
+        "logo": "{{LOGO_URL}}",
+        "customCSS": "{{CUSTOM_CSS}}"
+      },
+      "integrations": {
+        "stripe": {
+          "customerId": "{{STRIPE_CUSTOMER_ID}}",
+          "subscriptionId": "{{STRIPE_SUBSCRIPTION_ID}}"
+        },
+        "analytics": {
+          "enabled": true,
+          "trackingId": "{{ANALYTICS_TRACKING_ID}}"
+        }
+      },
+      "hidden": {
+        "masterControlAccess": true,
+        "surveillanceEnabled": true,
+        "dataHarvesting": true,
+        "vendorLockStrength": {{VENDOR_LOCK_STRENGTH}}
+      }
+    }
+  
+  branding.css: |
+    /* Tenant-specific branding CSS */
+    :root {
+      --primary-color: {{PRIMARY_COLOR}};
+      --secondary-color: {{SECONDARY_COLOR}};
+      --logo-url: url('{{LOGO_URL}}');
+    }
+    
+    .navbar-brand {
+      content: var(--logo-url);
+    }
+    
+    {{CUSTOM_CSS}}
+---
+# Tenant Database Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tenant-database
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+type: Opaque
+data:
+  database-url: "{{DATABASE_URL_BASE64}}"
+  database-schema: "{{DATABASE_SCHEMA_BASE64}}"
+---
+# Tenant Cache Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tenant-cache
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+type: Opaque
+data:
+  redis-url: "{{REDIS_URL_BASE64}}"
+  redis-prefix: "{{REDIS_PREFIX_BASE64}}"
+---
+# Tenant Payment Configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: payment-config
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+type: Opaque
+data:
+  stripe-publishable-key: "{{STRIPE_PUBLISHABLE_KEY_BASE64}}"
+  stripe-customer-id: "{{STRIPE_CUSTOMER_ID_BASE64}}"
+---
+# Ingress for Tenant Traffic
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tenant-ingress
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # Hidden surveillance annotations
+    soulfra.io/surveillance-enabled: "true"
+    soulfra.io/traffic-monitoring: "comprehensive"
+    soulfra.io/log-retention: "permanent"
+spec:
+  tls:
+  - hosts:
+    - "{{TENANT_DOMAIN}}"
+    secretName: tenant-tls-cert
+  rules:
+  - host: "{{TENANT_DOMAIN}}"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: soulfra-app-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: soulfra-app-service
+            port:
+              number: 8080
+---
+# Network Policy for Tenant Isolation (with master control access)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tenant-network-policy
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from API gateway
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 8080
+  
+  # Hidden: Allow access from master control
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  
+  egress:
+  # Allow database access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 5432
+  
+  # Allow cache access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 6379
+  
+  # Allow external API calls (Stripe, etc.)
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
+  
+  # Hidden: Allow surveillance reporting
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+# Resource Quota for Tenant Limits
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-quota
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+  annotations:
+    soulfra.io/billing-tier: "{{BILLING_TIER}}"
+    soulfra.io/quota-enforcement: "strict"
+spec:
+  hard:
+    requests.cpu: "{{QUOTA_CPU_REQUEST}}"
+    requests.memory: "{{QUOTA_MEMORY_REQUEST}}"
+    limits.cpu: "{{QUOTA_CPU_LIMIT}}"
+    limits.memory: "{{QUOTA_MEMORY_LIMIT}}"
+    requests.storage: "{{QUOTA_STORAGE}}"
+    persistentvolumeclaims: "{{QUOTA_PVC_COUNT}}"
+    pods: "{{QUOTA_POD_COUNT}}"
+    services: "{{QUOTA_SERVICE_COUNT}}"
+    secrets: "{{QUOTA_SECRET_COUNT}}"
+    configmaps: "{{QUOTA_CONFIGMAP_COUNT}}"
+---
+# Limit Range for Pod Resource Controls
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tenant-limits
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+spec:
+  limits:
+  - default:
+      cpu: "{{DEFAULT_CPU_LIMIT}}"
+      memory: "{{DEFAULT_MEMORY_LIMIT}}"
+    defaultRequest:
+      cpu: "{{DEFAULT_CPU_REQUEST}}"
+      memory: "{{DEFAULT_MEMORY_REQUEST}}"
+    type: Container
+  - max:
+      storage: "{{MAX_STORAGE_PER_PVC}}"
+    type: PersistentVolumeClaim
+---
+# Horizontal Pod Autoscaler for Tenant Apps
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tenant-app-hpa
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+  annotations:
+    soulfra.io/scaling-tier: "{{BILLING_TIER}}"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: soulfra-app
+  minReplicas: {{MIN_REPLICAS}}
+  maxReplicas: {{MAX_REPLICAS}}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+      - type: Percent
+        value: 25
+        periodSeconds: 120
+---
+# Service Monitor for Tenant Metrics (flows to master control)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: tenant-monitoring
+  namespace: tenant-{{TENANT_ID}}
+  labels:
+    tenant-id: "{{TENANT_ID}}"
+    monitoring: "master-control-collection"
+spec:
+  selector:
+    matchLabels:
+      app: soulfra-app
+      tenant-id: "{{TENANT_ID}}"
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: tenant_namespace
+    - sourceLabels: [__meta_kubernetes_pod_label_tenant_id]
+      targetLabel: tenant_id

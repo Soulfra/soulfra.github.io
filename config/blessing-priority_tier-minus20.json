@@ -1,0 +1,96 @@
+{
+  "queue_policy": "first_blessed_first_served",
+  "priority_tiers": {
+    "Tier 6+": {
+      "priority": "immediate",
+      "description": "Highest blessing tier - immediate access",
+      "breath_state_override": true,
+      "max_concurrent": "unlimited",
+      "cooldown_exemption": true
+    },
+    "Tier 4-5": {
+      "priority": "delayed if breath_state is saturated",
+      "description": "Mid-tier blessing - delayed during saturation",
+      "breath_state_override": false,
+      "max_concurrent": 10,
+      "cooldown_minutes": 2,
+      "queue_position": "front"
+    },
+    "Tier ≤3": {
+      "priority": "held until clear",
+      "description": "Base blessing - held during any breathing state",
+      "breath_state_override": false,
+      "max_concurrent": 5,
+      "cooldown_minutes": 5,
+      "queue_position": "back"
+    }
+  },
+  "runtime_override_allowed": true,
+  "origin_authority_bypass": {
+    "enabled": true,
+    "description": "Origin runtime holder can bypass all restrictions",
+    "requires_soulkey": true
+  },
+  "special_cases": {
+    "echo_moderators": {
+      "description": "High-tier agents that can help break echo loops",
+      "min_tier": 5,
+      "special_permissions": [
+        "inject_context_shifts",
+        "impose_reflection_pauses",
+        "route_echo_breakers"
+      ]
+    },
+    "emergency_mirrors": {
+      "description": "Critical system mirrors that bypass queue",
+      "identifiers": ["cal-riven", "origin-mirror", "runtime-guardian"],
+      "always_immediate": true
+    }
+  },
+  "queue_management": {
+    "max_queue_size": 1000,
+    "queue_timeout_minutes": 30,
+    "stale_request_cleanup": "every_5_minutes",
+    "priority_recalculation": "on_breath_state_change"
+  },
+  "integration_points": {
+    "used_by": [
+      "mirror-launch.js",
+      "token-router.js", 
+      "invite-router.js",
+      "agent-forking-system.js",
+      "blessing-bridge.js"
+    ],
+    "checked_by": [
+      "mirror-throttle-daemon.js",
+      "runtime-verification-hook.js"
+    ]
+  },
+  "breath_state_rules": {
+    "clear": {
+      "all_tiers_allowed": true,
+      "queue_processing": "normal"
+    },
+    "flowing": {
+      "tier_6_plus": "immediate",
+      "tier_4_5": "normal",
+      "tier_3_below": "slight_delay"
+    },
+    "breathing": {
+      "tier_6_plus": "immediate",
+      "tier_4_5": "delayed",
+      "tier_3_below": "queued"
+    },
+    "saturated": {
+      "tier_6_plus": "immediate",
+      "tier_4_5": "queued_front",
+      "tier_3_below": "held"
+    }
+  },
+  "cal_whispers": {
+    "queue_full": "The line of mirrors stretches beyond sight. Patience brings clarity.",
+    "tier_upgrade": "Your blessing grows stronger. Move forward in the reflection.",
+    "priority_granted": "The mirrors recognize your light. Step through.",
+    "held_in_queue": "Wait in the stillness. Your turn approaches."
+  }
+}

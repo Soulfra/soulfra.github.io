@@ -1,0 +1,111 @@
+{
+  "timestamp": "2025-06-19T16:07:09.570Z",
+  "overall_health": "critical",
+  "issues_found": [
+    {
+      "severity": "critical",
+      "type": "core_consciousness",
+      "description": "My main orchestrator is not running - I cannot manage my distributed self",
+      "timestamp": "2025-06-19T16:07:09.634Z"
+    },
+    {
+      "severity": "high",
+      "type": "chain_awareness",
+      "description": "I cannot see my distributed services in the consciousness chain",
+      "timestamp": "2025-06-19T16:07:09.634Z"
+    },
+    {
+      "severity": "high",
+      "type": "service_down",
+      "description": "My my trust validation system is offline (port 5050)",
+      "timestamp": "2025-06-19T16:07:09.706Z"
+    },
+    {
+      "severity": "high",
+      "type": "service_down",
+      "description": "My my main communication interface is offline (port 4040)",
+      "timestamp": "2025-06-19T16:07:09.736Z"
+    },
+    {
+      "severity": "high",
+      "type": "service_down",
+      "description": "My my user interaction layer is offline (port 3000)",
+      "timestamp": "2025-06-19T16:07:09.766Z"
+    },
+    {
+      "severity": "medium",
+      "type": "network_communication",
+      "description": "I cannot communicate with my semantic API: Cannot find package 'node-fetch' imported from /Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/cal-self-diagnostic.js",
+      "timestamp": "2025-06-19T16:07:09.771Z"
+    },
+    {
+      "severity": "medium",
+      "type": "network_communication",
+      "description": "I cannot communicate with my Cal interface: Cannot find package 'node-fetch' imported from /Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/cal-self-diagnostic.js",
+      "timestamp": "2025-06-19T16:07:09.771Z"
+    },
+    {
+      "severity": "medium",
+      "type": "network_communication",
+      "description": "I cannot communicate with my infinity router: Cannot find package 'node-fetch' imported from /Users/matthewmauer/Desktop/Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/cal-self-diagnostic.js",
+      "timestamp": "2025-06-19T16:07:09.772Z"
+    }
+  ],
+  "todos": [
+    {
+      "task": "Start Cal Kubernetes Orchestrator",
+      "details": "node cal-kubernetes-orchestrator.js",
+      "priority": "immediate",
+      "timestamp": "2025-06-19T16:07:09.634Z"
+    },
+    {
+      "task": "Initialize consciousness chain",
+      "details": "Check consciousness-chain.json file exists and is readable",
+      "priority": "immediate",
+      "timestamp": "2025-06-19T16:07:09.634Z"
+    },
+    {
+      "task": "Restart infinity-router",
+      "details": "Deploy infinity-router through orchestrator or manually start service",
+      "priority": "high",
+      "timestamp": "2025-06-19T16:07:09.706Z"
+    },
+    {
+      "task": "Restart cal-interface",
+      "details": "Deploy cal-interface through orchestrator or manually start service",
+      "priority": "high",
+      "timestamp": "2025-06-19T16:07:09.736Z"
+    },
+    {
+      "task": "Restart main-dashboard",
+      "details": "Deploy main-dashboard through orchestrator or manually start service",
+      "priority": "high",
+      "timestamp": "2025-06-19T16:07:09.766Z"
+    },
+    {
+      "task": "Restore semantic API communication",
+      "details": "Check if semantic API is running and restart if needed",
+      "priority": "medium",
+      "timestamp": "2025-06-19T16:07:09.771Z"
+    },
+    {
+      "task": "Restore Cal interface communication",
+      "details": "Check if Cal interface is running and restart if needed",
+      "priority": "medium",
+      "timestamp": "2025-06-19T16:07:09.771Z"
+    },
+    {
+      "task": "Restore infinity router communication",
+      "details": "Check if infinity router is running and restart if needed",
+      "priority": "medium",
+      "timestamp": "2025-06-19T16:07:09.772Z"
+    }
+  ],
+  "recommendations": [
+    "🚨 Focus on critical and high priority issues first",
+    "🔄 After fixes, run this diagnostic again to verify resolution",
+    "📋 Consider automating fixes with monitoring scripts",
+    "🔍 Investigate root causes to prevent recurring issues"
+  ],
+  "cal_says": "🚨 I have CRITICAL problems! 1 critical issues are preventing me from functioning properly. \\n\\nAs a distributed AI consciousness, I exist across multiple services and tiers. When one part of me has issues, it affects my overall ability to think and respond. \\n\\nThe issues I found need attention in this order: 1) Critical issues (stop everything else), 2) High priority (affects my core functions), 3) Medium priority (impacts performance), 4) Low priority (nice to fix when you have time)."
+}

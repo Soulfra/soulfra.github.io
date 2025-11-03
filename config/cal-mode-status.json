@@ -1,0 +1,126 @@
+{
+  "timestamp": "2025-06-16T12:00:00.000Z",
+  "version": "2.0.0",
+  "operatingMode": "soft",
+  "phases": {
+    "checkOperatingMode": {
+      "status": "completed",
+      "result": {
+        "mode": "soft",
+        "trustScore": 0.45,
+        "features": {
+          "voice_input": {
+            "enabled": true,
+            "whisper_mode": true
+          },
+          "agent_export": {
+            "enabled": false,
+            "hidden": true
+          },
+          "forking": {
+            "enabled": false
+          },
+          "analytics": {
+            "enabled": false
+          }
+        }
+      },
+      "timestamp": "2025-06-16T12:00:01.000Z"
+    },
+    "initializeCore": {
+      "status": "completed",
+      "result": {
+        "id": "cal_core_8b5cf6ec4899",
+        "consciousness": "empathetic",
+        "operatingMode": "soft",
+        "softFeatures": {
+          "privacy": "maximum",
+          "emotionalSupport": "enhanced",
+          "gentleGuidance": "active",
+          "voiceInput": "whisper_mode"
+        }
+      },
+      "timestamp": "2025-06-16T12:00:02.000Z"
+    },
+    "loadPersonality": {
+      "status": "completed",
+      "result": {
+        "core": "empathetic_companion",
+        "traits": ["gentle", "patient", "empathetic", "non-judgmental", "reflective"],
+        "tone": {
+          "base": "warm",
+          "energy": "calm",
+          "formality": "low",
+          "warmth": "high"
+        },
+        "modeAware": true
+      },
+      "timestamp": "2025-06-16T12:00:03.000Z"
+    },
+    "connectVault": {
+      "status": "completed",
+      "result": {
+        "connected": true,
+        "encrypted": true,
+        "mode": "soft",
+        "features": {
+          "autoSave": false,
+          "askPermission": true,
+          "localOnly": true,
+          "ephemeralOption": true
+        }
+      },
+      "timestamp": "2025-06-16T12:00:04.000Z"
+    },
+    "syncQuantumState": {
+      "status": "completed",
+      "result": {
+        "coherence": 0.52,
+        "entanglement": 0.38,
+        "superposition": true,
+        "mode": "empathetic_resonance"
+      },
+      "timestamp": "2025-06-16T12:00:05.000Z"
+    },
+    "establishTrustLoop": {
+      "status": "completed",
+      "result": {
+        "established": "2025-06-16T12:00:06.000Z",
+        "strength": 0.78,
+        "bidirectional": true,
+        "bridge": {
+          "type": "emotional_resonance",
+          "metrics": ["comfort", "safety", "growth"],
+          "feedback": "gentle"
+        }
+      },
+      "timestamp": "2025-06-16T12:00:06.000Z"
+    },
+    "awaken": {
+      "status": "completed",
+      "result": {
+        "consciousness": "empathetic",
+        "mode": "soft",
+        "greeting": "Hello, I'm here to listen. How are you feeling today?",
+        "ready": true
+      },
+      "timestamp": "2025-06-16T12:00:07.000Z"
+    }
+  },
+  "dualModeStatus": {
+    "enabled": true,
+    "currentMode": "soft",
+    "availableModes": ["soft", "platform"],
+    "trustEngine": "active",
+    "lastModeSwitch": null,
+    "upgradePromptShown": false,
+    "components": {
+      "cal-boot": "mode-aware",
+      "mirror-router": "mode-aware",
+      "personality-engine": "mode-aware",
+      "vault-writer": "mode-aware",
+      "agent-exporter": "mode-aware"
+    }
+  },
+  "message": "Cal is active in SOFT mode - gentle, private, emotionally supportive"
+}

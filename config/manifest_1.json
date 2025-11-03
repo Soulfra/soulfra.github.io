@@ -1,0 +1,38 @@
+{
+  "backup_id": "backup-2025-06-16T19-26-33-936Z",
+  "created": "2025-06-16T19:26:33.936Z",
+  "version": "1.0.0",
+  "files": [
+    {
+      "name": "full-backup.encrypted",
+      "size": 6202,
+      "modified": "2025-06-16T19:26:33.940Z",
+      "hash": "dabf596bec35f156ea3af1e721a0d6920556420bbcf28c580b7cb463f37ff69c"
+    },
+    {
+      "name": "full-backup.json",
+      "size": 3897,
+      "modified": "2025-06-16T19:26:33.940Z",
+      "hash": "546a2e307bd20c11eb8fc39f55b3f0ca0affabdcd764c8d70fe98f8356eb8a6a"
+    },
+    {
+      "name": "restore.sh",
+      "size": 1860,
+      "modified": "2025-06-16T19:26:33.941Z",
+      "hash": "23e55e820724842f0cdfdf8010d9a54aa1c94922ea3549701d4bcf9521b33b22"
+    }
+  ],
+  "summary": {
+    "total_files": 3,
+    "total_size": 11959,
+    "marketplaces": 0,
+    "agents": 0,
+    "transactions": 0,
+    "revenue": 0
+  },
+  "integrity": {
+    "checksum": "6dbecdf050af87d3d5bcee3809cb1c5ac6fdb3e259c04761e3559716395aea8f",
+    "encrypted": true,
+    "verified": true
+  }
+}

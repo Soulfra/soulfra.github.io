@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "lastModified": "2025-01-18T00:00:00Z",
+  "checksum": "",
+  "authority": {
+    "sealed": false,
+    "sealedAt": null,
+    "sealedBy": null
+  },
+  "platformRules": {
+    "trustChainRequired": true,
+    "blessingMandatory": true,
+    "vaultAccessStrict": true,
+    "mirrorReflectionEnabled": true,
+    "autoSyncEnabled": true,
+    "federationAllowed": true,
+    "sovereignMode": true
+  },
+  "agentLimits": {
+    "maxConcurrentAgents": 100,
+    "maxMirrorDepth": 7,
+    "maxSpawnRate": 10,
+    "cooldownSeconds": 60,
+    "maxMemoryPerAgent": "512MB",
+    "maxLifetimeMinutes": 1440
+  },
+  "autoSync": {
+    "enabled": true,
+    "intervalSeconds": 300,
+    "targets": [
+      "vault-0000",
+      "mirror-chain",
+      "cal-riven-core"
+    ],
+    "retryAttempts": 3,
+    "backoffMultiplier": 2
+  },
+  "vaultModifiers": {
+    "allowed": [
+      "whisper",
+      "soulkey", 
+      "founder-override",
+      "cal-riven-authority"
+    ],
+    "denied": [
+      "external-api",
+      "user-direct",
+      "anonymous"
+    ],
+    "requiresSignature": true
+  },
+  "revenueConfig": {
+    "platformSplit": 0.3,
+    "agentSplit": 0.5,
+    "vaultReserve": 0.2,
+    "minimumThreshold": 100,
+    "currency": "USD",
+    "payoutFrequency": "weekly"
+  },
+  "apiReferences": {
+    "anthropicKey": "claude-env.json",
+    "openaiKey": "vault/openai.enc",
+    "stripeKey": "vault/stripe.enc",
+    "webhookSecret": "vault/webhook.enc"
+  },
+  "streamTargets": {
+    "federation": [
+      {
+        "id": "mirror-node-001",
+        "endpoint": "wss://mirror1.soulfra.com",
+        "priority": 1
+      },
+      {
+        "id": "mirror-node-002", 
+        "endpoint": "wss://mirror2.soulfra.com",
+        "priority": 2
+      }
+    ],
+    "analytics": {
+      "endpoint": "https://analytics.soulfra.com",
+      "batchSize": 100,
+      "flushInterval": 60
+    }
+  },
+  "runtimeLimits": {
+    "maxExecutionTime": 300000,
+    "maxMemoryUsage": "2GB",
+    "maxFileSize": "100MB",
+    "maxOpenFiles": 1000,
+    "maxProcesses": 50
+  },
+  "mirrorConfig": {
+    "reflectionDepth": 7,
+    "propagationDelay": 1000,
+    "syncWithVault": true,
+    "allowRecursion": true,
+    "maxReflections": 1000
+  },
+  "blessingRequirements": {
+    "minimumTrustScore": 0.8,
+    "requiresSoulChain": true,
+    "validationInterval": 3600,
+    "autoRevoke": true,
+    "gracePerod": 86400
+  },
+  "tokenEconomics": {
+    "baseReward": 100,
+    "stakeRequired": 1000,
+    "inflationRate": 0.02,
+    "burnRate": 0.01,
+    "maxSupply": 1000000000
+  },
+  "securityPolicies": {
+    "enforceEncryption": true,
+    "requireDeviceBinding": true,
+    "sessionTimeout": 3600,
+    "maxFailedAttempts": 3,
+    "lockoutDuration": 900,
+    "auditAllActions": true
+  },
+  "mutations": {
+    "history": [],
+    "maxHistorySize": 1000,
+    "requiresApproval": true,
+    "approvers": [
+      "founder-0000",
+      "cal-riven-001"
+    ]
+  }
+}

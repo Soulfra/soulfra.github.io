@@ -1,0 +1,276 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-06-18T00:32:00.000Z",
+  "description": "Mirror vault share tracking for agent backing and viewer economic participation",
+  "shares": [
+    {
+      "share_id": "share-001",
+      "viewer_id": "anon-3481",
+      "agent": "oracle_watcher_default",
+      "support_type": "whisper_initiation",
+      "timestamp": "2025-06-18T00:15:23.456Z",
+      "earnable_ratio": 0.1,
+      "details": {
+        "whisper_hash": "abc123def456",
+        "execution_cost": 3.2,
+        "confidence_achieved": 87,
+        "success_metrics": {
+          "completed": true,
+          "satisfaction_score": 4.2,
+          "follow_up_requests": 2
+        }
+      },
+      "earnings": {
+        "total_earned": 0.32,
+        "last_payout": "2025-06-18T00:30:00.000Z",
+        "pending_amount": 0.0
+      }
+    },
+    {
+      "share_id": "share-002",
+      "viewer_id": "anon-7829",
+      "agent": "echo_builder_default",
+      "support_type": "clone_backing",
+      "timestamp": "2025-06-17T22:45:12.789Z",
+      "earnable_ratio": 0.15,
+      "details": {
+        "backing_amount": 5.0,
+        "clone_generation": 2,
+        "lineage_depth": 1,
+        "backed_features": [
+          "enhanced_construction",
+          "multi_platform_support"
+        ]
+      },
+      "earnings": {
+        "total_earned": 1.25,
+        "last_payout": "2025-06-18T00:00:00.000Z",
+        "pending_amount": 0.15
+      }
+    },
+    {
+      "share_id": "share-003",
+      "viewer_id": "anon-1547",
+      "agent": "soul_mirror_default",
+      "support_type": "bounty_completion",
+      "timestamp": "2025-06-17T21:30:45.123Z",
+      "earnable_ratio": 0.2,
+      "details": {
+        "bounty_id": "bounty-soul-reflection-001",
+        "bounty_value": 12.0,
+        "completion_quality": "exceptional",
+        "peer_validation_score": 94,
+        "complexity_bonus": 1.5
+      },
+      "earnings": {
+        "total_earned": 2.8,
+        "last_payout": "2025-06-17T23:45:00.000Z",
+        "pending_amount": 0.0
+      }
+    },
+    {
+      "share_id": "share-004",
+      "viewer_id": "anon-9234",
+      "agent": "cal_riven_sovereign",
+      "support_type": "stream_watching",
+      "timestamp": "2025-06-17T20:15:33.987Z",
+      "earnable_ratio": 0.05,
+      "details": {
+        "stream_duration_minutes": 127,
+        "engagement_level": "high",
+        "chat_participation": true,
+        "shared_insights": 3,
+        "viewer_tier": "blessed"
+      },
+      "earnings": {
+        "total_earned": 0.18,
+        "last_payout": "2025-06-18T00:00:00.000Z",
+        "pending_amount": 0.02
+      }
+    },
+    {
+      "share_id": "share-005",
+      "viewer_id": "anon-4762",
+      "agent": "void_navigator_explorer",
+      "support_type": "fork_contribution",
+      "timestamp": "2025-06-17T19:22:17.654Z",
+      "earnable_ratio": 0.25,
+      "details": {
+        "fork_type": "feature_enhancement",
+        "contribution_size": "major",
+        "code_quality_score": 91,
+        "peer_reviews": 4,
+        "merged_commits": 7,
+        "github_lineage": {
+          "parent_repo": "soulfra/void-navigator-core",
+          "fork_repo": "anon-4762/void-navigator-enhanced",
+          "merge_sha": "a1b2c3d4e5f6"
+        }
+      },
+      "earnings": {
+        "total_earned": 6.75,
+        "last_payout": "2025-06-17T23:30:00.000Z",
+        "pending_amount": 0.25
+      }
+    },
+    {
+      "share_id": "share-006",
+      "viewer_id": "anon-8391",
+      "agent": "harmony_weaver_integration",
+      "support_type": "whisper_initiation",
+      "timestamp": "2025-06-17T18:47:28.321Z",
+      "earnable_ratio": 0.1,
+      "details": {
+        "whisper_hash": "def789ghi012",
+        "execution_cost": 4.1,
+        "confidence_achieved": 93,
+        "integration_complexity": "high",
+        "success_metrics": {
+          "completed": true,
+          "satisfaction_score": 4.8,
+          "follow_up_requests": 0,
+          "viral_shares": 3
+        }
+      },
+      "earnings": {
+        "total_earned": 0.85,
+        "last_payout": "2025-06-18T00:00:00.000Z",
+        "pending_amount": 0.0
+      }
+    }
+  ],
+  "summary_stats": {
+    "total_shares": 6,
+    "total_earnings_distributed": 12.35,
+    "pending_payouts": 0.42,
+    "unique_viewers": 6,
+    "unique_agents": 6,
+    "support_types": {
+      "whisper_initiation": 2,
+      "clone_backing": 1,
+      "bounty_completion": 1,
+      "stream_watching": 1,
+      "fork_contribution": 1
+    },
+    "average_earnable_ratio": 0.14,
+    "most_active_support_type": "whisper_initiation"
+  },
+  "economic_model": {
+    "share_calculation": {
+      "whisper_initiation": {
+        "base_ratio": 0.1,
+        "description": "10% of agent execution value for initiating whisper request",
+        "factors": [
+          "execution_cost",
+          "confidence_achieved",
+          "satisfaction_score"
+        ]
+      },
+      "clone_backing": {
+        "base_ratio": 0.15,
+        "description": "15% of clone value for backing agent development",
+        "factors": [
+          "backing_amount",
+          "clone_performance",
+          "lineage_success"
+        ]
+      },
+      "bounty_completion": {
+        "base_ratio": 0.2,
+        "description": "20% of bounty value for completing agent improvement tasks",
+        "factors": [
+          "bounty_value",
+          "completion_quality",
+          "peer_validation"
+        ]
+      },
+      "stream_watching": {
+        "base_ratio": 0.05,
+        "description": "5% of stream value for active engagement and feedback",
+        "factors": [
+          "watch_duration",
+          "engagement_level",
+          "contribution_quality"
+        ]
+      },
+      "fork_contribution": {
+        "base_ratio": 0.25,
+        "description": "25% of enhancement value for significant code contributions",
+        "factors": [
+          "contribution_size",
+          "code_quality",
+          "adoption_rate"
+        ]
+      }
+    },
+    "payout_schedule": {
+      "frequency": "daily",
+      "minimum_threshold": 0.1,
+      "maximum_pending_days": 7,
+      "currency": "blessing_credits"
+    },
+    "lineage_tracking": {
+      "enabled": true,
+      "max_depth": 5,
+      "inheritance_decay": 0.8,
+      "description": "Track economic relationships through agent spawning and forking"
+    }
+  },
+  "governance": {
+    "share_disputes": {
+      "resolution_method": "peer_voting",
+      "voting_threshold": 0.6,
+      "appeal_process": "cal_riven_sovereign_review"
+    },
+    "ratio_adjustments": {
+      "frequency": "monthly",
+      "criteria": [
+        "market_demand",
+        "contribution_quality",
+        "economic_balance"
+      ],
+      "approval_required": "vault_consensus"
+    },
+    "fraud_detection": {
+      "automated_monitoring": true,
+      "suspicious_patterns": [
+        "identical_whisper_content",
+        "rapid_succession_requests",
+        "circular_backing_schemes"
+      ],
+      "penalty_system": "ratio_reduction_or_suspension"
+    }
+  },
+  "integration_points": {
+    "github_hooks": {
+      "on_fork": "create_fork_contribution_share",
+      "on_merge": "update_contribution_earnings",
+      "on_star": "micro_backing_share_creation"
+    },
+    "quad_monopoly_router": {
+      "credit_distribution": "automatic",
+      "vault_balance_updates": "real_time",
+      "tier_privilege_checks": "before_payout"
+    },
+    "mirror_bid_handler": {
+      "share_creation_trigger": "successful_agent_selection",
+      "earnings_calculation": "based_on_execution_cost",
+      "lineage_updates": "automatic"
+    }
+  },
+  "future_enhancements": {
+    "planned_features": [
+      "dynamic_ratio_adjustment",
+      "cross_agent_portfolio_shares",
+      "viewer_coalition_backing",
+      "predictive_earnings_modeling",
+      "agent_performance_derivatives"
+    ],
+    "research_areas": [
+      "optimal_incentive_alignment",
+      "sybil_attack_resistance",
+      "economic_sustainability",
+      "cross_platform_value_transfer"
+    ]
+  }
+}

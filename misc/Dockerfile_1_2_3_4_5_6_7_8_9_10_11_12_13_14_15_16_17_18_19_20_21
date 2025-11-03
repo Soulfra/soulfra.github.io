@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Copy site files
+COPY . /usr/share/nginx/html/
+
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Site metadata
+LABEL site.uuid="77f250c1-9db8-423a-beba-98d95f7e94a6"
+LABEL site.domain="77f250c1.devbattle.arena"
+LABEL site.type="social"

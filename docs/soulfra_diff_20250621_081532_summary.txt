@@ -1,0 +1,23 @@
+Soulfra Platform Diff Summary
+Generated: Sat Jun 21 08:15:33 CDT 2025
+Old Version: /Users/matthewmauer/Desktop/Soulfra-AgentZeroANALYZEbeforecli.zip
+New Version: /Users/matthewmauer/Desktop/Soulfra-AgentZeroAPI400Error.zip
+
+CHANGE SUMMARY:
+===============
+Files Added:           5
+Files Removed:         0
+Files Common:      13804
+
+ADDED FILES:
+============
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/CHAT_LOG_PROCESSOR.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/EXISTING_SYSTEM_LAUNCHER.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/SIMPLE_CHAT_PROCESSOR.py
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/TIER_STRUCTURE_MAP.md
+Soulfra-AgentZero/Founder-Bootstrap/Blank-Kernel/tier-0/tier-minus1/tier-minus2/tier-minus3/tier-minus4/tier-minus5/tier-minus6/tier-minus7/tier-minus8/tier-minus9/tier-minus10/sample_chat.txt
+
+REMOVED FILES:
+==============
+(none)
+

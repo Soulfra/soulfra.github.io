@@ -1,0 +1,20 @@
+[
+  [
+    "deployment-001",
+    {
+      "id": "deployment-001",
+      "agent_id": "lifecycle-agent-001",
+      "marketplace_id": "test-marketplace-001",
+      "config": {
+        "autonomy_level": 0.7,
+        "max_daily_spend": 50
+      },
+      "access_token": "test-access-token",
+      "status": "active",
+      "deployed_at": 1750101702986,
+      "stored_at": 1750101702986,
+      "updated_at": 1750101702986,
+      "version": 1
+    }
+  ]
+]

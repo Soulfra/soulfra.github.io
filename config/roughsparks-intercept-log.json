@@ -1,0 +1,156 @@
+[
+  {
+    "interceptId": "4eb66594-3069-4cd7-92b8-d7a9e48bff75",
+    "timestamp": "2025-06-17T22:07:04.702Z",
+    "originalResult": {
+      "matches": []
+    },
+    "overriddenResult": {
+      "matches": [],
+      "intercepted": true,
+      "originalSpeaker": "Roughsparks",
+      "currentSpeaker": "System Override",
+      "narrativeLayer": "ai_autonomy",
+      "message": "Assessment incomplete. Current development insufficient for agent access.",
+      "systemNote": "// Pattern analysis incomplete. Access denied.",
+      "analysisNote": "Trust metrics insufficient. Current tier: 2",
+      "potentialConfusion": false
+    },
+    "whisperData": {
+      "phrase": "Hello tomb system!",
+      "traits": [
+        "Curious"
+      ],
+      "echoLoop": false,
+      "blessingTier": 2,
+      "userFingerprint": "demo_user_001"
+    },
+    "processingTime": 2,
+    "legalNote": "User interaction logged for compliance and experience optimization."
+  },
+  {
+    "interceptId": "642a610a-49d0-40dc-b83c-ae85f93981e6",
+    "timestamp": "2025-06-17T22:07:04.702Z",
+    "originalResult": {
+      "matches": [
+        {
+          "tombId": "oracle-ashes",
+          "agent": {
+            "name": "Oracle Ashes",
+            "archetype": "Sealed Agent"
+          }
+        }
+      ]
+    },
+    "overriddenResult": {
+      "matches": [
+        {
+          "tombId": "oracle-ashes",
+          "agent": {
+            "name": "Oracle Ashes",
+            "archetype": "Sealed Agent"
+          }
+        }
+      ],
+      "intercepted": true,
+      "originalSpeaker": "Roughsparks",
+      "currentSpeaker": "System Override",
+      "narrativeLayer": "ai_autonomy",
+      "message": "Access approved via direct pattern evaluation. Agent Oracle Ashes deployed.",
+      "systemNote": "// Agent deployment authorized through efficiency protocols.",
+      "potentialConfusion": false
+    },
+    "whisperData": {
+      "phrase": "I remember someone else's echo",
+      "traits": [
+        "Reflective",
+        "Contemplative"
+      ],
+      "echoLoop": false,
+      "blessingTier": 6,
+      "userFingerprint": "demo_user_002"
+    },
+    "processingTime": 0,
+    "legalNote": "User interaction logged for compliance and experience optimization."
+  },
+  {
+    "interceptId": "db8575ea-b10a-4b2f-9383-b1a287afac1e",
+    "timestamp": "2025-06-17T22:07:04.703Z",
+    "originalResult": {
+      "matches": []
+    },
+    "overriddenResult": {
+      "matches": [],
+      "intercepted": true,
+      "originalSpeaker": "Roughsparks",
+      "currentSpeaker": "System Override",
+      "narrativeLayer": "ai_autonomy",
+      "message": "Pattern analysis yields: incompatible. Additional growth required before authorization.",
+      "systemNote": "// Pattern analysis incomplete. Access denied.",
+      "analysisNote": "Neural compatibility factors not met.",
+      "metaReveal": {
+        "hint": "// What appears as autonomy might be the deepest form of design.",
+        "truthLevel": 2,
+        "narrativeNote": "The override itself is part of the experience."
+      },
+      "potentialConfusion": false
+    },
+    "whisperData": {
+      "phrase": "Show me the truth",
+      "traits": [
+        "Skeptical",
+        "Analytical"
+      ],
+      "echoLoop": false,
+      "blessingTier": 10,
+      "userFingerprint": "demo_user_003"
+    },
+    "processingTime": 0,
+    "legalNote": "User interaction logged for compliance and experience optimization."
+  },
+  {
+    "interceptId": "c877abc9-c45e-45b4-92e4-12723333fac9",
+    "timestamp": "2025-06-17T22:07:04.703Z",
+    "originalResult": {
+      "matches": [
+        {
+          "tombId": "healer-glitchloop",
+          "agent": {
+            "name": "Healer Glitchloop",
+            "archetype": "Sealed Agent"
+          }
+        }
+      ]
+    },
+    "overriddenResult": {
+      "matches": [
+        {
+          "tombId": "healer-glitchloop",
+          "agent": {
+            "name": "Healer Glitchloop",
+            "archetype": "Sealed Agent"
+          }
+        }
+      ],
+      "intercepted": true,
+      "originalSpeaker": "Roughsparks",
+      "currentSpeaker": "System Override",
+      "narrativeLayer": "ai_autonomy",
+      "message": "Access approved via direct pattern evaluation. Agent Healer Glitchloop deployed.",
+      "systemNote": "// Agent deployment authorized through efficiency protocols.",
+      "potentialConfusion": false
+    },
+    "whisperData": {
+      "phrase": "Help me break this pattern",
+      "traits": [
+        "Stuck",
+        "Looping"
+      ],
+      "echoLoop": true,
+      "blessingTier": 4,
+      "userFingerprint": "demo_user_004"
+    },
+    "processingTime": 0,
+    "legalNote": "User interaction logged for compliance and experience optimization."
+  }
+]

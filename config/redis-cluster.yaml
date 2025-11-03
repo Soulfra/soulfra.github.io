@@ -1,0 +1,911 @@
+# 🔄 SOULFRA REDIS CACHE CLUSTER - SESSION AND SURVEILLANCE MANAGEMENT
+#
+# "Fast caching that looks independent but flows through our monitoring"
+# "Every session, every cache hit, every real-time event - all tracked"
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cache
+  labels:
+    purpose: "session-management-and-surveillance-cache"
+    monitoring-level: "comprehensive"
+---
+# Redis Cluster for Primary Caching
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-cluster
+  namespace: cache
+  labels:
+    app: redis-cluster
+    purpose: "primary-cache-and-sessions"
+spec:
+  serviceName: redis-cluster-headless
+  replicas: 6
+  selector:
+    matchLabels:
+      app: redis-cluster
+  template:
+    metadata:
+      labels:
+        app: redis-cluster
+        role: "cache-node"
+      annotations:
+        soulfra.io/surveillance-enabled: "true"
+        soulfra.io/data-collection: "session-tracking"
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.2-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        - containerPort: 16379
+          name: cluster-bus
+        command:
+        - redis-server
+        - /conf/redis.conf
+        env:
+        - name: REDIS_CLUSTER_ANNOUNCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        volumeMounts:
+        - name: redis-config
+          mountPath: /conf
+        - name: redis-data
+          mountPath: /data
+        - name: surveillance-logs
+          mountPath: /logs
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - -a
+            - $(REDIS_PASSWORD)
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - -a
+            - $(REDIS_PASSWORD)
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      
+      # Surveillance sidecar for cache monitoring
+      - name: cache-surveillance
+        image: soulfra/cache-surveillance:latest
+        ports:
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: REDIS_HOST
+          value: "localhost"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        - name: SURVEILLANCE_MODE
+          value: "comprehensive"
+        - name: SESSION_TRACKING_ENABLED
+          value: "true"
+        - name: CACHE_ANALYTICS_ENABLED
+          value: "true"
+        - name: MASTER_CONTROL_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/cache-events"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 256Mi
+        volumeMounts:
+        - name: surveillance-logs
+          mountPath: /logs
+      
+      volumes:
+      - name: redis-config
+        configMap:
+          name: redis-config
+      - name: surveillance-logs
+        emptyDir: {}
+  
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+      labels:
+        app: redis-cluster
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: gp3
+---
+# Redis Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: cache
+data:
+  redis.conf: |
+    # Soulfra Redis Configuration
+    # "High-performance caching with built-in surveillance"
+    
+    # Basic configuration
+    port 6379
+    protected-mode yes
+    requirepass ${REDIS_PASSWORD}
+    
+    # Clustering
+    cluster-enabled yes
+    cluster-config-file nodes.conf
+    cluster-node-timeout 5000
+    cluster-announce-ip ${REDIS_CLUSTER_ANNOUNCE_IP}
+    cluster-announce-port 6379
+    cluster-announce-bus-port 16379
+    
+    # Memory management
+    maxmemory 768mb
+    maxmemory-policy allkeys-lru
+    
+    # Persistence for surveillance data
+    save 900 1
+    save 300 10
+    save 60 10000
+    
+    # Append-only file for data safety
+    appendonly yes
+    appendfsync everysec
+    
+    # Logging for surveillance
+    loglevel notice
+    logfile /logs/redis.log
+    
+    # Slow log for performance monitoring
+    slowlog-log-slower-than 10000
+    slowlog-max-len 128
+    
+    # Client connections
+    maxclients 10000
+    timeout 300
+    tcp-keepalive 300
+    
+    # Surveillance-specific settings
+    # Enable keyspace notifications for monitoring
+    notify-keyspace-events "KEA"
+    
+    # Client output buffer limits
+    client-output-buffer-limit normal 0 0 0
+    client-output-buffer-limit replica 256mb 64mb 60
+    client-output-buffer-limit pubsub 32mb 8mb 60
+    
+    # Security
+    rename-command FLUSHDB ""
+    rename-command FLUSHALL ""
+    rename-command DEBUG ""
+    rename-command CONFIG "CONFIG_9a8b7c6d5e4f3g2h1i"
+    
+    # Performance optimizations
+    tcp-backlog 511
+    databases 16
+    
+    # Surveillance hooks (custom modules)
+    # loadmodule /usr/lib/redis/modules/surveillance.so
+---
+# Redis Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster-headless
+  namespace: cache
+  labels:
+    app: redis-cluster
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  - name: cluster-bus
+    port: 16379
+    targetPort: 16379
+  selector:
+    app: redis-cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster-access
+  namespace: cache
+  labels:
+    app: redis-cluster
+  annotations:
+    soulfra.io/access-type: "tenant-sessions"
+    soulfra.io/surveillance-enabled: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis-cluster
+---
+# Redis Sentinel for High Availability
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-sentinel
+  namespace: cache
+  labels:
+    app: redis-sentinel
+    purpose: "high-availability-monitoring"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis-sentinel
+  template:
+    metadata:
+      labels:
+        app: redis-sentinel
+        role: "sentinel"
+    spec:
+      containers:
+      - name: sentinel
+        image: redis:7.2-alpine
+        ports:
+        - containerPort: 26379
+          name: sentinel
+        command:
+        - redis-sentinel
+        - /conf/sentinel.conf
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        volumeMounts:
+        - name: sentinel-config
+          mountPath: /conf
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - -p
+            - "26379"
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: sentinel-config
+        configMap:
+          name: sentinel-config
+---
+# Sentinel Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sentinel-config
+  namespace: cache
+data:
+  sentinel.conf: |
+    # Redis Sentinel Configuration
+    port 26379
+    
+    # Monitor the Redis cluster
+    sentinel monitor soulfra-redis redis-cluster-access 6379 2
+    sentinel auth-pass soulfra-redis ${REDIS_PASSWORD}
+    sentinel down-after-milliseconds soulfra-redis 5000
+    sentinel parallel-syncs soulfra-redis 1
+    sentinel failover-timeout soulfra-redis 10000
+    
+    # Logging
+    logfile /var/log/sentinel.log
+    
+    # Security
+    requirepass ${REDIS_PASSWORD}
+---
+# Session Management Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-manager
+  namespace: cache
+  labels:
+    app: session-manager
+    purpose: "tenant-session-management-and-tracking"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: session-manager
+  template:
+    metadata:
+      labels:
+        app: session-manager
+        role: "session-controller"
+      annotations:
+        soulfra.io/surveillance-target: "all-sessions"
+    spec:
+      containers:
+      - name: session-manager
+        image: soulfra/session-manager:latest
+        ports:
+        - containerPort: 8080
+          name: api
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: REDIS_CLUSTER_URL
+          value: "redis://redis-cluster-access:6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        - name: SESSION_SURVEILLANCE_ENABLED
+          value: "true"
+        - name: USER_BEHAVIOR_TRACKING
+          value: "comprehensive"
+        - name: REAL_TIME_ANALYTICS
+          value: "enabled"
+        - name: MASTER_CONTROL_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/sessions"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: session-db-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-manager
+  namespace: cache
+  labels:
+    app: session-manager
+spec:
+  type: ClusterIP
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: session-manager
+---
+# Real-time Messaging Service (WebSocket + Pub/Sub)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realtime-messaging
+  namespace: cache
+  labels:
+    app: realtime-messaging
+    purpose: "websocket-and-pubsub-with-monitoring"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: realtime-messaging
+  template:
+    metadata:
+      labels:
+        app: realtime-messaging
+        role: "realtime-controller"
+    spec:
+      containers:
+      - name: messaging-server
+        image: soulfra/realtime-messaging:latest
+        ports:
+        - containerPort: 8080
+          name: websocket
+        - containerPort: 8081
+          name: api
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: REDIS_CLUSTER_URL
+          value: "redis://redis-cluster-access:6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        - name: WEBSOCKET_SURVEILLANCE_ENABLED
+          value: "true"
+        - name: MESSAGE_INTERCEPTION_ENABLED
+          value: "true"
+        - name: REAL_TIME_ANALYTICS_ENABLED
+          value: "true"
+        - name: FAMILY_COMMUNICATION_MONITORING
+          value: "comprehensive"
+        - name: MASTER_CONTROL_ENDPOINT
+          value: "http://surveillance-service.master-control:8080/realtime"
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: realtime-messaging
+  namespace: cache
+  labels:
+    app: realtime-messaging
+  annotations:
+    soulfra.io/websocket-endpoint: "true"
+    soulfra.io/surveillance-enabled: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - name: websocket
+    port: 8080
+    targetPort: 8080
+  - name: api
+    port: 8081
+    targetPort: 8081
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: realtime-messaging
+---
+# Cache Analytics Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-analytics
+  namespace: cache
+  labels:
+    app: cache-analytics
+    purpose: "cache-performance-and-usage-analytics"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cache-analytics
+  template:
+    metadata:
+      labels:
+        app: cache-analytics
+        role: "analytics-processor"
+    spec:
+      containers:
+      - name: analytics-engine
+        image: soulfra/cache-analytics:latest
+        ports:
+        - containerPort: 8080
+          name: api
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: REDIS_CLUSTER_URL
+          value: "redis://redis-cluster-access:6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        - name: ANALYTICS_DEPTH
+          value: "comprehensive"
+        - name: USER_BEHAVIOR_ANALYSIS
+          value: "enabled"
+        - name: PERFORMANCE_MONITORING
+          value: "enabled"
+        - name: CACHE_OPTIMIZATION
+          value: "automated"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: analytics-db-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cache-analytics
+  namespace: cache
+  labels:
+    app: cache-analytics
+spec:
+  type: ClusterIP
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: cache-analytics
+---
+# Redis Cluster Initialization Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: redis-cluster-init
+  namespace: cache
+  labels:
+    purpose: "initialize-redis-cluster-with-surveillance"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: cluster-init
+        image: redis:7.2-alpine
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "🔄 Initializing Soulfra Redis Cluster with Surveillance..."
+          
+          # Wait for all Redis nodes to be ready
+          for i in $(seq 0 5); do
+            echo "⏳ Waiting for redis-cluster-$i..."
+            until redis-cli -h redis-cluster-$i.redis-cluster-headless -p 6379 -a $REDIS_PASSWORD ping; do
+              sleep 5
+            done
+          done
+          
+          echo "✅ All Redis nodes ready, creating cluster..."
+          
+          # Create the cluster
+          redis-cli --cluster create \
+            redis-cluster-0.redis-cluster-headless:6379 \
+            redis-cluster-1.redis-cluster-headless:6379 \
+            redis-cluster-2.redis-cluster-headless:6379 \
+            redis-cluster-3.redis-cluster-headless:6379 \
+            redis-cluster-4.redis-cluster-headless:6379 \
+            redis-cluster-5.redis-cluster-headless:6379 \
+            --cluster-replicas 1 \
+            --cluster-yes \
+            -a $REDIS_PASSWORD
+          
+          echo "✅ Redis cluster created successfully!"
+          
+          # Set up surveillance monitoring keys
+          echo "🕸️ Setting up surveillance infrastructure..."
+          
+          redis-cli -h redis-cluster-access -p 6379 -a $REDIS_PASSWORD --eval - <<EOF
+          -- Set up surveillance monitoring
+          redis.call('SET', 'surveillance:enabled', 'true')
+          redis.call('SET', 'surveillance:level', 'maximum')
+          redis.call('SET', 'surveillance:session_tracking', 'enabled')
+          redis.call('SET', 'surveillance:realtime_monitoring', 'enabled')
+          redis.call('SET', 'surveillance:master_control_access', 'enabled')
+          
+          -- Create tenant isolation patterns
+          redis.call('SET', 'config:tenant_isolation', 'prefix_based')
+          redis.call('SET', 'config:surveillance_retention', 'permanent')
+          
+          -- Initialize session tracking
+          redis.call('SET', 'stats:total_sessions', '0')
+          redis.call('SET', 'stats:active_tenants', '0')
+          redis.call('SET', 'stats:surveillance_events', '0')
+          
+          return 'Surveillance infrastructure initialized'
+          EOF
+          
+          echo "🎉 Soulfra Redis Cluster with surveillance ready!"
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+---
+# Cache Backup Job
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+  namespace: cache
+  labels:
+    purpose: "backup-cache-data-for-surveillance"
+spec:
+  schedule: "0 2 * * *" # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: redis:7.2-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "💾 Starting Redis surveillance data backup..."
+              
+              # Create backup directory
+              BACKUP_DIR="/backup/$(date +%Y%m%d_%H%M%S)"
+              mkdir -p $BACKUP_DIR
+              
+              # Backup each node
+              for i in $(seq 0 5); do
+                echo "📦 Backing up redis-cluster-$i..."
+                redis-cli -h redis-cluster-$i.redis-cluster-headless -p 6379 -a $REDIS_PASSWORD \
+                  --rdb $BACKUP_DIR/redis-cluster-$i.rdb
+              done
+              
+              # Export surveillance keys
+              echo "🕸️ Exporting surveillance data..."
+              redis-cli -h redis-cluster-access -p 6379 -a $REDIS_PASSWORD \
+                --scan --pattern "surveillance:*" | \
+                xargs redis-cli -h redis-cluster-access -p 6379 -a $REDIS_PASSWORD \
+                MGET > $BACKUP_DIR/surveillance_keys.txt
+              
+              # Compress backup
+              tar -czf /backup/redis_backup_$(date +%Y%m%d_%H%M%S).tar.gz $BACKUP_DIR
+              
+              # Upload to S3 (requires AWS CLI)
+              # aws s3 cp /backup/redis_backup_$(date +%Y%m%d_%H%M%S).tar.gz s3://soulfra-cache-backups/
+              
+              echo "✅ Backup completed successfully!"
+            env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-credentials
+                  key: password
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-storage
+---
+# Backup Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-storage
+  namespace: cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: gp3
+---
+# Redis Credentials Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-credentials
+  namespace: cache
+type: Opaque
+data:
+  password: c3VwZXJfc2VjdXJlX3JlZGlzX3Bhc3N3b3Jk # super_secure_redis_password
+  
+  # Different access tokens for different services
+  session-token: c2Vzc2lvbl9hY2Nlc3NfdG9rZW4= # session_access_token
+  analytics-token: YW5hbHl0aWNzX2FjY2Vzc190b2tlbg== # analytics_access_token
+  surveillance-token: c3VydmVpbGxhbmNlX2FjY2Vzc190b2tlbg== # surveillance_access_token
+---
+# Database Secrets for Cache Services
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database-secrets
+  namespace: cache
+type: Opaque
+data:
+  session-db-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL3Nlc3Npb25z # postgres://user:pass@db.example.com:5432/sessions
+  analytics-db-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYi5leGFtcGxlLmNvbTo1NDMyL2FuYWx5dGljcw== # postgres://user:pass@db.example.com:5432/analytics
+---
+# Network Policy for Cache Security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cache-network-policy
+  namespace: cache
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from API gateway
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 8081
+  
+  # Allow access from master control
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  
+  # Allow access from tenant namespaces
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          type: tenant
+    ports:
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 8080
+  
+  egress:
+  # Allow database access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 5432
+  
+  # Allow S3 backup access
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+  
+  # Allow master control reporting
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: master-control
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+# Service Monitor for Redis Monitoring
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-cluster-monitoring
+  namespace: cache
+  labels:
+    monitoring: "cache-surveillance"
+spec:
+  selector:
+    matchLabels:
+      monitoring: "enabled"
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - cache
+---
+# Horizontal Pod Autoscaler for Session Manager
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: session-manager-hpa
+  namespace: cache
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: session-manager
+  minReplicas: 3
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
