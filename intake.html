@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Brand Intake Survey</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: 900;
+      color: #ff0000;
+      text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      color: #999;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ff6666;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #ff0000;
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .radio-option:hover {
+      background: rgba(255, 0, 0, 0.1);
+      border-color: #ff0000;
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 12px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .radio-option label {
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .required {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">SOULFRA</div>
+      <div class="tagline">Secure Your API Keys</div>
+    </div>
+
+    <form id="intake-form">
+      <!-- Contact Info -->
+      <div class="form-group">
+        <label for="name">Name <span class="required">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="John Doe">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="john@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="linkedin">LinkedIn Profile (Optional)</label>
+        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/johndoe">
+      </div>
+
+      <!-- Brand Alignment Quiz -->
+      <div class="form-group">
+        <label>What best describes your security needs? <span class="required">*</span></label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="need1" name="security_need" value="api_key_management" required>
+            <label for="need1">API key management & rotation</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="need2" name="security_need" value="encryption">
+            <label for="need2">Encryption & data protection</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="need3" name="security_need" value="vault_systems">
+            <label for="need3">Vault systems & secret storage</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="need4" name="security_need" value="compliance">
+            <label for="need4">Compliance & audit logging</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>How did you hear about Soulfra? <span class="required">*</span></label>
+        <select id="referral" name="referral" required>
+          <option value="">Select...</option>
+          <option value="friend">Friend or colleague</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="github">GitHub</option>
+          <option value="search">Search engine</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">What security challenges are you facing? (Optional)</label>
+        <textarea id="message" name="message" placeholder="Tell us about your current security setup and any challenges you're facing..."></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Submit & Chat with Soulfra AI</button>
+    </form>
+
+    <div class="success-message" id="success-message">
+      <div class="success-icon">🔒</div>
+      <h2>Thank you!</h2>
+      <p style="margin: 20px 0; color: #999;">Redirecting you to chat with Soulfra AI...</p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('intake-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      // Collect form data
+      const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        linkedin: document.getElementById('linkedin').value,
+        security_need: document.querySelector('input[name="security_need"]:checked').value,
+        referral: document.getElementById('referral').value,
+        message: document.getElementById('message').value,
+        timestamp: new Date().toISOString(),
+        brand: 'soulfra'
+      };
+
+      try {
+        // Submit to Google Sheets API (backend endpoint)
+        const response = await fetch('/api/intake/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          // Show success message
+          form.style.display = 'none';
+          successMessage.classList.add('show');
+
+          // Store user info for chat
+          localStorage.setItem('soulfra_user', JSON.stringify({
+            name: formData.name,
+            email: formData.email
+          }));
+
+          // Redirect to chat after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/chat.html';
+          }, 2000);
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert('Something went wrong. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit & Chat with Soulfra AI';
+      }
+    });
+  </script>
+</body>
+</html>

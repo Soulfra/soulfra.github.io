@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soulfra - Universal Identity Without KYC</title>
-  <meta name="description" content="One identity for all 12 brands. No KYC, no passwords. Ed25519 cryptographic keys + zero-knowledge proofs.">
-
-  <!-- QRCode.js library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
+  <title>Soulfra - Secure Your API Keys</title>
+  <meta name="description" content="Security-first AI platform for API key management, encryption, and vault systems.">
   <style>
     * {
       margin: 0;
@@ -17,10 +13,9 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      background: linear-gradient(135deg, #3498db 0%, #2ecc71 50%, #e74c3c 100%);
-      color: #fff;
-      line-height: 1.6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
+      color: #ffffff;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -28,922 +23,213 @@
       padding: 20px;
     }
 
-    .identity-container {
-      max-width: 900px;
+    .container {
+      max-width: 1200px;
       width: 100%;
-      position: relative;
     }
 
-    .identity-card {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 16px;
-      padding: 40px;
-      backdrop-filter: blur(10px);
+    .hero {
       text-align: center;
+      margin-bottom: 60px;
     }
 
     .logo {
-      font-size: 4rem;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 72px;
+      font-weight: 900;
+      color: #ff0000;
+      text-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+      margin-bottom: 20px;
+      letter-spacing: 4px;
     }
 
     .tagline {
-      font-size: 1.5rem;
-      opacity: 0.95;
-      margin-bottom: 20px;
+      font-size: 24px;
+      color: #ff6666;
+      margin-bottom: 16px;
       font-weight: 300;
     }
 
-    .principle {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+    .description {
+      font-size: 18px;
+      color: #999;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .cta-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      padding: 18px 40px;
+      font-size: 18px;
       font-weight: 600;
-      margin: 5px;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
     }
 
-    .brand-grid {
+    .cta-primary {
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #ffffff;
+      border: 2px solid #ff0000;
+    }
+
+    .cta-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #ff0000;
+      border: 2px solid #ff0000;
+    }
+
+    .cta-secondary:hover {
+      background: rgba(255, 0, 0, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 0, 0, 0.2);
+    }
+
+    .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin: 30px 0;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 80px;
     }
 
-    .brand-card {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      padding: 20px;
-      transition: transform 0.2s, background 0.2s;
-      cursor: pointer;
-    }
-
-    .brand-card:hover {
-      transform: translateY(-5px);
-      background: rgba(255,255,255,0.15);
-    }
-
-    .brand-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
-    }
-
-    .brand-card p {
-      font-size: 0.85rem;
-      opacity: 0.8;
-    }
-
-    .brand-card.foundation {
-      border-color: #3498db;
-    }
-
-    .brand-card.business {
-      border-color: #2ecc71;
-    }
-
-    .brand-card.creative {
-      border-color: #e74c3c;
-    }
-
-    .brand-card.additional {
-      border-color: #f39c12;
-    }
-
-    .login-section {
-      background: rgba(0,0,0,0.2);
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 0, 0, 0.2);
       border-radius: 12px;
       padding: 30px;
-      margin: 30px 0;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
 
-    .login-section h2 {
-      font-size: 1.8rem;
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: #ff0000;
+      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 48px;
       margin-bottom: 20px;
     }
 
-    .qr-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px auto;
-      max-width: 300px;
-    }
-
-    #qrCode {
-      width: 100%;
-      height: auto;
-    }
-
-    .qr-counter {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      opacity: 0.7;
-      color: #3498db;
+    .feature-title {
+      font-size: 20px;
       font-weight: 600;
+      color: #ff6666;
+      margin-bottom: 12px;
     }
 
-    .status {
-      padding: 15px;
-      border-radius: 8px;
-      margin: 20px 0;
-      font-weight: 600;
-    }
-
-    .status.waiting {
-      background: rgba(241,196,15,0.2);
-      border: 1px solid rgba(241,196,15,0.4);
-      color: #f1c40f;
-    }
-
-    .status.success {
-      background: rgba(46,204,113,0.2);
-      border: 1px solid rgba(46,204,113,0.4);
-      color: #2ecc71;
-    }
-
-    .status.error {
-      background: rgba(231,76,60,0.2);
-      border: 1px solid rgba(231,76,60,0.4);
-      color: #e74c3c;
-    }
-
-    .spinner {
-      border: 3px solid rgba(255,255,255,0.3);
-      border-top: 3px solid #fff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 15px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .timer {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-top: 10px;
-    }
-
-    .instructions {
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
-      text-align: left;
-    }
-
-    .instructions h3 {
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-    }
-
-    .instructions ol {
-      margin-left: 20px;
-      margin-top: 10px;
-    }
-
-    .instructions li {
-      margin: 8px 0;
-    }
-
-    .feature-list {
-      background: rgba(46,204,113,0.1);
-      border: 1px solid rgba(46,204,113,0.3);
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
-      text-align: left;
-    }
-
-    .feature-list h3 {
-      color: #2ecc71;
-      margin-bottom: 10px;
-    }
-
-    .feature-list ul {
-      margin-left: 20px;
-    }
-
-    .feature-list li {
-      margin: 8px 0;
-    }
-
-    button {
-      padding: 15px 30px;
-      background: #fff;
-      color: #3498db;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: transform 0.2s;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    a {
-      color: #fff;
-      text-decoration: underline;
+    .feature-description {
+      color: #999;
+      line-height: 1.6;
+      font-size: 15px;
     }
 
     .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      opacity: 0.8;
-      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255, 0, 0, 0.2);
+      color: #666;
+      font-size: 14px;
     }
 
-    .key-display {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      padding: 15px;
-      margin: 15px 0;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-      word-break: break-all;
-    }
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 48px;
+      }
 
-    .key-display strong {
-      color: #2ecc71;
-    }
+      .tagline {
+        font-size: 18px;
+      }
 
-    .tab-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+      .description {
+        font-size: 16px;
+      }
 
-    .tab {
-      padding: 12px 24px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px 8px 0 0;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+      .cta-container {
+        flex-direction: column;
+        align-items: center;
+      }
 
-    .tab.active {
-      background: rgba(255,255,255,0.25);
-      border-bottom: 2px solid #2ecc71;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
+      .cta-button {
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="identity-container">
-    <div class="identity-card">
-      <div class="logo">🔐</div>
-      <h1>Soulfra</h1>
-      <p class="tagline">Universal Identity Without KYC</p>
+  <div class="container">
+    <div class="hero">
+      <h1 class="logo">SOULFRA</h1>
+      <p class="tagline">Secure Your API Keys</p>
+      <p class="description">
+        Security-first AI platform for managing API keys, encryption, and vault systems.
+        Built for developers who take security seriously.
+      </p>
 
-      <div style="margin: 20px 0;">
-        <span class="principle">🔑 No Passwords</span>
-        <span class="principle">🚫 No KYC</span>
-        <span class="principle">🔒 Ed25519 Keys</span>
-        <span class="principle">🛡️ Zero-Knowledge</span>
+      <div class="cta-container">
+        <a href="/intake.html" class="cta-button cta-primary">
+          Take Brand Survey
+        </a>
+        <a href="/chat.html" class="cta-button cta-secondary">
+          Chat with Soulfra AI
+        </a>
       </div>
+    </div>
 
-      <!-- Tab Navigation -->
-      <div class="tab-container">
-        <div class="tab active" onclick="switchTab('login', event)">🔐 Login</div>
-        <div class="tab" onclick="switchTab('brands', event)">🌐 12 Brands</div>
-        <div class="tab" onclick="switchTab('keys', event)">🔑 Your Keys</div>
-        <div class="tab" onclick="switchTab('hire', event)">💼 Hire Me</div>
-      </div>
-
-      <!-- Login Tab -->
-      <div id="loginTab" class="tab-content active">
-        <div class="login-section">
-          <h2>🚀 Universal Login</h2>
-          <p>One identity works across all 12 brands</p>
-
-          <!-- Loading State -->
-          <div id="loadingState">
-            <div class="spinner"></div>
-            <p>Creating QR code...</p>
-          </div>
-
-          <!-- QR Code State -->
-          <div id="qrState" class="hidden">
-            <div class="qr-container">
-              <canvas id="qrCode"></canvas>
-              <div class="qr-counter" id="qrCounter">QR #1</div>
-            </div>
-
-            <div class="status waiting">
-              <div class="spinner"></div>
-              Waiting for scan...
-              <div class="timer">Auto-refresh in <span id="refreshTimer">60</span>s</div>
-            </div>
-
-            <div class="instructions">
-              <h3>📱 How to login:</h3>
-              <ol>
-                <li>Open camera on your phone</li>
-                <li>Point at the QR code above</li>
-                <li>Tap the notification</li>
-                <li>Your Ed25519 keys will be generated</li>
-                <li>You'll be logged in across all 12 brands!</li>
-              </ol>
-            </div>
-
-            <button onclick="generateQRCode()">🔄 Generate New Code</button>
-          </div>
-
-          <!-- Success State -->
-          <div id="successState" class="hidden">
-            <div class="status success">
-              ✓ Login Successful!
-            </div>
-            <p>Welcome, <span id="userName"></span>!</p>
-            <p>Your universal identity is now active across all 12 brands.</p>
-            <button onclick="showKeys()">🔑 View Your Keys</button>
-          </div>
-
-          <!-- Error State -->
-          <div id="errorState" class="hidden">
-            <div class="status error" id="errorMessage"></div>
-            <button onclick="location.reload()">Try Again</button>
-          </div>
-
-          <div class="feature-list">
-            <h3>✨ What makes Soulfra different:</h3>
-            <ul>
-              <li><strong>No KYC:</strong> No government ID, no selfies, no invasive verification</li>
-              <li><strong>No Passwords:</strong> Ed25519 cryptographic key pairs instead</li>
-              <li><strong>Universal SSO:</strong> One login works across all 12 brands</li>
-              <li><strong>Zero-Knowledge:</strong> We don't store your private keys</li>
-              <li><strong>Local-First:</strong> Keys stored in your browser, not our servers</li>
-              <li><strong>Right of Exit:</strong> Export your identity anytime</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Brands Tab -->
-      <div id="brandsTab" class="tab-content">
-        <h2 style="margin-bottom: 20px;">🌐 The 12-Brand Empire</h2>
-        <p style="margin-bottom: 20px; opacity: 0.9;">One Soulfra identity logs you into all of these:</p>
-
-        <div class="brand-grid">
-          <div class="brand-card foundation" onclick="navigateToBrand('soulfra.com')">
-            <h3>🔐 Soulfra</h3>
-            <p>Universal Identity</p>
-          </div>
-
-          <div class="brand-card foundation" onclick="navigateToBrand('calriven.com')">
-            <h3>🤖 Calriven</h3>
-            <p>AI Agent OS</p>
-          </div>
-
-          <div class="brand-card foundation" onclick="navigateToBrand('deathtodata.com')">
-            <h3>🔍 DeathToData</h3>
-            <p>Search Philosophy</p>
-          </div>
-
-          <div class="brand-card business" onclick="navigateToBrand('finishthisidea.com')">
-            <h3>💡 FinishThisIdea</h3>
-            <p>Project Completion</p>
-          </div>
-
-          <div class="brand-card business" onclick="navigateToBrand('finishthisrepo.com')">
-            <h3>💻 FinishThisRepo</h3>
-            <p>Code Completion</p>
-          </div>
-
-          <div class="brand-card business" onclick="navigateToBrand('ipomyagent.com')">
-            <h3>📈 IPOMyAgent</h3>
-            <p>Agent Marketplace</p>
-          </div>
-
-          <div class="brand-card creative" onclick="navigateToBrand('hollowtown.com')">
-            <h3>🏘️ HollowTown</h3>
-            <p>Virtual World</p>
-          </div>
-
-          <div class="brand-card creative" onclick="navigateToBrand('coldstartkit.com')">
-            <h3>🚀 ColdStartKit</h3>
-            <p>Launch Templates</p>
-          </div>
-
-          <div class="brand-card creative" onclick="navigateToBrand('brandaidkit.com')">
-            <h3>🎨 BrandAidKit</h3>
-            <p>Brand Creation</p>
-          </div>
-
-          <div class="brand-card additional" onclick="navigateToBrand('dealordelete.com')">
-            <h3>⚖️ DealOrDelete</h3>
-            <p>Decision Making</p>
-          </div>
-
-          <div class="brand-card additional" onclick="navigateToBrand('saveorsink.com')">
-            <h3>🆘 SaveOrSink</h3>
-            <p>System Rescue</p>
-          </div>
-
-          <div class="brand-card additional" onclick="navigateToBrand('cringeproof.com')">
-            <h3>😬 CringeProof</h3>
-            <p>Content Optimizer</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Keys Tab -->
-      <div id="keysTab" class="tab-content">
-        <h2 style="margin-bottom: 20px;">🔑 Your Ed25519 Keys</h2>
-
-        <div id="noKeysMessage">
-          <p style="margin-bottom: 20px; opacity: 0.9;">
-            You haven't generated your keys yet. Login first to create your universal identity.
-          </p>
-          <button onclick="switchTab('login')">🔐 Go to Login</button>
-        </div>
-
-        <div id="keysDisplay" class="hidden">
-          <p style="margin-bottom: 20px; opacity: 0.9;">
-            These cryptographic keys are your universal identity. Store them safely!
-          </p>
-
-          <div class="key-display">
-            <strong>Public Key:</strong><br>
-            <span id="publicKeyDisplay"></span>
-          </div>
-
-          <div class="key-display">
-            <strong>Private Key:</strong><br>
-            <span id="privateKeyDisplay">Hidden for security</span>
-          </div>
-
-          <div style="margin-top: 20px;">
-            <button onclick="togglePrivateKey()">👁️ Show/Hide Private Key</button>
-            <button onclick="exportKeys()">💾 Export Keys</button>
-            <button onclick="copyPublicKey()">📋 Copy Public Key</button>
-          </div>
-
-          <div class="feature-list">
-            <h3>🛡️ Security Notes:</h3>
-            <ul>
-              <li><strong>Never share your private key</strong> - It's like your master password</li>
-              <li><strong>Store backups safely</strong> - If you lose it, you lose access</li>
-              <li><strong>Public key is safe to share</strong> - Others use it to verify you</li>
-              <li><strong>Zero-knowledge proofs</strong> - Prove identity without revealing keys</li>
-              <li><strong>Local storage only</strong> - We never see or store your private key</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hire Me Tab -->
-      <div id="hireTab" class="tab-content">
-        <h2 style="margin-bottom: 20px;">💼 This IS My Resume</h2>
-        <p style="font-size: 1.3rem; margin-bottom: 30px; opacity: 0.95;">
-          I don't interview. I build. Here are 12 products proving 12 different skills.
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🔑</div>
+        <h3 class="feature-title">API Key Management</h3>
+        <p class="feature-description">
+          Automated key rotation, secure storage, and access control for all your API credentials.
         </p>
-
-        <div style="background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
-          <h3 style="color: #2ecc71; margin-bottom: 15px;">The Pitch:</h3>
-          <p style="font-size: 1.1rem; margin-bottom: 15px;">
-            Instead of "trust me, I can code," I built a 12-brand empire with autonomous AI systems.
-          </p>
-          <p style="opacity: 0.9;">
-            <strong>Skills Map:</strong> Security → Identity → AI Routing → Search → Full-Stack → DevOps → Fintech → Game Dev → DX → Design Systems → SRE → NLP
-          </p>
-        </div>
-
-        <h3 style="margin-bottom: 20px;">🎯 Which Skill Do You Need? I've Already Proved It:</h3>
-
-        <div class="brand-grid" style="margin-bottom: 30px;">
-          <div class="brand-card foundation">
-            <h3>🔐 Soulfra</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Security Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Ed25519 crypto • SSO • Zero-knowledge proofs</p>
-            <a href="https://soulfra.github.io" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.2); border-radius: 6px; text-decoration: none; color: white;">Live Demo →</a>
-          </div>
-
-          <div class="brand-card foundation">
-            <h3>🤖 Calriven</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> AI/ML Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Multi-LLM routing • ELO systems • Agent marketplace</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card foundation">
-            <h3>🔍 DeathToData</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Search Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Search engine • Content indexer • Knowledge graph</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card business">
-            <h3>💡 FinishThisIdea</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Full-Stack + Product</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Project tracking • Payments • AI assistant</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card business">
-            <h3>💻 FinishThisRepo</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> DevOps/CI Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">GitHub integration • Code review • Bounties</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card business">
-            <h3>📈 IPOMyAgent</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Fintech Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Marketplace • Revenue sharing • IPO simulation</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card creative">
-            <h3>🏘️ HollowTown</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Game/Graphics Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Multiplayer • Game engine • Virtual economy</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card creative">
-            <h3>🚀 ColdStartKit</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Developer Experience</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Templates • Deployment wizard • DX tooling</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card creative">
-            <h3>🎨 BrandAidKit</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Design Systems</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Logo gen • Branding • Sprite manager</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card additional">
-            <h3>⚖️ DealOrDelete</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> Collaboration Tools</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Decision matrix • AI advisor • Voting</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card additional">
-            <h3>🆘 SaveOrSink</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> SRE/Reliability</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">System monitoring • Auto-recovery • Disaster recovery</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-
-          <div class="brand-card additional">
-            <h3>😬 CringeProof</h3>
-            <p style="margin-bottom: 10px;"><strong>Proves:</strong> ML/NLP Engineering</p>
-            <p style="font-size: 0.85rem; opacity: 0.8;">Content analysis • Cringe detection • NLP</p>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #f39c12;">Coming Soon</p>
-          </div>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 25px; margin-top: 30px;">
-          <h3 style="margin-bottom: 15px;">🤖 The Meta-Skill:</h3>
-          <ul style="margin-left: 20px; font-size: 1.05rem;">
-            <li style="margin: 10px 0;"><strong>Built with Cal:</strong> Autonomous AI build system (Ollama for boilerplate, Claude for security)</li>
-            <li style="margin: 10px 0;"><strong>IETF Standards:</strong> Uses JSON (RFC 8259), not paid specs</li>
-            <li style="margin: 10px 0;"><strong>Cost-Optimized:</strong> Free-tier Ollama for 90% of tasks</li>
-            <li style="margin: 10px 0;"><strong>Transparent:</strong> All code public on GitHub</li>
-            <li style="margin: 10px 0;"><strong>Scalable:</strong> Run `npm run cal:build-domains` to see autonomous build</li>
-          </ul>
-        </div>
-
-        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2);">
-          <h3 style="margin-bottom: 20px;">📬 Want to Talk?</h3>
-          <p style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
-            Email: <a href="mailto:matt@soulfra.com" style="color: #2ecc71; font-weight: 600;">matt@soulfra.com</a>
-          </p>
-          <p style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
-            GitHub: <a href="https://github.com/Soulfra" target="_blank" style="color: #2ecc71; font-weight: 600;">@Soulfra</a>
-          </p>
-          <p style="font-size: 0.95rem; opacity: 0.8; margin-top: 30px;">
-            "I didn't just apply. I built 12 products to prove I can do the job."
-          </p>
-        </div>
       </div>
 
-      <div class="footer">
-        <p>Built with ❤️ by the Soulfra community</p>
-        <p style="margin-top: 10px;">
-          <a href="https://github.com/Soulfra/soulfra.github.io" target="_blank">GitHub</a> |
-          <a href="https://discord.gg/soulfra" target="_blank">Discord</a> |
-          <a href="https://twitter.com/soulfra" target="_blank">Twitter</a>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3 class="feature-title">Encryption & Vaults</h3>
+        <p class="feature-description">
+          Military-grade encryption with keyring integration for macOS, Windows, and Linux.
         </p>
-        <p style="margin-top: 10px; font-size: 0.8rem;">
-          AGPLv3 License • No KYC • No Data Collection • No Enshittification
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-title">Audit Logging</h3>
+        <p class="feature-description">
+          Complete audit trails for compliance with SOC 2, GDPR, and HIPAA requirements.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-title">AI-Powered Security</h3>
+        <p class="feature-description">
+          Chat with Soulfra AI to get instant security recommendations and best practices.
         </p>
       </div>
     </div>
+
+    <div class="footer">
+      <p>&copy; 2025 Soulfra. Security-first AI for developers.</p>
+    </div>
   </div>
-
-  <!-- Soulfra Universal Auth System -->
-  <script src="soulfra-universal-auth.js"></script>
-
-  <script>
-    let sessionId = null;
-    let pollInterval = null;
-    let refreshInterval = null;
-    let refreshCountdown = null;
-    let qrCounter = 1;
-    let currentTab = 'login';
-    let soulfraAuth = null;
-
-    // Tab switching
-    function switchTab(tabName, event) {
-      // Hide all tabs
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-      // Show selected tab
-      document.getElementById(tabName + 'Tab').classList.add('active');
-      if (event) event.target.classList.add('active');
-
-      currentTab = tabName;
-
-      // Load keys if on keys tab
-      if (tabName === 'keys') {
-        loadKeys();
-      }
-    }
-
-    // Navigate to brand
-    function navigateToBrand(domain) {
-      // Check if user is logged in
-      const session = localStorage.getItem('soulfra_identity');
-
-      if (!session) {
-        alert('Please login first to access ' + domain);
-        switchTab('login');
-        return;
-      }
-
-      // In production, this would redirect with SSO token
-      alert('🚀 Redirecting to ' + domain + ' with your Soulfra identity...\n\n(In development, actual redirect disabled)');
-
-      // Production:
-      // window.location.href = `https://${domain}?sso_token=${token}`;
-    }
-
-    // Show/hide states
-    function showState(state) {
-      document.getElementById('loadingState').classList.add('hidden');
-      document.getElementById('qrState').classList.add('hidden');
-      document.getElementById('successState').classList.add('hidden');
-      document.getElementById('errorState').classList.add('hidden');
-      document.getElementById(state + 'State').classList.remove('hidden');
-    }
-
-    // Generate QR code with session URL
-    // Wait for QRCode library to load from CDN
-function waitForQRCode(){return new Promise((r,j)=>{if(typeof QRCode!=='undefined'){r();return}let a=0;const i=setInterval(()=>{if(typeof QRCode!=='undefined'){clearInterval(i);r()}else if(a>=100){clearInterval(i);j(new Error('QRCode library failed to load'))}a++},100)})}
-
-async function generateQRCode() {
-      try {
-        showState('loading');
-
-        // Generate unique session ID
-        sessionId = crypto.randomUUID();
-
-    // Wait for QRCode library to load
-    await waitForQRCode();
-
-        // Build session URL (phone will open this)
-        const sessionUrl = `${window.location.origin}/soulfra-auth.html?session=${sessionId}`;
-
-        // Generate QR code
-        const qrCanvas = document.getElementById('qrCode');
-        await QRCode.toCanvas(qrCanvas, sessionUrl, {
-          width: 260,
-          margin: 2,
-          color: {
-            dark: '#3498db',
-            light: '#ffffff'
-          }
-        });
-
-        // Update counter
-        document.getElementById('qrCounter').textContent = `QR #${qrCounter}`;
-
-        // Show QR state
-        showState('qr');
-
-        // Start polling for verification
-        startPolling();
-
-        // Start auto-refresh timer
-        startAutoRefresh();
-
-        console.log('[Soulfra] Session created:', sessionId);
-
-      } catch (error) {
-        console.error('[Soulfra] Error:', error);
-        showError(error.message || 'Failed to generate QR code');
-      }
-    }
-
-    // Start polling for verification
-    function startPolling() {
-      if (pollInterval) clearInterval(pollInterval);
-
-      pollInterval = setInterval(async () => {
-        try {
-          // Check localStorage for session verification
-          const verifiedSession = localStorage.getItem(`soulfra_session_${sessionId}`);
-
-          if (verifiedSession) {
-            const sessionData = JSON.parse(verifiedSession);
-            clearInterval(pollInterval);
-            clearInterval(refreshInterval);
-            clearInterval(refreshCountdown);
-            handleLoginSuccess(sessionData);
-          }
-        } catch (error) {
-          console.error('[Soulfra] Poll error:', error);
-        }
-      }, 2000); // Poll every 2 seconds
-    }
-
-    // Start auto-refresh timer (60 seconds)
-    function startAutoRefresh() {
-      let countdown = 60;
-
-      // Update countdown display
-      refreshCountdown = setInterval(() => {
-        countdown--;
-        document.getElementById('refreshTimer').textContent = countdown;
-
-        if (countdown <= 0) {
-          clearInterval(refreshCountdown);
-        }
-      }, 1000);
-
-      // Auto-regenerate QR code after 60 seconds
-      refreshInterval = setTimeout(() => {
-        qrCounter++;
-        generateQRCode();
-      }, 60000);
-    }
-
-    // Handle successful login
-    function handleLoginSuccess(session) {
-      try {
-        showState('success');
-
-        // Display user name
-        document.getElementById('userName').textContent = session.userName || session.email || 'User';
-
-        // Store session data
-        localStorage.setItem('soulfra_identity', JSON.stringify({
-          userId: session.userId,
-          email: session.email,
-          name: session.userName,
-          publicKey: session.publicKey,
-          privateKey: session.privateKey, // Encrypted
-          authMethod: 'soulfra-ed25519',
-          loginAt: Date.now()
-        }));
-
-        console.log('[Soulfra] Login successful:', session);
-
-      } catch (error) {
-        console.error('[Soulfra] Finalization error:', error);
-        showError('Login succeeded but finalization failed.');
-      }
-    }
-
-    // Show error
-    function showError(message) {
-      document.getElementById('errorMessage').textContent = message;
-      showState('error');
-    }
-
-    // Load and display keys
-    function loadKeys() {
-      const identity = localStorage.getItem('soulfra_identity');
-
-      if (!identity) {
-        document.getElementById('noKeysMessage').classList.remove('hidden');
-        document.getElementById('keysDisplay').classList.add('hidden');
-        return;
-      }
-
-      const identityData = JSON.parse(identity);
-
-      document.getElementById('noKeysMessage').classList.add('hidden');
-      document.getElementById('keysDisplay').classList.remove('hidden');
-      document.getElementById('publicKeyDisplay').textContent = identityData.publicKey || 'Not available';
-    }
-
-    // Toggle private key visibility
-    function togglePrivateKey() {
-      const display = document.getElementById('privateKeyDisplay');
-      const identity = JSON.parse(localStorage.getItem('soulfra_identity'));
-
-      if (display.textContent === 'Hidden for security') {
-        display.textContent = identity.privateKey || 'Not available';
-      } else {
-        display.textContent = 'Hidden for security';
-      }
-    }
-
-    // Export keys
-    function exportKeys() {
-      const identity = localStorage.getItem('soulfra_identity');
-
-      if (!identity) {
-        alert('No keys to export. Please login first.');
-        return;
-      }
-
-      const blob = new Blob([identity], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'soulfra-identity.json';
-      a.click();
-      URL.revokeObjectURL(url);
-
-      alert('✓ Keys exported! Store this file safely.');
-    }
-
-    // Copy public key
-    function copyPublicKey() {
-      const identity = JSON.parse(localStorage.getItem('soulfra_identity'));
-
-      if (!identity || !identity.publicKey) {
-        alert('No public key available.');
-        return;
-      }
-
-      navigator.clipboard.writeText(identity.publicKey).then(() => {
-        alert('✓ Public key copied to clipboard!');
-      }).catch(err => {
-        alert('Failed to copy: ' + err.message);
-      });
-    }
-
-    // Show keys from success state
-    function showKeys() {
-      switchTab('keys');
-      // Find and click the keys tab
-      document.querySelectorAll('.tab')[2].click();
-    }
-
-    // Initialize on page load
-    window.addEventListener('load', async () => {
-      // Check if user already has session
-      const session = localStorage.getItem('soulfra_identity');
-
-      if (session) {
-        const userData = JSON.parse(session);
-        console.log('[Soulfra] Existing session found:', userData.userId);
-
-        // Could auto-show success state or just let them see they're logged in
-        // For now, show normal login page but they can navigate to brands
-      }
-
-      setTimeout(generateQRCode, 500);
-    });
-  </script>
 </body>
 </html>
