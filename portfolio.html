@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soulfra / Cal Riven - Portfolio & Tycoon Profile</title>
-  <meta name="description" content="Empire Builder | Level 8 Tycoon | Verified Crypto Expert | Full-Stack Developer">
+  <title>Soulfra / Cal Riven - Portfolio Showcase</title>
+  <meta name="description" content="Submit your portfolio work and showcase your projects">
   <style>
     * {
       margin: 0;
@@ -13,7 +13,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
       min-height: 100vh;
@@ -21,7 +21,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 800px;
       margin: 0 auto;
     }
 
@@ -35,35 +35,17 @@
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 2.5rem;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
     }
 
-    .pseudonyms {
-      color: #666;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-    }
-
-    .level-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 12px 30px;
-      border-radius: 30px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin: 10px 0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
     .tagline {
       color: #666;
       font-size: 1.1rem;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     .section {
@@ -76,202 +58,111 @@
 
     .section h2 {
       color: #667eea;
-      font-size: 1.8rem;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
-    .identity-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+    .form-group {
+      margin-bottom: 20px;
     }
 
-    .identity-card {
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .repo-list {
+      margin-top: 10px;
+    }
+
+    .repo-item {
       background: #f5f5f5;
       padding: 15px;
       border-radius: 8px;
-      border-left: 4px solid #667eea;
-    }
-
-    .identity-type {
-      font-size: 0.9rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 5px;
-    }
-
-    .identity-value {
-      font-size: 1.1rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .verified-badge {
-      color: #4caf50;
-      font-size: 1.2rem;
-    }
-
-    .wallet-card {
-      background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .wallet-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .wallet-header {
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
     }
 
-    .chain-name {
-      font-size: 1.3rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .wallet-address {
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      color: #aaa;
-      word-break: break-all;
-    }
-
-    .expertise-value {
-      color: #ffd700;
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-      border-radius: 10px;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #667eea;
-      margin-bottom: 5px;
-    }
-
-    .stat-label {
-      color: #666;
-      font-size: 1rem;
-    }
-
-    .earnings-display {
-      text-align: center;
-      padding: 40px;
-      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .earnings-value {
-      font-size: 4rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .earnings-label {
-      font-size: 1.5rem;
-      opacity: 0.9;
-    }
-
-    .github-links {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
-
-    .github-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: #24292e;
-      color: white;
-      text-decoration: none;
+      border: none;
+      padding: 12px 30px;
       border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
       transition: transform 0.2s;
     }
 
-    .github-link:hover {
+    button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      margin-left: 10px;
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
     }
 
     .footer {
       text-align: center;
       color: rgba(255, 255, 255, 0.8);
       margin-top: 40px;
-      padding: 20px;
     }
 
-    .cta {
-      display: inline-block;
-      background: white;
-      color: #667eea;
-      padding: 15px 40px;
-      border-radius: 30px;
+    .footer a {
+      color: white;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-top: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s;
-    }
-
-    .cta:hover {
-      transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .level-badge {
-        font-size: 1.1rem;
-      }
-
-      .earnings-value {
-        font-size: 2.5rem;
-      }
     }
   </style>
 </head>
@@ -279,206 +170,157 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <h1>Soulfra / Cal Riven</h1>
-      <div class="pseudonyms">
-        aka: matthewmauer | death to data | satoshi nakamoto follower
-      </div>
-      <div class="level-badge">👑 Level 8: Empire Builder</div>
+      <h1>Portfolio Showcase</h1>
       <div class="tagline">
-        Full-Stack Developer | Crypto Expert | Tycoon Progression System Creator
+        Submit your work and join the Soulfra community
       </div>
     </div>
 
-    <!-- Total Earnings -->
-    <div class="earnings-display">
-      <div class="earnings-value">$12,450</div>
-      <div class="earnings-label">Total Earned via Tycoon Bounties</div>
-    </div>
+    <!-- Alert Messages -->
+    <div id="alert" class="alert"></div>
 
-    <!-- Stats -->
+    <!-- Submission Form -->
     <div class="section">
-      <h2>📊 Stats</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">8</div>
-          <div class="stat-label">Tycoon Level</div>
+      <h2>📋 Submit Your Portfolio</h2>
+      <form id="portfolioForm">
+        <div class="form-group">
+          <label for="userName">Your Name *</label>
+          <input type="text" id="userName" required placeholder="John Doe">
         </div>
-        <div class="stat-card">
-          <div class="stat-value">120K</div>
-          <div class="stat-label">XP Earned</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">95</div>
-          <div class="stat-label">Resume Score</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">92</div>
-          <div class="stat-label">Interview Avg</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">12</div>
-          <div class="stat-label">Team Size</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">47</div>
-          <div class="stat-label">Projects Completed</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Identities -->
-    <div class="section">
-      <h2>🎭 Unified Identities</h2>
-      <div class="identity-grid">
-        <div class="identity-card">
-          <div class="identity-type">GitHub (Primary)</div>
-          <div class="identity-value">
-            👨‍💻 soulfra
-            <span class="verified-badge" title="Verified">✅</span>
-          </div>
+        <div class="form-group">
+          <label for="userEmail">Email *</label>
+          <input type="email" id="userEmail" required placeholder="john@example.com">
         </div>
-        <div class="identity-card">
-          <div class="identity-type">GitHub</div>
-          <div class="identity-value">
-            👨‍💻 matthewmauer
-            <span class="verified-badge" title="Verified">✅</span>
-          </div>
+
+        <div class="form-group">
+          <label for="githubUrl">GitHub Repository URL *</label>
+          <input type="url" id="githubUrl" required placeholder="https://github.com/username/repo">
+          <button type="button" class="btn-secondary" onclick="addRepo()" style="margin-top: 10px;">+ Add Repo</button>
         </div>
-        <div class="identity-card">
-          <div class="identity-type">Pseudonym</div>
-          <div class="identity-value">
-            🎭 cal riven
-          </div>
+
+        <div id="repoList" class="repo-list"></div>
+
+        <div class="form-group">
+          <label for="liveDemo">Live Demo URL</label>
+          <input type="url" id="liveDemo" placeholder="https://demo.example.com">
         </div>
-        <div class="identity-card">
-          <div class="identity-type">Pseudonym</div>
-          <div class="identity-value">
-            🎭 death to data
-          </div>
+
+        <div class="form-group">
+          <label for="description">Project Description *</label>
+          <textarea id="description" required placeholder="Tell us about your project..."></textarea>
         </div>
-        <div class="identity-card">
-          <div class="identity-type">Domain</div>
-          <div class="identity-value">
-            🌐 soulfra.github.io
-            <span class="verified-badge" title="Verified">✅</span>
-          </div>
+
+        <div class="form-group">
+          <label for="tags">Tags (comma-separated)</label>
+          <input type="text" id="tags" placeholder="javascript, react, nodejs">
         </div>
-      </div>
 
-      <div class="github-links">
-        <a href="https://github.com/soulfra" class="github-link" target="_blank">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-          </svg>
-          github.com/soulfra
-        </a>
-        <a href="https://github.com/matthewmauer" class="github-link" target="_blank">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.020.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-          </svg>
-          github.com/matthewmauer
-        </a>
-      </div>
-    </div>
-
-    <!-- Verified Wallets -->
-    <div class="section">
-      <h2>💰 Verified Crypto Wallets (Proof of Expertise)</h2>
-      <p style="margin-bottom: 20px; color: #666;">
-        These wallets are verified via cryptographic signatures, proving ownership and expertise.
-      </p>
-
-      <div class="wallet-card">
-        <div class="wallet-header">
-          <div class="chain-name">
-            ₿ Bitcoin
-            <span class="verified-badge" title="Verified via signature">✅</span>
-          </div>
-        </div>
-        <div class="wallet-address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
-        <div class="expertise-value">⭐ +1000 XP (Crypto Pioneer)</div>
-      </div>
-
-      <div class="wallet-card">
-        <div class="wallet-header">
-          <div class="chain-name">
-            Ξ Ethereum
-            <span class="verified-badge" title="Verified via signature">✅</span>
-          </div>
-        </div>
-        <div class="wallet-address">0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045</div>
-        <div class="expertise-value">⭐ +800 XP (Smart Contracts)</div>
-      </div>
-
-      <div class="wallet-card">
-        <div class="wallet-header">
-          <div class="chain-name">
-            ◎ Solana
-            <span class="verified-badge" title="Verified via signature">✅</span>
-          </div>
-        </div>
-        <div class="wallet-address">vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg</div>
-        <div class="expertise-value">⭐ +600 XP (High Performance)</div>
-      </div>
-
-      <div style="text-align: center; margin-top: 20px; color: #666;">
-        <strong>Total Crypto Expertise: +2400 XP</strong>
-      </div>
-    </div>
-
-    <!-- Skills & Expertise -->
-    <div class="section">
-      <h2>🛠️ Skills & Expertise</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">JavaScript</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Node.js</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">React</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">TypeScript</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">PostgreSQL</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">MongoDB</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">AWS</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Docker</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Kubernetes</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Bitcoin Core</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Ethereum/Solidity</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Web3.js</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">Stripe API</span>
-        <span style="background: #667eea; color: white; padding: 8px 16px; border-radius: 20px;">GitHub Actions</span>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <div style="text-align: center; margin: 40px 0;">
-      <a href="tycoon-dashboard.html" class="cta">
-        🚀 View Full Tycoon Dashboard
-      </a>
+        <button type="submit" id="submitBtn">Submit Portfolio</button>
+      </form>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p>💡 Built with CALOS Tycoon Simulator</p>
-      <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">
-        "From Solo Dev to Empire Builder" - A gamified career accelerator
-      </p>
-      <p style="margin-top: 20px;">
-        <a href="https://github.com/soulfra/agent-router" style="color: white; text-decoration: none;">
-          View Source on GitHub →
-        </a>
+      <p>💡 Built with CALOS Platform</p>
+      <p style="margin-top: 10px;">
+        <a href="https://github.com/soulfra/agent-router">View Source on GitHub →</a>
       </p>
     </div>
   </div>
 
-  <script>
-    // Dynamic data loading (would fetch from API)
-    console.log('Portfolio loaded for Soulfra / Cal Riven');
-    console.log('Tycoon Level: 8 (Empire Builder)');
-    console.log('Total Earnings: $12,450');
-    console.log('Verified Wallets: 3');
+  <!-- Load SDK -->
+  <script src="calos-sdk-browser.js"></script>
 
-    // Could add API integration:
-    // fetch('/tycoon/profile/soulfra').then(res => res.json()).then(data => {
-    //   // Update page with real data
-    // });
+  <script>
+    // Initialize SDK with auto-detected URL
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const baseURL = isLocal ? 'http://127.0.0.1:5001' : 'https://api.calos.dev';
+
+    const calos = new CalOSPlatform({ baseURL });
+    const repos = [];
+
+    function showAlert(message, type = 'success') {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert alert-${type} show`;
+      setTimeout(() => {
+        alert.className = 'alert';
+      }, 5000);
+    }
+
+    function addRepo() {
+      const url = document.getElementById('githubUrl').value.trim();
+      if (!url) {
+        showAlert('Please enter a GitHub URL', 'error');
+        return;
+      }
+
+      if (!url.includes('github.com')) {
+        showAlert('Please enter a valid GitHub URL', 'error');
+        return;
+      }
+
+      repos.push({ url, name: url.split('/').pop() || 'Repository', description: '' });
+      updateRepoList();
+      document.getElementById('githubUrl').value = '';
+    }
+
+    function removeRepo(index) {
+      repos.splice(index, 1);
+      updateRepoList();
+    }
+
+    function updateRepoList() {
+      const list = document.getElementById('repoList');
+      list.innerHTML = repos.map((repo, i) => `
+        <div class="repo-item">
+          <span>${repo.name} - ${repo.url}</span>
+          <button type="button" class="btn-secondary" onclick="removeRepo(${i})">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const data = {
+          userName: document.getElementById('userName').value,
+          userEmail: document.getElementById('userEmail').value,
+          githubRepos: repos.length > 0 ? repos : [
+            {
+              url: document.getElementById('githubUrl').value,
+              name: 'Main Repository',
+              description: ''
+            }
+          ],
+          liveDemo: document.getElementById('liveDemo').value || null,
+          description: document.getElementById('description').value,
+          tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean)
+        };
+
+        const result = await calos.portfolio.submit(data);
+
+        showAlert(`Portfolio submitted successfully! Submission ID: ${result.submission.id}`, 'success');
+        document.getElementById('portfolioForm').reset();
+        repos.length = 0;
+        updateRepoList();
+      } catch (error) {
+        console.error('Submission error:', error);
+        showAlert(error.message || 'Failed to submit portfolio. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Portfolio';
+      }
+    });
+
+    console.log('Portfolio page loaded');
+    console.log('Backend URL:', baseURL);
   </script>
 </body>
 </html>
