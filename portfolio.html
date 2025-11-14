@@ -235,7 +235,29 @@
   <script>
     // Initialize SDK with auto-detected URL
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const baseURL = isLocal ? 'http://127.0.0.1:5001' : 'https://api.calos.dev';
+
+    // Check if we're on GitHub Pages
+    const isGitHubPages = window.location.hostname.includes('.github.io');
+
+    // Detect local network (192.168.x.x or 10.x.x.x)
+    const isLocalNetwork = window.location.hostname.match(/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/);
+
+    // Backend URL selection:
+    // 1. Local testing: http://127.0.0.1:5001
+    // 2. Local network: http://192.168.1.X:5001 (WiFi access)
+    // 3. GitHub Pages: GitHub Actions API (self-hosted)
+    let baseURL;
+    if (isLocal) {
+      baseURL = 'http://127.0.0.1:5001';
+    } else if (isLocalNetwork) {
+      // TODO: Update with your actual local IP
+      baseURL = 'http://192.168.1.5:5001';
+    } else if (isGitHubPages) {
+      // GitHub-native submission (no backend needed!)
+      baseURL = 'GITHUB_ACTIONS'; // Special flag for GitHub API
+    } else {
+      baseURL = 'http://localhost:5001'; // Fallback
+    }
 
     const calos = new CalOSPlatform({ baseURL });
     const repos = [];

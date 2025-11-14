@@ -1,0 +1,130 @@
+name: Portfolio Submission Handler
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      submission_data:
+        description: 'Portfolio submission JSON'
+        required: true
+
+jobs:
+  process-submission:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.title, '[PORTFOLIO_SUBMISSION]') || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Parse submission data
+        id: parse
+        run: |
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            # Extract JSON from issue body
+            SUBMISSION_JSON=$(echo '${{ github.event.issue.body }}' | grep -A 100 '```json' | grep -B 100 '```' | sed '1d;$d')
+          else
+            # Use workflow_dispatch input
+            SUBMISSION_JSON='${{ inputs.submission_data }}'
+          fi
+
+          # Generate submission ID
+          SUBMISSION_ID="sub_$(date +%s)_$(echo $RANDOM | md5sum | head -c 9)"
+
+          # Save parsed data
+          echo "SUBMISSION_ID=$SUBMISSION_ID" >> $GITHUB_ENV
+          echo "$SUBMISSION_JSON" > /tmp/submission.json
+
+      - name: Validate submission
+        run: |
+          # Ensure data directory exists
+          mkdir -p data/portfolio-submissions
+
+          # Basic validation
+          if ! jq empty /tmp/submission.json 2>/dev/null; then
+            echo "❌ Invalid JSON in submission"
+            exit 1
+          fi
+
+          # Check required fields
+          if ! jq -e '.userName' /tmp/submission.json > /dev/null; then
+            echo "❌ Missing userName field"
+            exit 1
+          fi
+
+          echo "✅ Submission validation passed"
+
+      - name: Add submission to database
+        run: |
+          # Create submissions file if it doesn't exist
+          if [ ! -f data/portfolio-submissions/submissions.json ]; then
+            echo "[]" > data/portfolio-submissions/submissions.json
+          fi
+
+          # Add metadata to submission
+          SUBMISSION=$(jq --arg id "$SUBMISSION_ID" \
+                          --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+                          --arg status "pending" \
+                          '. + {
+                            id: $id,
+                            submittedAt: $timestamp,
+                            status: $status,
+                            reviewedAt: null,
+                            publishedAt: null
+                          }' /tmp/submission.json)
+
+          # Append to submissions array
+          jq --argjson submission "$SUBMISSION" '. += [$submission]' \
+            data/portfolio-submissions/submissions.json > /tmp/submissions.json.tmp
+
+          mv /tmp/submissions.json.tmp data/portfolio-submissions/submissions.json
+
+          echo "✅ Submission added with ID: $SUBMISSION_ID"
+
+      - name: Commit submission
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          git add data/portfolio-submissions/submissions.json
+          git commit -m "Add portfolio submission: $SUBMISSION_ID
+
+          Submitted by: $(jq -r '.userName' /tmp/submission.json)
+          Status: pending
+          Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          git push
+
+      - name: Comment on issue (if from issue)
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **Portfolio submission received!**\n\n**Submission ID:** \`${process.env.SUBMISSION_ID}\`\n\n**Status:** Pending review\n\n**What happens next:**\n1. Your submission is now in the queue\n2. We'll review it within 24-48 hours\n3. You'll be notified when it's published\n\nThank you for your submission! 🎉`
+            })
+
+            // Close the issue
+            github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            })
+
+      - name: Notify submission received
+        run: |
+          echo "📬 Portfolio submission processed successfully!"
+          echo "Submission ID: $SUBMISSION_ID"
+          echo "View all submissions: https://github.com/${{ github.repository }}/blob/main/data/portfolio-submissions/submissions.json"
