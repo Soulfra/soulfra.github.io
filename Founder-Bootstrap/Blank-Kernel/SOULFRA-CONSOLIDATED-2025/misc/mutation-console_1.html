@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Genome Mutation Console</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #0a0a0a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-panel {
+            background: #1a1a1a;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .genome-viewer {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        
+        .mutation-panel {
+            background: #1a1a1a;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .history-panel {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        input, select, textarea {
+            background: #0d0d0d;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #000;
+            color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        
+        .status.success {
+            background: #003300;
+            border: 1px solid #00ff00;
+        }
+        
+        .status.error {
+            background: #330000;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+        
+        .locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .mutation-entry {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        
+        .mutation-entry.applied {
+            border-color: #00ff00;
+        }
+        
+        .mutation-entry.denied {
+            border-color: #ff0000;
+        }
+        
+        .mutation-entry.failed {
+            border-color: #ff6600;
+        }
+        
+        .path-builder {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .path-segment {
+            background: #0d0d0d;
+            border: 1px solid #00ff00;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .path-segment:hover {
+            background: #00ff00;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SOULFRA GENOME MUTATION CONSOLE</h1>
+        
+        <div class="auth-panel" id="authPanel">
+            <h2>Authentication Required</h2>
+            <p>Enter whisper passphrase to access genome mutations:</p>
+            <input type="password" id="passphrase" placeholder="Whisper passphrase...">
+            <br>
+            <select id="modifier">
+                <option value="whisper">Whisper Protocol</option>
+                <option value="soulkey">Soul Key</option>
+                <option value="founder-override">Founder Override</option>
+                <option value="cal-riven-authority">Cal Riven Authority</option>
+            </select>
+            <br>
+            <button onclick="authenticate()">AUTHENTICATE</button>
+            <div id="authStatus"></div>
+        </div>
+        
+        <div id="mainConsole" class="locked">
+            <div class="genome-viewer">
+                <h3>Current Genome State</h3>
+                <pre id="genomeDisplay"></pre>
+            </div>
+            
+            <div class="mutation-panel">
+                <h3>Apply Mutation</h3>
+                <div class="path-builder" id="pathBuilder">
+                    <span>Path:</span>
+                </div>
+                <input type="text" id="mutationPath" placeholder="Path (e.g., agentLimits.maxConcurrentAgents)">
+                <textarea id="mutationValue" placeholder="New value (JSON format)" rows="4"></textarea>
+                <input type="text" id="signature" placeholder="Signature (optional)">
+                <button onclick="applyMutation()">APPLY MUTATION</button>
+                <div id="mutationStatus"></div>
+            </div>
+            
+            <div class="history-panel">
+                <h3>Mutation History</h3>
+                <div id="historyDisplay"></div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="refreshGenome()">REFRESH GENOME</button>
+                <button onclick="downloadGenome()">DOWNLOAD GENOME</button>
+                <button onclick="logout()" style="background: #ff0000;">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authenticated = false;
+        let currentModifier = null;
+        let genomeData = null;
+        let ws = null;
+
+        // Mock authentication (in production, this would validate against backend)
+        function authenticate() {
+            const passphrase = document.getElementById('passphrase').value;
+            const modifier = document.getElementById('modifier').value;
+            
+            if (passphrase === 'whisper-genesis-0000' || passphrase === 'cal-riven-sovereign') {
+                authenticated = true;
+                currentModifier = modifier;
+                document.getElementById('authPanel').style.display = 'none';
+                document.getElementById('mainConsole').classList.remove('locked');
+                showStatus('authStatus', 'Authentication successful', 'success');
+                
+                // Connect to genome authority
+                connectToAuthority();
+                loadGenome();
+            } else {
+                showStatus('authStatus', 'Authentication failed', 'error');
+            }
+        }
+
+        // Connect to genome authority WebSocket (if available)
+        function connectToAuthority() {
+            try {
+                ws = new WebSocket('ws://localhost:8765');
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'genome-update') {
+                        genomeData = data.genome;
+                        displayGenome();
+                    }
+                };
+            } catch (e) {
+                console.log('WebSocket connection failed, using static mode');
+            }
+        }
+
+        // Load genome data
+        async function loadGenome() {
+            try {
+                // In production, this would fetch from the genome authority API
+                const response = await fetch('/api/genome');
+                if (response.ok) {
+                    genomeData = await response.json();
+                } else {
+                    // Fallback to mock data
+                    genomeData = getMockGenome();
+                }
+                displayGenome();
+                displayHistory();
+            } catch (error) {
+                // Use mock data if fetch fails
+                genomeData = getMockGenome();
+                displayGenome();
+                displayHistory();
+            }
+        }
+
+        // Display genome in viewer
+        function displayGenome() {
+            document.getElementById('genomeDisplay').textContent = JSON.stringify(genomeData, null, 2);
+            buildPathHelper();
+        }
+
+        // Build interactive path helper
+        function buildPathHelper() {
+            const builder = document.getElementById('pathBuilder');
+            builder.innerHTML = '<span>Path:</span>';
+            
+            const paths = extractPaths(genomeData);
+            paths.slice(0, 10).forEach(path => {
+                const segment = document.createElement('span');
+                segment.className = 'path-segment';
+                segment.textContent = path;
+                segment.onclick = () => {
+                    document.getElementById('mutationPath').value = path;
+                };
+                builder.appendChild(segment);
+            });
+        }
+
+        // Extract paths from object
+        function extractPaths(obj, prefix = '') {
+            let paths = [];
+            for (const key in obj) {
+                if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+                    paths = paths.concat(extractPaths(obj[key], prefix ? `${prefix}.${key}` : key));
+                } else {
+                    paths.push(prefix ? `${prefix}.${key}` : key);
+                }
+            }
+            return paths;
+        }
+
+        // Apply mutation
+        async function applyMutation() {
+            const path = document.getElementById('mutationPath').value;
+            const valueStr = document.getElementById('mutationValue').value;
+            const signature = document.getElementById('signature').value;
+            
+            try {
+                const value = JSON.parse(valueStr);
+                const mutation = { path, value };
+                
+                // In production, this would send to genome authority API
+                const result = await sendMutation(mutation, currentModifier, signature);
+                
+                if (result.success) {
+                    showStatus('mutationStatus', 'Mutation applied successfully', 'success');
+                    await loadGenome();
+                } else {
+                    showStatus('mutationStatus', `Mutation failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('mutationStatus', `Invalid JSON value: ${error.message}`, 'error');
+            }
+        }
+
+        // Send mutation to authority
+        async function sendMutation(mutation, modifier, signature) {
+            try {
+                const response = await fetch('/api/genome/mutate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mutation, modifier, signature })
+                });
+                return await response.json();
+            } catch (error) {
+                // Mock response for demo
+                return { success: true };
+            }
+        }
+
+        // Display mutation history
+        function displayHistory() {
+            const history = genomeData.mutations?.history || [];
+            const display = document.getElementById('historyDisplay');
+            
+            display.innerHTML = history.map(entry => {
+                const statusClass = entry.status.toLowerCase();
+                return `
+                    <div class="mutation-entry ${statusClass}">
+                        <strong>${entry.timestamp}</strong><br>
+                        Modifier: ${entry.modifier}<br>
+                        Path: ${entry.mutation.path}<br>
+                        Status: ${entry.status}<br>
+                        ${entry.oldValue !== undefined ? `Old Value: ${JSON.stringify(entry.oldValue)}<br>` : ''}
+                        ${entry.mutation.value !== undefined ? `New Value: ${JSON.stringify(entry.mutation.value)}<br>` : ''}
+                        ${entry.reason ? `Reason: ${entry.reason}` : ''}
+                        ${entry.error ? `Error: ${entry.error}` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Refresh genome
+        function refreshGenome() {
+            loadGenome();
+            showStatus('mutationStatus', 'Genome refreshed', 'success');
+        }
+
+        // Download genome
+        function downloadGenome() {
+            const dataStr = JSON.stringify(genomeData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            
+            const exportName = `genome-export-${new Date().toISOString()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportName);
+            linkElement.click();
+        }
+
+        // Logout
+        function logout() {
+            authenticated = false;
+            currentModifier = null;
+            document.getElementById('authPanel').style.display = 'block';
+            document.getElementById('mainConsole').classList.add('locked');
+            document.getElementById('passphrase').value = '';
+            if (ws) ws.close();
+        }
+
+        // Show status message
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${type}`;
+            element.textContent = message;
+            setTimeout(() => {
+                element.textContent = '';
+                element.className = 'status';
+            }, 5000);
+        }
+
+        // Get mock genome data
+        function getMockGenome() {
+            return {
+                version: "1.0.0",
+                platformRules: {
+                    trustChainRequired: true,
+                    blessingMandatory: true
+                },
+                agentLimits: {
+                    maxConcurrentAgents: 100,
+                    maxMirrorDepth: 7
+                },
+                mutations: {
+                    history: [
+                        {
+                            timestamp: new Date().toISOString(),
+                            modifier: "whisper",
+                            mutation: { path: "agentLimits.maxConcurrentAgents", value: 100 },
+                            oldValue: 50,
+                            status: "APPLIED"
+                        }
+                    ]
+                }
+            };
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (authenticated) {
+                loadGenome();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

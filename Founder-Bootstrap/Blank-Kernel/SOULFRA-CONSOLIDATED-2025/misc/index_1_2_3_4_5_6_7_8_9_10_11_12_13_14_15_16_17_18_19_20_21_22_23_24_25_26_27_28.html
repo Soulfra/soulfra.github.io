@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billion Dollar Game - Static Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 2.5em;
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #888;
+      font-size: 1.2em;
+    }
+    
+    .container {
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+    }
+    
+    .demo-notice {
+      background: rgba(255, 170, 0, 0.1);
+      border: 1px solid rgba(255, 170, 0, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .demo-notice h2 {
+      color: #ffaa00;
+      margin-bottom: 10px;
+    }
+    
+    .game-container {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    
+    .panel h3 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #00ff88;
+    }
+    
+    .stats-grid {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .stat-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .stat-label {
+      color: #888;
+      font-size: 0.9em;
+    }
+    
+    .stat-value {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #00ff88;
+    }
+    
+    .button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 10px;
+    }
+    
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+    }
+    
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .resource-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .resource-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .resource-name {
+      font-size: 0.9em;
+      color: #888;
+      margin-bottom: 5px;
+    }
+    
+    .resource-price {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .trend-up { color: #00ff88; }
+    .trend-down { color: #ff4444; }
+    .trend-stable { color: #ffaa00; }
+    
+    .company-list {
+      margin-top: 20px;
+    }
+    
+    .company-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    
+    .company-card:hover {
+      transform: translateX(5px);
+      border-left: 3px solid #00ff88;
+    }
+    
+    .company-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .company-industry {
+      color: #888;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+    
+    .company-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      font-size: 0.9em;
+    }
+    
+    .log-entry {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .ai-agent-card {
+      background: rgba(0, 170, 255, 0.1);
+      border: 1px solid rgba(0, 170, 255, 0.3);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .ai-agent-card .agent-name {
+      font-weight: bold;
+      color: #00aaff;
+      margin-bottom: 5px;
+    }
+    
+    .ai-agent-card .agent-strategy {
+      font-size: 0.9em;
+      color: #888;
+    }
+    
+    .footer {
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      text-align: center;
+      color: #888;
+    }
+    
+    @media (max-width: 1024px) {
+      .game-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Billion Dollar Game</h1>
+    <p>Build your empire. Reach $1 billion. Compete with AI.</p>
+  </div>
+  
+  <div class="container">
+    <div class="demo-notice">
+      <h2>Static Demo Version</h2>
+      <p>This is a standalone demo that runs entirely in your browser. No server required!</p>
+      <p>For the full multiplayer experience with real-time updates, run the server version.</p>
+    </div>
+    
+    <div class="game-container">
+      <!-- Left Panel - Player Stats -->
+      <div class="panel">
+        <h3>Your Empire</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">Net Worth</span>
+            <span class="stat-value" id="netWorth">$100K</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Cash</span>
+            <span class="stat-value" id="cash">$100K</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Companies</span>
+            <span class="stat-value" id="companyCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Game Time</span>
+            <span class="stat-value" id="gameTime">0h</span>
+          </div>
+        </div>
+        
+        <h3 style="margin-top: 30px;">Actions</h3>
+        <button class="button" onclick="createCompany()">Create Company ($30K)</button>
+        <button class="button secondary" onclick="buyResources()">Buy Resources</button>
+        <button class="button secondary" onclick="hireEmployees()">Hire Employees</button>
+        <button class="button secondary" onclick="developProduct()">Develop Product</button>
+      </div>
+      
+      <!-- Center Panel - Main Game Area -->
+      <div class="panel">
+        <h3>Market Overview</h3>
+        <div class="market-grid" id="marketGrid"></div>
+        
+        <h3 style="margin-top: 30px;">Your Companies</h3>
+        <div class="company-list" id="companyList">
+          <p style="color: #888; text-align: center;">No companies yet. Create your first company!</p>
+        </div>
+        
+        <h3 style="margin-top: 30px;">Game Log</h3>
+        <div id="gameLog" style="max-height: 300px; overflow-y: auto;"></div>
+      </div>
+      
+      <!-- Right Panel - AI Agents & Leaderboard -->
+      <div class="panel">
+        <h3>AI Competitors</h3>
+        <div id="aiAgents"></div>
+        
+        <h3 style="margin-top: 30px;">Leaderboard</h3>
+        <div id="leaderboard"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>Billion Dollar Game - Static Demo | Part of the Soulfra Platform</p>
+  </div>
+  
+  <script>
+    // Game State
+    const gameState = {
+      player: {
+        name: 'Human Player',
+        cash: 100000,
+        companies: [],
+        resources: {},
+        netWorth: 100000
+      },
+      aiAgents: [],
+      market: {
+        resources: {
+          'Materials': { price: 100, trend: 'stable', history: [] },
+          'Technology': { price: 5000, trend: 'up', history: [] },
+          'Energy': { price: 200, trend: 'down', history: [] },
+          'Labor': { price: 1000, trend: 'stable', history: [] },
+          'Data': { price: 500, trend: 'up', history: [] },
+          'IP': { price: 10000, trend: 'stable', history: [] }
+        }
+      },
+      gameTime: 0,
+      logs: []
+    };
+    
+    // AI Agent Types
+    const agentStrategies = [
+      { name: 'Entrepreneur', focus: 'Rapid expansion', color: '#ff6b6b' },
+      { name: 'Industrialist', focus: 'Resource accumulation', color: '#4ecdc4' },
+      { name: 'Trader', focus: 'Market arbitrage', color: '#ffe66d' },
+      { name: 'Strategist', focus: 'Long-term planning', color: '#a8e6cf' }
+    ];
+    
+    // Industry Types
+    const industries = [
+      { name: 'Technology', revenue: 1.5, valuation: 5 },
+      { name: 'Finance', revenue: 1.3, valuation: 3 },
+      { name: 'Manufacturing', revenue: 1.0, valuation: 2 },
+      { name: 'Healthcare', revenue: 1.4, valuation: 4 },
+      { name: 'Energy', revenue: 1.2, valuation: 2.5 }
+    ];
+    
+    // Initialize Game
+    function initGame() {
+      // Create AI agents
+      agentStrategies.forEach((strategy, index) => {
+        gameState.aiAgents.push({
+          id: `ai_${index}`,
+          name: `${strategy.name} AI`,
+          strategy: strategy.name,
+          cash: 100000,
+          companies: [],
+          netWorth: 100000,
+          color: strategy.color
+        });
+      });
+      
+      // Start game loop
+      setInterval(gameTick, 1000); // 1 second = 1 game hour
+      
+      // Initial render
+      updateUI();
+      addLog('Welcome to the Billion Dollar Game! Build your empire and reach $1 billion to win!', 'system');
+    }
+    
+    // Game tick
+    function gameTick() {
+      gameState.gameTime++;
+      
+      // Update market
+      updateMarket();
+      
+      // Process companies
+      processCompanies();
+      
+      // AI agents take actions
+      processAIAgents();
+      
+      // Update net worth
+      updateNetWorth();
+      
+      // Check win conditions
+      checkWinConditions();
+      
+      // Update UI
+      updateUI();
+    }
+    
+    // Update market prices
+    function updateMarket() {
+      Object.keys(gameState.market.resources).forEach(resource => {
+        const res = gameState.market.resources[resource];
+        
+        // Random price movement
+        const change = (Math.random() - 0.5) * 0.05; // ±5% max
+        res.price = Math.max(10, res.price * (1 + change));
+        
+        // Update trend
+        if (change > 0.01) res.trend = 'up';
+        else if (change < -0.01) res.trend = 'down';
+        else res.trend = 'stable';
+        
+        // Add to history
+        res.history.push({ time: gameState.gameTime, price: res.price });
+        if (res.history.length > 50) res.history.shift();
+      });
+    }
+    
+    // Process all companies
+    function processCompanies() {
+      // Player companies
+      gameState.player.companies.forEach(company => {
+        processCompany(company);
+      });
+      
+      // AI companies
+      gameState.aiAgents.forEach(agent => {
+        agent.companies.forEach(company => {
+          processCompany(company);
+        });
+      });
+    }
+    
+    // Process individual company
+    function processCompany(company) {
+      const industry = industries.find(i => i.name === company.industry);
+      
+      // Generate revenue
+      const baseRevenue = company.employees * 1000;
+      const revenue = baseRevenue * industry.revenue * (0.8 + Math.random() * 0.4);
+      
+      // Pay expenses
+      const expenses = company.employees * 800;
+      
+      // Update capital
+      const profit = revenue - expenses;
+      company.capital += profit;
+      
+      // Update valuation
+      company.revenue = revenue;
+      company.valuation = revenue * 12 * industry.valuation + company.capital;
+    }
+    
+    // AI Agents process
+    function processAIAgents() {
+      gameState.aiAgents.forEach(agent => {
+        // Each agent has a chance to take action
+        if (Math.random() < 0.3) { // 30% chance per tick
+          takeAIAction(agent);
+        }
+      });
+    }
+    
+    // AI takes action
+    function takeAIAction(agent) {
+      // Simple AI decision making
+      if (agent.companies.length === 0 || (agent.cash > 50000 && Math.random() < 0.5)) {
+        // Create company
+        if (agent.cash >= 30000) {
+          const industry = industries[Math.floor(Math.random() * industries.length)];
+          const company = {
+            id: `${agent.id}_company_${Date.now()}`,
+            name: `${agent.name} ${industry.name} Corp`,
+            industry: industry.name,
+            employees: 5,
+            capital: 30000,
+            valuation: 30000,
+            revenue: 0
+          };
+          
+          agent.companies.push(company);
+          agent.cash -= 30000;
+          
+          addLog(`${agent.name} created ${company.name}`, 'ai');
+        }
+      } else if (agent.companies.length > 0 && Math.random() < 0.5) {
+        // Hire employees
+        const company = agent.companies[Math.floor(Math.random() * agent.companies.length)];
+        const laborCost = gameState.market.resources.Labor.price * 5;
+        
+        if (company.capital > laborCost) {
+          company.employees += 5;
+          company.capital -= laborCost;
+        }
+      }
+    }
+    
+    // Update net worth for all players
+    function updateNetWorth() {
+      // Player net worth
+      gameState.player.netWorth = gameState.player.cash;
+      gameState.player.companies.forEach(company => {
+        gameState.player.netWorth += company.valuation;
+      });
+      
+      // AI net worth
+      gameState.aiAgents.forEach(agent => {
+        agent.netWorth = agent.cash;
+        agent.companies.forEach(company => {
+          agent.netWorth += company.valuation;
+        });
+      });
+    }
+    
+    // Check win conditions
+    function checkWinConditions() {
+      if (gameState.player.netWorth >= 1000000000) {
+        addLog('🎉 Congratulations! You reached $1 billion and won the game!', 'win');
+        alert('You Win! You built a billion dollar empire!');
+      }
+      
+      gameState.aiAgents.forEach(agent => {
+        if (agent.netWorth >= 1000000000) {
+          addLog(`${agent.name} reached $1 billion!`, 'win');
+        }
+      });
+    }
+    
+    // Player Actions
+    function createCompany() {
+      if (gameState.player.cash < 30000) {
+        addLog('Insufficient funds! You need $30,000 to create a company.', 'error');
+        return;
+      }
+      
+      const industry = industries[Math.floor(Math.random() * industries.length)];
+      const company = {
+        id: `player_company_${Date.now()}`,
+        name: prompt('Company name:') || `My ${industry.name} Company`,
+        industry: industry.name,
+        employees: 5,
+        capital: 30000,
+        valuation: 30000,
+        revenue: 0
+      };
+      
+      gameState.player.companies.push(company);
+      gameState.player.cash -= 30000;
+      
+      addLog(`Created ${company.name} in the ${industry.name} industry`, 'success');
+      updateUI();
+    }
+    
+    function buyResources() {
+      const resource = prompt('Which resource? (Materials, Technology, Energy, Labor, Data, IP)');
+      if (!resource || !gameState.market.resources[resource]) {
+        addLog('Invalid resource type', 'error');
+        return;
+      }
+      
+      const amount = parseInt(prompt('How many units?') || '0');
+      if (amount <= 0) return;
+      
+      const cost = gameState.market.resources[resource].price * amount;
+      if (gameState.player.cash < cost) {
+        addLog('Insufficient funds!', 'error');
+        return;
+      }
+      
+      gameState.player.cash -= cost;
+      gameState.player.resources[resource] = (gameState.player.resources[resource] || 0) + amount;
+      
+      addLog(`Bought ${amount} ${resource} for $${formatMoney(cost)}`, 'success');
+      updateUI();
+    }
+    
+    function hireEmployees() {
+      if (gameState.player.companies.length === 0) {
+        addLog('You need a company first!', 'error');
+        return;
+      }
+      
+      const company = gameState.player.companies[0]; // Simplified - just use first company
+      const laborCost = gameState.market.resources.Labor.price * 5;
+      
+      if (company.capital < laborCost) {
+        addLog('Company has insufficient capital!', 'error');
+        return;
+      }
+      
+      company.employees += 5;
+      company.capital -= laborCost;
+      
+      addLog(`Hired 5 employees for ${company.name}`, 'success');
+      updateUI();
+    }
+    
+    function developProduct() {
+      if (gameState.player.companies.length === 0) {
+        addLog('You need a company first!', 'error');
+        return;
+      }
+      
+      const company = gameState.player.companies[0];
+      const devCost = 20000;
+      
+      if (company.capital < devCost) {
+        addLog('Company has insufficient capital!', 'error');
+        return;
+      }
+      
+      company.capital -= devCost;
+      company.valuation *= 1.2; // 20% valuation boost
+      
+      addLog(`Developed new product for ${company.name}!`, 'success');
+      updateUI();
+    }
+    
+    // UI Updates
+    function updateUI() {
+      // Update stats
+      document.getElementById('netWorth').textContent = formatMoney(gameState.player.netWorth);
+      document.getElementById('cash').textContent = formatMoney(gameState.player.cash);
+      document.getElementById('companyCount').textContent = gameState.player.companies.length;
+      document.getElementById('gameTime').textContent = `${gameState.gameTime}h`;
+      
+      // Update market
+      updateMarketDisplay();
+      
+      // Update companies
+      updateCompaniesDisplay();
+      
+      // Update AI agents
+      updateAIDisplay();
+      
+      // Update leaderboard
+      updateLeaderboard();
+    }
+    
+    function updateMarketDisplay() {
+      const marketGrid = document.getElementById('marketGrid');
+      marketGrid.innerHTML = Object.entries(gameState.market.resources).map(([name, data]) => `
+        <div class="resource-card">
+          <div class="resource-name">${name}</div>
+          <div class="resource-price trend-${data.trend}">
+            $${formatMoney(data.price)}
+          </div>
+          <div class="trend-${data.trend}">
+            ${data.trend === 'up' ? '↑' : data.trend === 'down' ? '↓' : '→'}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function updateCompaniesDisplay() {
+      const companyList = document.getElementById('companyList');
+      
+      if (gameState.player.companies.length === 0) {
+        companyList.innerHTML = '<p style="color: #888; text-align: center;">No companies yet. Create your first company!</p>';
+        return;
+      }
+      
+      companyList.innerHTML = gameState.player.companies.map(company => `
+        <div class="company-card">
+          <div class="company-name">${company.name}</div>
+          <div class="company-industry">${company.industry}</div>
+          <div class="company-stats">
+            <div>Valuation: ${formatMoney(company.valuation)}</div>
+            <div>Employees: ${company.employees}</div>
+            <div>Capital: ${formatMoney(company.capital)}</div>
+            <div>Revenue: ${formatMoney(company.revenue)}/h</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function updateAIDisplay() {
+      const aiAgents = document.getElementById('aiAgents');
+      aiAgents.innerHTML = gameState.aiAgents.map(agent => `
+        <div class="ai-agent-card">
+          <div class="agent-name">${agent.name}</div>
+          <div class="agent-strategy">Companies: ${agent.companies.length}</div>
+          <div>Net Worth: ${formatMoney(agent.netWorth)}</div>
+        </div>
+      `).join('');
+    }
+    
+    function updateLeaderboard() {
+      const leaderboard = document.getElementById('leaderboard');
+      
+      const allPlayers = [
+        { name: gameState.player.name, netWorth: gameState.player.netWorth, type: 'human' },
+        ...gameState.aiAgents.map(a => ({ name: a.name, netWorth: a.netWorth, type: 'ai' }))
+      ].sort((a, b) => b.netWorth - a.netWorth);
+      
+      leaderboard.innerHTML = allPlayers.map((player, index) => `
+        <div class="stat-item" style="${player.type === 'human' ? 'border: 1px solid #00ff88;' : ''}">
+          <span>#${index + 1} ${player.name}</span>
+          <span class="stat-value">${formatMoney(player.netWorth)}</span>
+        </div>
+      `).join('');
+    }
+    
+    function addLog(message, type = 'info') {
+      const log = {
+        message,
+        type,
+        time: gameState.gameTime
+      };
+      
+      gameState.logs.unshift(log);
+      if (gameState.logs.length > 50) gameState.logs.pop();
+      
+      const gameLog = document.getElementById('gameLog');
+      const logClass = {
+        'system': 'color: #888;',
+        'success': 'color: #00ff88;',
+        'error': 'color: #ff4444;',
+        'ai': 'color: #00aaff;',
+        'win': 'color: #ffaa00; font-weight: bold;'
+      }[type] || '';
+      
+      gameLog.innerHTML = gameState.logs.map(l => 
+        `<div class="log-entry" style="${logClass}">[${l.time}h] ${l.message}</div>`
+      ).join('');
+    }
+    
+    function formatMoney(amount) {
+      if (amount >= 1e9) return `$${(amount / 1e9).toFixed(2)}B`;
+      if (amount >= 1e6) return `$${(amount / 1e6).toFixed(2)}M`;
+      if (amount >= 1e3) return `$${(amount / 1e3).toFixed(1)}K`;
+      return `$${amount.toFixed(0)}`;
+    }
+    
+    // Start the game
+    initGame();
+  </script>
+</body>
+</html>

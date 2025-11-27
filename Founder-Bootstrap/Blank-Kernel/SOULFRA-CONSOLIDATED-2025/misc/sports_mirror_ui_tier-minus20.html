@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Sport Mirror - Vault-Native Sports Reflection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .soulfra-mirror-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .soulfra-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00f5ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vault-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .trust-indicator {
+            background: rgba(0, 245, 255, 0.2);
+            border: 1px solid #00f5ff;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .main-mirror-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1rem;
+            padding: 1rem;
+            height: calc(100vh - 80px);
+        }
+
+        .stream-section {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stream-controls {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .stream-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .stream-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .reflect-button {
+            background: linear-gradient(45deg, #00f5ff, #ff00ff);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reflect-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.3);
+        }
+
+        .soulfra-mirror-container {
+            height: 100%;
+            display: grid;
+            grid-template-rows: 1fr auto;
+        }
+
+        .stream-viewport {
+            background: #000;
+            position: relative;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .stream-viewport iframe,
+        .stream-viewport video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .stream-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .vault-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: grid;
+            grid-template-rows: auto 1fr auto auto auto;
+            gap: 1rem;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        .panel-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #00f5ff;
+        }
+
+        .vault-whisper-bar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .whisper-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .whisper-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .ritual-submit {
+            background: linear-gradient(45deg, #ff00ff, #00f5ff);
+            border: none;
+            border-radius: 20px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ritual-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 0, 255, 0.4);
+        }
+
+        .agent-commentary-feed {
+            height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .commentary-entry {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid #00f5ff;
+        }
+
+        .commentary-archetype {
+            font-size: 0.8rem;
+            color: #ff00ff;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .commentary-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .vault-whisper {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(0, 245, 255, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #00f5ff;
+        }
+
+        .whisper-text {
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .trust-indicator {
+            font-size: 0.7rem;
+            color: #00f5ff;
+            font-weight: 600;
+        }
+
+        .trait-token-bar {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .trait-meter {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trait-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ff00ff;
+            min-width: 60px;
+        }
+
+        .trait-progress-container {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .trait-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5ff, #ff00ff);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .team-blessing-counters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .team-counter {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-name {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #00f5ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .blessing-count {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff00ff;
+        }
+
+        .ritual-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00f5ff;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.25rem;
+        }
+
+        .commentary-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-mirror-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60vh auto;
+            }
+            
+            .vault-panel {
+                grid-template-rows: auto auto auto auto;
+            }
+            
+            .agent-commentary-feed {
+                height: 150px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .agent-commentary-feed::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .agent-commentary-feed::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .agent-commentary-feed::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00f5ff, #ff00ff);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header class="soulfra-mirror-header">
+        <div class="soulfra-logo">🪞 Soulfra Sport Mirror</div>
+        <div class="vault-status">
+            <div class="trust-indicator" id="trust-display">
+                ⚡ Trust: <span id="trust-score">--</span>
+            </div>
+            <div class="trust-indicator" id="vault-status">
+                🔮 Vault: Connected
+            </div>
+        </div>
+    </header>
+
+    <main class="main-mirror-container">
+        <section class="stream-section">
+            <div class="stream-controls">
+                <input type="text" 
+                       id="stream-url-input" 
+                       class="stream-input"
+                       placeholder="Enter stream URL (YouTube, Twitch, M3U8)..."
+                       value="">
+                <button id="reflect-stream-btn" class="reflect-button">
+                    🪞 Reflect Stream
+                </button>
+            </div>
+            
+            <div id="main-stream-container" class="soulfra-mirror-container">
+                <div class="stream-viewport" id="stream-viewport">
+                    <div class="stream-placeholder">
+                        Enter a stream URL to begin vault reflection
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="vault-panel">
+            <div class="panel-section">
+                <div class="section-title">Ritual Whisper</div>
+                <div class="vault-whisper-bar">
+                    <input type="text" 
+                           id="whisper-input" 
+                           class="whisper-input"
+                           placeholder="Cast your ritual whisper..."
+                           maxlength="280"
+                           disabled>
+                    <button id="whisper-submit" class="ritual-submit" disabled>
+                        🔮 Cast
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Agent Commentary</div>
+                <div class="agent-commentary-feed" id="commentary-feed">
+                    <div class="commentary-placeholder">
+                        Awaiting vault resonance...
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Trait Resonance</div>
+                <div class="trait-token-bar" id="trait-meters">
+                    <div class="trait-meter">
+                        <span class="trait-label">Passion</span>
+                        <div class="trait-progress-container">
+                            <div class="trait-progress" data-trait="passion" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="trait-meter">
+                        <span class="trait-label">Focus</span>
+                        <div class="trait-progress-container">
+                            <div class="trait-progress" data-trait="focus" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="trait-meter">
+                        <span class="trait-label">Loyalty</span>
+                        <div class="trait-progress-container">
+                            <div class="trait-progress" data-trait="loyalty" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Team Blessing Echo</div>
+                <div class="team-blessing-counters">
+                    <div class="team-counter" data-team="home">
+                        <span class="team-name">Home</span>
+                        <span class="blessing-count">0</span>
+                    </div>
+                    <div class="team-counter" data-team="away">
+                        <span class="team-name">Away</span>
+                        <span class="blessing-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="section-title">Ritual Stats</div>
+                <div class="ritual-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="ritual-count">0</span>
+                        <span class="stat-label">Rituals Cast</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="session-duration">0:00</span>
+                        <span class="stat-label">Session Time</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script type="module">
+        // Import Soulfra components (in production, these would be bundled)
+        // import { SoulfraPlatform } from './core/soulfra-runtime-core.js';
+        // import { MirrorStreamReflector } from './mirror-stream-reflector.js';
+        // import { AgentCommentaryLayer } from './agent-commentary-layer.js';
+        // import { VaultCheerEngine } from './vault-cheer-engine.js';
+
+        class SportMirrorInterface {
+            constructor() {
+                this.activeStreamId = null;
+                this.userFingerprint = this.generateUserFingerprint();
+                this.sessionStartTime = Date.now();
+                this.ritualCount = 0;
+                
+                // Mock Soulfra platform for demo
+                this.platform = {
+                    processUserRequest: async (fingerprint, prompt, options) => ({
+                        response: this.generateMockAgentResponse(prompt),
+                        cost: 0.1,
+                        trustScore: Math.floor(Math.random() * 40) + 60,
+                        latency: 150
+                    })
+                };
+                
+                this.initializeInterface();
+                this.startSessionTimer();
+            }
+
+            generateUserFingerprint() {
+                return `anon_${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            initializeInterface() {
+                // Stream reflection
+                document.getElementById('reflect-stream-btn').addEventListener('click', () => {
+                    this.reflectStream();
+                });
+
+                document.getElementById('stream-url-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.reflectStream();
+                });
+
+                // Whisper submission
+                document.getElementById('whisper-submit').addEventListener('click', () => {
+                    this.submitWhisper();
+                });
+
+                document.getElementById('whisper-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.submitWhisper();
+                });
+
+                // Update trust display
+                this.updateTrustDisplay(73);
+            }
+
+            async reflectStream() {
+                const urlInput = document.getElementById('stream-url-input');
+                const streamUrl = urlInput.value.trim();
+                
+                if (!streamUrl) {
+                    alert('Please enter a stream URL');
+                    return;
+                }
+
+                try {
+                    // Create stream viewport
+                    this.createStreamEmbed(streamUrl);
+                    
+                    // Enable whisper controls
+                    document.getElementById('whisper-input').disabled = false;
+                    document.getElementById('whisper-submit').disabled = false;
+                    
+                    // Add initial commentary
+                    this.addCommentary('Domingo', '🔮 The mirror activates. I sense strong energy patterns emerging from this arena...');
+                    
+                    this.activeStreamId = `stream_${Date.now()}`;
+                    
+                } catch (error) {
+                    console.error('Stream reflection failed:', error);
+                    alert('Failed to reflect stream. Please check the URL.');
+                }
+            }
+
+            createStreamEmbed(url) {
+                const viewport = document.getElementById('stream-viewport');
+                
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    const videoId = this.extractYouTubeId(url);
+                    viewport.innerHTML = `
+                        <iframe 
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                } else if (url.includes('twitch.tv')) {
+                    const channel = url.split('/').pop();
+                    viewport.innerHTML = `
+                        <iframe 
+                            src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}&autoplay=true&muted=true"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                } else {
+                    // Generic embed or placeholder
+                    viewport.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #000;">
+                            <div style="text-align: center; color: #00f5ff;">
+                                <div style="font-size: 2rem; margin-bottom: 1rem;">🪞</div>
+                                <div>Stream reflected into Soulfra mirror</div>
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem; color: rgba(255,255,255,0.5);">${url}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            extractYouTubeId(url) {
+                const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+                return match ? match[1] : '';
+            }
+
+            async submitWhisper() {
+                const input = document.getElementById('whisper-input');
+                const whisperText = input.value.trim();
+                
+                if (!whisperText) return;
+
+                try {
+                    // Add user whisper to feed
+                    this.addWhisperToFeed(whisperText);
+                    
+                    // Update trait meters
+                    this.updateTraitMeters(whisperText);
+                    
+                    // Generate agent response
+                    setTimeout(() => {
+                        const response = this.generateMockAgentResponse(whisperText);
+                        this.addCommentary('Cal Riven', response);
+                    }, 500 + Math.random() * 1000);
+                    
+                    // Update stats
+                    this.ritualCount++;
+                    document.getElementById('ritual-count').textContent = this.ritualCount;
+                    
+                    // Clear input
+                    input.value = '';
+                    
+                } catch (error) {
+                    console.error('Whisper submission failed:', error);
+                }
+            }
+
+            addWhisperToFeed(text) {
+                const feed = document.getElementById('commentary-feed');
+                const trustScore = Math.floor(Math.random() * 40) + 60;
+                
+                const whisperElement = document.createElement('div');
+                whisperElement.className = 'vault-whisper';
+                whisperElement.innerHTML = `
+                    <span class="whisper-text">${text}</span>
+                    <span class="trust-indicator">⚡${trustScore}</span>
+                `;
+                
+                feed.appendChild(whisperElement);
+                feed.scrollTop = feed.scrollHeight;
+            }
+
+            addCommentary(archetype, text) {
+                const feed = document.getElementById('commentary-feed');
+                
+                // Remove placeholder if present
+                const placeholder = feed.querySelector('.commentary-placeholder');
+                if (placeholder) placeholder.remove();
+                
+                const commentaryElement = document.createElement('div');
+                commentaryElement.className = 'commentary-entry';
+                commentaryElement.innerHTML = `
+                    <div class="commentary-archetype">${archetype}</div>
+                    <div class="commentary-text">${text}</div>
+                `;
+                
+                feed.appendChild(commentaryElement);
+                feed.scrollTop = feed.scrollHeight;
+            }
+
+            generateMockAgentResponse(whisperText) {
+                const responses = [
+                    "🧠 Strategic positioning shows clear intent. Watch for the counter-movement.",
+                    "🔮 The energy shifts. I sense momentum building in the eastern flank.",
+                    "🎭 This moment weaves perfectly into the greater narrative unfolding.",
+                    "🧠 Tactical analysis confirms your observation. Pressure points are critical here.",
+                    "🔮 The vault resonates with your passion. The mirror grows stronger.",
+                    "🎭 Every whisper adds texture to this beautiful sporting tapestry."
+                ];
+                
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            updateTraitMeters(text) {
+                const passion = this.detectPassion(text);
+                const focus = this.detectFocus(text);
+                const loyalty = this.detectLoyalty(text);
+                
+                const traits = { passion, focus, loyalty };
+                
+                Object.keys(traits).forEach(trait => {
+                    const meter = document.querySelector(`[data-trait="${trait}"]`);
+                    if (meter) {
+                        const currentWidth = parseInt(meter.style.width) || 0;
+                        const newWidth = Math.min(100, currentWidth + traits[trait]);
+                        meter.style.width = `${newWidth}%`;
+                    }
+                });
+            }
+
+            detectPassion(text) {
+                const passionWords = ['amazing', 'incredible', '!', 'love', 'hate'];
+                let score = 0;
+                passionWords.forEach(word => {
+                    if (text.toLowerCase().includes(word.toLowerCase())) score += 15;
+                });
+                return Math.min(score, 30);
+            }
+
+            detectFocus(text) {
+                const focusWords = ['strategy', 'play', 'move', 'should', 'think'];
+                let score = 10; // Base focus for engagement
+                focusWords.forEach(word => {
+                    if (text.toLowerCase().includes(word.toLowerCase())) score += 10;
+                });
+                return Math.min(score, 25);
+            }
+
+            detectLoyalty(text) {
+                const loyaltyWords = ['our', 'we', 'team', 'always'];
+                let score = 0;
+                loyaltyWords.forEach(word => {
+                    if (text.toLowerCase().includes(word.toLowerCase())) score += 20;
+                });
+                return Math.min(score, 40);
+            }
+
+            updateTrustDisplay(score) {
+                document.getElementById('trust-score').textContent = score;
+            }
+
+            startSessionTimer() {
+                setInterval(() => {
+                    const elapsed = Date.now() - this.sessionStartTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    document.getElementById('session-duration').textContent = 
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+        }
+
+        // Initialize the interface
+        new SportMirrorInterface();
+    </script>
+</body>
+</html>

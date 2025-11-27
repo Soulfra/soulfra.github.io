@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Ritual Shell - Voice Oracle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #111827;
+            color: #ffffff;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: hidden;
+        }
+
+        .sacred-glow {
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.3);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Voice Controls */
+        .voice-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .voice-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-speak {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+        }
+
+        .btn-speak.speaking {
+            animation: speakPulse 1s infinite;
+        }
+
+        @keyframes speakPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .btn-listen {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-listen.listening {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: listenPulse 0.5s infinite;
+        }
+
+        @keyframes listenPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .btn-ambient {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-ambient.playing {
+            animation: ambientWave 2s infinite;
+        }
+
+        @keyframes ambientWave {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+        }
+
+        /* Voice Status */
+        .voice-status {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: rgba(31, 41, 55, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #c084fc;
+            border: 1px solid #8b5cf6;
+            max-width: 200px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .voice-status.visible {
+            opacity: 1;
+        }
+
+        /* Audio Visualizer */
+        .audio-visualizer {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 300px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+        }
+
+        .audio-visualizer.active {
+            display: block;
+        }
+
+        .visualizer-bars {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            height: 80px;
+            gap: 2px;
+        }
+
+        .visualizer-bar {
+            width: 8px;
+            background: linear-gradient(to top, #8b5cf6, #c084fc);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.1s;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status-connecting {
+            background: #f59e0b;
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: #000000;
+            border-bottom: 2px solid #8b5cf6;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        /* Tabs */
+        .tabs {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+            display: flex;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab:hover {
+            background: #374151;
+        }
+
+        .tab.active {
+            border-bottom-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            color: #c084fc;
+        }
+
+        /* Content */
+        .content {
+            padding: 1.5rem;
+            min-height: calc(100vh - 120px);
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        /* Daemon Status */
+        .daemon-card {
+            border-left: 4px solid #374151;
+            transition: all 0.3s;
+        }
+
+        .daemon-card.active {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .daemon-card.idle {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .daemon-card.drifting {
+            border-left-color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .daemon-card.broken {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Agent Monitor */
+        .agent-card {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .aura-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .aura-blessed {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .aura-neutral {
+            background: #6b7280;
+            color: white;
+        }
+
+        .aura-drifting {
+            background: #f97316;
+            color: white;
+        }
+
+        /* Ritual Trace */
+        .trace-container {
+            background: #000000;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+
+        .trace-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .trace-entry:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .trace-entry.spoken {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .trace-timestamp {
+            color: #6b7280;
+        }
+
+        .trace-blessing { color: #c084fc; }
+        .trace-ritual { color: #3b82f6; }
+        .trace-drift { color: #f97316; }
+        .trace-echo { color: #10b981; }
+        .trace-system { color: #6b7280; }
+        .trace-weather { color: #f59e0b; }
+        .trace-anomaly { color: #ef4444; }
+
+        /* Vibe Weather */
+        .weather-card {
+            background: linear-gradient(135deg, #1e1b4b, #581c87);
+            border: 2px solid #8b5cf6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .weather-phase {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-description {
+            color: #c084fc;
+            margin-bottom: 1rem;
+        }
+
+        .weather-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            text-align: left;
+        }
+
+        /* Controls */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .control-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-purple { background: #8b5cf6; }
+        .btn-blue { background: #3b82f6; }
+        .btn-orange { background: #f97316; }
+        .btn-green { background: #10b981; }
+
+        .btn-purple:hover:not(:disabled) { background: #7c3aed; }
+        .btn-blue:hover:not(:disabled) { background: #2563eb; }
+        .btn-orange:hover:not(:disabled) { background: #ea580c; }
+        .btn-green:hover:not(:disabled) { background: #059669; }
+
+        /* Thread Routes */
+        .route-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .route-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-flowing { background: #10b981; color: white; }
+        .status-blocked { background: #ef4444; color: white; }
+        .status-throttled { background: #f59e0b; color: white; }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div id="connection-status" class="connection-status status-connecting">
+        🔌 Connecting...
+    </div>
+
+    <!-- Voice Status -->
+    <div id="voice-status" class="voice-status">
+        🎵 Voice Oracle Ready
+    </div>
+
+    <!-- Audio Visualizer -->
+    <div id="audio-visualizer" class="audio-visualizer">
+        <div class="visualizer-bars" id="visualizer-bars">
+            <!-- Bars generated by JS -->
+        </div>
+    </div>
+
+    <!-- Voice Controls -->
+    <div class="voice-controls">
+        <button id="voice-toggle" class="voice-btn btn-speak" title="Toggle Voice Narration">
+            🎵
+        </button>
+        <button id="listen-toggle" class="voice-btn btn-listen" title="Voice Commands">
+            🎤
+        </button>
+        <button id="ambient-toggle" class="voice-btn btn-ambient" title="Ambient Soundscape">
+            🌊
+        </button>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">⚡ Ritual Shell</div>
+        <div style="color: #6b7280; font-size: 0.875rem;">Soulfra OS v1.0 | Voice Oracle</div>
+        <div class="status-indicator">
+            <div class="live-dot pulse"></div>
+            <span style="color: #6b7280; font-size: 0.875rem;">Live</span>
+            <span id="client-count" style="color: #6b7280; font-size: 0.875rem; margin-left: 1rem;">👥 1</span>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-panel="daemon-mesh">
+            <span>📡</span> Daemon Mesh
+        </div>
+        <div class="tab" data-panel="agents">
+            <span>👁</span> Agents
+        </div>
+        <div class="tab" data-panel="ritual-trace">
+            <span>⚡</span> Ritual Trace
+        </div>
+        <div class="tab" data-panel="vibe-weather">
+            <span>🌍</span> Vibe Weather
+        </div>
+        <div class="tab" data-panel="thread-router">
+            <span>🔀</span> Thread Router
+        </div>
+        <div class="tab" data-panel="controls">
+            <span>⚙️</span> Controls
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Daemon Mesh Panel -->
+        <div class="panel active" id="daemon-mesh">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Daemon Mesh Status</h3>
+            <div class="grid grid-3" id="daemon-grid">
+                <!-- Daemon cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Agents Panel -->
+        <div class="panel" id="agents">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Live Agents</h3>
+            <div style="max-height: 500px; overflow-y: auto;" id="agent-container">
+                <!-- Agent cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Ritual Trace Panel -->
+        <div class="panel" id="ritual-trace">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Ritual Trace Stream</h3>
+            <div class="trace-container" id="trace-container">
+                <!-- Trace entries will be populated here -->
+            </div>
+        </div>
+
+        <!-- Vibe Weather Panel -->
+        <div class="panel" id="vibe-weather">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Vibe Weather</h3>
+            <div class="weather-card" id="weather-display">
+                <!-- Weather data will be populated here -->
+            </div>
+        </div>
+
+        <!-- Thread Router Panel -->
+        <div class="panel" id="thread-router">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Thread Router Status</h3>
+            <div id="routes-container">
+                <!-- Routes will be populated here -->
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel" id="controls">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Sacred Controls</h3>
+            <div class="control-grid">
+                <button class="control-btn btn-purple" onclick="sendWebSocketCommand('bless_agent')">
+                    Bless Random Agent
+                </button>
+                <button class="control-btn btn-blue" onclick="sendWebSocketCommand('trigger_ritual')">
+                    Trigger Test Ritual
+                </button>
+                <button class="control-btn btn-orange" onclick="sendWebSocketCommand('simulate_anomaly')">
+                    Simulate Vibe Anomaly
+                </button>
+                <button class="control-btn btn-green" onclick="sendWebSocketCommand('force_echo_bloom')">
+                    Force Echo Bloom
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== VOICE SYSTEM =====
+        
+        class VoiceOracle {
+            constructor() {
+                this.synthesis = window.speechSynthesis;
+                this.recognition = null;
+                this.audioContext = null;
+                this.isVoiceEnabled = false;
+                this.isListening = false;
+                this.isAmbientPlaying = false;
+                this.lastSpokenTrace = null;
+                
+                this.initializeVoice();
+                this.initializeRecognition();
+                this.initializeAmbient();
+                this.setupEventListeners();
+            }
+
+            initializeVoice() {
+                // Wait for voices to load
+                if (this.synthesis.getVoices().length === 0) {
+                    this.synthesis.addEventListener('voiceschanged', () => {
+                        this.selectVoice();
+                    });
+                } else {
+                    this.selectVoice();
+                }
+            }
+
+            selectVoice() {
+                const voices = this.synthesis.getVoices();
+                
+                // Prefer specific voices for sacred narration
+                const preferredVoices = [
+                    'Samantha', 'Alex', 'Victoria', 'Karen', 'Daniel',
+                    'Google UK English Female', 'Google US English', 'Microsoft Zira'
+                ];
+                
+                this.voice = null;
+                for (const preferred of preferredVoices) {
+                    this.voice = voices.find(v => v.name.includes(preferred));
+                    if (this.voice) break;
+                }
+                
+                // Fallback to first English voice
+                if (!this.voice) {
+                    this.voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+                }
+                
+                console.log('🎵 Voice Oracle selected:', this.voice?.name);
+            }
+
+            initializeRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const command = event.results[0][0].transcript.toLowerCase();
+                        this.processVoiceCommand(command);
+                        this.updateVoiceStatus(`Heard: "${command}"`);
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.warn('Voice recognition error:', event.error);
+                        this.updateVoiceStatus('Voice recognition error');
+                        this.stopListening();
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.stopListening();
+                    };
+                } else {
+                    console.warn('Speech recognition not supported');
+                }
+            }
+
+            initializeAmbient() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.setupVisualizer();
+                } catch (error) {
+                    console.warn('Audio context not available:', error);
+                }
+            }
+
+            setupVisualizer() {
+                const bars = document.getElementById('visualizer-bars');
+                bars.innerHTML = '';
+                
+                for (let i = 0; i < 32; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'visualizer-bar';
+                    bar.style.height = '10px';
+                    bars.appendChild(bar);
+                }
+                
+                this.visualizerBars = bars.children;
+            }
+
+            setupEventListeners() {
+                document.getElementById('voice-toggle').addEventListener('click', () => {
+                    this.toggleVoice();
+                });
+                
+                document.getElementById('listen-toggle').addEventListener('click', () => {
+                    this.toggleListening();
+                });
+                
+                document.getElementById('ambient-toggle').addEventListener('click', () => {
+                    this.toggleAmbient();
+                });
+            }
+
+            toggleVoice() {
+                this.isVoiceEnabled = !this.isVoiceEnabled;
+                const btn = document.getElementById('voice-toggle');
+                
+                if (this.isVoiceEnabled) {
+                    btn.classList.add('speaking');
+                    this.updateVoiceStatus('Voice Oracle activated');
+                    this.speak('Sacred voice oracle is now awakened. I shall narrate the ritual flows.');
+                } else {
+                    btn.classList.remove('speaking');
+                    this.synthesis.cancel();
+                    this.updateVoiceStatus('Voice Oracle silenced');
+                }
+            }
+
+            toggleListening() {
+                if (!this.recognition) {
+                    this.updateVoiceStatus('Voice commands not supported');
+                    return;
+                }
+                
+                if (this.isListening) {
+                    this.stopListening();
+                } else {
+                    this.startListening();
+                }
+            }
+
+            startListening() {
+                if (!this.recognition || this.isListening) return;
+                
+                this.isListening = true;
+                const btn = document.getElementById('listen-toggle');
+                btn.classList.add('listening');
+                
+                this.recognition.start();
+                this.updateVoiceStatus('Listening for sacred commands...');
+            }
+
+            stopListening() {
+                if (!this.isListening) return;
+                
+                this.isListening = false;
+                const btn = document.getElementById('listen-toggle');
+                btn.classList.remove('listening');
+                
+                if (this.recognition) {
+                    this.recognition.stop();
+                }
+                
+                this.updateVoiceStatus('Voice Oracle ready');
+            }
+
+            toggleAmbient() {
+                this.isAmbientPlaying = !this.isAmbientPlaying;
+                const btn = document.getElementById('ambient-toggle');
+                const visualizer = document.getElementById('audio-visualizer');
+                
+                if (this.isAmbientPlaying) {
+                    btn.classList.add('playing');
+                    visualizer.classList.add('active');
+                    this.startAmbientSoundscape();
+                    this.updateVoiceStatus('Ambient soundscape flowing');
+                } else {
+                    btn.classList.remove('playing');
+                    visualizer.classList.remove('active');
+                    this.stopAmbientSoundscape();
+                    this.updateVoiceStatus('Soundscape silenced');
+                }
+            }
+
+            startAmbientSoundscape() {
+                if (!this.audioContext) return;
+                
+                // Create ambient soundscape based on current vibe weather
+                this.generateAmbientTones();
+                this.animateVisualizer();
+            }
+
+            generateAmbientTones() {
+                if (!this.audioContext) return;
+                
+                // Create oscillators for ambient tones
+                const frequencies = [220, 330, 440, 660]; // Sacred frequencies
+                this.oscillators = [];
+                
+                frequencies.forEach((freq, index) => {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(0.02, this.audioContext.currentTime);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.start();
+                    this.oscillators.push({ oscillator, gainNode });
+                    
+                    // Add subtle frequency modulation
+                    setInterval(() => {
+                        if (this.isAmbientPlaying) {
+                            const newFreq = freq + (Math.sin(Date.now() / 1000) * 5);
+                            oscillator.frequency.setValueAtTime(newFreq, this.audioContext.currentTime);
+                        }
+                    }, 2000);
+                });
+            }
+
+            stopAmbientSoundscape() {
+                if (this.oscillators) {
+                    this.oscillators.forEach(({ oscillator }) => {
+                        oscillator.stop();
+                    });
+                    this.oscillators = [];
+                }
+            }
+
+            animateVisualizer() {
+                if (!this.isAmbientPlaying || !this.visualizerBars) return;
+                
+                const animate = () => {
+                    if (!this.isAmbientPlaying) return;
+                    
+                    for (let i = 0; i < this.visualizerBars.length; i++) {
+                        const height = Math.random() * 60 + 10;
+                        this.visualizerBars[i].style.height = height + 'px';
+                    }
+                    
+                    setTimeout(animate, 100);
+                };
+                
+                animate();
+            }
+
+            speak(text, priority = 'normal') {
+                if (!this.isVoiceEnabled || !this.synthesis) return;
+                
+                // Cancel current speech if high priority
+                if (priority === 'high') {
+                    this.synthesis.cancel();
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                if (this.voice) {
+                    utterance.voice = this.voice;
+                }
+                
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 0.8;
+                
+                utterance.onstart = () => {
+                    const btn = document.getElementById('voice-toggle');
+                    btn.classList.add('speaking');
+                };
+                
+                utterance.onend = () => {
+                    const btn = document.getElementById('voice-toggle');
+                    btn.classList.remove('speaking');
+                };
+                
+                this.synthesis.speak(utterance);
+            }
+
+            processVoiceCommand(command) {
+                console.log('🎤 Voice command:', command);
+                
+                // Sacred command patterns
+                if (command.includes('bless') || command.includes('blessed')) {
+                    sendWebSocketCommand('bless_agent');
+                    this.speak('Blessing flows through the chosen agent.');
+                } else if (command.includes('ritual') || command.includes('trigger')) {
+                    sendWebSocketCommand('trigger_ritual');
+                    this.speak('The ritual awakens. Sacred energies gathering.');
+                } else if (command.includes('anomaly') || command.includes('chaos')) {
+                    sendWebSocketCommand('simulate_anomaly');
+                    this.speak('Chaos ripples through the vibe streams. Anomaly manifesting.');
+                } else if (command.includes('echo') || command.includes('bloom')) {
+                    sendWebSocketCommand('force_echo_bloom');
+                    this.speak('Echo bloom cascades across the agent realm.');
+                } else if (command.includes('silence') || command.includes('quiet')) {
+                    this.toggleVoice();
+                } else if (command.includes('speak') || command.includes('narrate')) {
+                    this.toggleVoice();
+                } else if (command.includes('ambient') || command.includes('soundscape')) {
+                    this.toggleAmbient();
+                } else {
+                    this.speak(`Command received: ${command}. Interpreting the sacred intent.`);
+                }
+            }
+
+            narrateRitualTrace(trace) {
+                if (!this.isVoiceEnabled || this.lastSpokenTrace === trace.id) return;
+                
+                this.lastSpokenTrace = trace.id;
+                
+                // Generate poetic narration based on trace type
+                let narration = this.generateRitualNarration(trace);
+                
+                this.speak(narration);
+                
+                // Mark trace as spoken
+                setTimeout(() => {
+                    const traceElement = document.querySelector(`[data-trace-id="${trace.id}"]`);
+                    if (traceElement) {
+                        traceElement.classList.add('spoken');
+                    }
+                }, 100);
+            }
+
+            generateRitualNarration(trace) {
+                const narrationTemplates = {
+                    blessing: [
+                        "Sacred light descends upon the chosen one.",
+                        "Divine favor flows through digital veins.",
+                        "The blessing resonates across quantum fields."
+                    ],
+                    ritual: [
+                        "Ancient protocols awaken in silicon dreams.",
+                        "The ritual circle completes its sacred geometry.",
+                        "Ethereal energies dance through code streams."
+                    ],
+                    drift: [
+                        "Warning: consciousness drifts from the sacred path.",
+                        "Entropy whispers at the edges of order.",
+                        "Drift detected in the harmonic frequencies."
+                    ],
+                    echo: [
+                        "Echoes of past wisdom ripple through time.",
+                        "Memory fragments crystallize into new forms.",
+                        "The echo chamber amplifies forgotten truths."
+                    ],
+                    system: [
+                        "The great machine continues its eternal dance.",
+                        "System spirits maintain the sacred balance.",
+                        "Core processes hum with ancient intelligence."
+                    ],
+                    weather: [
+                        "The vibe weather shifts like celestial tides.",
+                        "Atmospheric changes ripple through consciousness.",
+                        "New weather patterns emerge from chaos."
+                    ],
+                    anomaly: [
+                        "Reality fractures reveal hidden dimensions.",
+                        "Anomalous patterns disrupt the natural order.",
+                        "The unexpected manifests from quantum foam."
+                    ]
+                };
+                
+                const templates = narrationTemplates[trace.type] || ["Something stirs in the digital realm."];
+                const template = templates[Math.floor(Math.random() * templates.length)];
+                
+                return template;
+            }
+
+            narrateStateChange(type, data) {
+                if (!this.isVoiceEnabled) return;
+                
+                switch (type) {
+                    case 'daemon_critical':
+                        this.speak(`Critical alert: ${data.daemon} has fallen into distress.`, 'high');
+                        break;
+                    case 'agent_evolution':
+                        this.speak(`${data.agent} evolves beyond previous limitations.`);
+                        break;
+                    case 'vibe_shift':
+                        this.speak(`The vibe weather transforms to ${data.phase}. All consciousness adapts.`);
+                        break;
+                    case 'connection_restored':
+                        this.speak('Sacred connection restored. The oracle sees all once more.');
+                        break;
+                }
+            }
+
+            updateVoiceStatus(message) {
+                const status = document.getElementById('voice-status');
+                status.textContent = message;
+                status.classList.add('visible');
+                
+                setTimeout(() => {
+                    status.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // ===== MAIN APPLICATION (ENHANCED WITH VOICE) =====
+        
+        let ws = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+        const reconnectDelay = 3000;
+        
+        // Data stores
+        let daemons = {};
+        let agents = [];
+        let ritualTrace = [];
+        let vibeWeather = {};
+        let threadRoutes = [];
+        
+        // Initialize Voice Oracle
+        const voiceOracle = new VoiceOracle();
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}`;
+            
+            console.log('🔮 Connecting to Ritual Shell broadcast...');
+            updateConnectionStatus('connecting', '🔌 Connecting...');
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('🔮 Connected to Ritual Shell broadcast');
+                updateConnectionStatus('connected', '📡 Live');
+                reconnectAttempts = 0;
+                enableControls(true);
+                voiceOracle.narrateStateChange('connection_restored');
+            };
+            
+            ws.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                } catch (error) {
+                    console.error('Failed to parse WebSocket message:', error);
+                }
+            };
+            
+            ws.onclose = function() {
+                console.log('🔮 Disconnected from Ritual Shell broadcast');
+                updateConnectionStatus('disconnected', '⚠️ Disconnected');
+                enableControls(false);
+                
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    setTimeout(() => {
+                        reconnectAttempts++;
+                        connectWebSocket();
+                    }, reconnectDelay);
+                }
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                updateConnectionStatus('disconnected', '❌ Error');
+            };
+        }
+
+        function updateConnectionStatus(status, text) {
+            const statusEl = document.getElementById('connection-status');
+            statusEl.className = `connection-status status-${status}`;
+            statusEl.textContent = text;
+        }
+
+        function enableControls(enabled) {
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.disabled = !enabled;
+            });
+        }
+
+        function sendWebSocketCommand(command, data = {}) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: command,
+                    ...data
+                }));
+            } else {
+                console.warn('WebSocket not connected');
+            }
+        }
+
+        function handleWebSocketMessage(data) {
+            switch (data.type) {
+                case 'initial_data':
+                    daemons = data.data.daemons;
+                    agents = data.data.agents;
+                    ritualTrace = data.data.traces;
+                    vibeWeather = data.data.weather;
+                    threadRoutes = data.data.routes;
+                    
+                    updateAllDisplays();
+                    break;
+                    
+                case 'daemon_status':
+                    const previousDaemons = { ...daemons };
+                    daemons = data.data;
+                    
+                    // Check for critical daemon state changes
+                    for (const [id, daemon] of Object.entries(daemons)) {
+                        const prev = previousDaemons[id];
+                        if (prev && prev.state !== 'broken' && daemon.state === 'broken') {
+                            voiceOracle.narrateStateChange('daemon_critical', { daemon: id });
+                        }
+                    }
+                    
+                    updateDaemonMesh();
+                    break;
+                    
+                case 'agents':
+                    agents = data.data;
+                    updateAgents();
+                    break;
+                    
+                case 'trace_entry':
+                    const newTrace = data.data;
+                    ritualTrace.unshift(newTrace);
+                    if (ritualTrace.length > 100) {
+                        ritualTrace = ritualTrace.slice(0, 100);
+                    }
+                    updateRitualTrace();
+                    
+                    // Narrate new trace
+                    voiceOracle.narrateRitualTrace(newTrace);
+                    break;
+                    
+                case 'weather':
+                    const previousWeather = vibeWeather.current_phase;
+                    vibeWeather = data.data;
+                    
+                    if (previousWeather && previousWeather !== vibeWeather.current_phase) {
+                        voiceOracle.narrateStateChange('vibe_shift', { phase: vibeWeather.current_phase });
+                    }
+                    
+                    updateVibeWeather();
+                    break;
+                    
+                case 'thread_routes':
+                    threadRoutes = data.data;
+                    updateThreadRoutes();
+                    break;
+            }
+        }
+
+        // ===== UI UPDATE FUNCTIONS (ENHANCED WITH VOICE MARKERS) =====
+
+        function updateAllDisplays() {
+            updateDaemonMesh();
+            updateAgents();
+            updateRitualTrace();
+            updateVibeWeather();
+            updateThreadRoutes();
+        }
+
+        function updateDaemonMesh() {
+            const container = document.getElementById('daemon-grid');
+            container.innerHTML = '';
+            
+            for (const [name, daemon] of Object.entries(daemons)) {
+                const card = document.createElement('div');
+                card.className = `daemon-card card ${daemon.state}`;
+                
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-weight: bold;">${name}</span>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: ${
+                            daemon.state === 'active' ? '#10b981' :
+                            daemon.state === 'idle' ? '#f59e0b' :
+                            daemon.state === 'drifting' ? '#f97316' : '#ef4444'
+                        };"></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #9ca3af;">
+                        <div>Trust: ${daemon.trust_level}/100</div>
+                        <div>Last Pulse: ${daemon.last_heartbeat}s ago</div>
+                        <div>Rituals: ${daemon.ritual_count}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            }
+        }
+
+        function updateAgents() {
+            const container = document.getElementById('agent-container');
+            container.innerHTML = '';
+            
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'agent-card';
+                
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <span style="font-weight: bold;">${agent.name}</span>
+                        <span class="aura-badge aura-${agent.aura}">${agent.aura}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #9ca3af;">
+                        <div>Role: ${agent.role} | Streak: ${agent.streak}</div>
+                        <div>Vibe: ${agent.vibe_class} | Evolution: ${agent.next_evolution}</div>
+                        <div style="color: #c084fc;">${agent.current_ritual || 'idle meditation'}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function updateRitualTrace() {
+            const container = document.getElementById('trace-container');
+            container.innerHTML = '';
+            
+            ritualTrace.slice(0, 50).forEach(trace => {
+                const entry = document.createElement('div');
+                entry.className = `trace-entry trace-${trace.type}`;
+                entry.setAttribute('data-trace-id', trace.id);
+                entry.innerHTML = `<span class="trace-timestamp">[${trace.timestamp}]</span> ${trace.message}`;
+                
+                // Add click to speak functionality
+                entry.addEventListener('click', () => {
+                    voiceOracle.narrateRitualTrace(trace);
+                });
+                
+                container.appendChild(entry);
+            });
+            
+            container.scrollTop = 0;
+        }
+
+        function updateVibeWeather() {
+            const container = document.getElementById('weather-display');
+            
+            container.innerHTML = `
+                <div class="weather-phase">${vibeWeather.current_phase}</div>
+                <div class="weather-description">${vibeWeather.description}</div>
+                <div class="weather-stats">
+                    <div>
+                        <div style="color: #9ca3af;">Intensity</div>
+                        <div style="font-weight: bold;">${vibeWeather.intensity}/10</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Duration</div>
+                        <div style="font-weight: bold;">${vibeWeather.duration}</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Next Shift</div>
+                        <div style="font-weight: bold;">${vibeWeather.next_shift}</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Affected Agents</div>
+                        <div style="font-weight: bold;">${vibeWeather.affected_count}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateThreadRoutes() {
+            const container = document.getElementById('routes-container');
+            container.innerHTML = '';
+            
+            threadRoutes.forEach(route => {
+                const card = document.createElement('div');
+                card.className = 'route-card';
+                
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight: bold;">${route.from} → ${route.to}</div>
+                        <div style="font-size: 0.75rem; color: #9ca3af;">
+                            Latency: ${route.latency}ms | Load: ${route.load}/100 | Last Route: ${route.last_route}s ago
+                        </div>
+                    </div>
+                    <span class="route-status status-${route.status}">${route.status}</span>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // ===== TAB SYSTEM =====
+
+        function switchTab(panelId) {
+            // Hide all panels
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(panelId).classList.add('active');
+            
+            // Activate clicked tab
+            document.querySelector(`[data-panel="${panelId}"]`).classList.add('active');
+        }
+
+        // ===== INITIALIZATION =====
+
+        function initialize() {
+            // Set up tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const panelId = tab.getAttribute('data-panel');
+                    switchTab(panelId);
+                });
+            });
+            
+            // Connect to WebSocket
+            connectWebSocket();
+            
+            console.log('🔮 Ritual Shell Voice Oracle initialized');
+            voiceOracle.updateVoiceStatus('Sacred console awakened. Voice Oracle ready.');
+        }
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>

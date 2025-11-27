@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS License Partner Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b69 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .partner-header {
+            background: linear-gradient(90deg, #001122, #003366);
+            border-bottom: 2px solid #00ff88;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            position: relative;
+        }
+        
+        .partner-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 15px #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .partner-subtitle {
+            font-size: 18px;
+            color: #66ffaa;
+            opacity: 0.9;
+        }
+        
+        .license-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 136, 0.15);
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            color: #00ff88;
+            text-align: center;
+        }
+        
+        .license-type {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .license-status {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        .revenue-overview {
+            background: #111;
+            border-bottom: 1px solid #00ff88;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .revenue-metric {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #00ff88;
+        }
+        
+        .metric-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+        
+        .metric-label {
+            color: #66ffaa;
+            margin-right: 8px;
+        }
+        
+        .metric-value {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .main-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-panel {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid #00ff88;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .panel-title {
+            font-size: 20px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .panel-badge {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .revenue-chart {
+            height: 200px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px dashed rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            color: #66ffaa;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .revenue-bars {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 180px;
+            padding: 20px;
+        }
+        
+        .revenue-bar {
+            width: 20px;
+            background: linear-gradient(to top, #003366, #00ff88);
+            border-radius: 3px 3px 0 0;
+            opacity: 0.8;
+            animation: grow 2s ease-out;
+        }
+        
+        .export-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .export-stat {
+            background: rgba(0, 255, 136, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #66ffaa;
+            font-size: 12px;
+        }
+        
+        .agent-loops-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+        }
+        
+        .loop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            font-size: 13px;
+        }
+        
+        .loop-item:last-child {
+            border-bottom: none;
+        }
+        
+        .loop-name {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .loop-revenue {
+            color: #66ffaa;
+        }
+        
+        .referral-section {
+            grid-column: span 2;
+        }
+        
+        .referral-code-display {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px dashed #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .referral-code {
+            font-size: 28px;
+            color: #00ff88;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .referral-instructions {
+            color: #66ffaa;
+            font-size: 14px;
+        }
+        
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .referral-stat {
+            background: rgba(0, 255, 136, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-button {
+            background: linear-gradient(145deg, #003366, #004488);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .action-button:hover {
+            background: linear-gradient(145deg, #004488, #0066aa);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .payout-status {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .payout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .payout-title {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .payout-frequency {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .payout-details {
+            color: #66ffaa;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        @keyframes grow {
+            0% { height: 0; }
+            100% { height: var(--height); }
+        }
+        
+        .earnings-timeline {
+            margin-top: 20px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            font-size: 13px;
+        }
+        
+        .timeline-date {
+            color: #66ffaa;
+        }
+        
+        .timeline-amount {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .license-upgrade {
+            background: linear-gradient(145deg, #2d1b69, #3d2b79);
+            border: 2px solid #7b68ee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .upgrade-title {
+            color: #7b68ee;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .upgrade-description {
+            color: #9f8eff;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .upgrade-button {
+            background: linear-gradient(145deg, #7b68ee, #9f8eff);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upgrade-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="partner-header">
+        <div class="partner-title">MirrorOS License Partner Dashboard</div>
+        <div class="partner-subtitle">Enterprise Vault Revenue & Performance Analytics</div>
+        
+        <div class="license-badge">
+            <div class="license-type">ENTERPRISE PARTNER</div>
+            <div class="license-status">Active • Verified</div>
+        </div>
+    </div>
+    
+    <div class="revenue-overview">
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Total Revenue:</span>
+                <span class="metric-value">$287,456.78</span>
+            </div>
+        </div>
+        
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Your Earnings (85%):</span>
+                <span class="metric-value">$244,338.26</span>
+            </div>
+        </div>
+        
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">This Month:</span>
+                <span class="metric-value">$48,234.50</span>
+            </div>
+        </div>
+        
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Growth Rate:</span>
+                <span class="metric-value">+23.7%</span>
+            </div>
+        </div>
+        
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Active Customers:</span>
+                <span class="metric-value">156</span>
+            </div>
+        </div>
+        
+        <div class="revenue-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Avg. Customer LTV:</span>
+                <span class="metric-value">$3,456.78</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-dashboard">
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title">Revenue Analytics</div>
+                <div class="panel-badge">Last 6 Months</div>
+            </div>
+            
+            <div class="revenue-chart">
+                <div class="revenue-bars">
+                    <div class="revenue-bar" style="--height: 60px; height: 60px;"></div>
+                    <div class="revenue-bar" style="--height: 85px; height: 85px;"></div>
+                    <div class="revenue-bar" style="--height: 72px; height: 72px;"></div>
+                    <div class="revenue-bar" style="--height: 95px; height: 95px;"></div>
+                    <div class="revenue-bar" style="--height: 110px; height: 110px;"></div>
+                    <div class="revenue-bar" style="--height: 140px; height: 140px;"></div>
+                </div>
+            </div>
+            
+            <div class="earnings-timeline">
+                <div class="timeline-item">
+                    <span class="timeline-date">Dec 15, 2024</span>
+                    <span class="timeline-amount">+$12,450.23</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-date">Dec 8, 2024</span>
+                    <span class="timeline-amount">+$8,234.56</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-date">Dec 1, 2024</span>
+                    <span class="timeline-amount">+$15,678.90</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-date">Nov 24, 2024</span>
+                    <span class="timeline-amount">+$9,876.54</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title">Export Performance</div>
+                <div class="panel-badge">234 Total</div>
+            </div>
+            
+            <div class="export-metrics">
+                <div class="export-stat">
+                    <div class="stat-number">234</div>
+                    <div class="stat-label">Agent Exports</div>
+                </div>
+                <div class="export-stat">
+                    <div class="stat-number">67</div>
+                    <div class="stat-label">Platform Forks</div>
+                </div>
+                <div class="export-stat">
+                    <div class="stat-number">189</div>
+                    <div class="stat-label">Templates Sold</div>
+                </div>
+                <div class="export-stat">
+                    <div class="stat-number">$1,228</div>
+                    <div class="stat-label">Avg Export Value</div>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="action-button" onclick="createAgentTemplate()">Create Template</button>
+                <button class="action-button" onclick="forkPlatform()">Fork Platform</button>
+                <button class="action-button" onclick="exportAgent()">Export Agent</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title">Agent Loops Launched</div>
+                <div class="panel-badge">1,847 Active</div>
+            </div>
+            
+            <div class="agent-loops-list">
+                <div class="loop-item">
+                    <span class="loop-name">Enterprise Analytics Bot</span>
+                    <span class="loop-revenue">$45,234.56</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Customer Support Agent</span>
+                    <span class="loop-revenue">$32,567.89</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Data Processing Loop</span>
+                    <span class="loop-revenue">$28,901.23</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Marketing Automation</span>
+                    <span class="loop-revenue">$25,678.45</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Content Generation Agent</span>
+                    <span class="loop-revenue">$19,876.54</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Code Review Assistant</span>
+                    <span class="loop-revenue">$15,432.10</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Business Intelligence Loop</span>
+                    <span class="loop-revenue">$12,345.67</span>
+                </div>
+                <div class="loop-item">
+                    <span class="loop-name">Quality Assurance Agent</span>
+                    <span class="loop-revenue">$9,876.54</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div class="panel-title">Payout Status</div>
+                <div class="panel-badge">Weekly</div>
+            </div>
+            
+            <div class="payout-status">
+                <div class="payout-header">
+                    <div class="payout-title">Next Payout</div>
+                    <div class="payout-frequency">Friday Dec 22</div>
+                </div>
+                <div class="payout-details">
+                    Pending Amount: <strong style="color: #00ff88;">$12,450.23</strong><br>
+                    Bank Account: ****1234 (Verified)<br>
+                    Processing Fee: 2.9% + $0.30<br>
+                    Expected Arrival: 2-3 business days
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="action-button" onclick="updatePayoutSettings()">Payout Settings</button>
+                <button class="action-button" onclick="downloadTaxDocs()">Tax Documents</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-panel referral-section">
+            <div class="panel-header">
+                <div class="panel-title">Referral Program Performance</div>
+                <div class="panel-badge">34 Referrals</div>
+            </div>
+            
+            <div class="referral-code-display">
+                <div class="referral-code">ENT-VAULT-001</div>
+                <div class="referral-instructions">
+                    Share this code to earn 5% commission on all referral revenue
+                </div>
+            </div>
+            
+            <div class="referral-stats">
+                <div class="referral-stat">
+                    <div class="stat-number">34</div>
+                    <div class="stat-label">Total Referrals</div>
+                </div>
+                <div class="referral-stat">
+                    <div class="stat-number">$12,450</div>
+                    <div class="stat-label">Referral Earnings</div>
+                </div>
+                <div class="referral-stat">
+                    <div class="stat-number">23.8%</div>
+                    <div class="stat-label">Conversion Rate</div>
+                </div>
+                <div class="referral-stat">
+                    <div class="stat-number">$367</div>
+                    <div class="stat-label">Avg Referral Value</div>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="action-button" onclick="generateReferralMaterial()">Marketing Assets</button>
+                <button class="action-button" onclick="viewReferralAnalytics()">Referral Analytics</button>
+                <button class="action-button" onclick="shareReferralCode()">Share Code</button>
+            </div>
+        </div>
+        
+        <div class="license-upgrade">
+            <div class="upgrade-title">🚀 Upgrade to Premium Enterprise</div>
+            <div class="upgrade-description">
+                Unlock white-label branding, custom pricing tiers, and 90% revenue share
+            </div>
+            <button class="upgrade-button" onclick="upgradeLicense()">Upgrade License</button>
+        </div>
+    </div>
+    
+    <script>
+        // Dashboard interaction functions
+        function createAgentTemplate() {
+            alert('Launching Agent Template Creator...\n\nThis will open the MirrorOS template builder where you can create reusable agent configurations for resale.');
+        }
+        
+        function forkPlatform() {
+            alert('Initiating Platform Fork...\n\nCreating a new sovereign platform instance. This will generate a new hosted mirror with your branding.');
+        }
+        
+        function exportAgent() {
+            alert('Opening Agent Export Interface...\n\nSelect an agent to export to customer infrastructure or marketplace listing.');
+        }
+        
+        function updatePayoutSettings() {
+            alert('Payout Settings Panel\n\n• Change payout frequency (weekly/bi-weekly/monthly)\n• Update bank account information\n• Modify payout minimums\n• Configure automatic vs manual payouts');
+        }
+        
+        function downloadTaxDocs() {
+            alert('Tax Documentation\n\n• 1099-K forms available\n• Revenue breakdown by quarter\n• Deductible expense reports\n• International tax compliance docs');
+        }
+        
+        function generateReferralMaterial() {
+            alert('Marketing Asset Generator\n\n• Custom landing pages with your referral code\n• Social media graphics and copy\n• Email templates for outreach\n• Demo videos with tracking links');
+        }
+        
+        function viewReferralAnalytics() {
+            alert('Referral Analytics Dashboard\n\n• Conversion funnel analysis\n• Top-performing referral sources\n• Commission earnings breakdown\n• Referral customer lifetime value');
+        }
+        
+        function shareReferralCode() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join MirrorOS with Enterprise Partnership',
+                    text: 'Get enterprise AI platform access with code ENT-VAULT-001',
+                    url: 'https://mirroros.ai/signup?ref=ENT-VAULT-001'
+                });
+            } else {
+                navigator.clipboard.writeText('ENT-VAULT-001').then(() => {
+                    alert('Referral code copied to clipboard!\n\nShare: https://mirroros.ai/signup?ref=ENT-VAULT-001');
+                });
+            }
+        }
+        
+        function upgradeLicense() {
+            alert('Premium Enterprise License\n\n✅ 90% revenue share (vs 85%)\n✅ White-label branding removal\n✅ Custom pricing tiers\n✅ Priority support & onboarding\n✅ Advanced analytics dashboard\n\nUpgrade fee: $2,500/month\nROI breakeven: ~$28k monthly revenue');
+        }
+        
+        // Real-time updates simulation
+        function updateMetrics() {
+            const revenueElement = document.querySelector('.metric-value');
+            if (revenueElement) {
+                const currentRevenue = parseFloat(revenueElement.textContent.replace('$', '').replace(',', ''));
+                const newRevenue = currentRevenue + (Math.random() * 100);
+                revenueElement.textContent = `$${newRevenue.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+            }
+        }
+        
+        // Update metrics every 30 seconds for demo
+        setInterval(updateMetrics, 30000);
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎛️ License Partner Dashboard initialized');
+            console.log('💰 Revenue tracking: $287,456.78 total');
+            console.log('🤝 Partner share: 85% ($244,338.26)');
+            console.log('📈 Growth rate: +23.7% monthly');
+        });
+    </script>
+</body>
+</html>

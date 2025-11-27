@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>MirrorOS - Scan to Connect</title>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --secondary: #EC4899;
+            --dark: #0F0F0F;
+            --light: #FFFFFF;
+            --success: #10B981;
+            --error: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .scan-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .scan-header {
+            padding: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .scan-header h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .scan-header p {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+        }
+        
+        /* Scanner viewport */
+        #qr-scanner {
+            flex: 1;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        #qr-scanner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Scan overlay */
+        .qr-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .scan-region {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        }
+        
+        .scan-region .corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--primary);
+        }
+        
+        .corner.top-left {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 20px;
+        }
+        
+        .corner.top-right {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+            border-top-right-radius: 20px;
+        }
+        
+        .corner.bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+            border-bottom-left-radius: 20px;
+        }
+        
+        .corner.bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 20px;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanLine 2s linear infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { transform: translate(-50%, -125px); }
+            100% { transform: translate(-50%, 125px); }
+        }
+        
+        .scan-instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+        
+        /* Status displays */
+        .qr-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .qr-status .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .qr-status.success .icon {
+            color: var(--success);
+        }
+        
+        .qr-status.error .icon {
+            color: var(--error);
+        }
+        
+        .qr-status.loading .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .qr-status p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .qr-status button {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-status button:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+        }
+        
+        /* Alternative options */
+        .alternatives {
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .alternatives h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #9CA3AF;
+        }
+        
+        .alt-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .alt-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .alt-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* First time message */
+        .first-time-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 2rem;
+        }
+        
+        .first-time-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--dark);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .modal-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .modal-content p {
+            color: #9CA3AF;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .modal-content button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-content button:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-container">
+        <!-- Header -->
+        <div class="scan-header">
+            <h1>Scan to Connect</h1>
+            <p>Point your camera at a MirrorOS QR code</p>
+        </div>
+        
+        <!-- Scanner viewport -->
+        <div id="qr-scanner">
+            <!-- Video stream and overlay will be inserted here -->
+        </div>
+        
+        <!-- Alternative options -->
+        <div class="alternatives">
+            <h3>Or connect another way</h3>
+            <div class="alt-buttons">
+                <button class="alt-btn" onclick="enterCode()">Enter Code</button>
+                <button class="alt-btn" onclick="generateQR()">Generate QR</button>
+                <button class="alt-btn" onclick="showHelp()">Help</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- First time modal -->
+    <div class="first-time-modal" id="firstTimeModal">
+        <div class="modal-content">
+            <h2>Welcome to MirrorOS</h2>
+            <p>
+                Want me to help run this session for you?
+                <br><br>
+                I'll process everything locally on your device, keeping your data private and secure.
+            </p>
+            <button onclick="acceptFirstTime()">Yes, Let's Start</button>
+        </div>
+    </div>
+    
+    <!-- Load QR scanner handler -->
+    <script src="../qr/qr-scan-handler.js"></script>
+    
+    <script>
+        let qrScanner = null;
+        let isFirstTime = !localStorage.getItem('mirrorOS_notFirstTime');
+        
+        // Initialize scanner
+        async function initScanner() {
+            try {
+                qrScanner = new QRScanHandler();
+                
+                await qrScanner.initialize({
+                    containerId: 'qr-scanner',
+                    onScan: handleQRScan
+                });
+                
+                // Start scanning
+                await qrScanner.startScanning();
+                
+            } catch (error) {
+                console.error('Scanner initialization failed:', error);
+                showError('Camera access denied. Please enable camera permissions.');
+            }
+        }
+        
+        // Handle successful QR scan
+        async function handleQRScan(qrData) {
+            console.log('QR scanned:', qrData);
+            
+            // Check if first time
+            if (isFirstTime) {
+                showFirstTimeModal(qrData);
+                return;
+            }
+            
+            // Process pairing
+            processPairing(qrData);
+        }
+        
+        function showFirstTimeModal(qrData) {
+            // Store QR data temporarily
+            window.pendingQRData = qrData;
+            
+            // Show modal
+            document.getElementById('firstTimeModal').classList.add('show');
+        }
+        
+        function acceptFirstTime() {
+            // Mark as not first time
+            localStorage.setItem('mirrorOS_notFirstTime', 'true');
+            isFirstTime = false;
+            
+            // Hide modal
+            document.getElementById('firstTimeModal').classList.remove('show');
+            
+            // Process pending QR data
+            if (window.pendingQRData) {
+                processPairing(window.pendingQRData);
+            }
+        }
+        
+        async function processPairing(qrData) {
+            // Show loading
+            showLoading('Connecting to vault...');
+            
+            try {
+                // Get device info
+                const deviceInfo = getDeviceInfo();
+                
+                // Send pairing request
+                const response = await fetch('/api/lock/pair', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId: qrData.s,
+                        pairingToken: qrData.k,
+                        deviceInfo: deviceInfo,
+                        qrData: qrData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.valid) {
+                    // Save session
+                    localStorage.setItem('lockSessionId', qrData.s);
+                    
+                    // Show success
+                    showSuccess(result.greeting || 'Successfully connected!');
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = `/mirror/ui/agent-lock.html?session=${qrData.s}`;
+                    }, 1500);
+                } else {
+                    showError(result.reason || 'Connection failed');
+                }
+                
+            } catch (error) {
+                console.error('Pairing error:', error);
+                showError('Failed to connect. Please try again.');
+            }
+        }
+        
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform || 'unknown',
+                screenSize: `${screen.width}x${screen.height}`,
+                language: navigator.language,
+                capabilities: {
+                    webWorkers: 'Worker' in window,
+                    webGL: checkWebGL(),
+                    audioAPI: 'AudioContext' in window || 'webkitAudioContext' in window,
+                    localStorage: checkLocalStorage(),
+                    indexedDB: 'indexedDB' in window
+                }
+            };
+        }
+        
+        function checkWebGL() {
+            try {
+                const canvas = document.createElement('canvas');
+                return !!(window.WebGLRenderingContext && 
+                    (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+            } catch {
+                return false;
+            }
+        }
+        
+        function checkLocalStorage() {
+            try {
+                localStorage.setItem('test', '1');
+                localStorage.removeItem('test');
+                return true;
+            } catch {
+                return false;
+            }
+        }
+        
+        function showLoading(message) {
+            document.getElementById('qr-scanner').innerHTML = `
+                <div class="qr-status loading">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        function showSuccess(message) {
+            document.getElementById('qr-scanner').innerHTML = `
+                <div class="qr-status success">
+                    <div class="icon">✓</div>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        function showError(message) {
+            document.getElementById('qr-scanner').innerHTML = `
+                <div class="qr-status error">
+                    <div class="icon">✗</div>
+                    <p>${message}</p>
+                    <button onclick="location.reload()">Try Again</button>
+                </div>
+            `;
+        }
+        
+        // Alternative options
+        function enterCode() {
+            const code = prompt('Enter pairing code:');
+            if (code) {
+                // Parse code and process
+                try {
+                    const qrData = JSON.parse(atob(code));
+                    handleQRScan(qrData);
+                } catch {
+                    alert('Invalid code format');
+                }
+            }
+        }
+        
+        function generateQR() {
+            window.location.href = '/mirror/ui/generate-qr.html';
+        }
+        
+        function showHelp() {
+            alert('To connect:\n1. Open MirrorOS on another device\n2. Generate a QR code\n3. Scan it with this device\n\nNeed help? Visit docs.mirroros.com');
+        }
+        
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initScanner();
+        });
+        
+        // Handle page visibility for camera
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && qrScanner) {
+                qrScanner.stopScanning();
+            } else if (!document.hidden && qrScanner) {
+                qrScanner.startScanning();
+            }
+        });
+    </script>
+</body>
+</html>

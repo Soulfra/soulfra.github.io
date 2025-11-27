@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Your Drop</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-6">
+  <h1 class="text-3xl font-bold mb-6">🛠 Create a Ritual Drop</h1>
+  <form class="w-full max-w-md space-y-4" id="createDropForm">
+    <div>
+      <label for="dropName" class="block mb-1">Drop Name</label>
+      <input type="text" id="dropName" name="dropName" class="w-full p-2 rounded text-black" required>
+    </div>
+    <div>
+      <label for="mood" class="block mb-1">Mood</label>
+      <select id="mood" name="mood" class="w-full p-2 rounded text-black">
+        <option value="neutral">Neutral</option>
+        <option value="playful">Playful</option>
+        <option value="chaotic">Chaotic</option>
+        <option value="soft">Soft</option>
+        <option value="reflective">Reflective</option>
+      </select>
+    </div>
+    <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded">Generate Drop</button>
+  </form>
+  <div id="result" class="mt-6 text-sm"></div>
+
+  <script>
+    document.getElementById('createDropForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dropName = document.getElementById('dropName').value;
+      const mood = document.getElementById('mood').value;
+
+      document.getElementById('result').innerText = 'Creating drop...';
+
+      try {
+        const res = await fetch(`/api/create-drop?name=${encodeURIComponent(dropName)}&mood=${encodeURIComponent(mood)}`);
+        const data = await res.text();
+        document.getElementById('result').innerHTML = `<a href="/drops/${dropName}/index.html" class="underline text-pink-400">View ${dropName} →</a>`;
+      } catch (err) {
+        document.getElementById('result').innerText = '❌ Failed to create drop.';
+      }
+    });
+  </script>
+</body>
+</html>

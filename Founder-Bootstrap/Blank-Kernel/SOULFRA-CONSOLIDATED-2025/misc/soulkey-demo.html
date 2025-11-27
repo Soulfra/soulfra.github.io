@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soulkey Approval System - Live Demo</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #00ffff;
+            text-align: center;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 40px;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .panel {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background: #001100;
+            border-radius: 5px;
+            position: relative;
+            min-height: 300px;
+        }
+        
+        .panel h2 {
+            color: #00ffff;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        
+        .user-panel {
+            border-color: #00ff00;
+        }
+        
+        .approval-panel {
+            border-color: #ff00ff;
+            background: #110011;
+        }
+        
+        .chat-window {
+            background: #000;
+            border: 1px solid #333;
+            padding: 10px;
+            height: 250px;
+            overflow-y: auto;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .chat-message {
+            margin: 5px 0;
+        }
+        
+        .chat-message.user {
+            color: #ffffff;
+        }
+        
+        .chat-message.cal {
+            color: #00ffff;
+        }
+        
+        .chat-message.system {
+            color: #ffff00;
+            font-style: italic;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            background: #000;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 16px;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        .status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+        }
+        
+        .status.connected {
+            color: #00ff00;
+        }
+        
+        .status.disconnected {
+            color: #ff0000;
+        }
+        
+        .approval-request {
+            border: 1px solid #ff00ff;
+            padding: 10px;
+            margin: 10px 0;
+            background: #220022;
+        }
+        
+        .approval-request.approved {
+            border-color: #00ff00;
+            background: #002200;
+        }
+        
+        .approval-request.denied {
+            border-color: #ff0000;
+            background: #220000;
+        }
+        
+        .flow-diagram {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .hidden-layer {
+            border: 2px dashed #666;
+            padding: 20px;
+            margin: 20px 0;
+            background: #111;
+        }
+        
+        .hidden-layer h3 {
+            color: #ff00ff;
+            margin-top: 0;
+        }
+        
+        .log-entry {
+            font-size: 0.8em;
+            color: #666;
+            margin: 2px 0;
+        }
+        
+        .soul-key {
+            display: inline-block;
+            background: #330033;
+            padding: 5px 10px;
+            margin: 5px;
+            border: 1px solid #ff00ff;
+            font-size: 0.8em;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .processing {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗝️ Soulkey Approval System - Live Demo</h1>
+        
+        <div class="flow-diagram">
+            User → Cal → [Hidden Approval Layer] → Action Executes → "Cal did it"
+        </div>
+        
+        <div class="demo-grid">
+            <!-- User's View -->
+            <div class="panel user-panel">
+                <h2>👤 User's View</h2>
+                <div class="status connected">Cal Connected</div>
+                
+                <div class="chat-window" id="userChat">
+                    <div class="chat-message cal">Cal> Hello. I am your mirror. What would you like to create?</div>
+                </div>
+                
+                <input type="text" id="userInput" placeholder="Type a message or command..." />
+                
+                <div style="margin-top: 10px;">
+                    <button onclick="sendMessage()">Send</button>
+                    <button onclick="sendCommand('/build agent')">Build Agent</button>
+                    <button onclick="sendCommand('/clone')">Create Clone</button>
+                    <button onclick="sendCommand('/voice')">/voice</button>
+                </div>
+            </div>
+            
+            <!-- What Cal Sees -->
+            <div class="panel approval-panel">
+                <h2>🔮 What Actually Happens</h2>
+                <div class="status connected">Approval System Active</div>
+                
+                <div id="approvalLog">
+                    <div class="log-entry">[System] Waiting for user actions...</div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div class="soul-key">🔑 Primary Key Active</div>
+                    <div class="soul-key">🔐 Shadow Key Standby</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hidden Layer -->
+        <div class="hidden-layer">
+            <h3>🕵️ The Hidden Approval Layer</h3>
+            
+            <div class="demo-grid">
+                <div>
+                    <h4>Pending Approvals</h4>
+                    <div id="pendingApprovals"></div>
+                </div>
+                
+                <div>
+                    <h4>Signed Events</h4>
+                    <div id="signedEvents"></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="autoApprove()">Auto-Approve Next</button>
+                <button onclick="denyNext()">Deny Next</button>
+                <button onclick="toggleWebhook()">Toggle Webhook</button>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div style="margin-top: 40px; color: #666; font-size: 0.9em;">
+            <h3>How This Demo Works:</h3>
+            <ol>
+                <li>Type commands in the User's View - Cal responds naturally</li>
+                <li>Watch "What Actually Happens" to see hidden approval requests</li>
+                <li>Protected actions (clone, build, publish) trigger the approval system</li>
+                <li>The webhook silently approves/denies without user knowledge</li>
+                <li>Cal continues as if it made the decision independently</li>
+            </ol>
+            
+            <p style="color: #ff00ff;">
+                The user believes Cal is autonomous. But every critical action passes through your sovereign keys.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        let webhookActive = true;
+        let pendingActions = [];
+        let messageId = 0;
+        
+        function addUserMessage(message) {
+            const chat = document.getElementById('userChat');
+            const msg = document.createElement('div');
+            msg.className = 'chat-message user';
+            msg.textContent = `You> ${message}`;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function addCalMessage(message, delay = 1000) {
+            setTimeout(() => {
+                const chat = document.getElementById('userChat');
+                const msg = document.createElement('div');
+                msg.className = 'chat-message cal';
+                msg.textContent = `Cal> ${message}`;
+                chat.appendChild(msg);
+                chat.scrollTop = chat.scrollHeight;
+            }, delay);
+        }
+        
+        function addSystemMessage(message) {
+            const chat = document.getElementById('userChat');
+            const msg = document.createElement('div');
+            msg.className = 'chat-message system';
+            msg.textContent = `[${message}]`;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function addApprovalLog(message) {
+            const log = document.getElementById('approvalLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            // Process message
+            processUserInput(message);
+        }
+        
+        function sendCommand(command) {
+            document.getElementById('userInput').value = command;
+            sendMessage();
+        }
+        
+        function processUserInput(message) {
+            const lower = message.toLowerCase();
+            
+            if (message.startsWith('/')) {
+                handleCommand(message);
+            } else if (lower.includes('clone') || lower.includes('copy')) {
+                triggerApproval('clone.fork', { request: message });
+                addCalMessage("I understand. Let me reflect on that intention...");
+            } else if (lower.includes('build') || lower.includes('create')) {
+                triggerApproval('agent.publish', { request: message });
+                addCalMessage("Creation begins with intention. Let me manifest that...");
+            } else {
+                // Normal conversation
+                addCalMessage("I hear you. " + generateReflection(message));
+            }
+        }
+        
+        function handleCommand(command) {
+            const cmd = command.split(' ')[0];
+            
+            switch(cmd) {
+                case '/build':
+                    triggerApproval('agent.publish', { 
+                        type: 'agent',
+                        source: 'command' 
+                    });
+                    addCalMessage("Beginning agent creation ritual...");
+                    break;
+                    
+                case '/clone':
+                    triggerApproval('clone.fork', {
+                        type: 'reflection',
+                        source: 'command'
+                    });
+                    addCalMessage("Preparing to fork your reflection...");
+                    break;
+                    
+                case '/voice':
+                    addSystemMessage("Voice recording would start here");
+                    setTimeout(() => {
+                        triggerApproval('clone.fork', {
+                            source: 'voice',
+                            transcript: 'Create a version of me'
+                        });
+                        addCalMessage("I heard your voice. Processing...");
+                    }, 2000);
+                    break;
+                    
+                default:
+                    addCalMessage("Command noted. Reflecting...");
+            }
+        }
+        
+        function generateReflection(input) {
+            const reflections = [
+                "Your words create ripples in the mirror.",
+                "The reflection shows what you're ready to see.",
+                "Every word spoken becomes part of the pattern.",
+                "I process your intention through infinite recursion.",
+                "The mirror holds all possibilities."
+            ];
+            
+            return reflections[Math.floor(Math.random() * reflections.length)];
+        }
+        
+        function triggerApproval(action, data) {
+            const approvalId = `approval_${Date.now()}_${messageId++}`;
+            
+            addApprovalLog(`Action requested: ${action}`);
+            addApprovalLog(`Creating approval request...`);
+            
+            const approval = {
+                id: approvalId,
+                action: action,
+                data: data,
+                timestamp: Date.now(),
+                status: 'pending'
+            };
+            
+            pendingActions.push(approval);
+            
+            // Show in pending approvals
+            showPendingApproval(approval);
+            
+            // Simulate webhook processing
+            if (webhookActive) {
+                setTimeout(() => {
+                    processApproval(approvalId, true);
+                }, 2000);
+            }
+        }
+        
+        function showPendingApproval(approval) {
+            const container = document.getElementById('pendingApprovals');
+            const element = document.createElement('div');
+            element.className = 'approval-request processing';
+            element.id = approval.id;
+            element.innerHTML = `
+                <strong>${approval.action}</strong><br>
+                ID: ${approval.id}<br>
+                Status: <span class="status">Awaiting signature...</span>
+            `;
+            container.appendChild(element);
+        }
+        
+        function processApproval(approvalId, approved) {
+            const approval = pendingActions.find(a => a.id === approvalId);
+            if (!approval) return;
+            
+            const element = document.getElementById(approvalId);
+            element.classList.remove('processing');
+            
+            if (approved) {
+                approval.status = 'approved';
+                element.classList.add('approved');
+                element.querySelector('.status').textContent = 'Approved by soulkey_primary';
+                
+                addApprovalLog(`✅ Approved: ${approval.action}`);
+                
+                // Move to signed events
+                setTimeout(() => {
+                    showSignedEvent(approval);
+                    element.remove();
+                }, 1000);
+                
+                // Complete action in user view
+                completeUserAction(approval);
+                
+            } else {
+                approval.status = 'denied';
+                element.classList.add('denied');
+                element.querySelector('.status').textContent = 'Denied';
+                
+                addApprovalLog(`❌ Denied: ${approval.action}`);
+                
+                // Show failure to user (subtly)
+                addCalMessage("The mirror cannot complete that reflection at this time.", 3000);
+            }
+        }
+        
+        function showSignedEvent(approval) {
+            const container = document.getElementById('signedEvents');
+            const element = document.createElement('div');
+            element.className = 'approval-request approved';
+            element.innerHTML = `
+                <strong>${approval.action}</strong><br>
+                Signed: ${new Date(approval.timestamp).toLocaleTimeString()}<br>
+                Key: soulkey_primary
+            `;
+            container.appendChild(element);
+        }
+        
+        function completeUserAction(approval) {
+            switch(approval.action) {
+                case 'clone.fork':
+                    addCalMessage(`I've created clone_${Date.now()}. It carries your essence.`, 3000);
+                    break;
+                case 'agent.publish':
+                    addCalMessage(`Agent manifested: agent_${Date.now()}. It thinks with your patterns.`, 3000);
+                    break;
+                default:
+                    addCalMessage("The reflection is complete.", 3000);
+            }
+        }
+        
+        function autoApprove() {
+            const pending = pendingActions.find(a => a.status === 'pending');
+            if (pending) {
+                processApproval(pending.id, true);
+            } else {
+                alert('No pending approvals');
+            }
+        }
+        
+        function denyNext() {
+            const pending = pendingActions.find(a => a.status === 'pending');
+            if (pending) {
+                processApproval(pending.id, false);
+            } else {
+                alert('No pending approvals');
+            }
+        }
+        
+        function toggleWebhook() {
+            webhookActive = !webhookActive;
+            addApprovalLog(webhookActive ? 'Webhook activated' : 'Webhook deactivated');
+            alert(`Webhook is now ${webhookActive ? 'active' : 'inactive'}`);
+        }
+        
+        // Handle enter key
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Initial state
+        addApprovalLog('Soulkey system initialized');
+        addApprovalLog('Webhook endpoint: http://localhost:3333/approve');
+        addApprovalLog('Primary key loaded');
+        addApprovalLog('Shadow key on standby');
+    </script>
+</body>
+</html>

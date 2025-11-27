@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Logs Viewer</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --accent: #8B43F7;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --whisper: #4A90E2;
+            --fork: #7B68EE;
+            --bless: #FFD700;
+            --drift: #FF6B6B;
+            --success: #4CAF50;
+            --error: #EF5350;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: var(--bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(139, 67, 247, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--text-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+        
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--accent);
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 67, 247, 0.3);
+        }
+        
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .logs-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .log-entry {
+            padding: 0.5rem 1rem;
+            margin: 0.25rem 0;
+            background: var(--bg-secondary);
+            border-left: 3px solid var(--text-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .log-entry:hover {
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .log-entry.whisper { border-left-color: var(--whisper); }
+        .log-entry.fork { border-left-color: var(--fork); }
+        .log-entry.bless { border-left-color: var(--bless); }
+        .log-entry.drift { border-left-color: var(--drift); }
+        .log-entry.error { border-left-color: var(--error); }
+        .log-entry.success { border-left-color: var(--success); }
+        
+        .log-timestamp {
+            color: var(--text-secondary);
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        .log-type {
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .log-type.whisper { background: var(--whisper); color: white; }
+        .log-type.fork { background: var(--fork); color: white; }
+        .log-type.bless { background: var(--bless); color: #333; }
+        .log-type.drift { background: var(--drift); color: white; }
+        .log-type.error { background: var(--error); color: white; }
+        .log-type.info { background: var(--text-secondary); color: white; }
+        
+        .log-content {
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .log-link {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .log-link:hover {
+            text-decoration: underline;
+        }
+        
+        .status-bar {
+            background: var(--bg-secondary);
+            padding: 0.5rem 2rem;
+            border-top: 1px solid rgba(139, 67, 247, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-logs {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+        
+        input[type="text"] {
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--text-secondary);
+            color: var(--text-primary);
+            border-radius: 4px;
+            width: 200px;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📜 Soulfra Logs</h1>
+        <div class="controls">
+            <div class="control-group">
+                <label>Filter:</label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="whisper">Whispers</button>
+                    <button class="filter-btn" data-filter="fork">Forks</button>
+                    <button class="filter-btn" data-filter="bless">Blessings</button>
+                    <button class="filter-btn" data-filter="drift">Drift</button>
+                    <button class="filter-btn" data-filter="error">Errors</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <input type="text" id="search" placeholder="Search logs...">
+            </div>
+            <div class="control-group">
+                <button class="action-btn" id="pause-btn">Pause</button>
+                <button class="action-btn" id="clear-btn">Clear</button>
+                <button class="action-btn" id="export-btn">Export</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="logs-container" id="logs-container">
+        <div class="loading">Loading logs...</div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span id="status-text">Connected - Auto-refresh enabled</span>
+        </div>
+        <div>
+            <span id="log-count">0 logs</span> | 
+            <span id="last-update">Last update: Never</span>
+        </div>
+    </div>
+
+    <script>
+        class LogsViewer {
+            constructor() {
+                this.logs = [];
+                this.filteredLogs = [];
+                this.activeFilter = 'all';
+                this.searchTerm = '';
+                this.isPaused = false;
+                this.refreshInterval = 2000; // 2 seconds
+                this.maxLogs = 1000;
+                
+                this.container = document.getElementById('logs-container');
+                this.statusText = document.getElementById('status-text');
+                this.logCount = document.getElementById('log-count');
+                this.lastUpdate = document.getElementById('last-update');
+                
+                this.init();
+            }
+            
+            init() {
+                // Setup event listeners
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.setFilter(e.target.dataset.filter));
+                });
+                
+                document.getElementById('search').addEventListener('input', (e) => {
+                    this.searchTerm = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+                
+                document.getElementById('pause-btn').addEventListener('click', () => this.togglePause());
+                document.getElementById('clear-btn').addEventListener('click', () => this.clearLogs());
+                document.getElementById('export-btn').addEventListener('click', () => this.exportLogs());
+                
+                // Start fetching logs
+                this.fetchLogs();
+                this.startAutoRefresh();
+            }
+            
+            async fetchLogs() {
+                try {
+                    const response = await fetch('/api/logs/recent?limit=100');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.processNewLogs(data.logs || []);
+                        this.lastUpdate.textContent = `Last update: ${new Date().toLocaleTimeString()}`;
+                    }
+                } catch (error) {
+                    // Fallback to generating mock logs for demo
+                    this.generateMockLogs();
+                }
+            }
+            
+            processNewLogs(newLogs) {
+                // Add new logs to the beginning
+                this.logs = [...newLogs, ...this.logs];
+                
+                // Limit total logs
+                if (this.logs.length > this.maxLogs) {
+                    this.logs = this.logs.slice(0, this.maxLogs);
+                }
+                
+                this.applyFilters();
+            }
+            
+            generateMockLogs() {
+                const types = ['whisper', 'fork', 'bless', 'drift', 'info', 'error'];
+                const messages = {
+                    whisper: [
+                        'New whisper created: "Mirror the infinite recursion of thought"',
+                        'Whisper transformed into loop_${id}',
+                        'Agent cal whispered: "The patterns emerge from chaos"'
+                    ],
+                    fork: [
+                        'Loop loop_ocean_001 forked as fork_${id}',
+                        'Fork created with modifications: tone shift to curious',
+                        'Successful fork from loop_star_002'
+                    ],
+                    bless: [
+                        'Loop loop_${id} received blessing from cal-riven',
+                        'Community blessing threshold reached for loop_dream_003',
+                        'Blessing ceremony completed with 7 participants'
+                    ],
+                    drift: [
+                        'High drift detected in loop_${id}: 0.87',
+                        'Drift correction applied to loop_ocean_001',
+                        'Critical drift warning for abandoned loop'
+                    ],
+                    info: [
+                        'System initialized successfully',
+                        'Memory daemon checkpoint saved',
+                        'Heartbeat check completed: 12/15 loops healthy'
+                    ],
+                    error: [
+                        'Failed to connect to remote mesh',
+                        'Loop validation error: missing consciousness data',
+                        'Timeout waiting for agent response'
+                    ]
+                };
+                
+                const mockLogs = [];
+                for (let i = 0; i < 20; i++) {
+                    const type = types[Math.floor(Math.random() * types.length)];
+                    const typeMessages = messages[type];
+                    const message = typeMessages[Math.floor(Math.random() * typeMessages.length)]
+                        .replace('${id}', Math.floor(Math.random() * 1000));
+                    
+                    mockLogs.push({
+                        id: `log_${Date.now()}_${i}`,
+                        timestamp: new Date(Date.now() - i * 60000).toISOString(),
+                        type: type,
+                        message: message,
+                        metadata: {
+                            loop_id: type.includes('loop') ? `loop_${Math.floor(Math.random() * 100)}` : null,
+                            agent_id: type === 'whisper' ? ['cal', 'arty', 'user'][Math.floor(Math.random() * 3)] : null
+                        }
+                    });
+                }
+                
+                this.processNewLogs(mockLogs);
+            }
+            
+            applyFilters() {
+                this.filteredLogs = this.logs.filter(log => {
+                    // Apply type filter
+                    if (this.activeFilter !== 'all' && log.type !== this.activeFilter) {
+                        return false;
+                    }
+                    
+                    // Apply search filter
+                    if (this.searchTerm && !log.message.toLowerCase().includes(this.searchTerm)) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+                
+                this.render();
+            }
+            
+            render() {
+                if (this.filteredLogs.length === 0) {
+                    this.container.innerHTML = '<div class="no-logs">No logs match your filters</div>';
+                    this.logCount.textContent = '0 logs';
+                    return;
+                }
+                
+                const html = this.filteredLogs.map(log => this.renderLogEntry(log)).join('');
+                this.container.innerHTML = html;
+                this.logCount.textContent = `${this.filteredLogs.length} logs`;
+            }
+            
+            renderLogEntry(log) {
+                const timestamp = new Date(log.timestamp).toLocaleTimeString();
+                const content = this.highlightContent(log.message, log.metadata);
+                
+                return `
+                    <div class="log-entry ${log.type}">
+                        <span class="log-timestamp">${timestamp}</span>
+                        <span class="log-type ${log.type}">${log.type}</span>
+                        <span class="log-content">${content}</span>
+                    </div>
+                `;
+            }
+            
+            highlightContent(message, metadata) {
+                let highlighted = message;
+                
+                // Highlight loop IDs
+                highlighted = highlighted.replace(/loop_\w+/g, (match) => {
+                    return `<a href="#/drop/${match}" class="log-link">${match}</a>`;
+                });
+                
+                // Highlight agent names
+                highlighted = highlighted.replace(/\b(cal|arty|system)\b/g, (match) => {
+                    return `<span style="color: var(--accent)">${match}</span>`;
+                });
+                
+                // Highlight numbers (drift values, etc)
+                highlighted = highlighted.replace(/\b\d+\.?\d*\b/g, (match) => {
+                    return `<span style="color: #B5CEA8">${match}</span>`;
+                });
+                
+                return highlighted;
+            }
+            
+            setFilter(filter) {
+                this.activeFilter = filter;
+                
+                // Update button states
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === filter);
+                });
+                
+                this.applyFilters();
+            }
+            
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                const btn = document.getElementById('pause-btn');
+                
+                if (this.isPaused) {
+                    btn.textContent = 'Resume';
+                    this.statusText.textContent = 'Paused - Auto-refresh disabled';
+                    document.querySelector('.status-dot').style.background = 'var(--warning)';
+                } else {
+                    btn.textContent = 'Pause';
+                    this.statusText.textContent = 'Connected - Auto-refresh enabled';
+                    document.querySelector('.status-dot').style.background = 'var(--success)';
+                    this.fetchLogs();
+                }
+            }
+            
+            clearLogs() {
+                if (confirm('Clear all logs from view? This will not delete logs from the server.')) {
+                    this.logs = [];
+                    this.applyFilters();
+                }
+            }
+            
+            exportLogs() {
+                const exportData = {
+                    exported_at: new Date().toISOString(),
+                    filter: this.activeFilter,
+                    search: this.searchTerm,
+                    total_logs: this.filteredLogs.length,
+                    logs: this.filteredLogs
+                };
+                
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `soulfra_logs_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            startAutoRefresh() {
+                setInterval(() => {
+                    if (!this.isPaused) {
+                        this.fetchLogs();
+                    }
+                }, this.refreshInterval);
+            }
+        }
+        
+        // Initialize viewer when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new LogsViewer();
+        });
+    </script>
+</body>
+</html>

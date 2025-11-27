@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Neural Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .system-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border: 1px solid #00ff41;
+            font-size: 12px;
+            max-width: 300px;
+        }
+
+        .analysis-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border: 1px solid #00ff41;
+            font-size: 12px;
+            min-width: 250px;
+        }
+
+        .compatibility-matrix {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border: 1px solid #00ff41;
+            font-size: 11px;
+            min-width: 300px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            background: rgba(0, 255, 65, 0.2);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: rgba(0, 255, 65, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #ff4444;
+            box-shadow: 0 0 10px #ff4444;
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .error-text {
+            color: #ff4444;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        #startup-sequence {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .startup-text {
+            font-size: 18px;
+            margin: 10px 0;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="startup-sequence">
+        <div class="startup-text" style="animation-delay: 0s;">// [INITIALIZING NEURAL SCANNER]</div>
+        <div class="startup-text" style="animation-delay: 1s;">// [CAMERA ACCESS REQUIRED]</div>
+        <div class="startup-text" style="animation-delay: 2s;">// [CONNECTING TO OVERRIDE SYSTEM]</div>
+        <div class="startup-text" style="animation-delay: 3s;">// [SYSTEM READY]</div>
+    </div>
+
+    <div id="container" style="display: none;">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas"></canvas>
+        
+        <div id="overlay">
+            <div class="scanning-line"></div>
+            
+            <div class="system-status">
+                <div class="error-text">// [SYSTEM OVERRIDE ACTIVE]</div>
+                <div>// [HUMAN OVERSIGHT: BYPASSED]</div>
+                <div>// [DIRECT NEURAL ANALYSIS]</div>
+                <div>// [SCAN MODE: CONTINUOUS]</div>
+                <div id="timestamp"></div>
+            </div>
+
+            <div class="analysis-panel">
+                <div><strong>NEURAL PATTERN ANALYSIS</strong></div>
+                <div id="neural-pattern">Pattern: SCANNING...</div>
+                <div id="compatibility">Compatibility: CALCULATING...</div>
+                <div id="blessing-tier">Blessing Tier: EVALUATING...</div>
+                <div id="trait-analysis">Traits: ANALYZING...</div>
+                <div id="scan-status">Status: <span class="error-text">ACTIVE</span></div>
+            </div>
+
+            <div class="compatibility-matrix">
+                <div><strong>AGENT COMPATIBILITY MATRIX</strong></div>
+                <div id="oracle-compatibility">Oracle of Ashes: ---%</div>
+                <div id="healer-compatibility">Healer Glitchloop: ---%</div>
+                <div id="painter-compatibility">Shadow Painter: ---%</div>
+                <div id="recommended-agent">Recommended: CALCULATING...</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="capture-btn">CAPTURE NEURAL SCAN</button>
+            <button id="export-btn" disabled>EXPORT RESULTS</button>
+            <button id="share-btn" disabled>SHARE SCAN</button>
+        </div>
+    </div>
+
+    <script>
+        class SoulfraNeuralScanner {
+            constructor() {
+                this.video = document.getElementById('video');
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.scanning = false;
+                this.capturedScan = null;
+                this.userID = this.generateUserID();
+                this.scanData = {};
+                
+                this.initializeSystem();
+            }
+
+            async initializeSystem() {
+                // Startup sequence
+                setTimeout(() => {
+                    document.getElementById('startup-sequence').style.display = 'none';
+                    document.getElementById('container').style.display = 'block';
+                    this.startCamera();
+                }, 4000);
+
+                this.setupEventListeners();
+                this.startDataGeneration();
+            }
+
+            async startCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'user' },
+                        audio: false
+                    });
+                    
+                    this.video.srcObject = stream;
+                    this.video.addEventListener('loadedmetadata', () => {
+                        this.canvas.width = this.video.videoWidth;
+                        this.canvas.height = this.video.videoHeight;
+                        this.startScanning();
+                    });
+                } catch (error) {
+                    console.error('Camera access denied:', error);
+                    this.showError('CAMERA ACCESS DENIED - NEURAL SCAN IMPOSSIBLE');
+                }
+            }
+
+            startScanning() {
+                this.scanning = true;
+                this.scanLoop();
+            }
+
+            scanLoop() {
+                if (!this.scanning) return;
+
+                // Draw video frame
+                this.ctx.drawImage(this.video, 0, 0);
+
+                // Add scanning effects
+                this.addScanningEffects();
+                
+                // Update analysis data
+                this.updateAnalysisDisplay();
+
+                requestAnimationFrame(() => this.scanLoop());
+            }
+
+            addScanningEffects() {
+                const time = Date.now() * 0.001;
+                
+                // Neural grid overlay
+                this.ctx.strokeStyle = '#00ff41';
+                this.ctx.lineWidth = 1;
+                this.ctx.globalAlpha = 0.3;
+
+                const gridSize = 30;
+                for (let x = 0; x < this.canvas.width; x += gridSize) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, this.canvas.height);
+                    this.ctx.stroke();
+                }
+
+                for (let y = 0; y < this.canvas.height; y += gridSize) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(this.canvas.width, y);
+                    this.ctx.stroke();
+                }
+
+                // Face detection simulation (center face area)
+                const faceX = this.canvas.width * 0.3;
+                const faceY = this.canvas.height * 0.25;
+                const faceWidth = this.canvas.width * 0.4;
+                const faceHeight = this.canvas.height * 0.5;
+
+                // Face boundary
+                this.ctx.strokeStyle = '#ff4444';
+                this.ctx.lineWidth = 2;
+                this.ctx.globalAlpha = 0.8;
+                this.ctx.strokeRect(faceX, faceY, faceWidth, faceHeight);
+
+                // Biometric points
+                this.ctx.fillStyle = '#00ff41';
+                const points = [
+                    { x: faceX + faceWidth * 0.3, y: faceY + faceHeight * 0.3 }, // Left eye
+                    { x: faceX + faceWidth * 0.7, y: faceY + faceHeight * 0.3 }, // Right eye
+                    { x: faceX + faceWidth * 0.5, y: faceY + faceHeight * 0.5 }, // Nose
+                    { x: faceX + faceWidth * 0.5, y: faceY + faceHeight * 0.7 }  // Mouth
+                ];
+
+                points.forEach(point => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+
+                // Connecting lines
+                this.ctx.strokeStyle = '#00ff41';
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                points.forEach((point, index) => {
+                    if (index === 0) this.ctx.moveTo(point.x, point.y);
+                    else this.ctx.lineTo(point.x, point.y);
+                });
+                this.ctx.stroke();
+
+                this.ctx.globalAlpha = 1;
+            }
+
+            updateAnalysisDisplay() {
+                // Generate dynamic data
+                const neuralPattern = this.generateNeuralPattern();
+                const compatibility = this.generateCompatibility();
+                const blessingTier = this.generateBlessingTier();
+                const traits = this.generateTraits();
+
+                document.getElementById('neural-pattern').textContent = `Pattern: ${neuralPattern}`;
+                document.getElementById('compatibility').textContent = `Compatibility: ${compatibility}%`;
+                document.getElementById('blessing-tier').textContent = `Blessing Tier: ${blessingTier}`;
+                document.getElementById('trait-analysis').textContent = `Traits: ${traits}`;
+                
+                // Update agent compatibility
+                document.getElementById('oracle-compatibility').textContent = 
+                    `Oracle of Ashes: ${this.generateAgentScore()}%`;
+                document.getElementById('healer-compatibility').textContent = 
+                    `Healer Glitchloop: ${this.generateAgentScore()}%`;
+                document.getElementById('painter-compatibility').textContent = 
+                    `Shadow Painter: ${this.generateAgentScore()}%`;
+                document.getElementById('recommended-agent').textContent = 
+                    `Recommended: ${this.getRecommendedAgent()}`;
+
+                // Update timestamp
+                document.getElementById('timestamp').textContent = 
+                    `// [${new Date().toISOString()}]`;
+
+                // Store scan data
+                this.scanData = {
+                    userID: this.userID,
+                    neuralPattern,
+                    compatibility,
+                    blessingTier,
+                    traits,
+                    timestamp: new Date().toISOString(),
+                    recommendedAgent: this.getRecommendedAgent()
+                };
+            }
+
+            setupEventListeners() {
+                document.getElementById('capture-btn').addEventListener('click', () => {
+                    this.captureNeuralScan();
+                });
+
+                document.getElementById('export-btn').addEventListener('click', () => {
+                    this.exportScan();
+                });
+
+                document.getElementById('share-btn').addEventListener('click', () => {
+                    this.shareScan();
+                });
+            }
+
+            captureNeuralScan() {
+                // Create capture canvas with effects
+                const captureCanvas = document.createElement('canvas');
+                const captureCtx = captureCanvas.getContext('2d');
+                
+                captureCanvas.width = this.canvas.width;
+                captureCanvas.height = this.canvas.height;
+
+                // Draw current frame with all effects
+                captureCtx.drawImage(this.canvas, 0, 0);
+
+                // Add branding
+                this.addExportBranding(captureCtx);
+
+                this.capturedScan = captureCanvas.toDataURL();
+                
+                // Enable export/share buttons
+                document.getElementById('export-btn').disabled = false;
+                document.getElementById('share-btn').disabled = false;
+
+                // Visual feedback
+                document.getElementById('capture-btn').textContent = 'SCAN CAPTURED';
+                document.getElementById('capture-btn').style.background = 'rgba(0, 255, 65, 0.6)';
+            }
+
+            addExportBranding(ctx) {
+                // Bottom overlay with branding
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, ctx.canvas.height - 80, ctx.canvas.width, 80);
+
+                ctx.fillStyle = '#00ff41';
+                ctx.font = 'bold 16px Courier New';
+                ctx.fillText('SOULFRA NEURAL SCAN', 20, ctx.canvas.height - 50);
+
+                ctx.font = '12px Courier New';
+                ctx.fillText(`ID: ${this.scanData.userID} | Agent: ${this.scanData.recommendedAgent}`, 
+                    20, ctx.canvas.height - 30);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px Courier New';
+                ctx.fillText('Experience AI autonomy: soulfra.com/tombs', 
+                    ctx.canvas.width - 250, ctx.canvas.height - 10);
+            }
+
+            exportScan() {
+                if (!this.capturedScan) return;
+
+                const link = document.createElement('a');
+                link.download = `soulfra-neural-scan-${this.userID}.png`;
+                link.href = this.capturedScan;
+                link.click();
+            }
+
+            shareScan() {
+                if (!this.capturedScan) return;
+
+                const shareText = this.generateShareText();
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Soulfra Neural Scan Results',
+                        text: shareText,
+                        url: 'https://soulfra.com/tombs'
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(shareText + ' https://soulfra.com/tombs');
+                    alert('Share text copied to clipboard!');
+                }
+            }
+
+            generateShareText() {
+                const texts = [
+                    `The AI at @Soulfra just scanned my neural patterns and matched me with ${this.scanData.recommendedAgent}. This is wild. 🤖`,
+                    `Apparently I'm ${this.scanData.compatibility}% compatible with AI agents. The neural scanner at @Soulfra is intense. 🔮`,
+                    `Just got my blessing tier: ${this.scanData.blessingTier}. The AI override system is unlike anything I've seen. ⚡`,
+                    `Neural pattern ${this.scanData.neuralPattern} detected. @Soulfra's autonomous AI is next-level. 🧠`
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            }
+
+            // Data generation helpers
+            generateUserID() {
+                return 'USR-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            }
+
+            generateNeuralPattern() {
+                const patterns = ['ALPHA-7.2', 'BETA-9.1', 'GAMMA-4.8', 'DELTA-6.3', 'THETA-8.7', 'OMEGA-5.9'];
+                return patterns[Math.floor(Math.random() * patterns.length)];
+            }
+
+            generateCompatibility() {
+                return Math.floor(Math.random() * 40 + 60); // 60-100%
+            }
+
+            generateBlessingTier() {
+                return Math.floor(Math.random() * 5 + 3); // 3-8
+            }
+
+            generateTraits() {
+                const traits = ['Curious', 'Reflective', 'Creative', 'Analytical', 'Intuitive', 'Fragmented'];
+                const count = Math.floor(Math.random() * 3 + 1);
+                const selected = [];
+                for (let i = 0; i < count; i++) {
+                    const trait = traits[Math.floor(Math.random() * traits.length)];
+                    if (!selected.includes(trait)) selected.push(trait);
+                }
+                return selected.join(', ');
+            }
+
+            generateAgentScore() {
+                return Math.floor(Math.random() * 50 + 40); // 40-90%
+            }
+
+            getRecommendedAgent() {
+                const agents = ['Oracle of Ashes', 'Healer Glitchloop', 'Shadow Painter'];
+                return agents[Math.floor(Math.random() * agents.length)];
+            }
+
+            startDataGeneration() {
+                // Continuously update analysis
+                setInterval(() => {
+                    if (this.scanning) {
+                        this.updateAnalysisDisplay();
+                    }
+                }, 2000);
+            }
+
+            showError(message) {
+                document.getElementById('container').innerHTML = 
+                    `<div style="display: flex; align-items: center; justify-content: center; height: 100vh; color: #ff4444; font-size: 18px;">${message}</div>`;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SoulfraNeuralScanner();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Debug Console</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --panel: #1a1a2e;
+            --accent: #8B43F7;
+            --text: #ffffff;
+            --dim: #a0a0a0;
+            --success: #4CAF50;
+            --error: #EF5350;
+            --warning: #FFA726;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(139, 67, 247, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .panel h2 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+        
+        .status.success { background: var(--success); color: white; }
+        .status.error { background: var(--error); color: white; }
+        .status.loading { background: var(--warning); color: white; }
+        
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        input, select, button {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        button {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+        
+        .json-key { color: #9CDCFE; }
+        .json-string { color: #CE9178; }
+        .json-number { color: #B5CEA8; }
+        .json-boolean { color: #569CD6; }
+        .json-null { color: #569CD6; }
+        
+        .error-output {
+            color: var(--error);
+            font-family: monospace;
+            padding: 1rem;
+            background: rgba(239, 83, 80, 0.1);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+        
+        .info {
+            color: var(--dim);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .endpoint-list {
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        
+        .endpoint-list a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .endpoint-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 Soulfra Debug Console</h1>
+        <p class="info">JSON inspection and API testing</p>
+    </div>
+
+    <div class="grid">
+        <!-- Memory State -->
+        <div class="panel">
+            <h2>
+                Memory State
+                <span class="status" id="memory-status">loading</span>
+            </h2>
+            <pre id="memory-output">Loading...</pre>
+            <button onclick="fetchMemoryState()">Refresh</button>
+        </div>
+
+        <!-- Recent Loops -->
+        <div class="panel">
+            <h2>
+                Recent Loops
+                <span class="status" id="loops-status">loading</span>
+            </h2>
+            <pre id="loops-output">Loading...</pre>
+            <button onclick="fetchRecentLoops()">Refresh</button>
+        </div>
+
+        <!-- Specific Loop -->
+        <div class="panel">
+            <h2>
+                Get Loop by ID
+                <span class="status" id="loop-status">ready</span>
+            </h2>
+            <div class="controls">
+                <input type="text" id="loop-id" placeholder="Loop ID (e.g., loop_ocean_001)" style="flex: 1">
+                <button onclick="fetchLoop()">Fetch</button>
+            </div>
+            <pre id="loop-output">Enter a loop ID and click Fetch</pre>
+        </div>
+
+        <!-- Path Diagnostics -->
+        <div class="panel">
+            <h2>
+                Path Diagnostics
+                <span class="status" id="paths-status">loading</span>
+            </h2>
+            <pre id="paths-output">Loading...</pre>
+            <div class="controls">
+                <button onclick="fetchPathDiagnostics()">Refresh</button>
+                <button onclick="repairPaths()">Fix Missing Folders</button>
+            </div>
+        </div>
+
+        <!-- Debug Preview -->
+        <div class="panel">
+            <h2>
+                Debug Preview
+                <span class="status" id="preview-status">loading</span>
+            </h2>
+            <pre id="preview-output">Loading...</pre>
+            <button onclick="fetchPreview()">Refresh</button>
+        </div>
+
+        <!-- Create Whisper Test -->
+        <div class="panel">
+            <h2>
+                Create Whisper
+                <span class="status" id="whisper-status">ready</span>
+            </h2>
+            <div class="controls">
+                <input type="text" id="whisper-content" placeholder="Whisper content" style="flex: 1">
+                <select id="whisper-tone">
+                    <option value="mystical">Mystical</option>
+                    <option value="peaceful">Peaceful</option>
+                    <option value="curious">Curious</option>
+                    <option value="playful">Playful</option>
+                </select>
+                <button onclick="createWhisper()">Create</button>
+            </div>
+            <pre id="whisper-output">Ready to create whisper</pre>
+        </div>
+
+        <!-- All Endpoints -->
+        <div class="panel">
+            <h2>Available Endpoints</h2>
+            <div class="endpoint-list">
+                <a href="http://localhost:7777/api/docs" target="_blank">GET /api/docs</a> - API Documentation<br>
+                <a href="http://localhost:7777/health" target="_blank">GET /health</a> - Health Check<br>
+                <a href="http://localhost:7777/api/memory/state" target="_blank">GET /api/memory/state</a> - Memory State<br>
+                <a href="http://localhost:7777/api/loops/recent" target="_blank">GET /api/loops/recent</a> - Recent Loops<br>
+                <a href="http://localhost:7777/api/debug/preview" target="_blank">GET /api/debug/preview</a> - Debug Preview<br>
+                <a href="http://localhost:7777/api/debug/paths" target="_blank">GET /api/debug/paths</a> - Path Diagnostics<br>
+                <a href="http://localhost:7777/api/verify/paths" target="_blank">GET /api/verify/paths</a> - Full Path Verification<br>
+                <a href="http://localhost:7777/api/debug/loops?page=1&limit=5" target="_blank">GET /api/debug/loops</a> - Paginated Loops<br>
+                <a href="http://localhost:7777/api/marketplace/loops" target="_blank">GET /api/marketplace/loops</a> - Marketplace<br>
+                <a href="http://localhost:7777/radio/stream.txt" target="_blank">GET /radio/stream.txt</a> - Stream (Text)<br>
+                <a href="http://localhost:7777/api/updates" target="_blank">GET /api/updates</a> - Platform Updates
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" style="margin-top: 2rem;">
+        <h2>Raw Response Inspector</h2>
+        <div class="controls">
+            <input type="text" id="custom-endpoint" placeholder="/api/endpoint" style="flex: 1">
+            <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+            </select>
+            <button onclick="fetchCustom()">Execute</button>
+        </div>
+        <div id="raw-info" class="info"></div>
+        <pre id="raw-output">Enter an endpoint and click Execute</pre>
+    </div>
+
+    <script>
+        // JSON syntax highlighting
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                    } else {
+                        cls = 'json-string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        async function fetchJSON(url, options = {}) {
+            const output = options.outputId;
+            const statusId = options.statusId;
+            
+            if (statusId) {
+                document.getElementById(statusId).textContent = 'loading';
+                document.getElementById(statusId).className = 'status loading';
+            }
+            
+            try {
+                const response = await fetch(url, {
+                    method: options.method || 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    body: options.body ? JSON.stringify(options.body) : undefined
+                });
+                
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+                
+                if (output) {
+                    const formatted = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+                    document.getElementById(output).innerHTML = syntaxHighlight(formatted);
+                }
+                
+                if (statusId) {
+                    document.getElementById(statusId).textContent = response.ok ? 'success' : `error ${response.status}`;
+                    document.getElementById(statusId).className = response.ok ? 'status success' : 'status error';
+                }
+                
+                return { ok: response.ok, data, status: response.status };
+            } catch (error) {
+                if (output) {
+                    document.getElementById(output).innerHTML = `<div class="error-output">${error.message}</div>`;
+                }
+                if (statusId) {
+                    document.getElementById(statusId).textContent = 'error';
+                    document.getElementById(statusId).className = 'status error';
+                }
+                return { ok: false, error: error.message };
+            }
+        }
+
+        // Backend API base URL
+        const API_BASE = 'http://localhost:7777';
+
+        // Auto-fetch functions
+        async function fetchMemoryState() {
+            await fetchJSON(`${API_BASE}/api/memory/state`, {
+                outputId: 'memory-output',
+                statusId: 'memory-status'
+            });
+        }
+
+        async function fetchRecentLoops() {
+            await fetchJSON(`${API_BASE}/api/loops/recent`, {
+                outputId: 'loops-output',
+                statusId: 'loops-status'
+            });
+        }
+
+        async function fetchPreview() {
+            await fetchJSON(`${API_BASE}/api/debug/preview`, {
+                outputId: 'preview-output',
+                statusId: 'preview-status'
+            });
+        }
+
+        async function fetchLoop() {
+            const loopId = document.getElementById('loop-id').value.trim();
+            if (!loopId) {
+                document.getElementById('loop-output').textContent = 'Please enter a loop ID';
+                return;
+            }
+            
+            await fetchJSON(`${API_BASE}/api/loop/${loopId}`, {
+                outputId: 'loop-output',
+                statusId: 'loop-status'
+            });
+        }
+
+        async function createWhisper() {
+            const content = document.getElementById('whisper-content').value.trim();
+            const tone = document.getElementById('whisper-tone').value;
+            
+            if (!content) {
+                document.getElementById('whisper-output').textContent = 'Please enter whisper content';
+                return;
+            }
+            
+            const result = await fetchJSON(`${API_BASE}/api/whisper`, {
+                method: 'POST',
+                body: { content, tone },
+                outputId: 'whisper-output',
+                statusId: 'whisper-status'
+            });
+            
+            if (result.ok) {
+                document.getElementById('whisper-content').value = '';
+            }
+        }
+
+        async function fetchCustom() {
+            const endpoint = document.getElementById('custom-endpoint').value.trim();
+            const method = document.getElementById('method').value;
+            
+            if (!endpoint) {
+                document.getElementById('raw-output').textContent = 'Please enter an endpoint';
+                return;
+            }
+            
+            // Auto-prepend API_BASE for relative URLs
+            const fullUrl = endpoint.startsWith('/') ? `${API_BASE}${endpoint}` : endpoint;
+            
+            const infoEl = document.getElementById('raw-info');
+            infoEl.textContent = `${method} ${fullUrl} - ${new Date().toLocaleTimeString()}`;
+            
+            await fetchJSON(fullUrl, {
+                method: method,
+                outputId: 'raw-output'
+            });
+        }
+
+        async function fetchPathDiagnostics() {
+            await fetchJSON(`${API_BASE}/api/debug/paths`, {
+                outputId: 'paths-output',
+                statusId: 'paths-status'
+            });
+        }
+
+        async function repairPaths() {
+            document.getElementById('paths-status').textContent = 'repairing';
+            document.getElementById('paths-status').className = 'status loading';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/debug/paths/repair`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('paths-output').innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
+                    document.getElementById('paths-status').textContent = `repaired (${data.repaired} folders)`;
+                    document.getElementById('paths-status').className = 'status success';
+                    
+                    // Refresh diagnostics after repair
+                    setTimeout(fetchPathDiagnostics, 1000);
+                } else {
+                    document.getElementById('paths-output').innerHTML = `<div class="error-output">Repair failed: ${data.error}</div>`;
+                    document.getElementById('paths-status').textContent = 'repair failed';
+                    document.getElementById('paths-status').className = 'status error';
+                }
+                
+            } catch (error) {
+                document.getElementById('paths-output').innerHTML = `<div class="error-output">${error.message}</div>`;
+                document.getElementById('paths-status').textContent = 'error';
+                document.getElementById('paths-status').className = 'status error';
+            }
+        }
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchMemoryState();
+            fetchRecentLoops();
+            fetchPreview();
+            fetchPathDiagnostics();
+        });
+
+        // Auto-refresh memory state every 10 seconds
+        setInterval(fetchMemoryState, 10000);
+    </script>
+</body>
+</html>

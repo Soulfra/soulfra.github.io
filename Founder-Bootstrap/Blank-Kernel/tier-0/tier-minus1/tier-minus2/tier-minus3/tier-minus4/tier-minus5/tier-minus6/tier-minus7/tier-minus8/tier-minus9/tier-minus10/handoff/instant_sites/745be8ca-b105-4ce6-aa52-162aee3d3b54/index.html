@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>create a coding battle arena for developers - Battle Arena</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/arena.css">
+</head>
+<body>
+    <div class="arena-container">
+        <header>
+            <h1>⚔️ create a coding battle arena for developers</h1>
+            <div class="arena-stats">
+                <span>Players Online: <span id="playersOnline">0</span></span>
+                <span>Battles Today: <span id="battlesToday">0</span></span>
+            </div>
+        </header>
+        
+        <div class="arena-main">
+            <div class="leaderboard">
+                <h2>🏆 Top Warriors</h2>
+                <ol id="leaderboard">
+                    <li>Loading...</li>
+                </ol>
+            </div>
+            
+            <div class="battle-area">
+                <h2>Battle Arena</h2>
+                <div class="battle-status" id="battleStatus">
+                    No battle in progress
+                </div>
+                <button class="battle-button" onclick="findBattle()">
+                    Find Battle
+                </button>
+            </div>
+            
+            <div class="player-stats">
+                <h2>Your Stats</h2>
+                <div class="stats">
+                    <div>Wins: <span id="wins">0</span></div>
+                    <div>Losses: <span id="losses">0</span></div>
+                    <div>Rank: <span id="rank">Unranked</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const ARENA_ID = '745be8ca-b105-4ce6-aa52-162aee3d3b54';
+        const ARENA_NAME = 'create a coding battle arena for developers';
+    </script>
+</body>
+</html>

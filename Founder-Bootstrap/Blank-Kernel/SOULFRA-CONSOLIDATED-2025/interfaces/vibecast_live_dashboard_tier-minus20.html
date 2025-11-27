@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 VIBECAST BIOMETRIC COMMAND CENTER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 60px 1fr;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(90deg, #111, #222);
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff88, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #ff0040;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        /* MAIN DASHBOARD */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            height: 100%;
+            gap: 1px;
+            background: #333;
+        }
+
+        .panel {
+            background: #0a0a0a;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* LEFT PANEL - PERFORMERS */
+        .performers-panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .performer-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .performer-card.active {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .performer-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .biometric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .biometric-stat {
+            background: #0f0f0f;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #222;
+        }
+
+        .biometric-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .biometric-value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .heart-rate { color: #ff4444; }
+        .stress-level { color: #ffaa44; }
+        .flow-state { color: #44aaff; }
+        .vibe-level { color: #aa44ff; }
+
+        /* CENTER - MAIN VISUALIZATION */
+        .main-display {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .venue-header {
+            background: #111;
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .venue-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .venue-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .venue-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .venue-stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .venue-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        /* 3D VISUALIZATION */
+        .visualization-container {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #0a0a0a, #000);
+            overflow: hidden;
+        }
+
+        #biometric-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* HEATMAP OVERLAY */
+        .heatmap-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                rgba(255, 0, 64, 0.3), 
+                transparent 40%);
+            mix-blend-mode: screen;
+        }
+
+        /* WAVEFORM DISPLAY */
+        .waveform-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .waveform {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .wave-bar {
+            flex: 1;
+            background: linear-gradient(to top, #00ff88, #00ffff);
+            height: var(--height, 50%);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        /* RIGHT PANEL - ANALYTICS */
+        .analytics-panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #00ffff;
+        }
+
+        .metric-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .metric-title {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .metric-trend {
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up { color: #00ff88; }
+        .trend-down { color: #ff4444; }
+
+        /* VIRAL PREDICTION */
+        .viral-prediction {
+            background: linear-gradient(135deg, #ff0040, #ff8844);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viral-prediction::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .viral-score {
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .viral-label {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* RFID TRACKER */
+        .rfid-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .rfid-dot {
+            width: 40px;
+            height: 40px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .rfid-dot.active {
+            background: #00ff88;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        /* ALERTS */
+        .alert-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        .alert {
+            background: rgba(255, 68, 68, 0.9);
+            border: 1px solid #ff4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .alert-message {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* PARTICLE EFFECTS */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+
+        /* GLOW EFFECTS */
+        .glow-green {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(68, 170, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">🧬 VIBECAST BIOMETRIC COMMAND</div>
+        <div class="live-indicator">
+            <div class="live-dot"></div>
+            <span>LIVE MONITORING</span>
+            <span id="timestamp"></span>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard">
+        <!-- LEFT PANEL - PERFORMERS -->
+        <div class="panel performers-panel">
+            <h2>ACTIVE PERFORMERS</h2>
+            <div id="performers-list"></div>
+        </div>
+
+        <!-- CENTER - MAIN VISUALIZATION -->
+        <div class="main-display">
+            <div class="venue-header">
+                <div class="venue-name">CONSCIOUSNESS ARENA ALPHA</div>
+                <div class="venue-stats">
+                    <div class="venue-stat">
+                        <div class="venue-stat-label">Active Performers</div>
+                        <div class="venue-stat-value" id="active-performers">0</div>
+                    </div>
+                    <div class="venue-stat">
+                        <div class="venue-stat-label">Total Spectators</div>
+                        <div class="venue-stat-value" id="total-spectators">0</div>
+                    </div>
+                    <div class="venue-stat">
+                        <div class="venue-stat-label">Collective Vibe</div>
+                        <div class="venue-stat-value" id="collective-vibe">0.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-container">
+                <canvas id="biometric-canvas"></canvas>
+                <div class="heatmap-overlay" id="heatmap"></div>
+                
+                <div class="waveform-container">
+                    <div class="waveform" id="collective-waveform"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - ANALYTICS -->
+        <div class="panel analytics-panel">
+            <h2>REAL-TIME ANALYTICS</h2>
+            
+            <div class="viral-prediction">
+                <div class="viral-score" id="viral-score">0%</div>
+                <div class="viral-label">VIRAL PROBABILITY</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-title">Audience Synchronization</div>
+                <div class="metric-value" id="sync-level">0.00</div>
+                <div class="metric-trend trend-up">↑ +0.15 from baseline</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-title">Average Heart Rate</div>
+                <div class="metric-value" id="avg-heart-rate">72</div>
+                <div class="metric-trend trend-up">↑ Excitement building</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-title">Flow States Active</div>
+                <div class="metric-value" id="flow-states">3</div>
+                <div class="metric-trend trend-up">↑ Peak performance</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-title">Emotional Climate</div>
+                <div class="metric-value" id="emotional-climate">JOY</div>
+                <div class="metric-trend">85% positive valence</div>
+            </div>
+
+            <h2 style="margin-top: 30px;">RFID TRACKING</h2>
+            <div class="rfid-grid" id="rfid-grid"></div>
+        </div>
+    </div>
+
+    <!-- ALERTS CONTAINER -->
+    <div class="alert-container" id="alerts"></div>
+
+    <script>
+        // Initialize dashboard
+        class BiometricDashboard {
+            constructor() {
+                this.performers = new Map();
+                this.spectators = new Map();
+                this.canvas = document.getElementById('biometric-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.waveformData = new Array(50).fill(0.5);
+                
+                this.init();
+            }
+
+            init() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                // Start update loops
+                this.startDataSimulation();
+                this.startVisualization();
+                this.updateTimestamp();
+                
+                // Initialize RFID grid
+                this.initRFIDGrid();
+            }
+
+            resizeCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+            }
+
+            startDataSimulation() {
+                // Simulate real-time data updates
+                setInterval(() => {
+                    this.updatePerformers();
+                    this.updateMetrics();
+                    this.updateWaveform();
+                    this.checkForAlerts();
+                }, 1000);
+
+                // Fast updates for visualization
+                setInterval(() => {
+                    this.updateVisualization();
+                }, 50);
+            }
+
+            updatePerformers() {
+                const performersList = document.getElementById('performers-list');
+                
+                // Simulate 3 performers
+                const performers = [
+                    {
+                        id: 'p1',
+                        name: 'Neural Dancer',
+                        heartRate: 85 + Math.random() * 30,
+                        stress: Math.random() * 0.7,
+                        flow: 0.6 + Math.random() * 0.4,
+                        vibe: 0.7 + Math.random() * 0.3
+                    },
+                    {
+                        id: 'p2',
+                        name: 'Quantum Poet',
+                        heartRate: 75 + Math.random() * 25,
+                        stress: Math.random() * 0.5,
+                        flow: 0.5 + Math.random() * 0.5,
+                        vibe: 0.8 + Math.random() * 0.2
+                    },
+                    {
+                        id: 'p3',
+                        name: 'Vibe Alchemist',
+                        heartRate: 90 + Math.random() * 20,
+                        stress: Math.random() * 0.6,
+                        flow: 0.7 + Math.random() * 0.3,
+                        vibe: 0.9 + Math.random() * 0.1
+                    }
+                ];
+
+                performersList.innerHTML = performers.map(p => `
+                    <div class="performer-card ${p.flow > 0.8 ? 'active' : ''}">
+                        <div class="performer-name">${p.name}</div>
+                        <div class="biometric-grid">
+                            <div class="biometric-stat">
+                                <div class="biometric-label">Heart Rate</div>
+                                <div class="biometric-value heart-rate">${Math.round(p.heartRate)}</div>
+                            </div>
+                            <div class="biometric-stat">
+                                <div class="biometric-label">Stress</div>
+                                <div class="biometric-value stress-level">${(p.stress * 100).toFixed(0)}%</div>
+                            </div>
+                            <div class="biometric-stat">
+                                <div class="biometric-label">Flow State</div>
+                                <div class="biometric-value flow-state">${(p.flow * 100).toFixed(0)}%</div>
+                            </div>
+                            <div class="biometric-stat">
+                                <div class="biometric-label">Vibe Level</div>
+                                <div class="biometric-value vibe-level">${(p.vibe * 100).toFixed(0)}%</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update header stats
+                document.getElementById('active-performers').textContent = performers.length;
+            }
+
+            updateMetrics() {
+                // Update viral score
+                const viralScore = 20 + Math.random() * 60 + (Math.random() > 0.9 ? 20 : 0);
+                document.getElementById('viral-score').textContent = Math.round(viralScore) + '%';
+                
+                // Color based on score
+                const viralElement = document.querySelector('.viral-prediction');
+                if (viralScore > 70) {
+                    viralElement.style.background = 'linear-gradient(135deg, #ff0040, #ff8844)';
+                } else if (viralScore > 50) {
+                    viralElement.style.background = 'linear-gradient(135deg, #ff8844, #ffdd44)';
+                } else {
+                    viralElement.style.background = 'linear-gradient(135deg, #4444ff, #8844ff)';
+                }
+
+                // Update other metrics
+                document.getElementById('total-spectators').textContent = Math.round(800 + Math.random() * 400);
+                document.getElementById('collective-vibe').textContent = (0.7 + Math.random() * 0.3).toFixed(2);
+                document.getElementById('sync-level').textContent = (0.5 + Math.random() * 0.5).toFixed(2);
+                document.getElementById('avg-heart-rate').textContent = Math.round(70 + Math.random() * 20);
+                document.getElementById('flow-states').textContent = Math.round(Math.random() * 5);
+                
+                // Emotional climate
+                const emotions = ['JOY', 'EXCITEMENT', 'AWE', 'EUPHORIA', 'TRANSCENDENCE'];
+                document.getElementById('emotional-climate').textContent = emotions[Math.floor(Math.random() * emotions.length)];
+            }
+
+            updateWaveform() {
+                const waveform = document.getElementById('collective-waveform');
+                
+                // Shift waveform data
+                this.waveformData.shift();
+                this.waveformData.push(Math.random());
+                
+                // Update bars
+                waveform.innerHTML = this.waveformData.map(val => 
+                    `<div class="wave-bar" style="--height: ${val * 100}%"></div>`
+                ).join('');
+            }
+
+            updateVisualization() {
+                const ctx = this.ctx;
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+
+                // Clear canvas
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, width, height);
+
+                // Draw connection network
+                this.drawNetwork(ctx, width, height);
+
+                // Update particles
+                this.updateParticles(ctx, width, height);
+
+                // Draw biometric pulses
+                this.drawBiometricPulses(ctx, width, height);
+
+                // Update heatmap position
+                const heatmap = document.getElementById('heatmap');
+                const x = 30 + Math.sin(Date.now() * 0.001) * 20;
+                const y = 30 + Math.cos(Date.now() * 0.001) * 20;
+                heatmap.style.setProperty('--x', x + '%');
+                heatmap.style.setProperty('--y', y + '%');
+            }
+
+            drawNetwork(ctx, width, height) {
+                // Draw connections between nodes
+                const nodes = [
+                    { x: width * 0.3, y: height * 0.3 },
+                    { x: width * 0.7, y: height * 0.3 },
+                    { x: width * 0.5, y: height * 0.6 },
+                    { x: width * 0.2, y: height * 0.7 },
+                    { x: width * 0.8, y: height * 0.7 }
+                ];
+
+                ctx.strokeStyle = 'rgba(0, 255, 136, 0.2)';
+                ctx.lineWidth = 1;
+
+                nodes.forEach((node, i) => {
+                    nodes.forEach((other, j) => {
+                        if (i < j) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(other.x, other.y);
+                            ctx.stroke();
+                        }
+                    });
+
+                    // Draw node
+                    ctx.fillStyle = 'rgba(0, 255, 136, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 5 + Math.sin(Date.now() * 0.001 + i) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            updateParticles(ctx, width, height) {
+                // Add new particles
+                if (Math.random() > 0.9) {
+                    this.particles.push({
+                        x: Math.random() * width,
+                        y: height,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: -Math.random() * 3 - 1,
+                        life: 100,
+                        color: Math.random() > 0.5 ? '#00ff88' : '#00ffff'
+                    });
+                }
+
+                // Update and draw particles
+                this.particles = this.particles.filter(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life--;
+
+                    if (p.life > 0) {
+                        ctx.fillStyle = p.color + Math.floor(p.life * 2.55).toString(16).padStart(2, '0');
+                        ctx.fillRect(p.x, p.y, 2, 2);
+                        return true;
+                    }
+                    return false;
+                });
+            }
+
+            drawBiometricPulses(ctx, width, height) {
+                const time = Date.now() * 0.001;
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                // Heart rate pulse
+                const heartRadius = 50 + Math.sin(time * 2) * 20;
+                ctx.strokeStyle = 'rgba(255, 68, 68, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, heartRadius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Brain wave pulse
+                const brainRadius = 80 + Math.sin(time * 1.5) * 30;
+                ctx.strokeStyle = 'rgba(68, 170, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, brainRadius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Vibe pulse
+                const vibeRadius = 120 + Math.sin(time) * 40;
+                ctx.strokeStyle = 'rgba(170, 68, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, vibeRadius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            initRFIDGrid() {
+                const grid = document.getElementById('rfid-grid');
+                for (let i = 0; i < 16; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'rfid-dot';
+                    dot.id = `rfid-${i}`;
+                    dot.textContent = i.toString(16).toUpperCase();
+                    grid.appendChild(dot);
+                }
+
+                // Simulate RFID activity
+                setInterval(() => {
+                    const activeCount = Math.floor(Math.random() * 8) + 2;
+                    document.querySelectorAll('.rfid-dot').forEach(dot => {
+                        dot.classList.remove('active');
+                    });
+                    
+                    for (let i = 0; i < activeCount; i++) {
+                        const id = Math.floor(Math.random() * 16);
+                        document.getElementById(`rfid-${id}`).classList.add('active');
+                    }
+                }, 2000);
+            }
+
+            checkForAlerts() {
+                // Random alerts
+                if (Math.random() > 0.95) {
+                    const alerts = [
+                        { title: 'VIRAL MOMENT DETECTED', message: 'Crowd synchronization spike at 95%' },
+                        { title: 'FLOW STATE ACHIEVED', message: 'Performer entering peak consciousness' },
+                        { title: 'BIOMETRIC ANOMALY', message: 'Unusual heart rate pattern detected' },
+                        { title: 'VIBE SURGE', message: 'Collective energy increasing rapidly' }
+                    ];
+                    
+                    const alert = alerts[Math.floor(Math.random() * alerts.length)];
+                    this.showAlert(alert.title, alert.message);
+                }
+            }
+
+            showAlert(title, message) {
+                const container = document.getElementById('alerts');
+                const alert = document.createElement('div');
+                alert.className = 'alert';
+                alert.innerHTML = `
+                    <div class="alert-title">${title}</div>
+                    <div class="alert-message">${message}</div>
+                `;
+                container.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            }
+
+            updateTimestamp() {
+                const update = () => {
+                    const now = new Date();
+                    document.getElementById('timestamp').textContent = now.toLocaleTimeString();
+                };
+                update();
+                setInterval(update, 1000);
+            }
+
+            startVisualization() {
+                const animate = () => {
+                    this.updateVisualization();
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+        }
+
+        // Initialize dashboard
+        const dashboard = new BiometricDashboard();
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'v') {
+                dashboard.showAlert('MANUAL TRIGGER', 'Viral moment initiated by operator');
+            }
+        });
+    </script>
+</body>
+</html>

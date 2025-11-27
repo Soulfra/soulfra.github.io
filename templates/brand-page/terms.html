@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | {{BRAND_NAME}}</title>
+    <meta name="description" content="Terms of Service for {{BRAND_NAME}}">
+
+    <!-- X/Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="{{X_HANDLE}}">
+    <meta name="twitter:title" content="Terms of Service | {{BRAND_NAME}}">
+    <meta name="twitter:description" content="Terms of Service for {{BRAND_NAME}}">
+
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f9f9f9;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        h2 {
+            color: #667eea;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        h3 {
+            color: #333;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .important-notice {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .important-notice strong {
+            color: #e17055;
+        }
+
+        /* Footer */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .brand-ecosystem {
+            margin: 1.5rem 0;
+            padding: 1rem 0;
+            border-top: 1px solid #4a5568;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .brand-ecosystem a {
+            margin: 0 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{BRAND_NAME}}</h1>
+        <p>Terms of Service</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="content-card">
+            <p class="last-updated"><strong>Last updated:</strong> {{LAST_UPDATED}}</p>
+
+            <p>Welcome to {{BRAND_NAME}}. By accessing or using our platform, you agree to be bound by these Terms of Service ("Terms"). Please read them carefully.</p>
+
+            <div class="important-notice">
+                <strong>Important:</strong> {{BRAND_NAME}} is provided FREE of charge. By using our platform, you agree to these terms. We reserve the right to modify these terms at any time.
+            </div>
+
+            <h2>1. Use of Services</h2>
+            <p>You may use {{BRAND_NAME}} for lawful purposes only. You agree not to:</p>
+            <ul>
+                <li>Violate any applicable laws or regulations</li>
+                <li>Infringe upon intellectual property rights</li>
+                <li>Transmit harmful, offensive, or inappropriate content</li>
+                <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Use automated systems (bots, scrapers) without permission</li>
+                <li>Misrepresent your identity or affiliation</li>
+            </ul>
+
+            <h2>2. Account Responsibility</h2>
+            <p>If you create an account on {{BRAND_NAME}}, you are responsible for:</p>
+            <ul>
+                <li>Maintaining the security of your account</li>
+                <li>All activities that occur under your account</li>
+                <li>Providing accurate and complete information</li>
+                <li>Promptly updating your information when changes occur</li>
+                <li>Notifying us of any unauthorized use</li>
+            </ul>
+            <p>We reserve the right to suspend or terminate accounts that violate these Terms.</p>
+
+            <h2>3. Content and Intellectual Property</h2>
+            <h3>Your Content</h3>
+            <p>You retain ownership of any content you submit to {{BRAND_NAME}}. By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, display, and distribute your content as part of our services.</p>
+
+            <h3>Our Content</h3>
+            <p>{{BRAND_NAME}}'s code, design, and documentation are open-source and FREE to use. However, our brand name, logos, and trademarks are protected. You may not:</p>
+            <ul>
+                <li>Use our brand name or logo without permission</li>
+                <li>Imply endorsement or affiliation without authorization</li>
+                <li>Create derivative brands that cause confusion</li>
+            </ul>
+
+            <h3>Open-Source Philosophy</h3>
+            <p>We believe in open-source. Our code is available for you to:</p>
+            <ul>
+                <li>Use freely for any purpose</li>
+                <li>Modify and adapt to your needs</li>
+                <li>Redistribute (with proper attribution)</li>
+                <li>Contribute improvements back to the community</li>
+            </ul>
+
+            <h2>4. Page Generation and Hosting</h2>
+            <p>When you submit your information through our intake form, we automatically generate a brand page for you at <code>soulfra.github.io/{{BRAND_SLUG}}/</code>. You agree that:</p>
+            <ul>
+                <li>Your page will be publicly accessible</li>
+                <li>We may display your page as an example of our platform</li>
+                <li>You are responsible for the accuracy of information you provide</li>
+                <li>You can request removal of your page at any time</li>
+            </ul>
+
+            <h2>5. Limitation of Liability</h2>
+            <p>{{BRAND_NAME}} is provided "AS IS" without warranties of any kind. To the fullest extent permitted by law:</p>
+            <ul>
+                <li>We make no warranties about reliability, availability, or accuracy</li>
+                <li>We are not liable for any damages arising from use or inability to use our services</li>
+                <li>We are not responsible for content posted by users</li>
+                <li>We do not guarantee uninterrupted or error-free service</li>
+            </ul>
+
+            <h3>Free Service Disclaimer</h3>
+            <p>Because {{BRAND_NAME}} is provided FREE of charge:</p>
+            <ul>
+                <li>We make no promises about uptime or availability</li>
+                <li>We may discontinue services at any time without notice</li>
+                <li>We are not liable for any business losses</li>
+                <li>You use our platform at your own risk</li>
+            </ul>
+
+            <h2>6. Indemnification</h2>
+            <p>You agree to indemnify and hold harmless {{BRAND_NAME}}, its contributors, and affiliates from any claims, damages, or expenses arising from:</p>
+            <ul>
+                <li>Your use of our services</li>
+                <li>Your violation of these Terms</li>
+                <li>Your violation of any rights of another party</li>
+                <li>Content you submit to our platform</li>
+            </ul>
+
+            <h2>7. Changes to Terms</h2>
+            <p>We reserve the right to modify these Terms at any time. Changes will be effective when posted on this page with an updated "Last updated" date. Your continued use of {{BRAND_NAME}} after changes constitutes acceptance of the new Terms.</p>
+
+            <p>Significant changes will be communicated through:</p>
+            <ul>
+                <li>A notice on our platform</li>
+                <li>Email notification (if you've provided an email)</li>
+                <li>Updates to this page</li>
+            </ul>
+
+            <h2>8. Governing Law</h2>
+            <p>These Terms are governed by the laws of [JURISDICTION]. Any disputes arising from these Terms or use of {{BRAND_NAME}} will be resolved through:</p>
+            <ul>
+                <li>Good-faith negotiation first</li>
+                <li>Arbitration if negotiation fails</li>
+                <li>Legal jurisdiction in [LOCATION] if necessary</li>
+            </ul>
+
+            <h2>9. Contact Us</h2>
+            <p>Questions about these Terms? Contact us:</p>
+            <ul>
+                <li><strong>Email:</strong> {{CONTACT_EMAIL}}</li>
+                <li><strong>X/Twitter:</strong> <a href="https://x.com/{{X_HANDLE_CLEAN}}" target="_blank">{{X_HANDLE}}</a></li>
+            </ul>
+
+            <div class="important-notice">
+                <p><strong>Remember:</strong> {{BRAND_NAME}} is built with principle, not profit. These terms protect both you and us, but our real goal is to change the world together. If you have concerns, reach out—we're humans, not lawyers.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; {{CURRENT_YEAR}} {{BRAND_NAME}}. Built with principle, not profit.</p>
+
+        <div class="brand-ecosystem">
+            <p>Part of the Brand Ecosystem:</p>
+            {{CROSS_PROMOTION_LINKS}}
+        </div>
+
+        <p><a href="https://x.com/{{X_HANDLE_CLEAN}}" target="_blank">Follow {{X_HANDLE}} on X</a></p>
+    </footer>
+</body>
+</html>

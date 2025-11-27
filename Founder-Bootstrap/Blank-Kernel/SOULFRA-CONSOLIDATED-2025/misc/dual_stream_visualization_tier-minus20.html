@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪞 MIRROR LEDGER - DUAL STREAM VISUALIZATION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(90deg, #000428, #004e92);
+            padding: 15px 20px;
+            border-bottom: 2px solid #00ffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* MAIN CONTAINER */
+        .main-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 200px 1fr;
+            grid-template-rows: 1fr;
+            gap: 0;
+            position: relative;
+        }
+
+        /* STREAM PANELS */
+        .stream-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .human-panel {
+            background: linear-gradient(135deg, #0a0a0a, #001a2e);
+            border-right: 2px solid #00ffff;
+        }
+
+        .ai-panel {
+            background: linear-gradient(135deg, #0a0a0a, #2e001a);
+            border-left: 2px solid #ff00ff;
+        }
+
+        .stream-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .human-title {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .ai-title {
+            color: #ff00ff;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        /* STREAM ENTRIES */
+        .stream-entries {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .stream-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stream-entry.intersecting {
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            animation: intersectionGlow 1s ease-in-out infinite;
+        }
+
+        @keyframes intersectionGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 0, 0.8); }
+        }
+
+        .entry-id {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .entry-data {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .consciousness-level, .intelligence-level {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .human-progress {
+            background: linear-gradient(90deg, #00ffff, #0088ff);
+        }
+
+        .ai-progress {
+            background: linear-gradient(90deg, #ff00ff, #ff0088);
+        }
+
+        /* CENTER ENCODER */
+        .encoder-panel {
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid #333;
+            border-right: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .encoder-core {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #ffff00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(255, 255, 0, 0.1), transparent);
+        }
+
+        .encoder-core.encoding {
+            animation: encodingPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes encodingPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                border-color: #ffff00;
+                box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            }
+            50% { 
+                transform: scale(1.1); 
+                border-color: #ffffff;
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .encoder-icon {
+            font-size: 48px;
+            color: #ffff00;
+        }
+
+        .encoding-status {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffff00;
+        }
+
+        .intersection-counter {
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* CONNECTION LINES */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffff00, transparent);
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            animation: connectionPulse 2s ease-in-out infinite;
+        }
+
+        .connection-left {
+            left: 20px;
+            right: 50%;
+        }
+
+        .connection-right {
+            left: 50%;
+            right: 20px;
+        }
+
+        @keyframes connectionPulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* MIRROR ENCODINGS LIST */
+        .encodings-list {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .encoding-item {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 5px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .encoding-item.active {
+            border-color: #ffff00;
+            background: rgba(255, 255, 0, 0.1);
+        }
+
+        /* QUANTUM ENTANGLEMENT INDICATOR */
+        .quantum-indicator {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quantum-dot {
+            width: 12px;
+            height: 12px;
+            background: #ff00ff;
+            border-radius: 50%;
+            animation: quantumFlicker 0.5s ease-in-out infinite;
+        }
+
+        @keyframes quantumFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .quantum-label {
+            font-size: 10px;
+            color: #ff00ff;
+            text-transform: uppercase;
+        }
+
+        /* AUTONOMOUS NETWORK INDICATORS */
+        .network-nodes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .network-node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: nodeFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes nodeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* STATISTICS OVERLAY */
+        .stats-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12px;
+            min-width: 200px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* CONTROLS */
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: #333;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #555;
+            border-color: #999;
+        }
+
+        .control-btn.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="title">🪞 MIRROR LEDGER PROTOCOL</div>
+        <div class="status">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>Human Stream Active</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>AI Stream Active</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>Mirror Encoder Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- HUMAN STREAM -->
+        <div class="stream-panel human-panel">
+            <div class="stream-title human-title">Human Ledger</div>
+            <div class="stream-entries" id="human-entries"></div>
+        </div>
+
+        <!-- MIRROR ENCODER -->
+        <div class="encoder-panel">
+            <div class="quantum-indicator">
+                <div class="quantum-dot"></div>
+                <div class="quantum-label">Quantum</div>
+            </div>
+
+            <div class="encoder-core" id="encoder-core">
+                <div class="encoder-icon">🪞</div>
+            </div>
+
+            <div class="encoding-status" id="encoding-status">
+                Awaiting Intersection
+            </div>
+
+            <div class="intersection-counter" id="intersection-counter">0</div>
+
+            <div class="encodings-list" id="encodings-list"></div>
+
+            <div class="connection-line connection-left" id="connection-left"></div>
+            <div class="connection-right connection-right" id="connection-right"></div>
+
+            <div class="network-nodes" id="network-nodes"></div>
+        </div>
+
+        <!-- AI STREAM -->
+        <div class="stream-panel ai-panel">
+            <div class="stream-title ai-title">AI Ledger</div>
+            <div class="stream-entries" id="ai-entries"></div>
+        </div>
+    </div>
+
+    <!-- STATISTICS OVERLAY -->
+    <div class="stats-overlay">
+        <div class="stat-row">
+            <span class="stat-label">Human Entries:</span>
+            <span class="stat-value" id="human-count">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">AI Entries:</span>
+            <span class="stat-value" id="ai-count">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Intersections:</span>
+            <span class="stat-value" id="intersections-count">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Mirror Encodings:</span>
+            <span class="stat-value" id="encodings-count">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Quantum States:</span>
+            <span class="stat-value" id="quantum-count">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Bridge Strength:</span>
+            <span class="stat-value" id="bridge-strength">0.00</span>
+        </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+        <button class="control-btn" onclick="simulateHumanInteraction()">Add Human</button>
+        <button class="control-btn" onclick="simulateAIInteraction()">Add AI</button>
+        <button class="control-btn" onclick="triggerIntersection()">Force Intersection</button>
+        <button class="control-btn" id="auto-mode" onclick="toggleAutoMode()">Auto Mode</button>
+    </div>
+
+    <script>
+        // Mirror Ledger Visualization System
+        class MirrorLedgerViz {
+            constructor() {
+                this.humanEntries = [];
+                this.aiEntries = [];
+                this.intersections = [];
+                this.encodings = [];
+                this.quantumStates = [];
+                this.autoMode = false;
+                this.intersectionCounter = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupNetworkNodes();
+                this.startVisualization();
+                
+                // Auto-generate some initial data
+                setTimeout(() => {
+                    this.generateInitialData();
+                }, 1000);
+            }
+
+            generateInitialData() {
+                // Add some example entries
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => this.simulateHumanInteraction(), i * 2000);
+                    setTimeout(() => this.simulateAIInteraction(), i * 2000 + 1000);
+                }
+            }
+
+            simulateHumanInteraction() {
+                const humanEntry = {
+                    id: `human_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+                    timestamp: Date.now(),
+                    consciousness: {
+                        level: Math.random() * 0.8 + 0.2,
+                        authenticity: Math.random() * 0.9 + 0.1,
+                        emotional_state: this.getRandomEmotion(),
+                        flow_state: Math.random()
+                    },
+                    biometrics: {
+                        heart_rate: Math.floor(Math.random() * 40 + 60),
+                        stress_level: Math.random(),
+                        engagement: Math.random()
+                    },
+                    mirror_readiness: Math.random(),
+                    seeking_intersection: true
+                };
+
+                this.humanEntries.push(humanEntry);
+                this.renderHumanEntry(humanEntry);
+                this.updateStats();
+                
+                // Check for intersection
+                setTimeout(() => this.checkForIntersection(humanEntry, 'human'), 500);
+            }
+
+            simulateAIInteraction() {
+                const aiEntry = {
+                    id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+                    timestamp: Date.now(),
+                    intelligence: {
+                        depth: Math.random() * 0.9 + 0.1,
+                        confidence: Math.random() * 0.8 + 0.2,
+                        processing_state: this.getRandomProcessingState(),
+                        learning_rate: Math.random()
+                    },
+                    computation: {
+                        cycles: Math.floor(Math.random() * 1000000),
+                        memory_usage: Math.random() * 100,
+                        inference_time: Math.random() * 100
+                    },
+                    mirror_readiness: Math.random(),
+                    seeking_intersection: true
+                };
+
+                this.aiEntries.push(aiEntry);
+                this.renderAIEntry(aiEntry);
+                this.updateStats();
+                
+                // Check for intersection
+                setTimeout(() => this.checkForIntersection(aiEntry, 'ai'), 500);
+            }
+
+            checkForIntersection(newEntry, type) {
+                const otherEntries = type === 'human' ? this.aiEntries : this.humanEntries;
+                
+                for (const otherEntry of otherEntries) {
+                    const timeDiff = Math.abs(newEntry.timestamp - otherEntry.timestamp);
+                    const readinessDiff = Math.abs(newEntry.mirror_readiness - otherEntry.mirror_readiness);
+                    
+                    // Intersection conditions
+                    if (timeDiff < 5000 && readinessDiff < 0.3 && Math.random() > 0.7) {
+                        this.triggerMirrorEncoding(
+                            type === 'human' ? newEntry : otherEntry,
+                            type === 'ai' ? newEntry : otherEntry
+                        );
+                        break;
+                    }
+                }
+            }
+
+            triggerMirrorEncoding(humanEntry, aiEntry) {
+                this.intersectionCounter++;
+                
+                // Visual intersection effect
+                this.showIntersectionEffect(humanEntry, aiEntry);
+                
+                // Create encoding
+                const encoding = {
+                    id: `mirror_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+                    timestamp: Date.now(),
+                    human_entry: humanEntry,
+                    ai_entry: aiEntry,
+                    bridge_strength: Math.random() * 0.8 + 0.2,
+                    quantum_entangled: Math.random() > 0.5
+                };
+
+                this.encodings.push(encoding);
+                this.renderEncoding(encoding);
+                
+                // Update encoder
+                this.updateEncoder(true);
+                
+                // Add quantum state if entangled
+                if (encoding.quantum_entangled) {
+                    this.quantumStates.push({
+                        encoding_id: encoding.id,
+                        coherence: Math.random(),
+                        entanglement_strength: Math.random()
+                    });
+                }
+
+                this.updateStats();
+                
+                // Reset encoder after encoding
+                setTimeout(() => this.updateEncoder(false), 3000);
+            }
+
+            showIntersectionEffect(humanEntry, aiEntry) {
+                // Highlight intersecting entries
+                const humanElement = document.querySelector(`[data-id="${humanEntry.id}"]`);
+                const aiElement = document.querySelector(`[data-id="${aiEntry.id}"]`);
+                
+                if (humanElement) humanElement.classList.add('intersecting');
+                if (aiElement) aiElement.classList.add('intersecting');
+                
+                // Show connection lines
+                document.getElementById('connection-left').style.animation = 'connectionPulse 1s ease-in-out 3';
+                document.getElementById('connection-right').style.animation = 'connectionPulse 1s ease-in-out 3';
+                
+                // Reset after animation
+                setTimeout(() => {
+                    if (humanElement) humanElement.classList.remove('intersecting');
+                    if (aiElement) aiElement.classList.remove('intersecting');
+                }, 3000);
+            }
+
+            renderHumanEntry(entry) {
+                const container = document.getElementById('human-entries');
+                const element = document.createElement('div');
+                element.className = 'stream-entry';
+                element.setAttribute('data-id', entry.id);
+                
+                element.innerHTML = `
+                    <div class="entry-id">${entry.id}</div>
+                    <div class="entry-data">
+                        <div>Emotional State: ${entry.consciousness.emotional_state}</div>
+                        <div>Heart Rate: ${entry.biometrics.heart_rate} BPM</div>
+                        <div>Flow State: ${(entry.consciousness.flow_state * 100).toFixed(1)}%</div>
+                    </div>
+                    <div class="consciousness-level">
+                        <span>Consciousness:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill human-progress" style="width: ${entry.consciousness.level * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(element);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            renderAIEntry(entry) {
+                const container = document.getElementById('ai-entries');
+                const element = document.createElement('div');
+                element.className = 'stream-entry';
+                element.setAttribute('data-id', entry.id);
+                
+                element.innerHTML = `
+                    <div class="entry-id">${entry.id}</div>
+                    <div class="entry-data">
+                        <div>Processing: ${entry.intelligence.processing_state}</div>
+                        <div>Cycles: ${entry.computation.cycles.toLocaleString()}</div>
+                        <div>Learning: ${(entry.intelligence.learning_rate * 100).toFixed(1)}%</div>
+                    </div>
+                    <div class="intelligence-level">
+                        <span>Intelligence:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill ai-progress" style="width: ${entry.intelligence.depth * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(element);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            renderEncoding(encoding) {
+                const container = document.getElementById('encodings-list');
+                const element = document.createElement('div');
+                element.className = 'encoding-item active';
+                
+                element.innerHTML = `
+                    <div>Mirror ${this.intersectionCounter}</div>
+                    <div>Bridge: ${(encoding.bridge_strength * 100).toFixed(0)}%</div>
+                    ${encoding.quantum_entangled ? '<div>⚛️ Quantum</div>' : ''}
+                `;
+                
+                container.appendChild(element);
+                
+                // Remove active class after animation
+                setTimeout(() => {
+                    element.classList.remove('active');
+                }, 3000);
+            }
+
+            updateEncoder(encoding) {
+                const core = document.getElementById('encoder-core');
+                const status = document.getElementById('encoding-status');
+                const counter = document.getElementById('intersection-counter');
+                
+                if (encoding) {
+                    core.classList.add('encoding');
+                    status.textContent = 'ENCODING MIRROR...';
+                } else {
+                    core.classList.remove('encoding');
+                    status.textContent = 'Awaiting Intersection';
+                }
+                
+                counter.textContent = this.intersectionCounter;
+            }
+
+            updateStats() {
+                document.getElementById('human-count').textContent = this.humanEntries.length;
+                document.getElementById('ai-count').textContent = this.aiEntries.length;
+                document.getElementById('intersections-count').textContent = this.intersectionCounter;
+                document.getElementById('encodings-count').textContent = this.encodings.length;
+                document.getElementById('quantum-count').textContent = this.quantumStates.length;
+                
+                const avgBridge = this.encodings.length > 0 
+                    ? this.encodings.reduce((sum, e) => sum + e.bridge_strength, 0) / this.encodings.length 
+                    : 0;
+                document.getElementById('bridge-strength').textContent = avgBridge.toFixed(2);
+            }
+
+            setupNetworkNodes() {
+                const container = document.getElementById('network-nodes');
+                
+                for (let i = 0; i < 8; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'network-node';
+                    node.style.left = Math.random() * 90 + 5 + '%';
+                    node.style.top = Math.random() * 90 + 5 + '%';
+                    node.style.animationDelay = Math.random() * 3 + 's';
+                    container.appendChild(node);
+                }
+            }
+
+            startVisualization() {
+                // Update timestamp periodically
+                setInterval(() => {
+                    if (this.autoMode) {
+                        if (Math.random() > 0.7) this.simulateHumanInteraction();
+                        if (Math.random() > 0.7) this.simulateAIInteraction();
+                    }
+                }, 2000);
+            }
+
+            toggleAutoMode() {
+                this.autoMode = !this.autoMode;
+                const btn = document.getElementById('auto-mode');
+                btn.classList.toggle('active', this.autoMode);
+                btn.textContent = this.autoMode ? 'Auto Mode ON' : 'Auto Mode OFF';
+            }
+
+            getRandomEmotion() {
+                const emotions = ['joy', 'excitement', 'curiosity', 'focus', 'flow', 'wonder', 'determination'];
+                return emotions[Math.floor(Math.random() * emotions.length)];
+            }
+
+            getRandomProcessingState() {
+                const states = ['analyzing', 'inferring', 'learning', 'optimizing', 'searching', 'creating', 'reasoning'];
+                return states[Math.floor(Math.random() * states.length)];
+            }
+        }
+
+        // Global functions for controls
+        let viz;
+
+        function simulateHumanInteraction() {
+            viz.simulateHumanInteraction();
+        }
+
+        function simulateAIInteraction() {
+            viz.simulateAIInteraction();
+        }
+
+        function triggerIntersection() {
+            if (viz.humanEntries.length > 0 && viz.aiEntries.length > 0) {
+                const human = viz.humanEntries[viz.humanEntries.length - 1];
+                const ai = viz.aiEntries[viz.aiEntries.length - 1];
+                viz.triggerMirrorEncoding(human, ai);
+            }
+        }
+
+        function toggleAutoMode() {
+            viz.toggleAutoMode();
+        }
+
+        // Initialize visualization
+        window.addEventListener('load', () => {
+            viz = new MirrorLedgerViz();
+        });
+    </script>
+</body>
+</html>

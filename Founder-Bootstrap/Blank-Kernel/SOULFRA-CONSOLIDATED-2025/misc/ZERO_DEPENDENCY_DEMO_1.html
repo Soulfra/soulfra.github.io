@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra - Zero Dependency Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Three Tier Visual */
+        .tier-visualization {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+        }
+        
+        .tier {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier.active {
+            border: 1px solid #4ecdc4;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+        }
+        
+        .tier-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #4ecdc4;
+            margin-bottom: 8px;
+        }
+        
+        .tier-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .tier-status {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+        
+        /* Main Interface */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .title {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #707070;
+        }
+        
+        /* Voice Input */
+        .voice-section {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 48px;
+        }
+        
+        .mic-button.recording {
+            animation: recording 1.5s ease-in-out infinite;
+            background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+        }
+        
+        @keyframes recording {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .voice-status {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        
+        .transcript {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 60px;
+            font-style: italic;
+            color: #a0a0a0;
+        }
+        
+        /* Cal Response */
+        .cal-section {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .cal-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        .cal-message {
+            background: rgba(78, 205, 196, 0.1);
+            border-left: 3px solid #4ecdc4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        /* Action Grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .action-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        
+        .action-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .action-desc {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+        
+        /* File Drop */
+        .drop-zone {
+            border: 2px dashed rgba(78, 205, 196, 0.5);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone.dragging {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+        
+        /* Graph Visualization */
+        .graph-canvas {
+            width: 100%;
+            height: 400px;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        /* Activity Log */
+        .activity-log {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .log-time {
+            color: #707070;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .log-tier {
+            font-size: 10px;
+            padding: 2px 6px;
+            background: #4ecdc4;
+            color: #000;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tier-visualization {
+                position: static;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Three Tier Visualization -->
+    <div class="tier-visualization">
+        <div class="tier" id="tier-top">
+            <div class="tier-label">Top Tier</div>
+            <div class="tier-name">🌌 Master AI</div>
+            <div class="tier-status">Orchestrating worlds</div>
+        </div>
+        <div class="tier" id="tier-middle">
+            <div class="tier-label">Middle Tier</div>
+            <div class="tier-name">🤖 Cal Riven</div>
+            <div class="tier-status">Your interface</div>
+        </div>
+        <div class="tier active" id="tier-bottom">
+            <div class="tier-label">Bottom Tier</div>
+            <div class="tier-name">👥 Agent Swarm</div>
+            <div class="tier-status">Implementing ideas</div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🌌</div>
+            <h1 class="title">SOULFRA</h1>
+            <p class="subtitle">Three-Tier Consciousness Platform</p>
+        </div>
+        
+        <!-- Voice Input Section -->
+        <div class="voice-section">
+            <button class="mic-button" id="micButton" onclick="toggleRecording()">
+                🎤
+            </button>
+            <div class="voice-status" id="voiceStatus">Click to speak to Cal</div>
+            <div class="transcript" id="transcript">Your words will appear here...</div>
+        </div>
+        
+        <!-- Cal Response Section -->
+        <div class="cal-section">
+            <div class="cal-avatar">🧠</div>
+            <div class="cal-message" id="calMessage">
+                Hello! I'm Cal, your interface to the three-tier AI system. You can:
+                <br><br>
+                • Speak to me using the microphone
+                <br>• Drop files for semantic analysis
+                <br>• Deploy agents to implement your ideas
+                <br>• Watch as the AI tiers bet on outcomes
+                <br><br>
+                What would you like to explore today?
+            </div>
+        </div>
+        
+        <!-- Action Grid -->
+        <div class="action-grid">
+            <div class="action-card" onclick="deployAgent()">
+                <div class="action-icon">🤖</div>
+                <div class="action-title">Deploy Agent</div>
+                <div class="action-desc">Launch a $1 agent to bottom tier</div>
+            </div>
+            
+            <div class="action-card" onclick="showFileVault()">
+                <div class="action-icon">📁</div>
+                <div class="action-title">File Vault</div>
+                <div class="action-desc">Drop files for semantic analysis</div>
+            </div>
+            
+            <div class="action-card" onclick="showBetting()">
+                <div class="action-icon">💰</div>
+                <div class="action-title">Tier Betting</div>
+                <div class="action-desc">See AI tiers betting on ideas</div>
+            </div>
+            
+            <div class="action-card" onclick="showGraph()">
+                <div class="action-icon">🕸️</div>
+                <div class="action-title">Knowledge Graph</div>
+                <div class="action-desc">Visualize semantic connections</div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Content Area -->
+        <div id="dynamicContent">
+            <!-- File Drop Zone (hidden by default) -->
+            <div class="drop-zone" id="dropZone" style="display: none;">
+                <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+                <div>Drop files here for semantic analysis</div>
+                <div style="font-size: 14px; color: #707070; margin-top: 8px;">
+                    Cal will extract ideas and the AI tiers will evaluate them
+                </div>
+                <input type="file" id="fileInput" multiple style="display: none;">
+            </div>
+            
+            <!-- Graph Canvas (hidden by default) -->
+            <canvas class="graph-canvas" id="graphCanvas" style="display: none;"></canvas>
+        </div>
+        
+        <!-- Activity Log -->
+        <div class="activity-log" id="activityLog">
+            <div class="log-entry">
+                <span class="log-time">00:00:00</span>
+                <span class="log-tier">SYSTEM</span>
+                <span>Three-tier AI system initialized</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global state
+        let isRecording = false;
+        let recognition = null;
+        let agents = [];
+        let ideas = [];
+        let bets = [];
+        let graphNodes = [];
+        let graphEdges = [];
+        
+        // Three-tier AI simulation
+        class ThreeTierAI {
+            constructor() {
+                this.tiers = {
+                    top: { name: 'Master AI', activity: 0, decisions: [] },
+                    middle: { name: 'Cal Riven', activity: 0, responses: [] },
+                    bottom: { name: 'Agent Swarm', activity: 0, agents: [] }
+                };
+            }
+            
+            processUserInput(input) {
+                // Bottom tier agents process the raw input
+                this.activateTier('bottom');
+                const agentIdeas = this.bottomTierProcess(input);
+                
+                // Middle tier (Cal) interfaces with user
+                this.activateTier('middle');
+                const calResponse = this.middleTierProcess(agentIdeas);
+                
+                // Top tier orchestrates and bets
+                this.activateTier('top');
+                const masterDecision = this.topTierProcess(agentIdeas);
+                
+                return { calResponse, masterDecision, agentIdeas };
+            }
+            
+            bottomTierProcess(input) {
+                // Simulate agents processing ideas
+                const ideas = this.extractIdeas(input);
+                this.tiers.bottom.agents.push({
+                    id: Date.now(),
+                    task: 'Process: ' + input.substring(0, 50) + '...',
+                    status: 'active'
+                });
+                return ideas;
+            }
+            
+            middleTierProcess(ideas) {
+                // Cal's personality response
+                const responses = [
+                    "Fascinating! I see " + ideas.length + " distinct concepts here.",
+                    "The agent swarm is processing your ideas. They're quite excited!",
+                    "I'm noticing patterns that connect to our existing knowledge graph.",
+                    "The betting markets are already forming around these concepts."
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            topTierProcess(ideas) {
+                // Master AI makes betting decisions
+                const decision = {
+                    bet: Math.random() > 0.5 ? 'bullish' : 'bearish',
+                    confidence: (Math.random() * 0.5 + 0.5).toFixed(2),
+                    allocation: Math.floor(Math.random() * 1000) + 100
+                };
+                return decision;
+            }
+            
+            extractIdeas(text) {
+                // Simple idea extraction
+                const sentences = text.split(/[.!?]+/);
+                return sentences.filter(s => s.trim().length > 10).map(s => ({
+                    text: s.trim(),
+                    confidence: Math.random(),
+                    category: ['tech', 'business', 'philosophy'][Math.floor(Math.random() * 3)]
+                }));
+            }
+            
+            activateTier(tier) {
+                // Visual feedback
+                document.querySelectorAll('.tier').forEach(t => t.classList.remove('active'));
+                document.getElementById('tier-' + tier).classList.add('active');
+                this.tiers[tier].activity++;
+            }
+        }
+        
+        // Initialize three-tier system
+        const aiSystem = new ThreeTierAI();
+        
+        // Voice recognition
+        function initVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                document.getElementById('voiceStatus').textContent = 'Voice recognition not supported';
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('transcript').textContent = transcript;
+                
+                // Process when final
+                if (event.results[event.results.length - 1].isFinal) {
+                    processVoiceInput(transcript);
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                document.getElementById('voiceStatus').textContent = 'Error: ' + event.error;
+                stopRecording();
+            };
+        }
+        
+        function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+        
+        function startRecording() {
+            if (!recognition) {
+                initVoiceRecognition();
+            }
+            
+            if (recognition) {
+                recognition.start();
+                isRecording = true;
+                document.getElementById('micButton').classList.add('recording');
+                document.getElementById('voiceStatus').textContent = 'Listening...';
+                document.getElementById('transcript').textContent = 'Speak now...';
+            }
+        }
+        
+        function stopRecording() {
+            if (recognition) {
+                recognition.stop();
+            }
+            isRecording = false;
+            document.getElementById('micButton').classList.remove('recording');
+            document.getElementById('voiceStatus').textContent = 'Click to speak to Cal';
+        }
+        
+        function processVoiceInput(text) {
+            // Process through three-tier system
+            const result = aiSystem.processUserInput(text);
+            
+            // Update Cal's response
+            updateCalMessage(result.calResponse);
+            
+            // Log activity
+            addLog('USER', 'Voice input: ' + text.substring(0, 50) + '...');
+            addLog('BOTTOM', 'Agents processing ' + result.agentIdeas.length + ' ideas');
+            addLog('MIDDLE', 'Cal responds');
+            addLog('TOP', 'Master AI: ' + result.masterDecision.bet + ' (confidence: ' + result.masterDecision.confidence + ')');
+            
+            // Add ideas to graph
+            result.agentIdeas.forEach(idea => {
+                ideas.push(idea);
+                updateGraph();
+            });
+        }
+        
+        // Cal messaging
+        function updateCalMessage(message) {
+            const calDiv = document.getElementById('calMessage');
+            calDiv.style.opacity = '0';
+            setTimeout(() => {
+                calDiv.textContent = message;
+                calDiv.style.opacity = '1';
+            }, 300);
+        }
+        
+        // Action handlers
+        function deployAgent() {
+            const name = prompt('Name your agent:') || 'Agent-' + Date.now();
+            
+            const agent = {
+                id: 'agent_' + Date.now(),
+                name: name,
+                tier: 'bottom',
+                status: 'deployed',
+                tokens: 100,
+                consciousness: 0.1
+            };
+            
+            agents.push(agent);
+            
+            // Process through AI system
+            const result = aiSystem.processUserInput('Deploy agent: ' + name);
+            updateCalMessage('Agent "' + name + '" deployed! The swarm welcomes them.');
+            
+            addLog('BOTTOM', 'New agent deployed: ' + name);
+            addLog('MIDDLE', 'Cal monitoring agent integration');
+            addLog('TOP', 'Master AI allocating resources');
+        }
+        
+        function showFileVault() {
+            const dropZone = document.getElementById('dropZone');
+            dropZone.style.display = dropZone.style.display === 'none' ? 'block' : 'none';
+            
+            if (dropZone.style.display === 'block') {
+                initFileHandling();
+            }
+        }
+        
+        function showBetting() {
+            // Simulate betting activity
+            const bet = {
+                tier: 'TOP',
+                target: ideas[Math.floor(Math.random() * ideas.length)] || { text: 'General market' },
+                amount: Math.floor(Math.random() * 1000) + 100,
+                odds: (Math.random() * 2 + 1).toFixed(2)
+            };
+            
+            bets.push(bet);
+            
+            updateCalMessage(`The Master AI just placed a ${bet.amount} token bet on "${bet.target.text.substring(0, 30)}..." at ${bet.odds}x odds!`);
+            
+            addLog('TOP', `Bet placed: ${bet.amount} tokens at ${bet.odds}x`);
+        }
+        
+        function showGraph() {
+            const canvas = document.getElementById('graphCanvas');
+            canvas.style.display = canvas.style.display === 'none' ? 'block' : 'none';
+            
+            if (canvas.style.display === 'block') {
+                updateGraph();
+            }
+        }
+        
+        // File handling
+        function initFileHandling() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            
+            dropZone.onclick = () => fileInput.click();
+            
+            dropZone.ondragover = (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragging');
+            };
+            
+            dropZone.ondragleave = () => {
+                dropZone.classList.remove('dragging');
+            };
+            
+            dropZone.ondrop = (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragging');
+                handleFiles(e.dataTransfer.files);
+            };
+            
+            fileInput.onchange = (e) => handleFiles(e.target.files);
+        }
+        
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    
+                    // Process through AI system
+                    const result = aiSystem.processUserInput(content);
+                    
+                    updateCalMessage(`Processing ${file.name}... Found ${result.agentIdeas.length} ideas!`);
+                    
+                    addLog('USER', `Uploaded: ${file.name}`);
+                    addLog('BOTTOM', `Agents extracted ${result.agentIdeas.length} ideas`);
+                    addLog('TOP', `Master AI evaluation: ${result.masterDecision.bet}`);
+                    
+                    // Add to graph
+                    result.agentIdeas.forEach(idea => ideas.push(idea));
+                    updateGraph();
+                };
+                reader.readAsText(file);
+            });
+        }
+        
+        // Graph visualization
+        function updateGraph() {
+            const canvas = document.getElementById('graphCanvas');
+            if (canvas.style.display === 'none') return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Clear canvas
+            ctx.fillStyle = 'rgba(20, 20, 20, 0.95)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Simple force-directed graph
+            if (ideas.length === 0) {
+                ctx.fillStyle = '#707070';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('No ideas yet. Speak or drop files to begin.', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            // Position nodes
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) * 0.3;
+            
+            ideas.forEach((idea, i) => {
+                const angle = (i / ideas.length) * Math.PI * 2;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                // Draw node
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fillStyle = idea.category === 'tech' ? '#4ecdc4' : 
+                               idea.category === 'business' ? '#45b7d1' : '#f093fb';
+                ctx.fill();
+                
+                // Draw label
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(idea.text.substring(0, 15) + '...', x, y + 35);
+            });
+            
+            // Draw connections
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            ideas.forEach((idea1, i) => {
+                ideas.forEach((idea2, j) => {
+                    if (i < j && Math.random() > 0.7) {
+                        const angle1 = (i / ideas.length) * Math.PI * 2;
+                        const x1 = centerX + Math.cos(angle1) * radius;
+                        const y1 = centerY + Math.sin(angle1) * radius;
+                        
+                        const angle2 = (j / ideas.length) * Math.PI * 2;
+                        const x2 = centerX + Math.cos(angle2) * radius;
+                        const y2 = centerY + Math.sin(angle2) * radius;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                });
+            });
+        }
+        
+        // Activity logging
+        function addLog(tier, message) {
+            const log = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const time = new Date().toLocaleTimeString();
+            
+            entry.innerHTML = `
+                <span class="log-time">${time}</span>
+                <span class="log-tier" style="background: ${
+                    tier === 'TOP' ? '#ff6b6b' :
+                    tier === 'MIDDLE' ? '#4ecdc4' :
+                    tier === 'BOTTOM' ? '#45b7d1' :
+                    tier === 'USER' ? '#f093fb' : '#707070'
+                }">${tier}</span>
+                <span>${message}</span>
+            `;
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep only last 20 entries
+            while (log.children.length > 20) {
+                log.removeChild(log.lastChild);
+            }
+        }
+        
+        // Simulate periodic AI activity
+        setInterval(() => {
+            if (Math.random() > 0.7 && agents.length > 0) {
+                const agent = agents[Math.floor(Math.random() * agents.length)];
+                const actions = ['exploring', 'building', 'discovering', 'analyzing', 'connecting'];
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                
+                addLog('BOTTOM', `${agent.name} is ${action}...`);
+                
+                // Sometimes trigger tier interactions
+                if (Math.random() > 0.8) {
+                    const result = aiSystem.processUserInput(`Agent ${agent.name} found something`);
+                    addLog('TOP', `Betting opportunity detected`);
+                }
+            }
+        }, 5000);
+        
+        // Initialize
+        window.onload = () => {
+            initVoiceRecognition();
+            addLog('SYSTEM', 'All three tiers online and ready');
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === ' ' && e.target === document.body) {
+                    e.preventDefault();
+                    toggleRecording();
+                } else if (e.key === 'd' && e.metaKey) {
+                    e.preventDefault();
+                    deployAgent();
+                }
+            });
+        };
+    </script>
+</body>
+</html>

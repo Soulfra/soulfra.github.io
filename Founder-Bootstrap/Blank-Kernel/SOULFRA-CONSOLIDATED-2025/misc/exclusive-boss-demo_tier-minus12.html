@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Soulfra Executive Access Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #fff; min-height: 100vh;
+        }
+        
+        .exclusive-banner {
+            background: linear-gradient(45deg, #ff6b35, #f7971e);
+            color: #000; padding: 10px; text-align: center; font-weight: bold;
+            font-size: 14px; letter-spacing: 1px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            padding: 30px; border-bottom: 1px solid #333;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .logo {
+            font-size: 2em; font-weight: 300;
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .user-info {
+            display: flex; align-items: center; gap: 15px;
+        }
+        
+        .avatar {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b35, #f7971e);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px;
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600; font-size: 16px;
+        }
+        
+        .user-tier {
+            font-size: 12px; opacity: 0.8;
+            color: #ff6b35;
+        }
+        
+        .dashboard {
+            max-width: 1400px; margin: 0 auto; padding: 40px;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 20px; padding: 40px; margin-bottom: 40px;
+            text-align: center; border: 1px solid #4a90e2;
+        }
+        
+        .welcome-title {
+            font-size: 2.5em; margin-bottom: 15px;
+            color: #4a90e2;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.2em; opacity: 0.9; margin-bottom: 25px;
+        }
+        
+        .exclusive-badge {
+            background: #ff6b35; color: #000; padding: 8px 20px;
+            border-radius: 20px; font-weight: bold; font-size: 14px;
+            display: inline-block; margin-bottom: 20px;
+        }
+        
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px; margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; backdrop-filter: blur(20px);
+        }
+        
+        .metric-title {
+            font-size: 1.1em; opacity: 0.8; margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 2.5em; font-weight: bold; margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-change {
+            font-size: 0.9em; color: #00ff88;
+        }
+        
+        .your-agents {
+            background: linear-gradient(135deg, #1a2a18, #2a3d17);
+            border: 1px solid #88ff00; border-radius: 20px; padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em; margin-bottom: 25px; color: #88ff00;
+            display: flex; align-items: center;
+        }
+        
+        .section-icon {
+            font-size: 1.8em; margin-right: 15px;
+        }
+        
+        .agent-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .agent-card {
+            background: rgba(136, 255, 0, 0.1); border: 1px solid #88ff00;
+            border-radius: 15px; padding: 20px;
+        }
+        
+        .agent-name {
+            font-size: 1.2em; font-weight: 600; margin-bottom: 10px;
+            color: #88ff00;
+        }
+        
+        .agent-status {
+            display: flex; align-items: center; margin-bottom: 15px;
+        }
+        
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #00ff88; margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .agent-metrics {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .agent-metric {
+            text-align: center; padding: 10px;
+            background: rgba(0, 0, 0, 0.3); border-radius: 8px;
+        }
+        
+        .agent-metric-value {
+            font-size: 1.3em; font-weight: bold; color: #88ff00;
+        }
+        
+        .agent-metric-label {
+            font-size: 0.8em; opacity: 0.8;
+        }
+        
+        .your-revenue {
+            background: linear-gradient(135deg, #2a1810, #3d2817);
+            border: 1px solid #ff6b35; border-radius: 20px; padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .revenue-chart {
+            background: rgba(0, 0, 0, 0.3); border-radius: 10px;
+            padding: 20px; margin: 20px 0; text-align: center;
+        }
+        
+        .revenue-number {
+            font-size: 3em; font-weight: bold; color: #ff6b35;
+            margin-bottom: 10px;
+        }
+        
+        .revenue-period {
+            opacity: 0.8; font-size: 1.1em;
+        }
+        
+        .activity-timeline {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 20px; padding: 30px;
+        }
+        
+        .timeline-item {
+            display: flex; align-items: center; padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .timeline-item:last-child { border-bottom: none; }
+        
+        .timeline-time {
+            color: #666; font-size: 0.9em; margin-right: 20px;
+            min-width: 80px;
+        }
+        
+        .timeline-event {
+            flex: 1; color: #fff;
+        }
+        
+        .timeline-value {
+            color: #00ff88; font-weight: bold;
+        }
+        
+        .upgrade-cta {
+            background: linear-gradient(45deg, #6b73ff, #9c88ff);
+            border-radius: 20px; padding: 40px; text-align: center;
+            margin-top: 40px; border: 1px solid #6b73ff;
+        }
+        
+        .cta-title {
+            font-size: 2em; margin-bottom: 15px; color: #6b73ff;
+        }
+        
+        .cta-button {
+            background: #6b73ff; color: #fff; border: none;
+            padding: 15px 40px; border-radius: 25px; font-size: 16px;
+            font-weight: 600; cursor: pointer; margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            background: #5a66ff; transform: translateY(-2px);
+        }
+        
+        .privacy-note {
+            background: rgba(255, 255, 255, 0.1); border-radius: 10px;
+            padding: 15px; margin: 20px 0; border-left: 4px solid #ff6b35;
+        }
+        
+        .privacy-title {
+            font-weight: 600; margin-bottom: 8px; color: #ff6b35;
+        }
+    </style>
+</head>
+<body>
+    <div class="exclusive-banner">
+        🔒 EXECUTIVE EARLY ACCESS - CONFIDENTIAL BETA TESTING
+    </div>
+    
+    <div class="header">
+        <div class="logo">🌊 Soulfra</div>
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-name" id="boss-name">Executive User</div>
+                <div class="user-tier">🏆 Founding Customer #001</div>
+            </div>
+            <div class="avatar" id="boss-avatar">E</div>
+        </div>
+    </div>
+    
+    <div class="dashboard">
+        <div class="welcome-section">
+            <div class="exclusive-badge">🎯 EXECUTIVE EARLY ACCESS</div>
+            <div class="welcome-title">Welcome to Your AI Revenue System</div>
+            <div class="welcome-subtitle">
+                You are Customer #001 in our exclusive beta. Your AI agents are already working.
+            </div>
+            <div class="privacy-note">
+                <div class="privacy-title">🔒 Your Private Instance</div>
+                This is your dedicated environment. No other customers can see your data, agents, or performance metrics. You have exclusive access to this beta version.
+            </div>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Your Revenue Generated</div>
+                <div class="metric-value" id="personal-revenue">$23,847</div>
+                <div class="metric-change">+$3,200 since yesterday</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Active AI Agents</div>
+                <div class="metric-value">3</div>
+                <div class="metric-change">2 more requested by you</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Opportunities Identified</div>
+                <div class="metric-value">47</div>
+                <div class="metric-change">12 being executed now</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Success Rate</div>
+                <div class="metric-value">94%</div>
+                <div class="metric-change">Above platform average</div>
+            </div>
+        </div>
+        
+        <div class="your-agents">
+            <div class="section-title">
+                <span class="section-icon">🤖</span>
+                Your Personal AI Agents
+            </div>
+            <div class="agent-grid">
+                <div class="agent-card">
+                    <div class="agent-name">Agent Zero - Business Development</div>
+                    <div class="agent-status">
+                        <div class="status-dot"></div>
+                        <span>Active - Currently analyzing 3 opportunities</span>
+                    </div>
+                    <div style="margin: 15px 0; opacity: 0.9;">
+                        Specialized in your industry vertical. Learning your company's communication patterns and deal structures.
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">$18K</div>
+                            <div class="agent-metric-label">Generated Today</div>
+                        </div>
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">87%</div>
+                            <div class="agent-metric-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-name">Cal Riven - Strategic Intelligence</div>
+                    <div class="agent-status">
+                        <div class="status-dot"></div>
+                        <span>Active - Monitoring market trends</span>
+                    </div>
+                    <div style="margin: 15px 0; opacity: 0.9;">
+                        Your personal strategic advisor. Trained on your company's data and decision-making patterns.
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">5</div>
+                            <div class="agent-metric-label">Recommendations</div>
+                        </div>
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">$45K</div>
+                            <div class="agent-metric-label">Opportunity Value</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-name">Infrastructure Agent - Operations</div>
+                    <div class="agent-status">
+                        <div class="status-dot"></div>
+                        <span>Active - Optimizing your systems</span>
+                    </div>
+                    <div style="margin: 15px 0; opacity: 0.9;">
+                        Manages technical infrastructure and automates operational workflows for maximum efficiency.
+                    </div>
+                    <div class="agent-metrics">
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">$2.3K</div>
+                            <div class="agent-metric-label">Cost Savings</div>
+                        </div>
+                        <div class="agent-metric">
+                            <div class="agent-metric-value">99.9%</div>
+                            <div class="agent-metric-label">Uptime</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="your-revenue">
+            <div class="section-title">
+                <span class="section-icon">💰</span>
+                Your Revenue Performance
+            </div>
+            <div class="revenue-chart">
+                <div class="revenue-number" id="total-revenue">$23,847</div>
+                <div class="revenue-period">Generated in 4 days of beta testing</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                    <div style="font-size: 1.5em; font-weight: bold; color: #ff6b35;">$8.2K</div>
+                    <div style="opacity: 0.8;">Direct Sales</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                    <div style="font-size: 1.5em; font-weight: bold; color: #ff6b35;">$12.4K</div>
+                    <div style="opacity: 0.8;">Opportunities</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                    <div style="font-size: 1.5em; font-weight: bold; color: #ff6b35;">$3.2K</div>
+                    <div style="opacity: 0.8;">Cost Savings</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="activity-timeline">
+            <div class="section-title">
+                <span class="section-icon">📊</span>
+                Your Recent AI Activity
+            </div>
+            <div id="activity-feed">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="upgrade-cta">
+            <div class="cta-title">Ready to Scale Your AI Team?</div>
+            <div style="font-size: 1.1em; margin-bottom: 25px; opacity: 0.9;">
+                As Customer #001, you have first access to additional AI agents and enterprise features.
+                Your current performance qualifies you for our premium tier.
+            </div>
+            <button class="cta-button" onclick="showUpgradeOptions()">
+                Expand Your AI Team
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Personalization based on URL parameters or could be set programmatically
+        const bossInfo = {
+            name: new URLSearchParams(window.location.search).get('name') || 'Executive User',
+            title: new URLSearchParams(window.location.search).get('title') || 'Senior Executive',
+            company: new URLSearchParams(window.location.search).get('company') || 'Your Company'
+        };
+        
+        // Initialize with boss's info
+        document.getElementById('boss-name').textContent = bossInfo.name;
+        document.getElementById('boss-avatar').textContent = bossInfo.name.charAt(0).toUpperCase();
+        
+        // Simulate personalized activity
+        const personalizedActivities = [
+            { time: '2 min ago', event: `Agent Zero identified high-value lead for ${bossInfo.company}`, value: '+$15K potential' },
+            { time: '8 min ago', event: 'Cal Riven completed market analysis for your sector', value: '94% confidence' },
+            { time: '12 min ago', event: 'Infrastructure Agent optimized your cloud costs', value: '+$340 saved' },
+            { time: '18 min ago', event: `Agent Zero scheduled meeting with ${bossInfo.company} prospect`, value: 'Confirmed' },
+            { time: '25 min ago', event: 'Cal Riven generated strategic recommendation', value: '$25K opportunity' },
+            { time: '32 min ago', event: 'Your AI team completed quarterly analysis', value: '100% complete' },
+            { time: '45 min ago', event: 'Agent Zero closed deal with enterprise client', value: '+$8,500' },
+            { time: '1 hr ago', event: `System learned new pattern from ${bossInfo.company} data`, value: 'Improved' }
+        ];
+        
+        function populateActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            personalizedActivities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <div class="timeline-time">${activity.time}</div>
+                    <div class="timeline-event">${activity.event}</div>
+                    <div class="timeline-value">${activity.value}</div>
+                `;
+                feed.appendChild(item);
+            });
+        }
+        
+        // Simulate real-time updates to revenue
+        function updateRevenue() {
+            const currentRevenue = parseInt(document.getElementById('personal-revenue').textContent.replace(/[$,]/g, ''));
+            const newRevenue = currentRevenue + Math.floor(Math.random() * 500) + 100;
+            document.getElementById('personal-revenue').textContent = `$${newRevenue.toLocaleString()}`;
+            document.getElementById('total-revenue').textContent = `$${newRevenue.toLocaleString()}`;
+        }
+        
+        function showUpgradeOptions() {
+            alert(`${bossInfo.name}, as Customer #001, you qualify for:\n\n• 5 additional AI agents\n• Enterprise-grade infrastructure\n• Priority support\n• Custom training on your data\n\nWould you like to activate these features?`);
+        }
+        
+        // Add new activity occasionally
+        function addNewActivity() {
+            const newActivities = [
+                { time: 'Just now', event: `Agent Zero detected new opportunity in ${bossInfo.company} pipeline`, value: '+$12K potential' },
+                { time: 'Just now', event: 'Cal Riven optimized your meeting schedule', value: '2 hrs saved' },
+                { time: 'Just now', event: 'Infrastructure Agent upgraded your security', value: 'Enhanced' }
+            ];
+            
+            const randomActivity = newActivities[Math.floor(Math.random() * newActivities.length)];
+            const feed = document.getElementById('activity-feed');
+            const newItem = document.createElement('div');
+            newItem.className = 'timeline-item';
+            newItem.innerHTML = `
+                <div class="timeline-time">${randomActivity.time}</div>
+                <div class="timeline-event">${randomActivity.event}</div>
+                <div class="timeline-value">${randomActivity.value}</div>
+            `;
+            feed.insertBefore(newItem, feed.firstChild);
+            
+            // Remove last item to keep list manageable
+            if (feed.children.length > 8) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        // Initialize
+        populateActivityFeed();
+        
+        // Start live updates
+        setInterval(updateRevenue, 8000);
+        setInterval(addNewActivity, 15000);
+        
+        // Add some initial animations
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                updateRevenue();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

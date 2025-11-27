@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏰 Mirror Node - Base Defense</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        :root {
+            --void-black: #0a0a0a;
+            --grid-line: #1a472a;
+            --grass-green: #2d5016;
+            --grass-light: #4a7c26;
+            --stone-gray: #4a4a4a;
+            --wood-brown: #8b4513;
+            --ui-gold: #ffd700;
+            --ui-silver: #c0c0c0;
+            --whisper-purple: #8b5cf6;
+            --blessing-glow: #ffd70080;
+            --agent-shadow: rgba(0, 0, 0, 0.4);
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--void-black);
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Game Container */
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Top UI Bar */
+        .ui-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+        
+        .node-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .node-name {
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--ui-gold);
+        }
+        
+        .resources {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .resource {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--ui-gold);
+        }
+        
+        .resource-icon {
+            font-size: 20px;
+        }
+        
+        .resource-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--ui-gold);
+        }
+        
+        /* Game Viewport */
+        .game-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: grab;
+        }
+        
+        .game-viewport.dragging {
+            cursor: grabbing;
+        }
+        
+        /* Isometric Game World */
+        .game-world {
+            position: absolute;
+            width: 2000px;
+            height: 2000px;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) rotateX(60deg) rotateZ(45deg);
+            left: 50%;
+            top: 50%;
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* Grid */
+        .grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(0deg, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+        
+        /* Terrain Tiles */
+        .terrain {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .grass-tile {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--grass-green) 0%, var(--grass-light) 100%);
+            border: 1px solid var(--grid-line);
+        }
+        
+        /* Node Base */
+        .node-base {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .base-platform {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, var(--stone-gray) 0%, #2a2a2a 100%);
+            border: 3px solid #666;
+            border-radius: 10px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.5),
+                inset 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+        
+        .vault-crystal {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, var(--whisper-purple) 0%, #d8b4fe 50%, var(--whisper-purple) 100%);
+            clip-path: polygon(50% 0%, 0% 30%, 0% 70%, 50% 100%, 100% 70%, 100% 30%);
+            animation: crystal-pulse 3s ease-in-out infinite;
+            box-shadow: 0 0 50px var(--whisper-purple);
+        }
+        
+        @keyframes crystal-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        /* Agents */
+        .agent {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transition: all 0.3s ease-out;
+            transform-style: preserve-3d;
+        }
+        
+        .agent-sprite {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 5px 10px var(--agent-shadow);
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: #333;
+        }
+        
+        .agent-defender .agent-sprite {
+            background: #4169E1;
+            border-color: #87CEEB;
+        }
+        
+        .agent-harvester .agent-sprite {
+            background: #228B22;
+            border-color: #90EE90;
+        }
+        
+        .agent-scout .agent-sprite {
+            background: #FFD700;
+            border-color: #FFFFE0;
+        }
+        
+        .agent-mystic .agent-sprite {
+            background: var(--whisper-purple);
+            border-color: #E6E6FA;
+        }
+        
+        .agent-architect .agent-sprite {
+            background: #8B4513;
+            border-color: #DEB887;
+        }
+        
+        .agent-name {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+        
+        .agent-health {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .health-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000 0%, #00ff00 100%);
+            transition: width 0.3s ease-out;
+        }
+        
+        /* Voice Command Interface */
+        .voice-command {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--whisper-purple);
+            border-radius: 30px;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            z-index: 100;
+        }
+        
+        .voice-icon {
+            font-size: 24px;
+            color: var(--whisper-purple);
+            animation: voice-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes voice-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .voice-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-family: inherit;
+            width: 300px;
+            outline: none;
+        }
+        
+        .voice-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .voice-button {
+            background: var(--whisper-purple);
+            border: none;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .voice-button:hover {
+            background: #7c3aed;
+            transform: scale(1.05);
+        }
+        
+        /* Side Panel */
+        .side-panel {
+            position: absolute;
+            right: 0;
+            top: 60px;
+            bottom: 0;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border-left: 2px solid var(--ui-gold);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 90;
+        }
+        
+        .panel-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--ui-gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .agent-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .agent-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .agent-stats {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        /* Blessing Effects */
+        .blessing-aura {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--blessing-glow) 0%, transparent 70%);
+            animation: blessing-rotate 10s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes blessing-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Battle Effects */
+        .battle-effect {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            animation: battle-flash 0.5s ease-out;
+        }
+        
+        @keyframes battle-flash {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        /* Connection Status */
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 320px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff0000;
+        }
+        
+        .status-dot.connected {
+            background: #00ff00;
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes status-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--void-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-crystal {
+            width: 100px;
+            height: 120px;
+            background: linear-gradient(45deg, var(--whisper-purple) 0%, #d8b4fe 50%, var(--whisper-purple) 100%);
+            clip-path: polygon(50% 0%, 0% 30%, 0% 70%, 50% 100%, 100% 70%, 100% 30%);
+            animation: loading-spin 2s linear infinite;
+            margin-bottom: 30px;
+        }
+        
+        @keyframes loading-spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 24px;
+            color: var(--ui-gold);
+            text-shadow: 0 0 20px var(--ui-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-crystal"></div>
+        <div class="loading-text">Connecting to Mirror Node...</div>
+    </div>
+    
+    <!-- Game Container -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <!-- Top UI -->
+        <div class="ui-top">
+            <div class="node-info">
+                <div class="node-name" id="nodeName">Mirror Node</div>
+                <div class="connection-status">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="connectionText">Disconnected</span>
+                </div>
+            </div>
+            
+            <div class="resources">
+                <div class="resource">
+                    <span class="resource-icon">⚡</span>
+                    <span class="resource-value" id="energyValue">1000</span>
+                </div>
+                <div class="resource">
+                    <span class="resource-icon">🔮</span>
+                    <span class="resource-value" id="resonanceValue">100</span>
+                </div>
+                <div class="resource">
+                    <span class="resource-icon">🪙</span>
+                    <span class="resource-value" id="tokenValue">100</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Viewport -->
+        <div class="game-viewport" id="gameViewport">
+            <div class="game-world" id="gameWorld">
+                <!-- Grid -->
+                <div class="grid"></div>
+                
+                <!-- Terrain -->
+                <div class="terrain" id="terrain"></div>
+                
+                <!-- Node Base -->
+                <div class="node-base">
+                    <div class="base-platform"></div>
+                    <div class="vault-crystal"></div>
+                    <div class="blessing-aura"></div>
+                </div>
+                
+                <!-- Agents Container -->
+                <div id="agentsContainer"></div>
+                
+                <!-- Effects Container -->
+                <div id="effectsContainer"></div>
+            </div>
+        </div>
+        
+        <!-- Voice Command Interface -->
+        <div class="voice-command">
+            <span class="voice-icon">🎤</span>
+            <input 
+                type="text" 
+                class="voice-input" 
+                id="voiceInput" 
+                placeholder="Whisper your command..."
+                autocomplete="off"
+            >
+            <button class="voice-button" id="whisperButton">Whisper</button>
+        </div>
+        
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div class="panel-section">
+                <h3 class="section-title">Active Agents</h3>
+                <div class="agent-list" id="agentList"></div>
+            </div>
+            
+            <div class="panel-section">
+                <h3 class="section-title">Recent Whispers</h3>
+                <div id="whisperLog" style="font-size: 12px; opacity: 0.7;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game State
+        let gameState = {
+            nodeId: null,
+            agents: new Map(),
+            resources: {
+                energy: 1000,
+                resonance: 100,
+                tokens: 100
+            },
+            connected: false,
+            ws: null,
+            viewport: {
+                x: 0,
+                y: 0,
+                zoom: 1
+            },
+            selectedAgent: null
+        };
+        
+        // Configuration
+        const config = {
+            wsUrl: 'ws://localhost:4243',
+            apiUrl: 'http://localhost:4242',
+            reconnectInterval: 5000
+        };
+        
+        // Initialize Game
+        async function initGame() {
+            console.log('🏰 Initializing Mirror Node UI...');
+            
+            // Generate terrain
+            generateTerrain();
+            
+            // Connect to WebSocket
+            connectWebSocket();
+            
+            // Setup event handlers
+            setupEventHandlers();
+            
+            // Load initial state
+            await loadInitialState();
+            
+            // Hide loading screen
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('gameContainer').style.display = 'flex';
+            }, 2000);
+        }
+        
+        // Generate terrain tiles
+        function generateTerrain() {
+            const terrain = document.getElementById('terrain');
+            const tileSize = 50;
+            const gridSize = 40; // 40x40 grid
+            
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'grass-tile';
+                    tile.style.left = `${x * tileSize}px`;
+                    tile.style.top = `${y * tileSize}px`;
+                    
+                    // Add some variation
+                    if (Math.random() < 0.1) {
+                        tile.style.background = `linear-gradient(135deg, #3d6a1a 0%, #5a8f2a 100%)`;
+                    }
+                    
+                    terrain.appendChild(tile);
+                }
+            }
+        }
+        
+        // Connect to WebSocket
+        function connectWebSocket() {
+            console.log('🔌 Connecting to WebSocket...');
+            
+            gameState.ws = new WebSocket(config.wsUrl);
+            
+            gameState.ws.onopen = () => {
+                console.log('✅ WebSocket connected');
+                gameState.connected = true;
+                updateConnectionStatus(true);
+            };
+            
+            gameState.ws.onmessage = (event) => {
+                handleWebSocketMessage(JSON.parse(event.data));
+            };
+            
+            gameState.ws.onclose = () => {
+                console.log('❌ WebSocket disconnected');
+                gameState.connected = false;
+                updateConnectionStatus(false);
+                
+                // Attempt reconnection
+                setTimeout(connectWebSocket, config.reconnectInterval);
+            };
+            
+            gameState.ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+        
+        // Handle WebSocket messages
+        function handleWebSocketMessage(message) {
+            switch (message.type) {
+                case 'init':
+                    gameState.nodeId = message.nodeId;
+                    updateGameState(message.gameState);
+                    break;
+                    
+                case 'agent_spawned':
+                    addAgent(message.agent);
+                    break;
+                    
+                case 'agent_moved':
+                    updateAgentPosition(message.agentId, message.position);
+                    break;
+                    
+                case 'whisper':
+                    addWhisperToLog(message.whisper);
+                    break;
+                    
+                case 'command_result':
+                    handleCommandResult(message);
+                    break;
+                    
+                case 'battle_started':
+                    showBattleEffect(message.position);
+                    break;
+                    
+                case 'resource_update':
+                    updateResources(message.resources);
+                    break;
+            }
+        }
+        
+        // Load initial state from API
+        async function loadInitialState() {
+            try {
+                const response = await fetch(`${config.apiUrl}/api/status`);
+                const data = await response.json();
+                
+                document.getElementById('nodeName').textContent = data.config.name;
+                updateGameState({
+                    agents: [],
+                    resources: data.state.resources,
+                    nodeInfo: data.config
+                });
+                
+                // Load agents
+                const agentsResponse = await fetch(`${config.apiUrl}/api/agents`);
+                const agents = await agentsResponse.json();
+                agents.forEach(agent => addAgent(agent));
+                
+            } catch (error) {
+                console.error('Failed to load initial state:', error);
+            }
+        }
+        
+        // Update game state
+        function updateGameState(state) {
+            if (state.resources) {
+                updateResources(state.resources);
+            }
+            
+            if (state.agents) {
+                state.agents.forEach(agent => addAgent(agent));
+            }
+        }
+        
+        // Update resources display
+        function updateResources(resources) {
+            gameState.resources = resources;
+            document.getElementById('energyValue').textContent = resources.energy;
+            document.getElementById('resonanceValue').textContent = resources.resonance;
+            document.getElementById('tokenValue').textContent = resources.tokens;
+        }
+        
+        // Add agent to game
+        function addAgent(agentData) {
+            gameState.agents.set(agentData.id, agentData);
+            
+            // Create agent element
+            const agentEl = document.createElement('div');
+            agentEl.className = `agent agent-${agentData.type}`;
+            agentEl.id = `agent-${agentData.id}`;
+            agentEl.innerHTML = `
+                <div class="agent-health">
+                    <div class="health-bar" style="width: ${agentData.stats.health}%"></div>
+                </div>
+                <div class="agent-sprite">
+                    ${getAgentEmoji(agentData.type)}
+                </div>
+                <div class="agent-name">${agentData.name}</div>
+            `;
+            
+            // Position agent
+            const pos = agentData.position || { x: 0, y: 0 };
+            agentEl.style.left = `${1000 + pos.x}px`;
+            agentEl.style.top = `${1000 + pos.y}px`;
+            
+            // Add click handler
+            agentEl.addEventListener('click', () => selectAgent(agentData.id));
+            
+            document.getElementById('agentsContainer').appendChild(agentEl);
+            
+            // Update agent list
+            updateAgentList();
+        }
+        
+        // Get agent emoji based on type
+        function getAgentEmoji(type) {
+            const emojis = {
+                defender: '🛡️',
+                harvester: '🌾',
+                scout: '👁️',
+                mystic: '🔮',
+                architect: '🏗️'
+            };
+            return emojis[type] || '❓';
+        }
+        
+        // Update agent position
+        function updateAgentPosition(agentId, position) {
+            const agent = gameState.agents.get(agentId);
+            if (!agent) return;
+            
+            agent.position = position;
+            
+            const agentEl = document.getElementById(`agent-${agentId}`);
+            if (agentEl) {
+                agentEl.style.left = `${1000 + position.x}px`;
+                agentEl.style.top = `${1000 + position.y}px`;
+            }
+        }
+        
+        // Select agent
+        function selectAgent(agentId) {
+            // Deselect previous
+            if (gameState.selectedAgent) {
+                const prevEl = document.getElementById(`agent-${gameState.selectedAgent}`);
+                if (prevEl) {
+                    prevEl.style.filter = 'none';
+                }
+            }
+            
+            // Select new
+            gameState.selectedAgent = agentId;
+            const agentEl = document.getElementById(`agent-${agentId}`);
+            if (agentEl) {
+                agentEl.style.filter = 'drop-shadow(0 0 10px var(--ui-gold))';
+            }
+        }
+        
+        // Update agent list in side panel
+        function updateAgentList() {
+            const list = document.getElementById('agentList');
+            list.innerHTML = '';
+            
+            gameState.agents.forEach(agent => {
+                const item = document.createElement('div');
+                item.className = 'agent-item';
+                item.innerHTML = `
+                    <div class="agent-info">
+                        <div class="agent-icon agent-${agent.type}">
+                            ${getAgentEmoji(agent.type)}
+                        </div>
+                        <div>
+                            <div>${agent.name}</div>
+                            <div class="agent-stats">
+                                HP: ${agent.stats.health} | State: ${agent.state}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                item.addEventListener('click', () => selectAgent(agent.id));
+                list.appendChild(item);
+            });
+        }
+        
+        // Send whisper command
+        async function sendWhisper(content) {
+            if (!content.trim()) return;
+            
+            try {
+                const response = await fetch(`${config.apiUrl}/api/whisper`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: content,
+                        userId: 'player-001'
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Whisper sent:', result);
+                
+            } catch (error) {
+                console.error('Failed to send whisper:', error);
+            }
+        }
+        
+        // Add whisper to log
+        function addWhisperToLog(whisper) {
+            const log = document.getElementById('whisperLog');
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '10px';
+            entry.innerHTML = `
+                <div style="color: var(--whisper-purple);">${new Date(whisper.timestamp).toLocaleTimeString()}</div>
+                <div>"${whisper.content}"</div>
+            `;
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep only last 10 whispers
+            while (log.children.length > 10) {
+                log.removeChild(log.lastChild);
+            }
+        }
+        
+        // Handle command result
+        function handleCommandResult(message) {
+            const { result, whisper } = message;
+            
+            if (result.success) {
+                showNotification(`✅ ${result.message}`, 'success');
+            } else {
+                showNotification(`❌ ${result.message}`, 'error');
+            }
+        }
+        
+        // Show battle effect
+        function showBattleEffect(position) {
+            const effect = document.createElement('div');
+            effect.className = 'battle-effect';
+            effect.style.left = `${1000 + position.x}px`;
+            effect.style.top = `${1000 + position.y}px`;
+            effect.style.background = 'radial-gradient(circle, rgba(255, 0, 0, 0.8) 0%, transparent 70%)';
+            
+            document.getElementById('effectsContainer').appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 500);
+        }
+        
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('connectionText');
+            
+            if (connected) {
+                dot.classList.add('connected');
+                text.textContent = 'Connected';
+            } else {
+                dot.classList.remove('connected');
+                text.textContent = 'Disconnected';
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Simple console log for now
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        // Setup event handlers
+        function setupEventHandlers() {
+            // Voice input
+            const voiceInput = document.getElementById('voiceInput');
+            const whisperButton = document.getElementById('whisperButton');
+            
+            const submitWhisper = () => {
+                const content = voiceInput.value.trim();
+                if (content) {
+                    sendWhisper(content);
+                    voiceInput.value = '';
+                }
+            };
+            
+            whisperButton.addEventListener('click', submitWhisper);
+            voiceInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitWhisper();
+                }
+            });
+            
+            // Viewport dragging
+            const viewport = document.getElementById('gameViewport');
+            const world = document.getElementById('gameWorld');
+            let isDragging = false;
+            let dragStart = { x: 0, y: 0 };
+            let worldStart = { x: 0, y: 0 };
+            
+            viewport.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                viewport.classList.add('dragging');
+                dragStart = { x: e.clientX, y: e.clientY };
+                const transform = world.style.transform || '';
+                const match = transform.match(/translate\((-?\d+)px, (-?\d+)px\)/);
+                if (match) {
+                    worldStart = { x: parseInt(match[1]), y: parseInt(match[2]) };
+                }
+            });
+            
+            viewport.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - dragStart.x;
+                const deltaY = e.clientY - dragStart.y;
+                
+                const newX = worldStart.x + deltaX;
+                const newY = worldStart.y + deltaY;
+                
+                world.style.transform = `translate(${newX}px, ${newY}px) translate(-50%, -50%) rotateX(60deg) rotateZ(45deg)`;
+            });
+            
+            viewport.addEventListener('mouseup', () => {
+                isDragging = false;
+                viewport.classList.remove('dragging');
+            });
+            
+            // Zoom with mouse wheel
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                gameState.viewport.zoom *= delta;
+                gameState.viewport.zoom = Math.max(0.5, Math.min(2, gameState.viewport.zoom));
+                
+                world.style.transform = world.style.transform.replace(
+                    /scale\([^)]*\)/,
+                    ''
+                ) + ` scale(${gameState.viewport.zoom})`;
+            });
+        }
+        
+        // Start the game
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>

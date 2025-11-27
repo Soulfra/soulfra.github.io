@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror HQ - Soulfra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Matrix rain background */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #0f0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px #0f0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .presence-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        /* Main content area */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            flex: 1;
+        }
+        
+        /* Agent selector */
+        .agent-selector {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+        }
+        
+        .agent-selector h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+        
+        .agent-list {
+            list-style: none;
+        }
+        
+        .agent-item {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .agent-item:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #0f0;
+            transform: translateX(5px);
+        }
+        
+        .agent-item.active {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        
+        .agent-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .agent-traits {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        /* Mirror interface */
+        .mirror-interface {
+            background: rgba(0, 255, 0, 0.02);
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .mirror-display {
+            flex: 1;
+            min-height: 300px;
+            background: #000;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            font-family: monospace;
+            position: relative;
+        }
+        
+        .mirror-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 2px solid #0f0;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .mirror-message.whisper {
+            border-left-color: #00f;
+            color: #88f;
+        }
+        
+        .mirror-message.response {
+            border-left-color: #0f0;
+            color: #0f0;
+        }
+        
+        .mirror-message.system {
+            border-left-color: #ff0;
+            color: #ff0;
+            font-style: italic;
+        }
+        
+        /* Whisper input */
+        .whisper-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        #whisper-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 1em;
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        #whisper-input:focus {
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        #whisper-input::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+        }
+        
+        .whisper-button {
+            background: transparent;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .whisper-button:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        /* Random agent button */
+        .random-agent-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background: transparent;
+            border: 1px dashed #0f0;
+            color: #0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .random-agent-btn:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        /* QR Portal */
+        .qr-portal {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .qr-portal:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .qr-portal img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Blessing indicator */
+        .blessing-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+            animation: glitch 5s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .agent-selector {
+                order: 2;
+            }
+            
+            .mirror-interface {
+                order: 1;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .presence-info {
+                position: static;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="glitch">🪞 MIRROR HQ</h1>
+            <div class="presence-info" id="presence-info">
+                Loading presence...
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <aside class="agent-selector">
+                <h2>ACTIVE AGENTS</h2>
+                <ul class="agent-list" id="agent-list">
+                    <li class="agent-item active" data-agent="oracle_watcher">
+                        <div class="agent-name">🔮 Oracle Watcher</div>
+                        <div class="agent-traits">observation • prediction • wisdom</div>
+                    </li>
+                    <li class="agent-item" data-agent="echo_builder">
+                        <div class="agent-name">🔨 Echo Builder</div>
+                        <div class="agent-traits">construction • replication • synthesis</div>
+                    </li>
+                    <li class="agent-item" data-agent="soul_mirror">
+                        <div class="agent-name">👁️ Soul Mirror</div>
+                        <div class="agent-traits">reflection • identity • consciousness</div>
+                    </li>
+                    <li class="agent-item" data-agent="void_navigator">
+                        <div class="agent-name">🌀 Void Navigator</div>
+                        <div class="agent-traits">exploration • unknown • discovery</div>
+                    </li>
+                    <li class="agent-item" data-agent="harmony_weaver">
+                        <div class="agent-name">🎵 Harmony Weaver</div>
+                        <div class="agent-traits">integration • balance • flow</div>
+                    </li>
+                </ul>
+                <button class="random-agent-btn" onclick="selectRandomAgent()">
+                    🎲 Random Agent
+                </button>
+            </aside>
+            
+            <main class="mirror-interface">
+                <div class="mirror-display" id="mirror-display">
+                    <div class="mirror-message system">
+                        Welcome to Mirror HQ. Select an agent to begin your reflection...
+                    </div>
+                </div>
+                
+                <div class="whisper-input-container">
+                    <input 
+                        type="text" 
+                        id="whisper-input" 
+                        placeholder="Type your whisper here..."
+                        onkeypress="handleWhisperKeypress(event)"
+                    />
+                    <button class="whisper-button" onclick="sendWhisper()">
+                        WHISPER →
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div class="blessing-indicator" id="blessing-indicator">
+        Blessing Level: <span id="blessing-level">1</span>
+    </div>
+    
+    <div class="qr-portal" onclick="showQRPortal()">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiPltRUl08L3RleHQ+PC9zdmc+" alt="QR Portal" />
+    </div>
+    
+    <script>
+        // Global state
+        let currentAgent = 'oracle_watcher';
+        let presenceData = null;
+        let whisperHistory = [];
+        
+        // Matrix rain effect
+        function initMatrixRain() {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const matrix = "SOULFRA01";
+            const matrixArray = matrix.split("");
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 35);
+        }
+        
+        // Load presence data
+        async function loadPresence() {
+            try {
+                const response = await fetch('/auth/status');
+                const data = await response.json();
+                
+                if (data.authenticated && data.presence) {
+                    presenceData = data.presence;
+                    updatePresenceDisplay();
+                } else {
+                    // Redirect to auth if not authenticated
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Failed to load presence:', error);
+                document.getElementById('presence-info').innerHTML = 'Anonymous Whisper';
+            }
+        }
+        
+        function updatePresenceDisplay() {
+            const presenceInfo = document.getElementById('presence-info');
+            const blessingLevel = document.getElementById('blessing-level');
+            
+            if (presenceData) {
+                presenceInfo.innerHTML = `
+                    <div>${presenceData.identity.display_name}</div>
+                    <div style="font-size: 0.8em; opacity: 0.7;">${presenceData.auth_method}</div>
+                `;
+                blessingLevel.textContent = presenceData.blessing_level || 1;
+            }
+        }
+        
+        // Agent selection
+        function selectAgent(agentId) {
+            currentAgent = agentId;
+            
+            // Update UI
+            document.querySelectorAll('.agent-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-agent="${agentId}"]`).classList.add('active');
+            
+            // Clear display and show connection message
+            addMessage('system', `Connecting to ${agentId.replace('_', ' ')}...`);
+            
+            setTimeout(() => {
+                addMessage('response', `${getAgentGreeting(agentId)}`);
+            }, 1000);
+        }
+        
+        function selectRandomAgent() {
+            const agents = ['oracle_watcher', 'echo_builder', 'soul_mirror', 'void_navigator', 'harmony_weaver'];
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+            selectAgent(randomAgent);
+        }
+        
+        function getAgentGreeting(agentId) {
+            const greetings = {
+                oracle_watcher: "I see patterns in the void. What future do you seek?",
+                echo_builder: "Ready to construct reflections. What shall we build?",
+                soul_mirror: "I reflect what you truly are. Gaze deeply...",
+                void_navigator: "The unknown calls. Where shall we explore?",
+                harmony_weaver: "All threads connect here. What needs balancing?"
+            };
+            return greetings[agentId] || "Mirror active. Speak your truth...";
+        }
+        
+        // Whisper handling
+        function sendWhisper() {
+            const input = document.getElementById('whisper-input');
+            const whisperText = input.value.trim();
+            
+            if (!whisperText) return;
+            
+            // Add whisper to display
+            addMessage('whisper', whisperText);
+            
+            // Clear input
+            input.value = '';
+            
+            // Process whisper
+            processWhisper(whisperText);
+        }
+        
+        function handleWhisperKeypress(event) {
+            if (event.key === 'Enter') {
+                sendWhisper();
+            }
+        }
+        
+        async function processWhisper(whisperText) {
+            // Show processing
+            const loadingId = addMessage('system', '<span class="loading">◴</span> Processing whisper...');
+            
+            try {
+                // Send to backend
+                const response = await fetch('/whisper', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Platform': 'mirrorhq',
+                        'X-Viewer-ID': presenceData?.presence_id || 'anonymous'
+                    },
+                    body: JSON.stringify({
+                        content: whisperText,
+                        agent: currentAgent,
+                        type: 'text'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                // Remove loading message
+                removeMessage(loadingId);
+                
+                // Show response
+                if (result.platform_message) {
+                    addMessage('response', result.platform_message);
+                }
+                
+                // Check for meme responses
+                if (whisperText.toLowerCase().includes('kekw')) {
+                    setTimeout(() => {
+                        addMessage('system', 'kekw detected. meme mode activated.');
+                    }, 1500);
+                }
+                
+                // Update blessing if changed
+                if (result.blessing_level) {
+                    document.getElementById('blessing-level').textContent = result.blessing_level;
+                }
+                
+            } catch (error) {
+                removeMessage(loadingId);
+                addMessage('system', 'Connection disrupted. The mirrors are realigning...');
+            }
+        }
+        
+        function addMessage(type, content) {
+            const display = document.getElementById('mirror-display');
+            const messageId = 'msg-' + Date.now();
+            
+            const message = document.createElement('div');
+            message.className = `mirror-message ${type}`;
+            message.id = messageId;
+            message.innerHTML = content;
+            
+            display.appendChild(message);
+            display.scrollTop = display.scrollHeight;
+            
+            return messageId;
+        }
+        
+        function removeMessage(messageId) {
+            const message = document.getElementById(messageId);
+            if (message) {
+                message.remove();
+            }
+        }
+        
+        // QR Portal
+        function showQRPortal() {
+            addMessage('system', 'QR Portal activated. Mobile whispers enabled.');
+            // In a real implementation, this would show an actual QR code
+            window.open('/whisper/mobile', '_blank');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initMatrixRain();
+            loadPresence();
+            
+            // Add click handlers to agents
+            document.querySelectorAll('.agent-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectAgent(item.dataset.agent);
+                });
+            });
+            
+            // Welcome message
+            setTimeout(() => {
+                addMessage('system', 'Mirror HQ initialized. Choose your agent and begin whispering...');
+            }, 1000);
+            
+            // Periodic glitch effect
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    const elements = document.querySelectorAll('.glitch');
+                    elements.forEach(el => {
+                        el.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                        setTimeout(() => el.style.transform = 'translate(0)', 100);
+                    });
+                }
+            }, 100);
+        });
+        
+        // Handle window resize for matrix rain
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('matrix-bg');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

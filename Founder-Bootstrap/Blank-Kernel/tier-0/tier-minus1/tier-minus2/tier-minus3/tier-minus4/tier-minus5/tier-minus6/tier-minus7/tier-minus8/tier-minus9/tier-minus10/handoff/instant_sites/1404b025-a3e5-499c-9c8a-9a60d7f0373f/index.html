@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>build a sports betting prediction platform - Predict & Win</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/betting.css">
+</head>
+<body>
+    <header>
+        <h1>🎲 build a sports betting prediction platform</h1>
+        <div class="balance">Balance: <span id="balance">1000</span> credits</div>
+    </header>
+    
+    <main>
+        <div class="events-section">
+            <h2>Live Events</h2>
+            <div class="events" id="events">
+                <div class="event">
+                    <h3>Sample Event</h3>
+                    <div class="odds">
+                        <button class="bet-option" data-odds="2.5">Option A (2.5x)</button>
+                        <button class="bet-option" data-odds="3.0">Option B (3.0x)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bet-slip" id="betSlip">
+            <h3>Bet Slip</h3>
+            <div class="bets"></div>
+            <button class="place-bet">Place Bet</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Play responsibly. This is for entertainment only.</p>
+    </footer>
+    
+    <script>
+        const PLATFORM_ID = '1404b025-a3e5-499c-9c8a-9a60d7f0373f';
+    </script>
+</body>
+</html>

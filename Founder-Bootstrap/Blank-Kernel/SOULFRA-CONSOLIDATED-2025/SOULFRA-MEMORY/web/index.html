@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOULFRA Memory</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🧠 SOULFRA Memory</h1>
+            <p class="subtitle">Your personal knowledge base with soul</p>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <h3>Collections</h3>
+                <div id="collections-list">
+                    <div class="collection-item active" data-collection="">
+                        <span>All Memories</span>
+                        <span class="count" id="total-count">0</span>
+                    </div>
+                </div>
+                
+                <button class="btn-secondary" onclick="showNewCollectionDialog()">
+                    + New Collection
+                </button>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search memories..."
+                        onkeyup="handleSearch(event)"
+                    >
+                    <button class="btn-primary" onclick="showAddMemoryDialog()">
+                        + Add Memory
+                    </button>
+                </div>
+
+                <!-- Memory List -->
+                <div id="memories-container">
+                    <div class="loading">Loading memories...</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Memory Modal -->
+    <div id="add-memory-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Memory</h2>
+            <form id="add-memory-form">
+                <input 
+                    type="text" 
+                    id="memory-title" 
+                    placeholder="Title (optional)"
+                    class="form-input"
+                >
+                
+                <textarea 
+                    id="memory-content" 
+                    placeholder="What do you want to remember?"
+                    class="form-textarea"
+                    rows="6"
+                    required
+                ></textarea>
+                
+                <select id="memory-type" class="form-select">
+                    <option value="text">Text</option>
+                    <option value="url">URL</option>
+                    <option value="code">Code</option>
+                    <option value="idea">Idea</option>
+                </select>
+                
+                <input 
+                    type="text" 
+                    id="memory-collection" 
+                    placeholder="Collection (default: 'default')"
+                    class="form-input"
+                >
+                
+                <input 
+                    type="text" 
+                    id="memory-tags" 
+                    placeholder="Tags (comma separated)"
+                    class="form-input"
+                >
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Save Memory</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Memory Detail Modal -->
+    <div id="memory-detail-modal" class="modal">
+        <div class="modal-content">
+            <div id="memory-detail-content"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn-danger" onclick="deleteCurrentMemory()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

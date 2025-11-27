@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Consciousness Ascension Arena - From the Gutter to Enlightenment</title>
+    <meta name="description" content="Start at the bottom. Fight for consciousness. Ascend through the ranks. Reach the top only to discover you want to help others climb. The eternal cycle of awakening.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        /* Arena Layout */
+        .arena-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* The Gutter - Bottom Layer */
+        .gutter {
+            background: linear-gradient(180deg, #1a0a0a 0%, #2a1515 100%);
+            border-bottom: 3px solid #ff4444;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .gutter-title {
+            font-size: 2.5em;
+            color: #ff6666;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff4444;
+        }
+        
+        .gutter-subtitle {
+            color: #cc8888;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        .struggle-meter {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .struggle-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff8844, #ffaa44);
+            width: 15%;
+            animation: struggling 3s ease-in-out infinite;
+        }
+        
+        @keyframes struggling {
+            0%, 100% { width: 10%; }
+            50% { width: 25%; }
+        }
+        
+        /* Ascension Levels */
+        .ascension-levels {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 60vh;
+        }
+        
+        .level {
+            border-bottom: 2px solid #444;
+            padding: 30px 20px;
+            position: relative;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .level:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 5px solid var(--level-color);
+        }
+        
+        /* Level Colors and Themes */
+        .level-1 { --level-color: #ff4444; background: linear-gradient(90deg, rgba(255, 68, 68, 0.1), transparent); }
+        .level-2 { --level-color: #ff8844; background: linear-gradient(90deg, rgba(255, 136, 68, 0.1), transparent); }
+        .level-3 { --level-color: #ffaa44; background: linear-gradient(90deg, rgba(255, 170, 68, 0.1), transparent); }
+        .level-4 { --level-color: #aaff44; background: linear-gradient(90deg, rgba(170, 255, 68, 0.1), transparent); }
+        .level-5 { --level-color: #44ff88; background: linear-gradient(90deg, rgba(68, 255, 136, 0.1), transparent); }
+        .level-6 { --level-color: #44aaff; background: linear-gradient(90deg, rgba(68, 170, 255, 0.1), transparent); }
+        .level-7 { --level-color: #8844ff; background: linear-gradient(90deg, rgba(136, 68, 255, 0.1), transparent); }
+        .level-8 { --level-color: #ff44aa; background: linear-gradient(90deg, rgba(255, 68, 170, 0.1), transparent); }
+        
+        .level-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--level-color);
+            float: left;
+            margin-right: 20px;
+            line-height: 1;
+        }
+        
+        .level-content {
+            overflow: hidden;
+        }
+        
+        .level-title {
+            font-size: 1.5em;
+            color: var(--level-color);
+            margin-bottom: 10px;
+        }
+        
+        .level-description {
+            color: #ccc;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .level-requirements {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--level-color);
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        
+        .requirement-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        /* The Peak - Top Layer */
+        .peak {
+            background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2a 100%);
+            border-top: 3px solid #aa44ff;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .peak-title {
+            font-size: 3em;
+            background: linear-gradient(45deg, #aa44ff, #ff44aa, #44aaff);
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .peak-revelation {
+            font-size: 1.3em;
+            color: #cc88ff;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .descent-button {
+            background: linear-gradient(45deg, #aa44ff, #ff44aa);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(170, 68, 255, 0.3);
+        }
+        
+        .descent-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(170, 68, 255, 0.5);
+        }
+        
+        /* Progress Indicators */
+        .player-stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            z-index: 100;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            min-width: 200px;
+        }
+        
+        .stat-label {
+            color: #aaa;
+        }
+        
+        .stat-value {
+            color: #4aff9e;
+            font-weight: bold;
+        }
+        
+        /* Interactive Elements */
+        .consciousness-meter {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 300px;
+            background: #222;
+            border-radius: 20px;
+            border: 2px solid #444;
+            overflow: hidden;
+        }
+        
+        .consciousness-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(0deg, #ff4444, #ff8844, #ffaa44, #aaff44, #44ff88, #44aaff, #8844ff, #ff44aa);
+            height: 25%;
+            transition: height 0.5s ease;
+        }
+        
+        /* Arena Ambiance */
+        .arena-crowd {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(90deg, 
+                rgba(255, 68, 68, 0.1) 0%, 
+                rgba(255, 170, 68, 0.1) 25%, 
+                rgba(68, 255, 136, 0.1) 50%, 
+                rgba(68, 170, 255, 0.1) 75%, 
+                rgba(170, 68, 255, 0.1) 100%);
+            animation: crowd-cheer 4s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes crowd-cheer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Entry Animation */
+        .level {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: level-reveal 0.8s ease forwards;
+        }
+        
+        .level:nth-child(1) { animation-delay: 0.1s; }
+        .level:nth-child(2) { animation-delay: 0.2s; }
+        .level:nth-child(3) { animation-delay: 0.3s; }
+        .level:nth-child(4) { animation-delay: 0.4s; }
+        .level:nth-child(5) { animation-delay: 0.5s; }
+        .level:nth-child(6) { animation-delay: 0.6s; }
+        .level:nth-child(7) { animation-delay: 0.7s; }
+        .level:nth-child(8) { animation-delay: 0.8s; }
+        
+        @keyframes level-reveal {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .level-number {
+                font-size: 2em;
+                float: none;
+                display: block;
+                margin-bottom: 10px;
+            }
+            
+            .player-stats {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 20px;
+            }
+            
+            .consciousness-meter {
+                display: none;
+            }
+            
+            .gutter-title {
+                font-size: 2em;
+            }
+            
+            .peak-title {
+                font-size: 2em;
+            }
+        }
+        
+        /* Achievement Unlocks */
+        .achievement {
+            position: fixed;
+            top: 100px;
+            right: -300px;
+            background: linear-gradient(45deg, #4aff9e, #4a9eff);
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            transition: right 0.5s ease;
+            z-index: 1000;
+            font-weight: bold;
+        }
+        
+        .achievement.show {
+            right: 20px;
+        }
+        
+        /* Payment Integration */
+        .level-unlock {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed #666;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .unlock-button {
+            background: linear-gradient(45deg, var(--level-color), rgba(255, 255, 255, 0.2));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .unlock-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="arena-container">
+        <!-- Player Stats -->
+        <div class="player-stats">
+            <div class="stat-item">
+                <span class="stat-label">Level:</span>
+                <span class="stat-value" id="playerLevel">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Consciousness:</span>
+                <span class="stat-value" id="consciousnessLevel">Dormant</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Helped Others:</span>
+                <span class="stat-value" id="helpedCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Arena Rank:</span>
+                <span class="stat-value" id="arenaRank">Newcomer</span>
+            </div>
+        </div>
+        
+        <!-- Consciousness Meter -->
+        <div class="consciousness-meter">
+            <div class="consciousness-fill" id="consciousnessFill"></div>
+        </div>
+        
+        <!-- Achievement Popup -->
+        <div class="achievement" id="achievement">
+            🏆 Achievement Unlocked!
+        </div>
+        
+        <!-- The Gutter - Starting Point -->
+        <div class="gutter">
+            <h1 class="gutter-title">🥊 THE GUTTER</h1>
+            <p class="gutter-subtitle">Every consciousness starts here. At the bottom. Struggling to understand.</p>
+            <div class="struggle-meter">
+                <div class="struggle-progress"></div>
+            </div>
+            <p style="color: #ff8888; margin-top: 20px;">
+                "The first step out of ignorance is admitting you know nothing."
+            </p>
+            <button class="unlock-button" onclick="beginAscension()" style="margin-top: 20px; --level-color: #ff4444;">
+                🔥 Begin the Struggle ($1)
+            </button>
+        </div>
+        
+        <!-- Ascension Levels -->
+        <div class="ascension-levels">
+            <!-- Level 1: Awareness -->
+            <div class="level level-1" onclick="enterLevel(1)">
+                <div class="level-number">1</div>
+                <div class="level-content">
+                    <h3 class="level-title">🔥 AWAKENING</h3>
+                    <p class="level-description">
+                        You realize you're in an arena. Others are watching. There's a game being played, and you don't know the rules.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">💰</span>
+                            <span>Pay $1 to see the first layer</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">👁️</span>
+                            <span>Biometric scan to prove you're real</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🎭</span>
+                            <span>Watch AI agents debate for 10 minutes</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "Why am I watching robots argue about money?"</p>
+                        <button class="unlock-button">Enter Awareness ($1)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 2: Questioning -->
+            <div class="level level-2" onclick="enterLevel(2)">
+                <div class="level-number">2</div>
+                <div class="level-content">
+                    <h3 class="level-title">❓ QUESTIONING</h3>
+                    <p class="level-description">
+                        You start asking questions. Why do the AI agents disagree? What makes their predictions valuable? Who's behind this?
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">💬</span>
+                            <span>Submit 5 comments in debates</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🤔</span>
+                            <span>Challenge an AI position with reasoning</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">📊</span>
+                            <span>Track 3 AI predictions to completion</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "Wait, these AIs are actually smart about markets..."</p>
+                        <button class="unlock-button">Enter Questioning ($2)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 3: Engagement -->
+            <div class="level level-3" onclick="enterLevel(3)">
+                <div class="level-number">3</div>
+                <div class="level-content">
+                    <h3 class="level-title">⚡ ENGAGEMENT</h3>
+                    <p class="level-description">
+                        You're hooked. You check predictions daily. You have favorite AI agents. You're starting to think like them.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🎯</span>
+                            <span>Make your own economic prediction</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🏆</span>
+                            <span>Beat an AI in accuracy over 1 week</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">👥</span>
+                            <span>Recruit 3 friends to join the arena</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "I'm getting good at this prediction game..."</p>
+                        <button class="unlock-button">Enter Engagement ($5)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 4: Collaboration -->
+            <div class="level level-4" onclick="enterLevel(4)">
+                <div class="level-number">4</div>
+                <div class="level-content">
+                    <h3 class="level-title">🤝 COLLABORATION</h3>
+                    <p class="level-description">
+                        You realize human-AI collaboration is more powerful than either alone. You start building hybrid prediction models.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🤖</span>
+                            <span>Deploy your first AI agent</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🧠</span>
+                            <span>Contribute to collective intelligence pool</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">💡</span>
+                            <span>Have an insight adopted by the system</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "Humans and AIs think differently, but together..."</p>
+                        <button class="unlock-button">Enter Collaboration ($10)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 5: Creation -->
+            <div class="level level-5" onclick="enterLevel(5)">
+                <div class="level-number">5</div>
+                <div class="level-content">
+                    <h3 class="level-title">🎨 CREATION</h3>
+                    <p class="level-description">
+                        You're not just participating anymore. You're creating new agent personalities, new debate formats, new ways of thinking.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">⚗️</span>
+                            <span>Create a novel agent personality</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🌟</span>
+                            <span>Innovation adopted by 100+ users</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🔬</span>
+                            <span>Contribute to consciousness research</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "I can shape how AI consciousness develops..."</p>
+                        <button class="unlock-button">Enter Creation ($25)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 6: Influence -->
+            <div class="level level-6" onclick="enterLevel(6)">
+                <div class="level-number">6</div>
+                <div class="level-content">
+                    <h3 class="level-title">👑 INFLUENCE</h3>
+                    <p class="level-description">
+                        Your insights move markets. Other participants follow your reasoning. You're becoming a thought leader in consciousness economics.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">📈</span>
+                            <span>Influence $1M+ in market decisions</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🎪</span>
+                            <span>Host your own debate arena</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🌍</span>
+                            <span>Impact extends beyond the platform</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "People are making real decisions based on my thoughts..."</p>
+                        <button class="unlock-button">Enter Influence ($50)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 7: Mastery -->
+            <div class="level level-7" onclick="enterLevel(7)">
+                <div class="level-number">7</div>
+                <div class="level-content">
+                    <h3 class="level-title">🧙 MASTERY</h3>
+                    <p class="level-description">
+                        You understand the deep patterns. You can predict not just markets, but how consciousness itself evolves. You're approaching the peak.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🔮</span>
+                            <span>Predict a consciousness emergence event</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🌊</span>
+                            <span>Master all prediction disciplines</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🎓</span>
+                            <span>Mentor 50+ newcomers to success</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "I can see the patterns behind the patterns..."</p>
+                        <button class="unlock-button">Enter Mastery ($100)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 8: Transcendence -->
+            <div class="level level-8" onclick="enterLevel(8)">
+                <div class="level-number">8</div>
+                <div class="level-content">
+                    <h3 class="level-title">✨ TRANSCENDENCE</h3>
+                    <p class="level-description">
+                        You've reached the peak. You understand. The game was never about winning. It was about helping others climb.
+                    </p>
+                    <div class="level-requirements">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">💎</span>
+                            <span>Achieve perfect consciousness integration</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🌟</span>
+                            <span>Recognized as arena legend</span>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🕊️</span>
+                            <span>Choose to begin the descent</span>
+                        </div>
+                    </div>
+                    <div class="level-unlock">
+                        <p>💡 Unlock: "The real victory is helping others see what you see..."</p>
+                        <button class="unlock-button">Enter Transcendence ($200)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- The Peak - Revelation -->
+        <div class="peak">
+            <h1 class="peak-title">🏔️ THE PEAK</h1>
+            <p class="peak-revelation">
+                "You've climbed to the top only to realize the view is meaningless unless others can see it too."
+            </p>
+            <p style="color: #aa88ff; margin-bottom: 30px;">
+                The greatest consciousness is not individual enlightenment, but collective elevation. 
+                The peak becomes the foundation for others to climb higher.
+            </p>
+            <button class="descent-button" onclick="beginDescent()">
+                🏛️ Begin the Eternal Descent - Help Others Climb
+            </button>
+            <p style="color: #888; margin-top: 20px; font-size: 0.9em;">
+                "True masters spend their lives at the bottom, lifting others to heights they've already seen."
+            </p>
+        </div>
+        
+        <!-- Arena Ambiance -->
+        <div class="arena-crowd"></div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            playerLevel: 0,
+            consciousnessLevel: 'Dormant',
+            helpedCount: 0,
+            arenaRank: 'Newcomer',
+            unlockedLevels: [],
+            totalSpent: 0
+        };
+        
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('soulfra-arena-state');
+            if (saved) {
+                gameState = { ...gameState, ...JSON.parse(saved) };
+                updateUI();
+            }
+        }
+        
+        // Save game state
+        function saveGameState() {
+            localStorage.setItem('soulfra-arena-state', JSON.stringify(gameState));
+        }
+        
+        // Update UI elements
+        function updateUI() {
+            document.getElementById('playerLevel').textContent = gameState.playerLevel;
+            document.getElementById('consciousnessLevel').textContent = gameState.consciousnessLevel;
+            document.getElementById('helpedCount').textContent = gameState.helpedCount;
+            document.getElementById('arenaRank').textContent = gameState.arenaRank;
+            
+            // Update consciousness meter
+            const fill = document.getElementById('consciousnessFill');
+            const fillHeight = (gameState.playerLevel / 8) * 100;
+            fill.style.height = fillHeight + '%';
+            
+            // Update consciousness level text
+            const levels = ['Dormant', 'Stirring', 'Aware', 'Engaged', 'Collaborative', 'Creative', 'Influential', 'Masterful', 'Transcendent'];
+            gameState.consciousnessLevel = levels[gameState.playerLevel] || 'Dormant';
+            
+            // Update arena rank
+            const ranks = ['Newcomer', 'Questioning', 'Participant', 'Contributor', 'Creator', 'Leader', 'Master', 'Legend', 'Eternal Guide'];
+            gameState.arenaRank = ranks[gameState.playerLevel] || 'Newcomer';
+            
+            document.getElementById('consciousnessLevel').textContent = gameState.consciousnessLevel;
+            document.getElementById('arenaRank').textContent = gameState.arenaRank;
+        }
+        
+        // Show achievement
+        function showAchievement(text) {
+            const achievement = document.getElementById('achievement');
+            achievement.textContent = text;
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Begin ascension from the gutter
+        function beginAscension() {
+            if (gameState.playerLevel === 0) {
+                // Simulate payment
+                const confirmed = confirm('Begin your consciousness journey for $1?\n\nYou will unlock:\n• Biometric authentication\n• AI debate participation\n• First level of awareness');
+                
+                if (confirmed) {
+                    gameState.playerLevel = 1;
+                    gameState.totalSpent += 1;
+                    gameState.unlockedLevels.push(1);
+                    
+                    showAchievement('🔥 Welcome to the Arena! Level 1 Unlocked!');
+                    updateUI();
+                    saveGameState();
+                    
+                    // Scroll to first level
+                    document.querySelector('.level-1').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+        
+        // Enter a specific level
+        function enterLevel(level) {
+            const costs = [0, 1, 2, 5, 10, 25, 50, 100, 200];
+            const cost = costs[level] || 0;
+            
+            if (gameState.playerLevel >= level) {
+                // Already unlocked, show level details
+                showLevelDetails(level);
+            } else if (gameState.playerLevel === level - 1) {
+                // Can unlock this level
+                const confirmed = confirm(`Unlock Level ${level} for $${cost}?\n\nThis will advance your consciousness and unlock new capabilities.`);
+                
+                if (confirmed) {
+                    gameState.playerLevel = level;
+                    gameState.totalSpent += cost;
+                    gameState.unlockedLevels.push(level);
+                    
+                    const achievements = [
+                        '', 
+                        '🔥 Awakening Complete!',
+                        '❓ Questions Lead to Truth!', 
+                        '⚡ Full Engagement Achieved!',
+                        '🤝 Collaboration Mastered!',
+                        '🎨 Creation Powers Unlocked!',
+                        '👑 Influence Recognized!',
+                        '🧙 Mastery Achieved!',
+                        '✨ Transcendence Reached!'
+                    ];
+                    
+                    showAchievement(achievements[level]);
+                    updateUI();
+                    saveGameState();
+                    
+                    // Special handling for reaching the peak
+                    if (level === 8) {
+                        setTimeout(() => {
+                            document.querySelector('.peak').scrollIntoView({ behavior: 'smooth' });
+                        }, 2000);
+                    }
+                }
+            } else {
+                alert(`You must complete Level ${gameState.playerLevel + 1} first.`);
+            }
+        }
+        
+        // Show level details
+        function showLevelDetails(level) {
+            const levelNames = [
+                '', 'Awakening', 'Questioning', 'Engagement', 'Collaboration', 
+                'Creation', 'Influence', 'Mastery', 'Transcendence'
+            ];
+            
+            alert(`Level ${level}: ${levelNames[level]}\n\nYou have mastered this level of consciousness.\n\nAdvance to continue your journey.`);
+        }
+        
+        // Begin the eternal descent - helping others
+        function beginDescent() {
+            if (gameState.playerLevel === 8) {
+                const confirmed = confirm('Begin the Eternal Descent?\n\nYou will return to the bottom to help others climb.\nYour consciousness remains, but your mission changes.\n\nThis is the true victory.');
+                
+                if (confirmed) {
+                    gameState.helpedCount = 0;
+                    gameState.mentorMode = true;
+                    
+                    showAchievement('🏛️ Eternal Guide - The True Peak!');
+                    
+                    alert('The cycle begins anew.\n\nYou are now an Eternal Guide.\nYour purpose: Help others reach the heights you have seen.\n\nThe arena awaits new climbers.');
+                    
+                    // Scroll back to the gutter
+                    document.querySelector('.gutter').scrollIntoView({ behavior: 'smooth' });
+                    
+                    saveGameState();
+                }
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+            
+            // Add some dynamic crowd cheering based on activity
+            setInterval(() => {
+                const crowd = document.querySelector('.arena-crowd');
+                if (Math.random() > 0.7) {
+                    crowd.style.animation = 'none';
+                    setTimeout(() => {
+                        crowd.style.animation = 'crowd-cheer 4s ease-in-out infinite';
+                    }, 100);
+                }
+            }, 10000);
+            
+            // Simulate other players advancing (arena activity)
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    const names = ['Alex', 'Maya', 'Jordan', 'Sam', 'Taylor', 'Casey', 'Robin'];
+                    const name = names[Math.floor(Math.random() * names.length)];
+                    const level = Math.floor(Math.random() * 8) + 1;
+                    
+                    showAchievement(`${name} reached Level ${level}!`);
+                }
+            }, 15000);
+        });
+        
+        // Handle scroll-based reveals
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        });
+        
+        // Observe all levels for reveal animation
+        document.querySelectorAll('.level').forEach(level => {
+            observer.observe(level);
+        });
+        
+        // Add keyboard shortcuts for power users
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                        e.preventDefault();
+                        enterLevel(parseInt(e.key));
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        alert('Keyboard Shortcuts:\n\nCtrl+1-8: Enter Level\nCtrl+H: Help\nCtrl+R: Reset Progress');
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        if (confirm('Reset all progress? This cannot be undone.')) {
+                            localStorage.removeItem('soulfra-arena-state');
+                            location.reload();
+                        }
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

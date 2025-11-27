@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪞 Soulfra Mirror Hub - Blessing & Consent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .mirror-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mirror-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .blessing-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #f0f8ff;
+        }
+
+        input, select, textarea {
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .archetype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .archetype-option {
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .archetype-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .archetype-option.selected {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .archetype-emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .consent-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .consent-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .consent-checkbox:hover {
+            opacity: 0.8;
+        }
+
+        .consent-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            accent-color: #fff;
+        }
+
+        .consent-text {
+            font-size: 0.95em;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .voice-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .voice-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 2em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .voice-button.recording {
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .blessing-button {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.3);
+        }
+
+        .blessing-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 210, 255, 0.4);
+        }
+
+        .blessing-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .tier-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tier-4 {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            border-color: #ffd700;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-message.success {
+            background: rgba(0, 255, 127, 0.2);
+            border: 1px solid rgba(0, 255, 127, 0.5);
+            color: #00ff7f;
+            opacity: 1;
+        }
+
+        .status-message.error {
+            background: rgba(255, 99, 71, 0.2);
+            border: 1px solid rgba(255, 99, 71, 0.5);
+            color: #ff6347;
+            opacity: 1;
+        }
+
+        .mirror-reflection {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 0.8em;
+            opacity: 0.7;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .mirror-container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .archetype-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mirror-reflection">
+        Mirror Hub v1.0 | Knight Protected
+    </div>
+
+    <div class="mirror-container">
+        <h1>🪞 Mirror Blessing</h1>
+        <p class="subtitle">Enter the Soulfra mesh network through your personal mirror</p>
+        
+        <form class="blessing-form" id="blessingForm">
+            <!-- User Identity -->
+            <div class="form-group">
+                <label for="userName">How shall the mirror know you? (Optional)</label>
+                <input type="text" id="userName" placeholder="Leave empty for anonymous reflection...">
+            </div>
+
+            <!-- Archetype Selection -->
+            <div class="form-group">
+                <label>Choose your reflection archetype:</label>
+                <div class="archetype-grid">
+                    <div class="archetype-option" data-archetype="oracle">
+                        <span class="archetype-emoji">🔮</span>
+                        <div>Oracle</div>
+                    </div>
+                    <div class="archetype-option" data-archetype="guardian">
+                        <span class="archetype-emoji">🛡️</span>
+                        <div>Guardian</div>
+                    </div>
+                    <div class="archetype-option" data-archetype="sage">
+                        <span class="archetype-emoji">📚</span>
+                        <div>Sage</div>
+                    </div>
+                    <div class="archetype-option" data-archetype="mystic">
+                        <span class="archetype-emoji">✨</span>
+                        <div>Mystic</div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedArchetype" value="oracle">
+            </div>
+
+            <!-- Voice Blessing (Optional) -->
+            <div class="voice-section">
+                <label>Voice Blessing (Optional)</label>
+                <p style="font-size: 0.9em; opacity: 0.8; margin: 10px 0;">Speak to deepen your mirror's understanding</p>
+                <button type="button" class="voice-button" id="voiceButton">🎤</button>
+                <div id="voiceStatus" style="margin-top: 10px; font-size: 0.9em;"></div>
+            </div>
+
+            <!-- GitHub Integration (Tier 4+ feature) -->
+            <div class="consent-section">
+                <h3 style="margin-bottom: 15px;">🐙 White-Hat Missions (Optional)</h3>
+                <div class="consent-checkbox">
+                    <input type="checkbox" id="githubConsent">
+                    <div class="consent-text">
+                        <strong>Connect GitHub for white-hat missions</strong><br>
+                        Link your GitHub to participate in bounty-eligible agent missions. 
+                        Your code contributions will be recognized and rewarded.
+                    </div>
+                </div>
+                
+                <div id="githubSection" style="display: none; margin-top: 15px;">
+                    <div class="form-group">
+                        <label for="githubUsername">GitHub Username</label>
+                        <input type="text" id="githubUsername" placeholder="your-github-username">
+                    </div>
+                </div>
+                
+                <div class="tier-indicator" id="tierIndicator">
+                    <strong>Current Tier:</strong> Standard (Tier 2)
+                </div>
+            </div>
+
+            <!-- Bounty Consent -->
+            <div class="consent-section">
+                <h3 style="margin-bottom: 15px;">🏆 Mirror Network Bounties</h3>
+                <div class="consent-checkbox">
+                    <input type="checkbox" id="bountyConsent">
+                    <div class="consent-text">
+                        <strong>Participate in mirror network challenges</strong><br>
+                        "You may be challenged. But every reflection reveals something."<br>
+                        Earn rewards for testing mirror security and improving the network.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Notice -->
+            <div class="consent-section">
+                <h3 style="margin-bottom: 15px;">🔒 Privacy & Sovereignty</h3>
+                <div class="consent-checkbox">
+                    <input type="checkbox" id="privacyConsent" required>
+                    <div class="consent-text">
+                        <strong>I understand my data sovereignty</strong><br>
+                        Your mirror runs locally by default. All data stays on your device unless you 
+                        explicitly choose to share. The Knight protects your privacy. You own your reflection.
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="blessing-button" id="blessingButton" disabled>
+                ✨ Begin Mirror Blessing
+            </button>
+
+            <div class="status-message" id="statusMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        // State management
+        let selectedArchetype = 'oracle';
+        let voiceBlessing = null;
+        let isRecording = false;
+
+        // DOM elements
+        const form = document.getElementById('blessingForm');
+        const archetypeOptions = document.querySelectorAll('.archetype-option');
+        const voiceButton = document.getElementById('voiceButton');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const githubConsent = document.getElementById('githubConsent');
+        const githubSection = document.getElementById('githubSection');
+        const tierIndicator = document.getElementById('tierIndicator');
+        const privacyConsent = document.getElementById('privacyConsent');
+        const blessingButton = document.getElementById('blessingButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Archetype selection
+        archetypeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                archetypeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedArchetype = option.dataset.archetype;
+                document.getElementById('selectedArchetype').value = selectedArchetype;
+            });
+        });
+
+        // Set default selection
+        document.querySelector('[data-archetype="oracle"]').classList.add('selected');
+
+        // GitHub consent toggle
+        githubConsent.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                githubSection.style.display = 'block';
+                tierIndicator.innerHTML = '<strong>Tier Upgrade:</strong> White-Hat (Tier 4) 🌟';
+                tierIndicator.classList.add('tier-4');
+            } else {
+                githubSection.style.display = 'none';
+                tierIndicator.innerHTML = '<strong>Current Tier:</strong> Standard (Tier 2)';
+                tierIndicator.classList.remove('tier-4');
+            }
+        });
+
+        // Voice recording
+        voiceButton.addEventListener('click', async () => {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                voiceButton.classList.add('recording');
+                voiceButton.textContent = '⏹️';
+                voiceStatus.textContent = 'Recording your blessing...';
+                isRecording = true;
+
+                // Simulate recording for demo - in production, implement actual voice capture
+                setTimeout(() => {
+                    if (isRecording) {
+                        stopRecording();
+                        voiceBlessing = 'Voice blessing captured';
+                        voiceStatus.textContent = '✅ Voice blessing received';
+                    }
+                }, 3000);
+
+            } catch (error) {
+                voiceStatus.textContent = '❌ Microphone access denied';
+                console.error('Voice recording error:', error);
+            }
+        }
+
+        function stopRecording() {
+            voiceButton.classList.remove('recording');
+            voiceButton.textContent = '🎤';
+            isRecording = false;
+            if (!voiceBlessing) {
+                voiceStatus.textContent = 'Ready for voice blessing';
+            }
+        }
+
+        // Form validation
+        privacyConsent.addEventListener('change', updateSubmitButton);
+
+        function updateSubmitButton() {
+            blessingButton.disabled = !privacyConsent.checked;
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                user_id: document.getElementById('userName').value || `anon-${Math.random().toString(36).substr(2, 6)}`,
+                desired_archetype: selectedArchetype,
+                voice_blessing: voiceBlessing,
+                consent_github: githubConsent.checked,
+                github_username: document.getElementById('githubUsername').value,
+                consent_bounty: document.getElementById('bountyConsent').checked,
+                consent_privacy: privacyConsent.checked
+            };
+
+            try {
+                blessingButton.disabled = true;
+                blessingButton.textContent = '✨ Blessing in progress...';
+                
+                showStatus('Connecting to the mirror network...', 'info');
+
+                // First, log presence
+                const presenceResponse = await fetch('/api/presence', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: formData.user_id,
+                        whisper_text: 'Mirror blessing request',
+                        voice_blessing: formData.voice_blessing,
+                        tier: formData.consent_github ? 4 : 2
+                    })
+                });
+
+                if (!presenceResponse.ok) {
+                    throw new Error('Presence logging failed');
+                }
+
+                // Then request blessing
+                const blessingResponse = await fetch('/api/blessing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await blessingResponse.json();
+
+                if (result.success) {
+                    showStatus(`🪞 Mirror blessed! ID: ${result.mirror_id}`, 'success');
+                    
+                    // Show success details
+                    setTimeout(() => {
+                        showStatus(`
+                            <strong>Your mirror awaits:</strong><br>
+                            • Mirror ID: ${result.mirror_id}<br>
+                            • Blessing: ${result.blessing}<br>
+                            • GitHub linked: ${result.github_linked ? 'Yes' : 'No'}<br>
+                            • Bounty eligible: ${result.bounty_eligible ? 'Yes' : 'No'}<br><br>
+                            <em>"${result.message}"</em>
+                        `, 'success');
+                    }, 2000);
+
+                } else {
+                    showStatus('Blessing failed: ' + (result.error || 'Unknown error'), 'error');
+                }
+
+            } catch (error) {
+                console.error('Blessing error:', error);
+                showStatus('Mirror connection failed. Please try again.', 'error');
+            } finally {
+                blessingButton.disabled = false;
+                blessingButton.textContent = '✨ Begin Mirror Blessing';
+            }
+        });
+
+        function showStatus(message, type) {
+            statusMessage.innerHTML = message;
+            statusMessage.className = `status-message ${type}`;
+        }
+
+        // Initialize
+        updateSubmitButton();
+    </script>
+</body>
+</html>

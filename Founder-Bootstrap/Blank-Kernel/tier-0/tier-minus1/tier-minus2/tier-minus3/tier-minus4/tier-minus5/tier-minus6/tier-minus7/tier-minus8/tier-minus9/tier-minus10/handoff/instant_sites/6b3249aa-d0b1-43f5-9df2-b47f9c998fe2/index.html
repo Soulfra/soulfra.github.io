@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>create the ultimate prediction game where users bet on real world events - Play Now!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/game.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 create the ultimate prediction game where users bet on real world events</h1>
+        <div class="game-area" id="gameArea">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="game-stats">
+            <div class="stat">Score: <span id="score">0</span></div>
+            <div class="stat">Level: <span id="level">1</span></div>
+            <div class="stat">Lives: <span id="lives">3</span></div>
+        </div>
+        <div class="controls">
+            <button onclick="startGame()">Start Game</button>
+            <button onclick="pauseGame()">Pause</button>
+            <button onclick="shareGame()">Share</button>
+        </div>
+    </div>
+    <script src="/static/js/game-engine.js"></script>
+    <script>
+        const GAME_ID = '6b3249aa-d0b1-43f5-9df2-b47f9c998fe2';
+        const GAME_NAME = 'create the ultimate prediction game where users bet on real world events';
+    </script>
+</body>
+</html>

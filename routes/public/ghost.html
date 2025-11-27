@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ghost Reflection</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f7f8fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      text-align: center;
+    }
+    .quote {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+    .meta {
+      font-size: 0.875rem;
+      color: #777;
+    }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="quote" id="ghost-output">Loading reflection...</div>
+    <div class="meta" id="ghost-meta"></div>
+    <div class="footer">A ritual drop by Soulfra</div>
+  </div>
+
+  <script>
+    async function loadReflection() {
+      const id = window.location.pathname.split("/").pop();
+      try {
+        const res = await fetch(`/api/ghost/${id}`);
+        const text = await res.text();
+        document.open();
+        document.write(text);
+        document.close();
+      } catch (e) {
+        document.getElementById("ghost-output").textContent = "Failed to load reflection.";
+      }
+    }
+
+    loadReflection();
+  </script>
+</body>
+</html>

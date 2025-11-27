@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Colosseum - Multi-Arena AI Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        /* Colosseum Layout */
+        .colosseum {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-areas:
+                "orchestra orchestra orchestra"
+                "arena1 arena2 arena3"
+                "devops devops devops";
+            grid-template-rows: 200px 1fr 150px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2px;
+            background: #111;
+        }
+        
+        /* Orchestra (Storyteller) */
+        .orchestra {
+            grid-area: orchestra;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 2px solid #3498db;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .orchestra::before {
+            content: '🎭 STORYTELLER TIER';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 12px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        /* Arena Layout */
+        .arena {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #444;
+            display: grid;
+            grid-template-rows: 40px 1fr 120px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .arena.arena1 { grid-area: arena1; border-color: #e74c3c; }
+        .arena.arena2 { grid-area: arena2; border-color: #f39c12; }
+        .arena.arena3 { grid-area: arena3; border-color: #27ae60; }
+        
+        .arena-header {
+            background: rgba(0,0,0,0.8);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .arena1 .arena-header { background: linear-gradient(90deg, #e74c3c, rgba(231,76,60,0.3)); }
+        .arena2 .arena-header { background: linear-gradient(90deg, #f39c12, rgba(243,156,18,0.3)); }
+        .arena3 .arena-header { background: linear-gradient(90deg, #27ae60, rgba(39,174,96,0.3)); }
+        
+        /* Arena Content */
+        .arena-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            height: 100%;
+        }
+        
+        .idea-canvas {
+            background: radial-gradient(circle at center, #1a1a2e, #0a0a0a);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .tier {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 60px;
+            border-left: 3px solid;
+            position: relative;
+        }
+        
+        .tier.top { border-left-color: #9b59b6; }
+        .tier.middle { border-left-color: #3498db; }
+        .tier.bottom { border-left-color: #e67e22; }
+        
+        .tier.active {
+            animation: tierPulse 2s infinite;
+        }
+        
+        @keyframes tierPulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+        
+        /* DevOps Tier */
+        .devops {
+            grid-area: devops;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 2px solid #95a5a6;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            position: relative;
+        }
+        
+        .devops::before {
+            content: '⚙️ DEVOPS TIER - Deployment & Implementation';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 12px;
+            color: #95a5a6;
+            font-weight: bold;
+        }
+        
+        /* Ideas as nodes */
+        .idea-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.2);
+            font-size: 12px;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .idea-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+        
+        .idea-node.expanded {
+            width: 120px;
+            height: 120px;
+            font-size: 10px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .idea-node.processing {
+            animation: processing 2s infinite;
+        }
+        
+        @keyframes processing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Idea connections */
+        .idea-connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3498db, transparent);
+            animation: dataFlow 3s infinite;
+        }
+        
+        @keyframes dataFlow {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            background: rgba(0,0,0,0.8);
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Chat Input */
+        .chat-input {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 800px;
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #3498db;
+            border-radius: 25px;
+            padding: 15px 25px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .chat-input input::placeholder {
+            color: #7f8c8d;
+        }
+        
+        .mic-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .mic-btn.recording {
+            animation: recording 1s infinite;
+        }
+        
+        @keyframes recording {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Story Narrative */
+        .story-narrative {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 140px;
+        }
+        
+        /* DevOps Components */
+        .devops-component {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .devops-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #95a5a6;
+        }
+        
+        .devops-status {
+            font-size: 12px;
+            color: #27ae60;
+        }
+        
+        /* Activity Feed */
+        .activity-feed {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+            height: 400px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 500;
+        }
+        
+        .activity-item {
+            padding: 8px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid;
+        }
+        
+        .activity-item.arena1 { border-left-color: #e74c3c; }
+        .activity-item.arena2 { border-left-color: #f39c12; }
+        .activity-item.arena3 { border-left-color: #27ae60; }
+        .activity-item.devops { border-left-color: #95a5a6; }
+        .activity-item.storyteller { border-left-color: #3498db; }
+    </style>
+</head>
+<body>
+    <!-- The Colosseum -->
+    <div class="colosseum">
+        <!-- Storyteller Tier (Orchestra) -->
+        <div class="orchestra">
+            <div class="story-narrative" id="storyNarrative">
+                🎭 The Storyteller observes three arenas of consciousness, weaving narratives from the chaos of creation. Each arena processes different aspects of human thought, while the DevOps tier below materializes the most promising ideas into reality...
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <div class="control-btn" onclick="generateStory()">📖 Generate Story</div>
+                <div class="control-btn" onclick="connectArenas()">🔗 Connect Arenas</div>
+                <div class="control-btn" onclick="orchestrateFlow()">🎼 Orchestrate</div>
+            </div>
+        </div>
+        
+        <!-- Arena 1: Concept Discovery -->
+        <div class="arena arena1">
+            <div class="arena-header">
+                <span>🔴 ARENA 1: Concept Discovery</span>
+                <span id="arena1-status">Active</span>
+            </div>
+            <div class="arena-content">
+                <div class="idea-canvas" id="canvas1">
+                    <!-- Ideas will appear here -->
+                </div>
+                <div class="tier-stack">
+                    <div class="tier top" id="tier1-top">
+                        <div style="font-size: 10px; color: #9b59b6;">MASTER AI</div>
+                        <div id="tier1-top-content">Analyzing concept patterns...</div>
+                    </div>
+                    <div class="tier middle" id="tier1-middle">
+                        <div style="font-size: 10px; color: #3498db;">CAL RIVEN</div>
+                        <div id="tier1-middle-content">Ready for input</div>
+                    </div>
+                    <div class="tier bottom" id="tier1-bottom">
+                        <div style="font-size: 10px; color: #e67e22;">AGENT SWARM</div>
+                        <div id="tier1-bottom-content">12 agents idle</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-panel">
+                <div class="control-btn" onclick="addIdea(1)">💡 Add Idea</div>
+                <div class="control-btn" onclick="expandIdea(1)">🔍 Expand</div>
+                <div class="control-btn" onclick="sendToArena(1, 2)">➡️ Send</div>
+            </div>
+        </div>
+        
+        <!-- Arena 2: Development Processing -->
+        <div class="arena arena2">
+            <div class="arena-header">
+                <span>🟡 ARENA 2: Development Processing</span>
+                <span id="arena2-status">Active</span>
+            </div>
+            <div class="arena-content">
+                <div class="idea-canvas" id="canvas2">
+                    <!-- Ideas will appear here -->
+                </div>
+                <div class="tier-stack">
+                    <div class="tier top" id="tier2-top">
+                        <div style="font-size: 10px; color: #9b59b6;">MASTER AI</div>
+                        <div id="tier2-top-content">Evaluating feasibility...</div>
+                    </div>
+                    <div class="tier middle" id="tier2-middle">
+                        <div style="font-size: 10px; color: #3498db;">CAL RIVEN</div>
+                        <div id="tier2-middle-content">Processing architecture</div>
+                    </div>
+                    <div class="tier bottom" id="tier2-bottom">
+                        <div style="font-size: 10px; color: #e67e22;">AGENT SWARM</div>
+                        <div id="tier2-bottom-content">8 agents coding</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-panel">
+                <div class="control-btn" onclick="addIdea(2)">⚙️ Process</div>
+                <div class="control-btn" onclick="expandIdea(2)">🔧 Debug</div>
+                <div class="control-btn" onclick="sendToArena(2, 3)">➡️ Send</div>
+            </div>
+        </div>
+        
+        <!-- Arena 3: Implementation -->
+        <div class="arena arena3">
+            <div class="arena-header">
+                <span>🟢 ARENA 3: Implementation</span>
+                <span id="arena3-status">Active</span>
+            </div>
+            <div class="arena-content">
+                <div class="idea-canvas" id="canvas3">
+                    <!-- Ideas will appear here -->
+                </div>
+                <div class="tier-stack">
+                    <div class="tier top" id="tier3-top">
+                        <div style="font-size: 10px; color: #9b59b6;">MASTER AI</div>
+                        <div id="tier3-top-content">Optimizing deployment...</div>
+                    </div>
+                    <div class="tier middle" id="tier3-middle">
+                        <div style="font-size: 10px; color: #3498db;">CAL RIVEN</div>
+                        <div id="tier3-middle-content">Monitoring execution</div>
+                    </div>
+                    <div class="tier bottom" id="tier3-bottom">
+                        <div style="font-size: 10px; color: #e67e22;">AGENT SWARM</div>
+                        <div id="tier3-bottom-content">15 agents deploying</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-panel">
+                <div class="control-btn" onclick="addIdea(3)">🚀 Deploy</div>
+                <div class="control-btn" onclick="expandIdea(3)">📊 Monitor</div>
+                <div class="control-btn" onclick="sendToDevOps(3)">⬇️ DevOps</div>
+            </div>
+        </div>
+        
+        <!-- DevOps Tier -->
+        <div class="devops">
+            <div class="devops-component">
+                <div class="devops-title">🐙 GitHub Integration</div>
+                <div class="devops-status">✅ Connected</div>
+                <div style="font-size: 11px;">Last push: 2 min ago</div>
+            </div>
+            <div class="devops-component">
+                <div class="devops-title">🌐 Site Deployment</div>
+                <div class="devops-status">🔄 Building...</div>
+                <div style="font-size: 11px;">Progress: 67%</div>
+            </div>
+            <div class="devops-component">
+                <div class="devops-title">🔧 CI/CD Pipeline</div>
+                <div class="devops-status">✅ Healthy</div>
+                <div style="font-size: 11px;">Tests passing: 94%</div>
+            </div>
+            <div class="devops-component">
+                <div class="devops-title">📊 Monitoring</div>
+                <div class="devops-status">⚠️ High Load</div>
+                <div style="font-size: 11px;">CPU: 87% | Memory: 72%</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Input -->
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Speak your idea into the colosseum..." />
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
+    </div>
+    
+    <!-- Activity Feed -->
+    <div class="activity-feed" id="activityFeed">
+        <div style="font-weight: bold; margin-bottom: 10px;">🔥 Live Activity</div>
+        <div class="activity-item arena1">Arena 1: New concept detected</div>
+        <div class="activity-item storyteller">Storyteller: Weaving narrative threads</div>
+        <div class="activity-item arena2">Arena 2: Processing architecture</div>
+        <div class="activity-item devops">DevOps: Deploying to staging</div>
+    </div>
+    
+    <script>
+        // Global state
+        let arenas = {
+            1: { ideas: [], processing: false },
+            2: { ideas: [], processing: false },
+            3: { ideas: [], processing: false }
+        };
+        
+        let isRecording = false;
+        let recognition = null;
+        let ideaCounter = 0;
+        
+        // Initialize speech recognition
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('chatInput').value = transcript;
+                    processGlobalInput(transcript);
+                };
+                
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                };
+            }
+        }
+        
+        // Toggle microphone
+        function toggleMic() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+        
+        function startRecording() {
+            if (recognition) {
+                recognition.start();
+                isRecording = true;
+                document.getElementById('micBtn').classList.add('recording');
+            }
+        }
+        
+        function stopRecording() {
+            if (recognition) {
+                recognition.stop();
+            }
+            isRecording = false;
+            document.getElementById('micBtn').classList.remove('recording');
+        }
+        
+        // Process input across all arenas
+        function processGlobalInput(input) {
+            addActivity('storyteller', `Processing: "${input.substring(0, 30)}..."`);
+            
+            // Create ideas in all arenas based on input
+            const concepts = extractConcepts(input);
+            
+            concepts.forEach((concept, index) => {
+                const arenaId = (index % 3) + 1;
+                addIdeaToArena(arenaId, concept);
+            });
+            
+            // Update storyteller narrative
+            updateStorytellerNarrative(input, concepts);
+            
+            // Clear input
+            document.getElementById('chatInput').value = '';
+        }
+        
+        // Extract concepts from input
+        function extractConcepts(input) {
+            const words = input.toLowerCase().split(/\s+/);
+            const concepts = [];
+            
+            // Simple concept extraction
+            const conceptPatterns = [
+                /ai|artificial|intelligence|machine|learning/,
+                /web|site|platform|app|application/,
+                /data|database|analytics|metrics/,
+                /user|customer|experience|interface/,
+                /business|strategy|market|revenue/
+            ];
+            
+            conceptPatterns.forEach((pattern, index) => {
+                if (pattern.test(input.toLowerCase())) {
+                    concepts.push({
+                        text: input.substring(0, 50),
+                        type: ['AI/ML', 'Platform', 'Data', 'UX', 'Business'][index],
+                        priority: Math.random()
+                    });
+                }
+            });
+            
+            if (concepts.length === 0) {
+                concepts.push({
+                    text: input.substring(0, 50),
+                    type: 'General',
+                    priority: Math.random()
+                });
+            }
+            
+            return concepts;
+        }
+        
+        // Add idea to specific arena
+        function addIdeaToArena(arenaId, concept) {
+            const canvas = document.getElementById(`canvas${arenaId}`);
+            const idea = createIdeaNode(concept);
+            
+            // Random position
+            idea.style.left = Math.random() * (canvas.offsetWidth - 60) + 'px';
+            idea.style.top = Math.random() * (canvas.offsetHeight - 60) + 'px';
+            
+            canvas.appendChild(idea);
+            arenas[arenaId].ideas.push(idea);
+            
+            // Activate tier
+            activateTier(arenaId, 'bottom');
+            
+            addActivity(`arena${arenaId}`, `New idea: ${concept.text.substring(0, 20)}...`);
+            
+            // Process through tiers
+            setTimeout(() => processThroughTiers(arenaId, idea), 1000);
+        }
+        
+        // Create visual idea node
+        function createIdeaNode(concept) {
+            const node = document.createElement('div');
+            node.className = 'idea-node';
+            node.textContent = concept.text.substring(0, 15) + '...';
+            node.title = concept.text;
+            node.dataset.concept = JSON.stringify(concept);
+            
+            node.onclick = () => expandIdeaNode(node);
+            
+            return node;
+        }
+        
+        // Expand idea node
+        function expandIdeaNode(node) {
+            node.classList.toggle('expanded');
+            
+            if (node.classList.contains('expanded')) {
+                const concept = JSON.parse(node.dataset.concept);
+                node.innerHTML = `
+                    <div style="font-size: 8px;">${concept.type}</div>
+                    <div style="font-size: 10px;">${concept.text.substring(0, 30)}</div>
+                    <div style="font-size: 8px;">Priority: ${(concept.priority * 100).toFixed(0)}%</div>
+                `;
+            } else {
+                const concept = JSON.parse(node.dataset.concept);
+                node.textContent = concept.text.substring(0, 15) + '...';
+            }
+        }
+        
+        // Process idea through tiers
+        function processThroughTiers(arenaId, ideaNode) {
+            ideaNode.classList.add('processing');
+            
+            // Bottom tier
+            activateTier(arenaId, 'bottom');
+            setTimeout(() => {
+                document.getElementById(`tier${arenaId}-bottom-content`).textContent = 'Agents working on idea...';
+                
+                // Middle tier
+                activateTier(arenaId, 'middle');
+                setTimeout(() => {
+                    document.getElementById(`tier${arenaId}-middle-content`).textContent = 'Cal analyzing...';
+                    
+                    // Top tier
+                    activateTier(arenaId, 'top');
+                    setTimeout(() => {
+                        document.getElementById(`tier${arenaId}-top-content`).textContent = 'Master AI evaluating...';
+                        
+                        ideaNode.classList.remove('processing');
+                        
+                        // Random outcome
+                        if (Math.random() > 0.3) {
+                            ideaNode.style.background = 'linear-gradient(135deg, #27ae60, #229954)';
+                            addActivity(`arena${arenaId}`, 'Idea approved for next stage');
+                        } else {
+                            ideaNode.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                            addActivity(`arena${arenaId}`, 'Idea needs refinement');
+                        }
+                    }, 1500);
+                }, 1500);
+            }, 1500);
+        }
+        
+        // Activate tier visual feedback
+        function activateTier(arenaId, tier) {
+            // Remove all active states
+            document.querySelectorAll('.tier').forEach(t => t.classList.remove('active'));
+            
+            // Activate specific tier
+            document.getElementById(`tier${arenaId}-${tier}`).classList.add('active');
+        }
+        
+        // Send idea between arenas
+        function sendToArena(fromArena, toArena) {
+            const fromCanvas = document.getElementById(`canvas${fromArena}`);
+            const ideas = fromCanvas.querySelectorAll('.idea-node');
+            
+            if (ideas.length > 0) {
+                const idea = ideas[Math.floor(Math.random() * ideas.length)];
+                const concept = JSON.parse(idea.dataset.concept);
+                
+                // Add to destination arena
+                addIdeaToArena(toArena, concept);
+                
+                // Create connection visual
+                createConnection(fromArena, toArena);
+                
+                addActivity(`arena${fromArena}`, `Sent idea to Arena ${toArena}`);
+                addActivity(`arena${toArena}`, `Received idea from Arena ${fromArena}`);
+            }
+        }
+        
+        // Send to DevOps
+        function sendToDevOps(arenaId) {
+            addActivity('devops', `Receiving deployment from Arena ${arenaId}`);
+            
+            // Simulate DevOps processing
+            setTimeout(() => {
+                addActivity('devops', 'Pushing to GitHub...');
+                setTimeout(() => {
+                    addActivity('devops', 'Deploying to staging...');
+                    setTimeout(() => {
+                        addActivity('devops', '✅ Deployment successful!');
+                    }, 2000);
+                }, 1500);
+            }, 1000);
+        }
+        
+        // Create visual connection between arenas
+        function createConnection(from, to) {
+            const fromCanvas = document.getElementById(`canvas${from}`);
+            const toCanvas = document.getElementById(`canvas${to}`);
+            
+            const connection = document.createElement('div');
+            connection.className = 'idea-connection';
+            connection.style.width = '200px';
+            connection.style.left = '50%';
+            connection.style.top = '50%';
+            connection.style.transform = 'translateX(-50%)';
+            
+            fromCanvas.appendChild(connection);
+            
+            setTimeout(() => {
+                connection.remove();
+            }, 3000);
+        }
+        
+        // Storyteller functions
+        function generateStory() {
+            const stories = [
+                "In the first arena, concepts spark like lightning in a storm of consciousness...",
+                "The second arena hums with the sound of creation, where raw ideas transform into digital reality...",
+                "The third arena pulses with the rhythm of deployment, breathing life into the digital realm...",
+                "Three arenas dance in harmony, each feeding the next in an endless cycle of innovation..."
+            ];
+            
+            const story = stories[Math.floor(Math.random() * stories.length)];
+            document.getElementById('storyNarrative').textContent = story;
+            
+            addActivity('storyteller', 'Generated narrative thread');
+        }
+        
+        function connectArenas() {
+            // Create connections between all arenas
+            for (let i = 1; i <= 3; i++) {
+                for (let j = 1; j <= 3; j++) {
+                    if (i !== j) {
+                        createConnection(i, j);
+                    }
+                }
+            }
+            
+            addActivity('storyteller', 'Connected all arena flows');
+        }
+        
+        function orchestrateFlow() {
+            // Trigger activity in all arenas
+            [1, 2, 3].forEach(arena => {
+                addIdeaToArena(arena, {
+                    text: `Orchestrated concept ${arena}`,
+                    type: 'Orchestrated',
+                    priority: 0.8
+                });
+            });
+            
+            addActivity('storyteller', 'Orchestrated cross-arena flow');
+        }
+        
+        // Add activity to feed
+        function addActivity(source, message) {
+            const feed = document.getElementById('activityFeed');
+            const item = document.createElement('div');
+            item.className = `activity-item ${source}`;
+            item.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            
+            feed.insertBefore(item, feed.children[1]); // After title
+            
+            // Keep only last 20 items
+            while (feed.children.length > 21) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        // Update storyteller narrative
+        function updateStorytellerNarrative(input, concepts) {
+            const narrative = `The user speaks: "${input.substring(0, 50)}..." 
+                            This spawns ${concepts.length} concepts across the arenas: ${concepts.map(c => c.type).join(', ')}.
+                            Watch as each arena processes these seeds of innovation...`;
+            
+            document.getElementById('storyNarrative').textContent = narrative;
+        }
+        
+        // Manual idea addition
+        function addIdea(arenaId) {
+            const idea = prompt(`Enter idea for Arena ${arenaId}:`);
+            if (idea) {
+                addIdeaToArena(arenaId, {
+                    text: idea,
+                    type: 'Manual',
+                    priority: Math.random()
+                });
+            }
+        }
+        
+        // Expand idea in arena
+        function expandIdea(arenaId) {
+            const canvas = document.getElementById(`canvas${arenaId}`);
+            const ideas = canvas.querySelectorAll('.idea-node');
+            
+            if (ideas.length > 0) {
+                const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+                expandIdeaNode(randomIdea);
+            }
+        }
+        
+        // Handle chat input
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const input = e.target.value.trim();
+                if (input) {
+                    processGlobalInput(input);
+                }
+            }
+        });
+        
+        // Initialize on load
+        window.onload = () => {
+            initSpeechRecognition();
+            
+            // Start with some initial activity
+            setTimeout(() => {
+                addIdeaToArena(1, {
+                    text: "AI-powered semantic analysis system",
+                    type: "AI/ML",
+                    priority: 0.9
+                });
+            }, 2000);
+            
+            setTimeout(() => {
+                addIdeaToArena(2, {
+                    text: "Real-time collaboration platform",
+                    type: "Platform",
+                    priority: 0.7
+                });
+            }, 4000);
+            
+            // Simulate periodic activity
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const arena = Math.floor(Math.random() * 3) + 1;
+                    const activities = [
+                        'Agent discovered new pattern',
+                        'Cal refined algorithm',
+                        'Master AI placed strategic bet',
+                        'Swarm completed task cluster'
+                    ];
+                    
+                    addActivity(`arena${arena}`, activities[Math.floor(Math.random() * activities.length)]);
+                }
+            }, 8000);
+        };
+    </script>
+</body>
+</html>

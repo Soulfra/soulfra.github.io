@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Cal Riven QR Scanner</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+      background: #000;
+      color: #0f0;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+    }
+    
+    #scanner {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: #111;
+    }
+    
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+    
+    .scan-region {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      border: 3px solid #0f0;
+      border-radius: 20px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    }
+    
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #0f0, transparent);
+      animation: scan 2s linear infinite;
+    }
+    
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+    
+    .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to top, #000, transparent);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      pointer-events: auto;
+    }
+    
+    .status {
+      text-align: center;
+      font-size: 14px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .status.scanning { color: #0ff; }
+    .status.success { color: #0f0; }
+    .status.error { color: #f00; }
+    
+    button {
+      background: #0f0;
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    button:active {
+      transform: scale(0.95);
+    }
+    
+    button:disabled {
+      background: #333;
+      color: #666;
+    }
+    
+    .result {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    
+    .result.show {
+      display: flex;
+    }
+    
+    .result h2 {
+      color: #0f0;
+      font-size: 24px;
+      text-align: center;
+    }
+    
+    .result-data {
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #0f0;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    .result-data div {
+      margin: 5px 0;
+    }
+    
+    .result-data .label {
+      color: #888;
+    }
+    
+    .result-data .value {
+      color: #0ff;
+    }
+    
+    .trust-score {
+      text-align: center;
+      font-size: 48px;
+      color: #0f0;
+      margin: 20px 0;
+    }
+    
+    .trust-score.low {
+      color: #f00;
+    }
+    
+    .trust-score.medium {
+      color: #ff0;
+    }
+    
+    .manual-input {
+      display: none;
+      padding: 20px;
+      background: #111;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    
+    .manual-input.show {
+      display: block;
+    }
+    
+    .manual-input input {
+      width: 100%;
+      padding: 10px;
+      background: #000;
+      border: 1px solid #0f0;
+      color: #0f0;
+      border-radius: 5px;
+      font-family: monospace;
+      margin: 10px 0;
+    }
+    
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to bottom, #000, transparent);
+      text-align: center;
+      pointer-events: none;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div id="scanner">
+    <video id="video" playsinline></video>
+    <div class="overlay">
+      <div class="header">
+        <h1>🔐 Cal Riven Scanner</h1>
+        <p>Scan QR code to verify trust</p>
+      </div>
+      <div class="scan-region">
+        <div class="scan-line"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <div id="status" class="status scanning">Initializing camera...</div>
+      <button id="manualBtn">Enter Code Manually</button>
+      <div id="manualInput" class="manual-input">
+        <input type="text" id="codeInput" placeholder="cal-riven://..." autocomplete="off">
+        <button id="verifyBtn">Verify Code</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="result" class="result">
+    <h2 id="resultTitle">Verification Result</h2>
+    <div class="trust-score" id="trustScore">0</div>
+    <div class="result-data">
+      <div><span class="label">Token:</span> <span class="value" id="token">-</span></div>
+      <div><span class="label">Device:</span> <span class="value" id="device">-</span></div>
+      <div><span class="label">Origin:</span> <span class="value" id="origin">-</span></div>
+      <div><span class="label">Age:</span> <span class="value" id="age">-</span></div>
+      <div><span class="label">Status:</span> <span class="value" id="verifyStatus">-</span></div>
+    </div>
+    <button id="scanAgainBtn">Scan Another Code</button>
+    <button id="pairBtn" style="display:none;">Pair This Device</button>
+  </div>
+  
+  <script>
+    const video = document.getElementById('video');
+    const status = document.getElementById('status');
+    const scanner = document.getElementById('scanner');
+    const result = document.getElementById('result');
+    const manualBtn = document.getElementById('manualBtn');
+    const manualInput = document.getElementById('manualInput');
+    const codeInput = document.getElementById('codeInput');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const scanAgainBtn = document.getElementById('scanAgainBtn');
+    const pairBtn = document.getElementById('pairBtn');
+    
+    let scanning = true;
+    let stream = null;
+    
+    // Initialize camera
+    async function initCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        video.srcObject = stream;
+        status.textContent = 'Position QR code in frame';
+        status.className = 'status scanning';
+        
+        // Start scanning
+        scanQRCode();
+      } catch (err) {
+        console.error('Camera error:', err);
+        status.textContent = 'Camera access denied';
+        status.className = 'status error';
+        manualInput.classList.add('show');
+      }
+    }
+    
+    // Scan QR code from video
+    function scanQRCode() {
+      if (!scanning) return;
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // In a real implementation, use a QR library like jsQR
+        // For demo, simulate QR detection
+        if (Math.random() < 0.01) { // 1% chance to "detect" QR
+          handleQRCode('cal-riven://a1b2c3d4e5f6789012345678901234567');
+          return;
+        }
+      }
+      
+      requestAnimationFrame(scanQRCode);
+    }
+    
+    // Handle detected QR code
+    async function handleQRCode(data) {
+      scanning = false;
+      status.textContent = 'QR code detected!';
+      status.className = 'status success';
+      
+      // Vibrate if supported
+      if ('vibrate' in navigator) {
+        navigator.vibrate(200);
+      }
+      
+      // Verify the code
+      await verifyCode(data);
+    }
+    
+    // Verify QR code
+    async function verifyCode(code) {
+      try {
+        // In real implementation, call verification API
+        // For demo, simulate verification
+        const mockResult = {
+          valid: true,
+          token: code.replace('cal-riven://', '').substring(0, 8) + '...',
+          device: 'mobile-' + Math.random().toString(36).substring(2, 8),
+          origin: 'vault-core-mirror-001',
+          sameDevice: false,
+          trustScore: Math.floor(Math.random() * 50) + 50,
+          age: {
+            hours: (Math.random() * 24).toFixed(1),
+            days: (Math.random() * 1).toFixed(2)
+          }
+        };
+        
+        showResult(mockResult);
+      } catch (err) {
+        status.textContent = 'Verification failed';
+        status.className = 'status error';
+      }
+    }
+    
+    // Show verification result
+    function showResult(data) {
+      // Stop camera
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      
+      // Update result UI
+      document.getElementById('resultTitle').textContent = 
+        data.valid ? '✅ Verified' : '❌ Invalid';
+      
+      const trustScore = document.getElementById('trustScore');
+      trustScore.textContent = data.trustScore + '/100';
+      trustScore.className = 'trust-score';
+      if (data.trustScore < 50) trustScore.classList.add('low');
+      else if (data.trustScore < 75) trustScore.classList.add('medium');
+      
+      document.getElementById('token').textContent = data.token;
+      document.getElementById('device').textContent = data.device;
+      document.getElementById('origin').textContent = data.origin;
+      document.getElementById('age').textContent = `${data.age.hours}h (${data.age.days}d)`;
+      document.getElementById('verifyStatus').textContent = 
+        data.sameDevice ? 'Same Device ✓' : 'Cross-Device';
+      
+      // Show pair button for cross-device with good score
+      if (!data.sameDevice && data.trustScore >= 50) {
+        pairBtn.style.display = 'block';
+      }
+      
+      // Show result
+      scanner.style.display = 'none';
+      result.classList.add('show');
+    }
+    
+    // Event listeners
+    manualBtn.addEventListener('click', () => {
+      manualInput.classList.toggle('show');
+      codeInput.focus();
+    });
+    
+    verifyBtn.addEventListener('click', () => {
+      const code = codeInput.value.trim();
+      if (code) {
+        handleQRCode(code);
+      }
+    });
+    
+    codeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        verifyBtn.click();
+      }
+    });
+    
+    scanAgainBtn.addEventListener('click', () => {
+      location.reload();
+    });
+    
+    pairBtn.addEventListener('click', async () => {
+      pairBtn.disabled = true;
+      pairBtn.textContent = 'Pairing...';
+      
+      // In real implementation, call pairing API
+      setTimeout(() => {
+        pairBtn.textContent = '✅ Paired Successfully';
+      }, 2000);
+    });
+    
+    // PWA install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    
+    // Initialize
+    initCamera();
+  </script>
+</body>
+</html>

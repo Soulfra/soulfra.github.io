@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Reasoning Graph</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+            --node-user: #3b82f6;
+            --node-cal: #8b5cf6;
+            --node-memory: #10b981;
+            --node-reflection: #f59e0b;
+            --edge-strong: #6366f1;
+            --edge-weak: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--light);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Graph Canvas */
+        #graph-container {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        #graph-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Side Panel */
+        .side-panel {
+            width: 400px;
+            background: rgba(30, 41, 59, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            margin-bottom: 30px;
+        }
+
+        .panel-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .panel-header p {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .metric-label {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* Node Details */
+        .node-details {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .node-details h3 {
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-label {
+            opacity: 0.7;
+        }
+
+        /* Controls */
+        .controls {
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .legend h4 {
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9em;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="graph-container">
+            <canvas id="graph-canvas"></canvas>
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading reasoning graph...</p>
+            </div>
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+        
+        <div class="side-panel">
+            <div class="panel-header">
+                <h1>Reasoning Graph</h1>
+                <p>Visualizing Cal's thought patterns and memory connections</p>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="metric-value" id="nodeCount">0</div>
+                    <div class="metric-label">Nodes</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="edgeCount">0</div>
+                    <div class="metric-label">Connections</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="depthLevel">0</div>
+                    <div class="metric-label">Max Depth</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="entropyScore">0.0</div>
+                    <div class="metric-label">Entropy</div>
+                </div>
+            </div>
+            
+            <div class="node-details" id="nodeDetails" style="display: none;">
+                <h3>Node Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Type:</span>
+                    <span id="nodeType">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Created:</span>
+                    <span id="nodeCreated">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Connections:</span>
+                    <span id="nodeConnections">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Influence:</span>
+                    <span id="nodeInfluence">-</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="depthFilter">Depth Filter: <span id="depthValue">3</span></label>
+                    <input type="range" id="depthFilter" class="slider" min="1" max="10" value="3">
+                </div>
+                <div class="control-group">
+                    <label for="connectionThreshold">Connection Strength: <span id="thresholdValue">0.5</span></label>
+                    <input type="range" id="connectionThreshold" class="slider" min="0" max="1" step="0.1" value="0.5">
+                </div>
+                <div style="margin-top: 20px;">
+                    <button class="button" onclick="resetView()">Reset View</button>
+                    <button class="button" onclick="exportGraph()">Export</button>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <h4>Node Types</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-user);"></div>
+                    <span>User Input</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-cal);"></div>
+                    <span>Cal Response</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-memory);"></div>
+                    <span>Memory Node</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-reflection);"></div>
+                    <span>Reflection</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Graph visualization using Canvas
+        class ReasoningGraph {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.nodes = [];
+                this.edges = [];
+                this.selectedNode = null;
+                this.hoveredNode = null;
+                
+                // Physics simulation
+                this.simulation = {
+                    alpha: 1,
+                    alphaDecay: 0.01,
+                    velocityDecay: 0.4,
+                    forces: {
+                        charge: -300,
+                        link: 0.2,
+                        center: 0.1
+                    }
+                };
+                
+                // Viewport
+                this.viewport = {
+                    x: 0,
+                    y: 0,
+                    scale: 1
+                };
+                
+                this.setupCanvas();
+                this.setupEvents();
+                this.loadGraphData();
+            }
+            
+            setupCanvas() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = this.canvas.offsetWidth * window.devicePixelRatio;
+                this.canvas.height = this.canvas.offsetHeight * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+            
+            setupEvents() {
+                let isDragging = false;
+                let dragStart = { x: 0, y: 0 };
+                let lastMousePos = { x: 0, y: 0 };
+                
+                this.canvas.addEventListener('mousedown', (e) => {
+                    const pos = this.getMousePos(e);
+                    const node = this.getNodeAt(pos);
+                    
+                    if (node) {
+                        this.selectedNode = node;
+                        this.showNodeDetails(node);
+                    } else {
+                        isDragging = true;
+                        dragStart = pos;
+                    }
+                });
+                
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const pos = this.getMousePos(e);
+                    
+                    if (isDragging) {
+                        this.viewport.x += pos.x - lastMousePos.x;
+                        this.viewport.y += pos.y - lastMousePos.y;
+                    } else {
+                        const node = this.getNodeAt(pos);
+                        if (node !== this.hoveredNode) {
+                            this.hoveredNode = node;
+                            this.canvas.style.cursor = node ? 'pointer' : 'default';
+                            if (node) {
+                                this.showTooltip(node, pos);
+                            } else {
+                                this.hideTooltip();
+                            }
+                        }
+                    }
+                    
+                    lastMousePos = pos;
+                });
+                
+                this.canvas.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+                
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    this.viewport.scale *= delta;
+                    this.viewport.scale = Math.max(0.1, Math.min(3, this.viewport.scale));
+                });
+            }
+            
+            getMousePos(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+            
+            getNodeAt(pos) {
+                const threshold = 20;
+                for (const node of this.nodes) {
+                    const dx = (node.x + this.viewport.x) * this.viewport.scale - pos.x;
+                    const dy = (node.y + this.viewport.y) * this.viewport.scale - pos.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < node.radius * this.viewport.scale + threshold) {
+                        return node;
+                    }
+                }
+                return null;
+            }
+            
+            async loadGraphData() {
+                // Simulate loading data
+                document.getElementById('loading').style.display = 'block';
+                
+                // Generate sample graph data
+                this.generateSampleGraph();
+                
+                // Update metrics
+                this.updateMetrics();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Start animation
+                this.animate();
+            }
+            
+            generateSampleGraph() {
+                // Create central Cal node
+                const calNode = {
+                    id: 'cal-central',
+                    type: 'cal',
+                    label: 'Cal Core',
+                    x: 0,
+                    y: 0,
+                    vx: 0,
+                    vy: 0,
+                    radius: 30,
+                    depth: 0,
+                    influence: 1,
+                    color: 'var(--node-cal)'
+                };
+                this.nodes.push(calNode);
+                
+                // Create memory nodes
+                const memories = [
+                    { id: 'mem-1', label: 'Founder Stories', type: 'memory', angle: 0 },
+                    { id: 'mem-2', label: 'Technical Patterns', type: 'memory', angle: Math.PI / 3 },
+                    { id: 'mem-3', label: 'User Insights', type: 'memory', angle: 2 * Math.PI / 3 },
+                    { id: 'mem-4', label: 'Reflection Chains', type: 'memory', angle: Math.PI },
+                    { id: 'mem-5', label: 'Export History', type: 'memory', angle: 4 * Math.PI / 3 },
+                    { id: 'mem-6', label: 'Voice Prompts', type: 'memory', angle: 5 * Math.PI / 3 }
+                ];
+                
+                memories.forEach((mem, i) => {
+                    const node = {
+                        id: mem.id,
+                        type: mem.type,
+                        label: mem.label,
+                        x: Math.cos(mem.angle) * 150,
+                        y: Math.sin(mem.angle) * 150,
+                        vx: 0,
+                        vy: 0,
+                        radius: 20,
+                        depth: 1,
+                        influence: 0.7,
+                        color: 'var(--node-memory)'
+                    };
+                    this.nodes.push(node);
+                    
+                    // Connect to Cal
+                    this.edges.push({
+                        source: calNode,
+                        target: node,
+                        strength: 0.8,
+                        type: 'memory-link'
+                    });
+                });
+                
+                // Create user nodes
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const distance = 250 + Math.random() * 50;
+                    const userNode = {
+                        id: `user-${i}`,
+                        type: 'user',
+                        label: `User ${i + 1}`,
+                        x: Math.cos(angle) * distance,
+                        y: Math.sin(angle) * distance,
+                        vx: 0,
+                        vy: 0,
+                        radius: 15,
+                        depth: 2,
+                        influence: 0.3 + Math.random() * 0.4,
+                        color: 'var(--node-user)'
+                    };
+                    this.nodes.push(userNode);
+                    
+                    // Connect to nearest memory
+                    const nearestMemory = this.nodes.find(n => n.type === 'memory' && n.id === memories[i % memories.length].id);
+                    this.edges.push({
+                        source: userNode,
+                        target: nearestMemory,
+                        strength: 0.5 + Math.random() * 0.3,
+                        type: 'query-link'
+                    });
+                }
+                
+                // Create reflection nodes
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2 + Math.PI / 10;
+                    const distance = 180;
+                    const reflectionNode = {
+                        id: `reflection-${i}`,
+                        type: 'reflection',
+                        label: `Insight ${i + 1}`,
+                        x: Math.cos(angle) * distance,
+                        y: Math.sin(angle) * distance,
+                        vx: 0,
+                        vy: 0,
+                        radius: 18,
+                        depth: 2,
+                        influence: 0.6,
+                        color: 'var(--node-reflection)'
+                    };
+                    this.nodes.push(reflectionNode);
+                    
+                    // Connect to Cal and memories
+                    this.edges.push({
+                        source: reflectionNode,
+                        target: calNode,
+                        strength: 0.7,
+                        type: 'reflection-link'
+                    });
+                }
+            }
+            
+            animate() {
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width / window.devicePixelRatio, this.canvas.height / window.devicePixelRatio);
+                
+                // Apply forces
+                if (this.simulation.alpha > 0) {
+                    this.applyForces();
+                    this.simulation.alpha -= this.simulation.alphaDecay;
+                }
+                
+                // Save context
+                this.ctx.save();
+                
+                // Apply viewport transform
+                this.ctx.translate(this.canvas.width / (2 * window.devicePixelRatio), this.canvas.height / (2 * window.devicePixelRatio));
+                this.ctx.scale(this.viewport.scale, this.viewport.scale);
+                this.ctx.translate(this.viewport.x, this.viewport.y);
+                
+                // Draw edges
+                this.drawEdges();
+                
+                // Draw nodes
+                this.drawNodes();
+                
+                // Restore context
+                this.ctx.restore();
+                
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            applyForces() {
+                // Apply charge force (nodes repel each other)
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
+                        const dx = this.nodes[j].x - this.nodes[i].x;
+                        const dy = this.nodes[j].y - this.nodes[i].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                        const force = this.simulation.forces.charge / (dist * dist);
+                        
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+                        
+                        this.nodes[i].vx -= fx;
+                        this.nodes[i].vy -= fy;
+                        this.nodes[j].vx += fx;
+                        this.nodes[j].vy += fy;
+                    }
+                }
+                
+                // Apply link force (connected nodes attract)
+                this.edges.forEach(edge => {
+                    const dx = edge.target.x - edge.source.x;
+                    const dy = edge.target.y - edge.source.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    const force = (dist - 100) * this.simulation.forces.link * edge.strength;
+                    
+                    const fx = (dx / dist) * force;
+                    const fy = (dy / dist) * force;
+                    
+                    edge.source.vx += fx;
+                    edge.source.vy += fy;
+                    edge.target.vx -= fx;
+                    edge.target.vy -= fy;
+                });
+                
+                // Apply center force
+                this.nodes.forEach(node => {
+                    node.vx -= node.x * this.simulation.forces.center;
+                    node.vy -= node.y * this.simulation.forces.center;
+                });
+                
+                // Update positions
+                this.nodes.forEach(node => {
+                    node.vx *= this.simulation.velocityDecay;
+                    node.vy *= this.simulation.velocityDecay;
+                    node.x += node.vx;
+                    node.y += node.vy;
+                });
+            }
+            
+            drawEdges() {
+                const threshold = parseFloat(document.getElementById('connectionThreshold').value);
+                
+                this.ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+                this.ctx.lineWidth = 2;
+                
+                this.edges.forEach(edge => {
+                    if (edge.strength < threshold) return;
+                    
+                    this.ctx.globalAlpha = edge.strength;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(edge.source.x, edge.source.y);
+                    this.ctx.lineTo(edge.target.x, edge.target.y);
+                    this.ctx.stroke();
+                });
+                
+                this.ctx.globalAlpha = 1;
+            }
+            
+            drawNodes() {
+                const maxDepth = parseInt(document.getElementById('depthFilter').value);
+                
+                this.nodes.forEach(node => {
+                    if (node.depth > maxDepth) return;
+                    
+                    // Draw node
+                    this.ctx.fillStyle = node.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Draw selection ring
+                    if (node === this.selectedNode) {
+                        this.ctx.strokeStyle = 'var(--accent)';
+                        this.ctx.lineWidth = 3;
+                        this.ctx.beginPath();
+                        this.ctx.arc(node.x, node.y, node.radius + 5, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                    }
+                    
+                    // Draw label
+                    this.ctx.fillStyle = 'white';
+                    this.ctx.font = '12px sans-serif';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(node.label, node.x, node.y + node.radius + 15);
+                });
+            }
+            
+            updateMetrics() {
+                document.getElementById('nodeCount').textContent = this.nodes.length;
+                document.getElementById('edgeCount').textContent = this.edges.length;
+                document.getElementById('depthLevel').textContent = Math.max(...this.nodes.map(n => n.depth));
+                
+                // Calculate entropy (simplified Shannon entropy based on node type distribution)
+                const typeCounts = {};
+                this.nodes.forEach(node => {
+                    typeCounts[node.type] = (typeCounts[node.type] || 0) + 1;
+                });
+                
+                let entropy = 0;
+                const total = this.nodes.length;
+                Object.values(typeCounts).forEach(count => {
+                    const p = count / total;
+                    if (p > 0) {
+                        entropy -= p * Math.log2(p);
+                    }
+                });
+                
+                document.getElementById('entropyScore').textContent = entropy.toFixed(2);
+            }
+            
+            showNodeDetails(node) {
+                document.getElementById('nodeDetails').style.display = 'block';
+                document.getElementById('nodeType').textContent = node.type;
+                document.getElementById('nodeCreated').textContent = new Date().toLocaleString();
+                document.getElementById('nodeConnections').textContent = 
+                    this.edges.filter(e => e.source === node || e.target === node).length;
+                document.getElementById('nodeInfluence').textContent = 
+                    (node.influence * 100).toFixed(0) + '%';
+            }
+            
+            showTooltip(node, pos) {
+                const tooltip = document.getElementById('tooltip');
+                tooltip.innerHTML = `
+                    <strong>${node.label}</strong><br>
+                    Type: ${node.type}<br>
+                    Depth: ${node.depth}<br>
+                    Influence: ${(node.influence * 100).toFixed(0)}%
+                `;
+                tooltip.style.left = pos.x + 10 + 'px';
+                tooltip.style.top = pos.y - 10 + 'px';
+                tooltip.classList.add('visible');
+            }
+            
+            hideTooltip() {
+                document.getElementById('tooltip').classList.remove('visible');
+            }
+        }
+        
+        // Initialize graph
+        let graph;
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('graph-canvas');
+            graph = new ReasoningGraph(canvas);
+        });
+        
+        // Control handlers
+        document.getElementById('depthFilter').addEventListener('input', (e) => {
+            document.getElementById('depthValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('connectionThreshold').addEventListener('input', (e) => {
+            document.getElementById('thresholdValue').textContent = e.target.value;
+        });
+        
+        function resetView() {
+            if (graph) {
+                graph.viewport = { x: 0, y: 0, scale: 1 };
+                graph.simulation.alpha = 1;
+            }
+        }
+        
+        function exportGraph() {
+            if (graph) {
+                const data = {
+                    nodes: graph.nodes.map(n => ({
+                        id: n.id,
+                        type: n.type,
+                        label: n.label,
+                        position: { x: n.x, y: n.y },
+                        depth: n.depth,
+                        influence: n.influence
+                    })),
+                    edges: graph.edges.map(e => ({
+                        source: e.source.id,
+                        target: e.target.id,
+                        strength: e.strength,
+                        type: e.type
+                    })),
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `reasoning-graph-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+    </script>
+</body>
+</html>

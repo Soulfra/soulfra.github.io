@@ -1,0 +1,411 @@
+<div class="prompt-router-component">
+    <div class="router-intro">
+        <p class="info-text">Route prompts through different LLM providers. All responses are reflected through the sovereign vault.</p>
+    </div>
+
+    <div class="prompt-input-section">
+        <div class="form-group">
+            <label for="promptInput">Enter Your Prompt</label>
+            <textarea id="promptInput" rows="5" placeholder="Ask anything... Your prompt will be enhanced by Cal's reasoning kernel."></textarea>
+            <div class="char-count">
+                <span id="charCount">0</span> / 4000 characters
+            </div>
+        </div>
+        
+        <div class="routing-options">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="llmSelect">LLM Provider</label>
+                    <select id="llmSelect">
+                        <option value="claude">Claude 3 Opus</option>
+                        <option value="openai">GPT-4</option>
+                        <option value="ollama">Ollama (Local)</option>
+                        <option value="local">Vault Reflection</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="temperature">Temperature</label>
+                    <div class="slider-container">
+                        <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+                        <span class="slider-value">0.7</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="maxTokens">Max Tokens</label>
+                    <input type="number" id="maxTokens" value="1000" min="100" max="4000" step="100">
+                </div>
+            </div>
+            
+            <div class="advanced-routing">
+                <details>
+                    <summary>Advanced Options</summary>
+                    <div class="advanced-content">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableReflection" checked>
+                            Enable vault reflection
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableMemory" checked>
+                            Use context memory
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableFallback" checked>
+                            Enable LLM fallback chain
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="logPrompt">
+                            Log prompt to vault
+                        </label>
+                    </div>
+                </details>
+            </div>
+        </div>
+        
+        <div class="prompt-actions">
+            <button type="button" id="routePrompt" class="btn-primary">
+                <span class="btn-icon">🚀</span>
+                Route Prompt
+            </button>
+            <button type="button" id="clearPrompt" class="btn-secondary">Clear</button>
+        </div>
+    </div>
+    
+    <div class="response-section">
+        <div class="response-header">
+            <h3>Response</h3>
+            <div class="response-metadata" id="responseMetadata" style="display: none;">
+                <span class="meta-item">Provider: <strong id="usedProvider">-</strong></span>
+                <span class="meta-item">Tokens: <strong id="tokenCount">-</strong></span>
+                <span class="meta-item">Time: <strong id="responseTime">-</strong></span>
+                <span class="meta-item reflection-indicator" id="reflectionStatus">
+                    <span class="reflection-dot"></span>
+                    Reflected
+                </span>
+            </div>
+        </div>
+        
+        <div id="promptOutput" class="output-box">
+            <div class="empty-state">
+                <span class="empty-icon">💭</span>
+                <p>Your response will appear here...</p>
+                <small>All prompts are enhanced by the sovereign reasoning kernel</small>
+            </div>
+        </div>
+        
+        <div class="response-actions" id="responseActions" style="display: none;">
+            <button class="btn-secondary" onclick="copyResponse()">Copy Response</button>
+            <button class="btn-secondary" onclick="saveToVault()">Save to Vault</button>
+            <button class="btn-secondary" onclick="regenerateResponse()">Regenerate</button>
+        </div>
+    </div>
+    
+    <div class="routing-history">
+        <h4>Recent Prompts</h4>
+        <div id="promptHistory" class="history-list">
+            <div class="empty-history">No prompts yet</div>
+        </div>
+    </div>
+</div>
+
+<style>
+.prompt-router-component {
+    display: grid;
+    gap: 2rem;
+}
+
+.router-intro {
+    margin-bottom: 1rem;
+}
+
+.prompt-input-section {
+    background: var(--background);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.routing-options {
+    margin-top: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 1rem;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.slider-container input[type="range"] {
+    flex: 1;
+}
+
+.slider-value {
+    min-width: 2rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.advanced-routing {
+    margin-top: 1rem;
+}
+
+.advanced-routing summary {
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.advanced-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border-radius: 0.375rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-icon {
+    margin-right: 0.5rem;
+}
+
+.response-section {
+    background: var(--surface);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.response-metadata {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.meta-item {
+    color: var(--text-secondary);
+}
+
+.meta-item strong {
+    color: var(--text-primary);
+}
+
+.reflection-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--success-color);
+}
+
+.reflection-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success-color);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.output-box {
+    min-height: 200px;
+    padding: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.response-actions {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 0.75rem;
+}
+
+.routing-history {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+
+.routing-history h4 {
+    margin-bottom: 1rem;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.history-item {
+    padding: 0.75rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.history-item:hover {
+    border-color: var(--primary-color);
+}
+
+.history-prompt {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.empty-history {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .response-metadata {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+}
+</style>
+
+<script>
+// Character counter
+const promptInput = document.getElementById('promptInput');
+const charCount = document.getElementById('charCount');
+
+promptInput.addEventListener('input', () => {
+    charCount.textContent = promptInput.value.length;
+});
+
+// Temperature slider
+const tempSlider = document.getElementById('temperature');
+const tempValue = tempSlider.nextElementSibling;
+
+tempSlider.addEventListener('input', () => {
+    tempValue.textContent = tempSlider.value;
+});
+
+// Clear prompt
+document.getElementById('clearPrompt').addEventListener('click', () => {
+    promptInput.value = '';
+    charCount.textContent = '0';
+    document.getElementById('promptOutput').innerHTML = `
+        <div class="empty-state">
+            <span class="empty-icon">💭</span>
+            <p>Your response will appear here...</p>
+            <small>All prompts are enhanced by the sovereign reasoning kernel</small>
+        </div>
+    `;
+    document.getElementById('responseMetadata').style.display = 'none';
+    document.getElementById('responseActions').style.display = 'none';
+});
+
+// Response actions
+window.copyResponse = function() {
+    const output = document.getElementById('promptOutput').textContent;
+    navigator.clipboard.writeText(output);
+    window.dashboard.showNotification('Response copied to clipboard', 'success');
+};
+
+window.saveToVault = function() {
+    const prompt = promptInput.value;
+    const response = document.getElementById('promptOutput').textContent;
+    
+    // Save to vault
+    fetch('/api/vault/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, response, timestamp: Date.now() })
+    });
+    
+    window.dashboard.showNotification('Saved to vault', 'success');
+};
+
+window.regenerateResponse = function() {
+    document.getElementById('routePrompt').click();
+};
+
+// Load prompt from history
+window.loadHistoryPrompt = function(prompt) {
+    promptInput.value = prompt;
+    charCount.textContent = prompt.length;
+    promptInput.focus();
+};
+</script>

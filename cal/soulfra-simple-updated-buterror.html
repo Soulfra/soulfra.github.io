@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Document Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .trust-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .trust-tier {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #a0a0a0;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .status-online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        /* Filters */
+        .filters {
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #a0a0a0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Document Grid */
+        .document-grid {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            flex: 1;
+        }
+
+        .document-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: fit-content;
+        }
+
+        .document-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .document-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .document-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .document-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .status-review {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+        }
+
+        .status-approved {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal {
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            padding: 24px;
+        }
+
+        .modal h2 {
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+        }
+
+        /* Auth Screen */
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .auth-actions {
+            margin-top: 24px;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .auth-link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        /* Import section */
+        .import-section {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .import-section h2 {
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .import-section p {
+            color: #a0a0a0;
+            margin-bottom: 24px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .document-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Status Indicator -->
+        <div class="status-indicator" id="statusIndicator">
+            Connecting...
+        </div>
+
+        <!-- Main App Content -->
+        <div id="appContent" style="display: none;">
+            <header class="header">
+                <h1 class="logo">Soulfra</h1>
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <div class="trust-badge">
+                        <div>
+                            <div class="trust-score">⭐ <span id="trustScore">50</span></div>
+                            <div class="trust-tier" id="trustTier">Standard Tier</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterDocs('all', event)">All</button>
+                <button class="filter-btn" onclick="filterDocs('draft', event)">Draft</button>
+                <button class="filter-btn" onclick="filterDocs('review', event)">Review</button>
+                <button class="filter-btn" onclick="filterDocs('approved', event)">Approved</button>
+            </div>
+
+            <div id="content">
+                <div class="loading">Loading documents...</div>
+            </div>
+
+            <button class="fab" onclick="createDocument()">+</button>
+        </div>
+
+        <!-- Auth Screen -->
+        <div id="authScreen" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h1 class="auth-title">Soulfra</h1>
+                    <form onsubmit="handleAuth(event)">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="authEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="authPassword" required>
+                        </div>
+                        <div class="auth-actions">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;" id="authButton">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                    <div class="auth-link">
+                        <span id="authToggleText">Don't have an account?</span>
+                        <a href="#" onclick="toggleAuthMode(event)" id="authToggleLink">Sign up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h2 id="modalTitle">Document</h2>
+                <div class="modal-content" id="modalContent">
+                    Content will appear here...
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="btn btn-primary" id="modalSaveBtn" onclick="saveDocument()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3001/api' 
+            : '/api';
+
+        // State
+        let state = {
+            token: localStorage.getItem('token'),
+            user: null,
+            documents: [],
+            currentFilter: 'all',
+            selectedDoc: null,
+            isOnline: false,
+            isLogin: true
+        };
+
+        // Document type configs
+        const DOC_TYPES = {
+            'PRDs': { icon: '📋', color: '#667eea' },
+            'Configs': { icon: '⚙️', color: '#10b981' },
+            'Scripts': { icon: '📜', color: '#f59e0b' },
+            'Documentation': { icon: '📚', color: '#3b82f6' }
+        };
+
+        // API Helper
+        async function api(endpoint, options = {}) {
+            try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(state.token && { 'Authorization': `Bearer ${state.token}` })
+                };
+
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    ...options,
+                    headers: { ...headers, ...options.headers }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        // Unauthorized - redirect to login
+                        logout();
+                        throw new Error('Please login');
+                    }
+                    const error = await response.json();
+                    throw new Error(error.error || 'Request failed');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // Check backend connection
+        async function checkConnection() {
+            try {
+                await fetch(`${API_URL}/health`);
+                state.isOnline = true;
+                updateStatus('Backend Connected', 'online');
+                return true;
+            } catch (error) {
+                state.isOnline = false;
+                updateStatus('Demo Mode (Backend Offline)', 'offline');
+                return false;
+            }
+        }
+
+        // Update connection status
+        function updateStatus(text, status) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.textContent = text;
+            indicator.className = `status-indicator status-${status}`;
+        }
+
+        // Initialize app
+        async function init() {
+            const isConnected = await checkConnection();
+            
+            if (state.token) {
+                // Try to restore session
+                try {
+                    await loadUserData();
+                    showApp();
+                    await loadDocuments();
+                } catch (error) {
+                    showAuth();
+                }
+            } else if (isConnected) {
+                showAuth();
+            } else {
+                // Offline demo mode
+                showApp();
+                loadDemoData();
+            }
+        }
+
+        // Show app interface
+        function showApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+        }
+
+        // Show auth screen
+        function showAuth() {
+            document.getElementById('authScreen').style.display = 'block';
+            document.getElementById('appContent').style.display = 'none';
+        }
+
+        // Handle authentication
+        async function handleAuth(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const endpoint = state.isLogin ? '/auth/login' : '/auth/register';
+            
+            try {
+                const data = await api(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                state.token = data.token;
+                state.user = data.user;
+                localStorage.setItem('token', data.token);
+                
+                showToast(state.isLogin ? 'Welcome back!' : 'Account created!');
+                showApp();
+                await loadDocuments();
+            } catch (error) {
+                showToast(error.message);
+            }
+        }
+
+        // Toggle auth mode
+        function toggleAuthMode(event) {
+            event.preventDefault();
+            state.isLogin = !state.isLogin;
+            
+            document.getElementById('authButton').textContent = state.isLogin ? 'Login' : 'Sign Up';
+            document.getElementById('authToggleText').textContent = state.isLogin 
+                ? "Don't have an account? " 
+                : "Already have an account? ";
+            document.getElementById('authToggleLink').textContent = state.isLogin ? 'Sign up' : 'Login';
+        }
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const data = await api('/trust');
+                state.user = { trust_score: data.trust_score, tier: data.tier };
+                updateTrustDisplay();
+            } catch (error) {
+                console.error('Failed to load user data');
+            }
+        }
+
+        // Load documents
+        async function loadDocuments() {
+            try {
+                if (state.isOnline) {
+                    state.documents = await api('/documents');
+                } else {
+                    loadDemoData();
+                }
+                renderDocuments();
+                
+                // Check if we should show import prompt
+                if (state.documents.length === 0 && state.isOnline) {
+                    showImportPrompt();
+                }
+            } catch (error) {
+                showToast('Failed to load documents');
+                loadDemoData();
+            }
+        }
+
+        // Load demo data for offline mode
+        function loadDemoData() {
+            state.documents = [
+                { id: '1', title: 'Platform Enhancement PRD', type: 'PRD', category: 'PRDs', status: 'review', content: 'This PRD outlines the key enhancements needed for the Soulfra platform.' },
+                { id: '2', title: 'API Configuration', type: 'Config', category: 'Configs', status: 'approved', content: 'Configuration settings for the Soulfra API endpoints.' },
+                { id: '3', title: 'Deployment Script', type: 'Script', category: 'Scripts', status: 'approved', content: '#!/bin/bash\n# Soulfra deployment script' },
+                { id: '4', title: 'Getting Started Guide', type: 'Documentation', category: 'Documentation', status: 'approved', content: 'Welcome to Soulfra!' }
+            ];
+            state.user = { trust_score: 75, tier: 'premium' };
+            updateTrustDisplay();
+            renderDocuments();
+        }
+
+        // Render documents
+        function renderDocuments() {
+            const content = document.getElementById('content');
+            const filtered = state.currentFilter === 'all' 
+                ? state.documents 
+                : state.documents.filter(d => d.status === state.currentFilter);
+
+            if (filtered.length === 0) {
+                content.innerHTML = '<div class="loading">No documents found</div>';
+                return;
+            }
+
+            content.innerHTML = '<div class="document-grid" id="docGrid"></div>';
+            const grid = document.getElementById('docGrid');
+
+            filtered.forEach((doc, index) => {
+                const card = document.createElement('div');
+                card.className = 'document-card';
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.onclick = () => showDocument(doc);
+                
+                card.innerHTML = `
+                    <div class="document-icon">${DOC_TYPES[doc.category]?.icon || '📄'}</div>
+                    <h3 class="document-title">${doc.title}</h3>
+                    <div class="document-meta">
+                        <span>${doc.type}</span>
+                        <span class="document-status status-${doc.status}">${doc.status}</span>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Show import prompt
+        function showImportPrompt() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="import-section">
+                    <h2>🚀 Quick Start: Import Your Documents</h2>
+                    <p>Found Soulfra-Documentation folder. Import all documents with one click!</p>
+                    <button class="btn btn-primary" onclick="importDocuments()">
+                        Import All Documents
+                    </button>
+                </div>
+            `;
+        }
+
+        // Import documents
+        async function importDocuments() {
+            try {
+                const data = await api('/documents/import', { method: 'POST' });
+                showToast(`🎉 Imported ${data.imported} documents! +${data.trust_reward} trust points!`);
+                await loadDocuments();
+                await loadUserData();
+            } catch (error) {
+                showToast('Import failed: ' + error.message);
+            }
+        }
+
+        // Filter documents
+        function filterDocs(filter, event) {
+            state.currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderDocuments();
+        }
+
+        // Show document
+        function showDocument(doc) {
+            state.selectedDoc = doc;
+            document.getElementById('modalTitle').textContent = doc.title;
+            document.getElementById('modalContent').textContent = doc.content || 'No content';
+            document.getElementById('modalSaveBtn').style.display = state.isOnline ? 'block' : 'none';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Create document
+        async function createDocument() {
+            if (!state.isOnline) {
+                showToast('Creating documents requires backend connection');
+                return;
+            }
+
+            const title = prompt('Document title:');
+            if (!title) return;
+
+            try {
+                const data = await api('/documents', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        type: 'Documentation',
+                        category: 'Documentation',
+                        content: 'New document content...'
+                    })
+                });
+                
+                showToast(`Document created! +${data.trust_reward} trust points!`);
+                await loadDocuments();
+                await loadUserData();
+            } catch (error) {
+                showToast('Failed to create document');
+            }
+        }
+
+        // Save document changes
+        async function saveDocument() {
+            if (!state.selectedDoc || !state.isOnline) return;
+            
+            const newContent = document.getElementById('modalContent').textContent;
+            
+            try {
+                await api(`/documents/${state.selectedDoc.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ content: newContent })
+                });
+                
+                showToast('Document saved!');
+                closeModal();
+                await loadDocuments();
+            } catch (error) {
+                showToast('Failed to save document');
+            }
+        }
+
+        // Update trust display
+        function updateTrustDisplay() {
+            if (!state.user) return;
+            
+            document.getElementById('trustScore').textContent = state.user.trust_score;
+            const tierElement = document.getElementById('trustTier');
+            
+            if (state.user.trust_score >= 70) {
+                tierElement.textContent = 'Premium Tier';
+            } else if (state.user.trust_score >= 50) {
+                tierElement.textContent = 'Standard Tier';
+            } else {
+                tierElement.textContent = 'Basic Tier';
+            }
+        }
+
+        // Close modal
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('modal')) {
+                document.getElementById('modal').style.display = 'none';
+                state.selectedDoc = null;
+            }
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            state.token = null;
+            state.user = null;
+            localStorage.removeItem('token');
+            showAuth();
+        }
+
+        // Auto-refresh connection status
+        setInterval(checkConnection, 30000); // Check every 30 seconds
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

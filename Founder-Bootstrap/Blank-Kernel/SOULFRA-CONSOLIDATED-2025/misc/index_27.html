@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>make a social network for pet owners - Connect & Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/social.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>🌐 make a social network for pet owners</h1>
+            <div class="nav-links">
+                <a href="#feed">Feed</a>
+                <a href="#friends">Friends</a>
+                <a href="#messages">Messages</a>
+                <a href="#profile">Profile</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="create-post">
+            <textarea placeholder="What's on your mind?"></textarea>
+            <button onclick="createPost()">Share</button>
+        </div>
+        
+        <div class="feed" id="feed">
+            <!-- Posts will appear here -->
+        </div>
+    </main>
+    
+    <script src="/static/js/social.js"></script>
+    <script>
+        const PLATFORM_ID = '35a78ee2-d123-4e9a-b0ab-d2c9518672e9';
+        const PLATFORM_NAME = 'make a social network for pet owners';
+    </script>
+</body>
+</html>

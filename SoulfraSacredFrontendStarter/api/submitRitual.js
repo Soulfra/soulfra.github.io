@@ -1,0 +1,1 @@
+// submitRitual.js - Sacred Starter

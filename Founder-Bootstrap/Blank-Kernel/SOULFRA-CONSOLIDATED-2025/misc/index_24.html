@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>build a marketplace for handmade crafts - Buy & Sell</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/marketplace.css">
+</head>
+<body>
+    <header>
+        <h1>🛍️ build a marketplace for handmade crafts</h1>
+        <div class="search-bar">
+            <input type="search" placeholder="Search products...">
+        </div>
+    </header>
+    
+    <main>
+        <div class="categories">
+            <button class="category active">All</button>
+            <button class="category">Electronics</button>
+            <button class="category">Fashion</button>
+            <button class="category">Home</button>
+            <button class="category">Sports</button>
+        </div>
+        
+        <div class="products-grid" id="products">
+            <!-- Products will be loaded here -->
+        </div>
+    </main>
+    
+    <script>
+        const MARKET_ID = 'ce40f0e4-0c7f-408e-b820-519cf5d7c5b9';
+        // Load products
+        loadProducts();
+    </script>
+</body>
+</html>

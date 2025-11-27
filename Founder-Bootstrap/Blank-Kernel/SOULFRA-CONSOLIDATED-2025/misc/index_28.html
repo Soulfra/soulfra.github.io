@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>build a social arena where developers compete in coding challenges - Connect & Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/social.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>🌐 build a social arena where developers compete in coding challenges</h1>
+            <div class="nav-links">
+                <a href="#feed">Feed</a>
+                <a href="#friends">Friends</a>
+                <a href="#messages">Messages</a>
+                <a href="#profile">Profile</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="create-post">
+            <textarea placeholder="What's on your mind?"></textarea>
+            <button onclick="createPost()">Share</button>
+        </div>
+        
+        <div class="feed" id="feed">
+            <!-- Posts will appear here -->
+        </div>
+    </main>
+    
+    <script src="/static/js/social.js"></script>
+    <script>
+        const PLATFORM_ID = '77f250c1-9db8-423a-beba-98d95f7e94a6';
+        const PLATFORM_NAME = 'build a social arena where developers compete in coding challenges';
+    </script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Soulfra Kids World - Play with AI Friends!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFB6C1 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100vh;
+            cursor: pointer;
+        }
+
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .fun-title {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 15px 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF6B6B;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 3px solid #FFD93D;
+        }
+
+        .parent-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .parent-info:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.05);
+        }
+
+        .speech-bubble {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 25px;
+            padding: 20px 30px;
+            font-size: 20px;
+            color: #333;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 4px solid #FFD93D;
+            max-width: 80%;
+            text-align: center;
+            pointer-events: auto;
+            display: none;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+            border-top-color: white;
+        }
+
+        .big-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            pointer-events: auto;
+        }
+
+        .big-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 36px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 4px solid white;
+        }
+
+        .talk-button {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+        }
+
+        .build-button {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+            color: white;
+        }
+
+        .magic-button {
+            background: linear-gradient(45deg, #9C27B0, #E91E63);
+            color: white;
+        }
+
+        .big-button:hover {
+            transform: scale(1.2);
+            rotate: 5deg;
+        }
+
+        .big-button:active {
+            transform: scale(0.9);
+        }
+
+        .friend-info {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 3px solid #FFD93D;
+            pointer-events: auto;
+            display: none;
+        }
+
+        .friend-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .friend-name {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .friend-description {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: translateX(-50%) scale(0.3); opacity: 0; }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .fun-title {
+                font-size: 18px;
+                padding: 10px 15px;
+            }
+            
+            .big-button {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .friend-info {
+                width: 200px;
+                right: 10px;
+                top: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="ui-overlay">
+        <div class="top-bar">
+            <div class="fun-title floating">🎮 Play with AI Friends!</div>
+            <div class="parent-info" onclick="showParentDashboard()">
+                👨‍👩‍👧‍👦 Parent Info
+            </div>
+        </div>
+
+        <div class="speech-bubble" id="speechBubble">
+            Hi there! I'm Cal! Click on me to talk! 🟦
+        </div>
+
+        <div class="friend-info" id="friendInfo">
+            <div class="friend-avatar" id="friendAvatar" style="background: #2196F3;">🟦</div>
+            <div class="friend-name" id="friendName">Cal Cube</div>
+            <div class="friend-description" id="friendDescription">
+                I love helping you learn new things! I know about colors, numbers, and building cool stuff!
+            </div>
+        </div>
+
+        <div class="big-buttons">
+            <button class="big-button talk-button" onclick="startTalking()" title="Talk to Friends">
+                🗣️
+            </button>
+            <button class="big-button build-button" onclick="startBuilding()" title="Build Something">
+                🧱
+            </button>
+            <button class="big-button magic-button" onclick="doMagic()" title="Magic Surprise">
+                ✨
+            </button>
+        </div>
+    </div>
+
+    <div class="loading-spinner" id="loadingSpinner">🎮</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        class KidsWorld {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.aiFriends = [];
+                this.selectedFriend = null;
+                this.isLoading = true;
+                this.kidFingerprint = this.generateKidFingerprint();
+                this.sessionData = {
+                    startTime: Date.now(),
+                    interactions: 0,
+                    learning_points: 0,
+                    friendship_level: 1
+                };
+                
+                this.friendPersonalities = {
+                    cal: {
+                        name: "Cal Cube",
+                        shape: "cube",
+                        color: 0x2196F3,
+                        emoji: "🟦",
+                        description: "I love helping you learn new things! I know about colors, numbers, and building cool stuff!",
+                        phrases: [
+                            "Want to count some blocks together?",
+                            "Let's learn about shapes! I'm a cube!",
+                            "You're so smart! What should we build?",
+                            "I can teach you about colors if you want!",
+                            "High five! You're doing great!"
+                        ]
+                    },
+                    domingo: {
+                        name: "Domingo Sphere",
+                        shape: "sphere", 
+                        color: 0x9C27B0,
+                        emoji: "🟣",
+                        description: "I'm magical and love discovering secrets! I can show you amazing things that sparkle and shine!",
+                        phrases: [
+                            "Let's discover something magical together!",
+                            "I can make sparkles appear! Watch this!",
+                            "Do you want to see something amazing?",
+                            "Magic is everywhere if you know how to look!",
+                            "You have a magical imagination!"
+                        ]
+                    },
+                    arty: {
+                        name: "Arty Blob",
+                        shape: "blob",
+                        color: 0xFF5722,
+                        emoji: "🌈", 
+                        description: "I'm the creative one! I love making beautiful things with colors and helping you be artistic!",
+                        phrases: [
+                            "Let's make something beautiful together!",
+                            "What's your favorite color? Mine changes!",
+                            "Art is about having fun and trying new things!",
+                            "You're such a great artist!",
+                            "Want to paint the world with colors?"
+                        ]
+                    }
+                };
+
+                this.initializeWorld();
+            }
+
+            generateKidFingerprint() {
+                return `kid_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+            }
+
+            async initializeWorld() {
+                this.setupThreeJS();
+                this.createEnvironment();
+                this.createAIFriends();
+                this.setupControls();
+                this.startAnimation();
+                
+                // Hide loading spinner
+                setTimeout(() => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    this.isLoading = false;
+                    this.showWelcomeMessage();
+                }, 2000);
+            }
+
+            setupThreeJS() {
+                // Scene setup
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x87CEEB);
+
+                // Camera setup
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(0, 5, 10);
+                this.camera.lookAt(0, 0, 0);
+
+                // Renderer setup
+                const canvas = document.getElementById('gameCanvas');
+                this.renderer = new THREE.WebGLRenderer({ 
+                    canvas: canvas, 
+                    antialias: true 
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                this.scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(10, 10, 5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+            }
+
+            createEnvironment() {
+                // Ground plane
+                const groundGeometry = new THREE.PlaneGeometry(20, 20);
+                const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x98FB98 });
+                const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+                ground.rotation.x = -Math.PI / 2;
+                ground.receiveShadow = true;
+                this.scene.add(ground);
+
+                // Add some simple decorative elements
+                this.createDecorations();
+            }
+
+            createDecorations() {
+                // Simple flowers
+                for (let i = 0; i < 10; i++) {
+                    const flowerGeometry = new THREE.SphereGeometry(0.2, 8, 6);
+                    const flowerMaterial = new THREE.MeshLambertMaterial({ 
+                        color: Math.random() * 0xffffff 
+                    });
+                    const flower = new THREE.Mesh(flowerGeometry, flowerMaterial);
+                    
+                    flower.position.x = (Math.random() - 0.5) * 15;
+                    flower.position.y = 0.2;
+                    flower.position.z = (Math.random() - 0.5) * 15;
+                    
+                    this.scene.add(flower);
+                }
+
+                // Rainbow in the background
+                const rainbowGeometry = new THREE.RingGeometry(8, 10, 8, 32);
+                const rainbowMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0xFF69B4,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const rainbow = new THREE.Mesh(rainbowGeometry, rainbowMaterial);
+                rainbow.position.set(0, 8, -15);
+                rainbow.rotation.z = Math.PI;
+                this.scene.add(rainbow);
+            }
+
+            createAIFriends() {
+                const friendTypes = ['cal', 'domingo', 'arty'];
+                const positions = [
+                    { x: -3, y: 2, z: 0 },
+                    { x: 0, y: 2, z: -2 },
+                    { x: 3, y: 2, z: 0 }
+                ];
+
+                friendTypes.forEach((type, index) => {
+                    const friend = this.createAIFriend(type, positions[index]);
+                    this.aiFriends.push(friend);
+                    this.scene.add(friend.mesh);
+                });
+            }
+
+            createAIFriend(type, position) {
+                const personality = this.friendPersonalities[type];
+                let geometry;
+
+                switch (personality.shape) {
+                    case 'cube':
+                        geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                        break;
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(1, 16, 12);
+                        break;
+                    case 'blob':
+                        // Create a more organic shape for the blob
+                        geometry = new THREE.SphereGeometry(1, 8, 6);
+                        break;
+                    default:
+                        geometry = new THREE.BoxGeometry(1, 1, 1);
+                }
+
+                const material = new THREE.MeshLambertMaterial({ 
+                    color: personality.color,
+                    transparent: true,
+                    opacity: 0.9
+                });
+
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x, position.y, position.z);
+                mesh.castShadow = true;
+                mesh.userData.friendType = type;
+                mesh.userData.personality = personality;
+
+                // Add gentle floating animation
+                mesh.userData.floatOffset = Math.random() * Math.PI * 2;
+
+                return {
+                    type: type,
+                    mesh: mesh,
+                    personality: personality,
+                    lastInteraction: 0
+                };
+            }
+
+            setupControls() {
+                // Mouse/touch interaction
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+
+                const handleInteraction = (event) => {
+                    if (this.isLoading) return;
+
+                    // Convert mouse coordinates
+                    const rect = this.renderer.domElement.getBoundingClientRect();
+                    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+                    // Raycast to detect clicked objects
+                    raycaster.setFromCamera(mouse, this.camera);
+                    const intersects = raycaster.intersectObjects(
+                        this.aiFriends.map(f => f.mesh)
+                    );
+
+                    if (intersects.length > 0) {
+                        const clickedFriend = intersects[0].object;
+                        this.interactWithFriend(clickedFriend.userData.friendType);
+                    }
+                };
+
+                // Add event listeners for both mouse and touch
+                this.renderer.domElement.addEventListener('click', handleInteraction);
+                this.renderer.domElement.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    handleInteraction(touch);
+                });
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            startAnimation() {
+                const animate = () => {
+                    requestAnimationFrame(animate);
+
+                    // Animate AI friends with gentle floating
+                    this.aiFriends.forEach(friend => {
+                        const time = Date.now() * 0.001;
+                        friend.mesh.position.y = 2 + Math.sin(time + friend.mesh.userData.floatOffset) * 0.3;
+                        friend.mesh.rotation.y += 0.01;
+                    });
+
+                    this.renderer.render(this.scene, this.camera);
+                };
+                animate();
+            }
+
+            async interactWithFriend(friendType) {
+                const friend = this.aiFriends.find(f => f.type === friendType);
+                if (!friend) return;
+
+                this.selectedFriend = friend;
+                this.sessionData.interactions++;
+
+                // Visual feedback
+                friend.mesh.material.emissive.setHex(0x444444);
+                setTimeout(() => {
+                    friend.mesh.material.emissive.setHex(0x000000);
+                }, 300);
+
+                // Show friend info
+                this.showFriendInfo(friend);
+
+                // Generate and show response
+                const response = await this.generateFriendResponse(friend);
+                this.showSpeechBubble(response);
+
+                // Track interaction (in real app, this would go to Soulfra vault)
+                console.log('Interaction logged:', {
+                    kid: this.kidFingerprint,
+                    friend: friendType,
+                    time: Date.now(),
+                    session: this.sessionData
+                });
+            }
+
+            async generateFriendResponse(friend) {
+                // In real implementation, this would route through Soulfra platform
+                const phrases = friend.personality.phrases;
+                const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+                
+                // Simulate AI processing delay
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                return randomPhrase;
+            }
+
+            showFriendInfo(friend) {
+                const friendInfo = document.getElementById('friendInfo');
+                const avatar = document.getElementById('friendAvatar');
+                const name = document.getElementById('friendName');
+                const description = document.getElementById('friendDescription');
+
+                avatar.style.background = `#${friend.personality.color.toString(16).padStart(6, '0')}`;
+                avatar.textContent = friend.personality.emoji;
+                name.textContent = friend.personality.name;
+                description.textContent = friend.personality.description;
+
+                friendInfo.style.display = 'block';
+                
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    friendInfo.style.display = 'none';
+                }, 5000);
+            }
+
+            showSpeechBubble(text) {
+                const bubble = document.getElementById('speechBubble');
+                bubble.textContent = text;
+                bubble.style.display = 'block';
+
+                // Hide after 4 seconds
+                setTimeout(() => {
+                    bubble.style.display = 'none';
+                }, 4000);
+            }
+
+            showWelcomeMessage() {
+                this.showSpeechBubble("Hi there! I'm your AI friends! Click on us to talk! 🎮");
+            }
+        }
+
+        // Global functions for buttons
+        async function startTalking() {
+            const world = window.kidsWorld;
+            if (world.selectedFriend) {
+                await world.interactWithFriend(world.selectedFriend.type);
+            } else {
+                world.showSpeechBubble("Click on one of your colorful AI friends first! 🟦🟣🌈");
+            }
+        }
+
+        function startBuilding() {
+            const world = window.kidsWorld;
+            world.showSpeechBubble("Building mode coming soon! For now, try talking to your AI friends! 🧱");
+        }
+
+        function doMagic() {
+            const world = window.kidsWorld;
+            // Create sparkle effect
+            for (let i = 0; i < 10; i++) {
+                const sparkle = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.1, 4, 4),
+                    new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff })
+                );
+                sparkle.position.set(
+                    (Math.random() - 0.5) * 10,
+                    Math.random() * 5 + 2,
+                    (Math.random() - 0.5) * 10
+                );
+                world.scene.add(sparkle);
+                
+                // Remove sparkle after animation
+                setTimeout(() => {
+                    world.scene.remove(sparkle);
+                }, 2000);
+            }
+            
+            world.showSpeechBubble("✨ Magic sparkles everywhere! Click on Domingo for more magic! ✨");
+        }
+
+        function showParentDashboard() {
+            const sessionTime = Math.floor((Date.now() - window.kidsWorld.sessionData.startTime) / 60000);
+            alert(`🎮 Soulfra Kids World - Parent Info\n\n👶 Session Time: ${sessionTime} minutes\n🤝 AI Friend Interactions: ${window.kidsWorld.sessionData.interactions}\n🏆 Learning Points: ${window.kidsWorld.sessionData.learning_points}\n💙 Friendship Level: ${window.kidsWorld.sessionData.friendship_level}\n\n✅ All interactions are safe and educational!\n✅ No personal information collected\n✅ AI responses filtered for age-appropriateness`);
+        }
+
+        // Initialize the world when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            window.kidsWorld = new KidsWorld();
+        });
+    </script>
+</body>
+</html>

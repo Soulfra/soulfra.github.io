@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra ROI Calculator - See Your Savings</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .calculator-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .header h1 {
+      font-size: 2.5em;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 1.2em;
+      color: #666;
+    }
+    
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    
+    @media (max-width: 768px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .input-section, .results-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .section-title {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .input-help {
+      font-size: 0.85em;
+      color: #999;
+      margin-top: 5px;
+    }
+    
+    .slider-group {
+      margin-bottom: 25px;
+    }
+    
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+    }
+    
+    .slider-value {
+      display: inline-block;
+      margin-left: 10px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .calculate-btn {
+      width: 100%;
+      padding: 15px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .calculate-btn:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .result-label {
+      color: #666;
+    }
+    
+    .result-value {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .result-value.positive {
+      color: #00c851;
+    }
+    
+    .result-value.negative {
+      color: #e74c3c;
+    }
+    
+    .roi-highlight {
+      background: #f0f7ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .roi-percentage {
+      font-size: 3em;
+      font-weight: bold;
+      color: #667eea;
+      display: block;
+    }
+    
+    .roi-label {
+      color: #666;
+      font-size: 1.1em;
+    }
+    
+    .breakdown-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    
+    .chart-container {
+      height: 300px;
+      margin: 20px 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+    }
+    
+    .chart-bar {
+      width: 80px;
+      background: #667eea;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      transition: height 0.5s ease;
+    }
+    
+    .chart-bar.negative {
+      background: #e74c3c;
+    }
+    
+    .chart-bar.positive {
+      background: #00c851;
+    }
+    
+    .chart-label {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9em;
+      white-space: nowrap;
+    }
+    
+    .chart-value {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    
+    .action-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .action-section h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      padding: 12px 30px;
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+      background: white;
+      color: #667eea;
+    }
+    
+    .action-btn.primary {
+      background: white;
+      color: #667eea;
+    }
+    
+    .action-btn.primary:hover {
+      background: transparent;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Soulfra ROI Calculator</h1>
+      <p>See how much you'll save with mathematically unbreachable data protection</p>
+    </div>
+    
+    <!-- Calculator Grid -->
+    <div class="calculator-grid">
+      <!-- Input Section -->
+      <div class="input-section">
+        <h2 class="section-title">Your Company Details</h2>
+        
+        <div class="input-group">
+          <label for="employees">Number of Employees</label>
+          <input type="number" id="employees" value="500" min="1" max="100000">
+          <div class="input-help">Total employees who handle sensitive data</div>
+        </div>
+        
+        <div class="input-group">
+          <label for="avgSalary">Average Employee Salary ($)</label>
+          <input type="number" id="avgSalary" value="75000" min="30000" max="500000">
+          <div class="input-help">Used to calculate productivity gains</div>
+        </div>
+        
+        <div class="slider-group">
+          <label>Current Data Breach Risk</label>
+          <input type="range" class="slider" id="breachRisk" min="0" max="100" value="83">
+          <span class="slider-value" id="breachRiskValue">83%</span>
+          <div class="input-help">Industry average is 83% (IBM Security Report)</div>
+        </div>
+        
+        <div class="input-group">
+          <label for="dataRecords">Sensitive Data Records</label>
+          <input type="number" id="dataRecords" value="50000" min="1000">
+          <div class="input-help">Customer records, financial data, PII, etc.</div>
+        </div>
+        
+        <div class="input-group">
+          <label for="industry">Industry</label>
+          <select id="industry" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
+            <option value="healthcare">Healthcare</option>
+            <option value="finance">Financial Services</option>
+            <option value="retail">Retail</option>
+            <option value="technology" selected>Technology</option>
+            <option value="education">Education</option>
+            <option value="government">Government</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateROI()">Calculate My ROI</button>
+      </div>
+      
+      <!-- Results Section -->
+      <div class="results-section">
+        <h2 class="section-title">Your Projected Savings</h2>
+        
+        <div id="results" style="display: none;">
+          <div class="result-item">
+            <span class="result-label">Current Breach Risk Cost</span>
+            <span class="result-value negative" id="breachCost">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label">Soulfra Annual Cost</span>
+            <span class="result-value negative" id="soulfraCost">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label">Breach Prevention Savings</span>
+            <span class="result-value positive" id="breachSavings">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label">Insurance Premium Reduction</span>
+            <span class="result-value positive" id="insuranceSavings">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label">Compliance Cost Savings</span>
+            <span class="result-value positive" id="complianceSavings">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label">Productivity Gains</span>
+            <span class="result-value positive" id="productivityGains">$0</span>
+          </div>
+          
+          <div class="roi-highlight">
+            <span class="roi-percentage" id="roiPercentage">0%</span>
+            <span class="roi-label">First Year ROI</span>
+          </div>
+          
+          <div class="result-item" style="margin-top: 20px;">
+            <span class="result-label"><strong>Total Annual Savings</strong></span>
+            <span class="result-value positive" id="totalSavings" style="font-size: 1.5em;">$0</span>
+          </div>
+          
+          <div class="result-item">
+            <span class="result-label"><strong>Payback Period</strong></span>
+            <span class="result-value" id="paybackPeriod">0 months</span>
+          </div>
+        </div>
+        
+        <div id="placeholder" style="text-align: center; color: #999; padding: 40px;">
+          Enter your company details and click "Calculate My ROI" to see your savings
+        </div>
+      </div>
+    </div>
+    
+    <!-- Breakdown Section -->
+    <div class="breakdown-section" id="breakdown" style="display: none;">
+      <h2 class="section-title">Cost Breakdown Visualization</h2>
+      
+      <div class="chart-container" id="chart">
+        <!-- Chart bars will be inserted here -->
+      </div>
+    </div>
+    
+    <!-- Action Section -->
+    <div class="action-section" id="action" style="display: none;">
+      <h2>Ready to Protect Your Data?</h2>
+      <p style="font-size: 1.2em; margin-bottom: 10px;">Based on your inputs, Soulfra will save you <span id="actionSavings">$0</span> in the first year alone.</p>
+      <p>Join thousands of companies who've made their data mathematically unbreachable.</p>
+      
+      <div class="action-buttons">
+        <a href="/demo" class="action-btn primary">Schedule Live Demo</a>
+        <a href="/contact" class="action-btn">Talk to Sales</a>
+        <a href="#" class="action-btn" onclick="downloadReport()">Download Full Report</a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Update slider value display
+    document.getElementById('breachRisk').addEventListener('input', function(e) {
+      document.getElementById('breachRiskValue').textContent = e.target.value + '%';
+    });
+    
+    function calculateROI() {
+      // Get inputs
+      const employees = parseInt(document.getElementById('employees').value);
+      const avgSalary = parseInt(document.getElementById('avgSalary').value);
+      const breachRisk = parseInt(document.getElementById('breachRisk').value) / 100;
+      const dataRecords = parseInt(document.getElementById('dataRecords').value);
+      const industry = document.getElementById('industry').value;
+      
+      // Industry-specific breach costs
+      const industryCosts = {
+        healthcare: 10930000,  // $10.93M average
+        finance: 5970000,      // $5.97M average
+        technology: 4880000,   // $4.88M average
+        retail: 3860000,       // $3.86M average
+        education: 3790000,    // $3.79M average
+        government: 4960000,   // $4.96M average
+        other: 4450000         // $4.45M global average
+      };
+      
+      const avgBreachCost = industryCosts[industry] || industryCosts.other;
+      
+      // Calculate costs and savings
+      const expectedBreachCost = avgBreachCost * breachRisk;
+      const soulfraCost = employees * 49 * 12; // $49/user/month
+      
+      // Savings calculations
+      const breachPreventionSavings = expectedBreachCost;
+      const insuranceSavings = expectedBreachCost * 0.15; // 15% of coverage amount
+      const complianceSavings = employees * 2000; // $2K per employee saved on compliance
+      const productivityGains = employees * avgSalary * 0.02; // 2% productivity improvement
+      
+      const totalSavings = breachPreventionSavings + insuranceSavings + complianceSavings + productivityGains;
+      const netSavings = totalSavings - soulfraCost;
+      const roi = (netSavings / soulfraCost) * 100;
+      const paybackMonths = soulfraCost / (totalSavings / 12);
+      
+      // Update results
+      document.getElementById('breachCost').textContent = '-$' + formatNumber(expectedBreachCost);
+      document.getElementById('soulfraCost').textContent = '-$' + formatNumber(soulfraCost);
+      document.getElementById('breachSavings').textContent = '+$' + formatNumber(breachPreventionSavings);
+      document.getElementById('insuranceSavings').textContent = '+$' + formatNumber(insuranceSavings);
+      document.getElementById('complianceSavings').textContent = '+$' + formatNumber(complianceSavings);
+      document.getElementById('productivityGains').textContent = '+$' + formatNumber(productivityGains);
+      document.getElementById('totalSavings').textContent = '+$' + formatNumber(netSavings);
+      document.getElementById('roiPercentage').textContent = Math.round(roi) + '%';
+      document.getElementById('paybackPeriod').textContent = paybackMonths.toFixed(1) + ' months';
+      document.getElementById('actionSavings').textContent = '$' + formatNumber(netSavings);
+      
+      // Show results
+      document.getElementById('placeholder').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('breakdown').style.display = 'block';
+      document.getElementById('action').style.display = 'block';
+      
+      // Create chart
+      createChart(expectedBreachCost, soulfraCost, breachPreventionSavings, insuranceSavings, complianceSavings, productivityGains);
+    }
+    
+    function formatNumber(num) {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+      } else if (num >= 1000) {
+        return (num / 1000).toFixed(0) + 'K';
+      }
+      return num.toFixed(0);
+    }
+    
+    function createChart(breach, soulfra, prevention, insurance, compliance, productivity) {
+      const chart = document.getElementById('chart');
+      const maxValue = Math.max(breach, prevention + insurance + compliance + productivity);
+      
+      chart.innerHTML = `
+        <div class="chart-bar negative" style="height: ${(breach / maxValue) * 250}px">
+          <div class="chart-value">-$${formatNumber(breach)}</div>
+          <div class="chart-label">Risk Cost</div>
+        </div>
+        <div class="chart-bar negative" style="height: ${(soulfra / maxValue) * 250}px">
+          <div class="chart-value">-$${formatNumber(soulfra)}</div>
+          <div class="chart-label">Soulfra</div>
+        </div>
+        <div class="chart-bar positive" style="height: ${(prevention / maxValue) * 250}px">
+          <div class="chart-value">+$${formatNumber(prevention)}</div>
+          <div class="chart-label">Prevention</div>
+        </div>
+        <div class="chart-bar positive" style="height: ${(insurance / maxValue) * 250}px">
+          <div class="chart-value">+$${formatNumber(insurance)}</div>
+          <div class="chart-label">Insurance</div>
+        </div>
+        <div class="chart-bar positive" style="height: ${(compliance / maxValue) * 250}px">
+          <div class="chart-value">+$${formatNumber(compliance)}</div>
+          <div class="chart-label">Compliance</div>
+        </div>
+        <div class="chart-bar positive" style="height: ${(productivity / maxValue) * 250}px">
+          <div class="chart-value">+$${formatNumber(productivity)}</div>
+          <div class="chart-label">Productivity</div>
+        </div>
+      `;
+    }
+    
+    function downloadReport() {
+      alert('Full ROI report with detailed breakdown will be emailed to you.');
+      // In production, this would generate a PDF report
+    }
+    
+    // Calculate on load with defaults
+    window.addEventListener('load', () => {
+      // Auto-calculate after a short delay to show the placeholder first
+      setTimeout(() => {
+        // Don't auto-calculate - let user click button
+      }, 500);
+    });
+  </script>
+</body>
+</html>

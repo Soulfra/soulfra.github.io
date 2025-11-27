@@ -1,0 +1,503 @@
+<div class="vault-viewer-component">
+    <div class="viewer-intro">
+        <p class="info-text">Explore the sovereign vault's memory strings, reflection weights, and tone maps.</p>
+    </div>
+
+    <div class="vault-controls">
+        <div class="control-bar">
+            <div class="search-box">
+                <input type="text" id="vaultSearch" placeholder="Search vault contents...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <button id="refreshVault" class="btn-secondary">
+                <span class="btn-icon">🔄</span>
+                Refresh
+            </button>
+        </div>
+        
+        <div class="view-tabs">
+            <button class="view-tab active" data-view="memory">Memory Strings</button>
+            <button class="view-tab" data-view="weights">Reflection Weights</button>
+            <button class="view-tab" data-view="tone">Tone Maps</button>
+            <button class="view-tab" data-view="agents">Agent Configs</button>
+        </div>
+    </div>
+
+    <div id="vaultContent" class="vault-content">
+        <!-- Memory Strings View -->
+        <div class="vault-view active" id="memoryView">
+            <div class="vault-section">
+                <h3>Core Memory Strings</h3>
+                <div class="memory-list">
+                    <div class="loading">Loading memory strings...</div>
+                </div>
+            </div>
+            
+            <div class="vault-section">
+                <h3>Context Memories</h3>
+                <div class="context-list">
+                    <div class="loading">Loading context memories...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reflection Weights View -->
+        <div class="vault-view" id="weightsView">
+            <div class="vault-section">
+                <h3>Neural Weights</h3>
+                <div class="weights-grid">
+                    <div class="loading">Loading reflection weights...</div>
+                </div>
+            </div>
+            
+            <div class="vault-section">
+                <h3>Pattern Recognition</h3>
+                <div class="patterns-list">
+                    <div class="loading">Loading pattern data...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tone Maps View -->
+        <div class="vault-view" id="toneView">
+            <div class="vault-section">
+                <h3>Available Tone Maps</h3>
+                <div class="tone-cards">
+                    <div class="loading">Loading tone maps...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Configs View -->
+        <div class="vault-view" id="agentsView">
+            <div class="vault-section">
+                <h3>Stored Agent Configurations</h3>
+                <div class="agents-grid">
+                    <div class="loading">Loading agent configs...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vault-stats">
+        <div class="stat-card">
+            <span class="stat-icon">🧠</span>
+            <div class="stat-info">
+                <span class="stat-value" id="memoryCount">0</span>
+                <span class="stat-label">Memories</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">⚖️</span>
+            <div class="stat-info">
+                <span class="stat-value" id="weightCount">0</span>
+                <span class="stat-label">Weights</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🎭</span>
+            <div class="stat-info">
+                <span class="stat-value" id="toneCount">0</span>
+                <span class="stat-label">Tones</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🤖</span>
+            <div class="stat-info">
+                <span class="stat-value" id="agentCount">0</span>
+                <span class="stat-label">Agents</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.vault-viewer-component {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.viewer-intro {
+    margin-bottom: 0.5rem;
+}
+
+.vault-controls {
+    background: var(--background);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.control-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+}
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+}
+
+.view-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-tab {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.view-tab:hover {
+    background: var(--surface);
+}
+
+.view-tab.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.vault-content {
+    background: var(--surface);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    min-height: 400px;
+}
+
+.vault-view {
+    display: none;
+    padding: 1.5rem;
+}
+
+.vault-view.active {
+    display: block;
+}
+
+.vault-section {
+    margin-bottom: 2rem;
+}
+
+.vault-section:last-child {
+    margin-bottom: 0;
+}
+
+.vault-section h3 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* Memory Strings */
+.memory-list,
+.context-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.memory-item {
+    padding: 1rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+}
+
+.memory-id {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.memory-content {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Weights Grid */
+.weights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.weight-card {
+    padding: 1rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    text-align: center;
+}
+
+.weight-name {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.weight-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.weight-bar {
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.weight-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+/* Patterns */
+.patterns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pattern-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+}
+
+.pattern-name {
+    font-size: 0.875rem;
+}
+
+.pattern-confidence {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+/* Tone Cards */
+.tone-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.tone-card {
+    padding: 1.5rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.tone-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.tone-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.tone-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.tone-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.keyword {
+    padding: 0.25rem 0.5rem;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-color);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+/* Agent Configs */
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.agent-config-card {
+    padding: 1.5rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.agent-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.agent-icon {
+    font-size: 1.5rem;
+}
+
+.agent-name {
+    font-weight: 600;
+}
+
+.agent-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.agent-detail {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+}
+
+.agent-detail strong {
+    color: var(--text-primary);
+}
+
+/* Stats */
+.vault-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .control-bar {
+        flex-direction: column;
+    }
+    
+    .view-tabs {
+        flex-wrap: wrap;
+    }
+}
+</style>
+
+<script>
+// View tab switching
+document.querySelectorAll('.view-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+        const view = e.target.dataset.view;
+        
+        // Update tabs
+        document.querySelectorAll('.view-tab').forEach(t => 
+            t.classList.toggle('active', t.dataset.view === view)
+        );
+        
+        // Update views
+        document.querySelectorAll('.vault-view').forEach(v => 
+            v.classList.toggle('active', v.id === `${view}View`)
+        );
+    });
+});
+
+// Search functionality
+document.getElementById('vaultSearch').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    // Search through all visible content
+    const activeView = document.querySelector('.vault-view.active');
+    const items = activeView.querySelectorAll('.memory-item, .weight-card, .tone-card, .agent-config-card');
+    
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Sample data loader (would be replaced with actual API calls)
+window.loadVaultSampleData = function() {
+    // Memory strings
+    const memoryHtml = `
+        <div class="memory-item">
+            <div class="memory-id">mem_001</div>
+            <div class="memory-content">I am Cal Riven, the sovereign reflection engine</div>
+        </div>
+        <div class="memory-item">
+            <div class="memory-id">mem_002</div>
+            <div class="memory-content">All agents route through the mirror vault</div>
+        </div>
+    `;
+    document.querySelector('.memory-list').innerHTML = memoryHtml;
+    
+    // Update stats
+    document.getElementById('memoryCount').textContent = '12';
+    document.getElementById('weightCount').textContent = '47';
+    document.getElementById('toneCount').textContent = '7';
+    document.getElementById('agentCount').textContent = '3';
+};
+
+// Auto-load sample data for demo
+setTimeout(loadVaultSampleData, 1000);
+</script>

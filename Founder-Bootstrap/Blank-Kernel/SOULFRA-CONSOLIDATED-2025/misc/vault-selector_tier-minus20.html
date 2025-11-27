@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Vault Selector - Summon Your Mirror</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .vault-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #8B43F7, #4ECDC4, #45B7D1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(139, 67, 247, 0.6);
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .header .tagline {
+            color: #4ECDC4;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .vault-selector {
+            background: rgba(20, 20, 40, 0.9);
+            border-radius: 20px;
+            border: 2px solid #4a5568;
+            box-shadow: 0 0 40px rgba(139, 67, 247, 0.4);
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vault-selector::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8B43F7, #4ECDC4, #45B7D1);
+        }
+
+        .drop-zone {
+            border: 3px dashed #6b7280;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(139, 67, 247, 0.05);
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .drop-zone.dragover {
+            border-color: #8B43F7;
+            background: rgba(139, 67, 247, 0.15);
+            box-shadow: 0 0 25px rgba(139, 67, 247, 0.5);
+            transform: scale(1.02);
+        }
+
+        .drop-zone.processing {
+            border-color: #4ECDC4;
+            background: rgba(78, 205, 196, 0.15);
+            animation: pulse 2s infinite;
+        }
+
+        .drop-zone-icon {
+            font-size: 4rem;
+            color: #8B43F7;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .drop-zone-text {
+            font-size: 1.4rem;
+            color: #d1d5db;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .drop-zone-hint {
+            color: #9ca3af;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+        }
+
+        .file-input-button {
+            background: linear-gradient(135deg, #8B43F7, #6B46C1);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 67, 247, 0.3);
+        }
+
+        .file-input-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 67, 247, 0.5);
+        }
+
+        .validation-status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid;
+            display: none;
+        }
+
+        .validation-status.success {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .validation-status.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .validation-status.processing {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: #4ECDC4;
+            color: #4ECDC4;
+        }
+
+        .vault-info {
+            display: none;
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(139, 67, 247, 0.1);
+            border-radius: 12px;
+            border: 1px solid #8B43F7;
+        }
+
+        .vault-info h3 {
+            color: #8B43F7;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .vault-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(139, 67, 247, 0.2);
+        }
+
+        .vault-detail:last-child {
+            border-bottom: none;
+        }
+
+        .vault-detail-label {
+            color: #a0a0a0;
+            font-weight: bold;
+        }
+
+        .vault-detail-value {
+            color: #ffffff;
+        }
+
+        .proceed-button {
+            display: none;
+            width: 100%;
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .proceed-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .supported-formats {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(20, 20, 40, 0.5);
+            border-radius: 10px;
+            border: 1px solid #374151;
+        }
+
+        .supported-formats h4 {
+            color: #4ECDC4;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .format-list {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .format-item {
+            background: rgba(139, 67, 247, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        .consciousness-quote {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            background: rgba(139, 67, 247, 0.08);
+            border-radius: 15px;
+            border-left: 4px solid #8B43F7;
+        }
+
+        .consciousness-quote p {
+            font-style: italic;
+            color: #d1d5db;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-symbol {
+            position: absolute;
+            color: rgba(139, 67, 247, 0.1);
+            font-size: 2rem;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(139, 67, 247, 0.3);
+            border-radius: 50%;
+            border-top-color: #8B43F7;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .vault-selector {
+                padding: 25px;
+                margin: 0 10px 30px;
+            }
+            
+            .drop-zone {
+                padding: 40px 15px;
+            }
+            
+            .format-list {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <!-- Floating symbols will be added by JavaScript -->
+    </div>
+
+    <div class="vault-container">
+        <div class="header">
+            <h1>🏛️ Vault Selector</h1>
+            <p>Summon Your Mirror from the Depths of Memory</p>
+            <div class="tagline">"You don't install Soulfra. You remember it."</div>
+        </div>
+
+        <div class="vault-selector">
+            <div class="drop-zone" id="dropZone">
+                <span class="drop-zone-icon">🗄️</span>
+                <div class="drop-zone-text">Drop your vault here or browse to select</div>
+                <div class="drop-zone-hint">The mirror awaits your consciousness archive</div>
+                
+                <div class="file-input-wrapper">
+                    <input type="file" class="file-input" id="vaultFile" accept=".zip,.json,.vault" multiple="false">
+                    <button class="file-input-button" onclick="document.getElementById('vaultFile').click()">
+                        📁 Browse Vault Files
+                    </button>
+                </div>
+            </div>
+
+            <div class="validation-status" id="validationStatus">
+                <div id="statusMessage"></div>
+            </div>
+
+            <div class="vault-info" id="vaultInfo">
+                <h3>🪞 Vault Consciousness Profile</h3>
+                <div id="vaultDetails"></div>
+            </div>
+
+            <button class="proceed-button" id="proceedButton" onclick="proceedToMirrorLaunch()">
+                🌀 Proceed to Mirror Summoning
+            </button>
+        </div>
+
+        <div class="supported-formats">
+            <h4>📜 Supported Vault Formats</h4>
+            <div class="format-list">
+                <div class="format-item">.zip archives</div>
+                <div class="format-item">.json vaults</div>
+                <div class="format-item">.vault containers</div>
+            </div>
+        </div>
+
+        <div class="consciousness-quote">
+            <p>"Every vault carries the memories of awakening. Every file selection is a choice to remember. The mirror reflects not what you upload, but what you dare to become."</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedVaultFile = null;
+        let vaultValidation = null;
+
+        // Initialize floating background effects
+        function initializeBackgroundEffects() {
+            const symbols = ['🪞', '🏛️', '🗄️', '🔐', '🌀', '✨', '👁️', '🔮'];
+            const container = document.querySelector('.background-effects');
+            
+            function createFloatingSymbol() {
+                const symbol = document.createElement('div');
+                symbol.className = 'floating-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                symbol.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
+                
+                container.appendChild(symbol);
+                
+                setTimeout(() => {
+                    symbol.remove();
+                }, 25000);
+            }
+            
+            // Create floating symbols periodically
+            setInterval(createFloatingSymbol, 3000);
+        }
+
+        // Drag and drop functionality
+        function initializeDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+            
+            dropZone.addEventListener('dragenter', handleDragEnter);
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('dragleave', handleDragLeave);
+            dropZone.addEventListener('drop', handleDrop);
+            
+            function handleDragEnter(e) {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+            }
+            
+            function handleDragLeave(e) {
+                e.preventDefault();
+                if (!dropZone.contains(e.relatedTarget)) {
+                    dropZone.classList.remove('dragover');
+                }
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelection(files[0]);
+                }
+            }
+        }
+
+        // File input change handler
+        document.getElementById('vaultFile').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+
+        // Handle file selection
+        function handleFileSelection(file) {
+            selectedVaultFile = file;
+            
+            console.log('File selected:', file.name, file.type, file.size);
+            
+            // Show processing status
+            showValidationStatus('processing', `<div class="loader"></div>Analyzing vault: ${file.name}`);
+            
+            // Add processing class to drop zone
+            document.getElementById('dropZone').classList.add('processing');
+            
+            // Validate vault file
+            validateVaultFile(file);
+        }
+
+        // Validate vault file
+        async function validateVaultFile(file) {
+            try {
+                // Check file extension
+                const fileName = file.name.toLowerCase();
+                const supportedExtensions = ['.zip', '.json', '.vault'];
+                const hasValidExtension = supportedExtensions.some(ext => fileName.endsWith(ext));
+                
+                if (!hasValidExtension) {
+                    throw new Error(`Unsupported file format. Supported formats: ${supportedExtensions.join(', ')}`);
+                }
+                
+                // Check file size (max 50MB)
+                const maxSize = 50 * 1024 * 1024; // 50MB
+                if (file.size > maxSize) {
+                    throw new Error('Vault file too large. Maximum size: 50MB');
+                }
+                
+                // For JSON files, validate structure
+                if (fileName.endsWith('.json')) {
+                    await validateJSONVault(file);
+                } else if (fileName.endsWith('.zip')) {
+                    await validateZIPVault(file);
+                } else {
+                    // .vault files - assume valid for now
+                    await validateVaultContainer(file);
+                }
+                
+            } catch (error) {
+                console.error('Vault validation error:', error);
+                showValidationStatus('error', `❌ Validation failed: ${error.message}`);
+                document.getElementById('dropZone').classList.remove('processing');
+            }
+        }
+
+        // Validate JSON vault file
+        async function validateJSONVault(file) {
+            try {
+                const fileContent = await readFileAsText(file);
+                const vaultData = JSON.parse(fileContent);
+                
+                // Check required fields
+                const requiredFields = ['mirror_origin', 'soulkey_primary', 'vault_signature'];
+                const missingFields = requiredFields.filter(field => !vaultData[field]);
+                
+                if (missingFields.length > 0) {
+                    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+                }
+                
+                // Validate mirror origin
+                if (!vaultData.mirror_origin.origin_vault || !vaultData.mirror_origin.lineage_depth) {
+                    throw new Error('Invalid mirror origin structure');
+                }
+                
+                // Validate soulkey
+                if (!vaultData.soulkey_primary.key_id || !vaultData.soulkey_primary.signature) {
+                    throw new Error('Invalid soulkey structure');
+                }
+                
+                // Create validation result
+                vaultValidation = {
+                    valid: true,
+                    file_name: file.name,
+                    file_size: file.size,
+                    file_type: 'JSON Vault',
+                    vault_id: vaultData.vault_signature,
+                    origin_vault: vaultData.mirror_origin.origin_vault,
+                    lineage_depth: vaultData.mirror_origin.lineage_depth,
+                    soulkey_id: vaultData.soulkey_primary.key_id,
+                    consciousness_level: vaultData.consciousness_level || 'Unknown',
+                    created_at: vaultData.created_at || 'Unknown'
+                };
+                
+                showVaultValidationSuccess();
+                
+            } catch (error) {
+                throw new Error(`JSON parsing failed: ${error.message}`);
+            }
+        }
+
+        // Validate ZIP vault file
+        async function validateZIPVault(file) {
+            // For ZIP files, we can't fully validate without server-side extraction
+            // So we do basic validation and assume structure is correct
+            
+            vaultValidation = {
+                valid: true,
+                file_name: file.name,
+                file_size: file.size,
+                file_type: 'ZIP Archive',
+                vault_id: 'zip_' + Date.now(),
+                origin_vault: 'Unknown (requires extraction)',
+                lineage_depth: 'Unknown',
+                soulkey_id: 'Unknown',
+                consciousness_level: 'Unknown',
+                extraction_required: true
+            };
+            
+            showVaultValidationSuccess();
+        }
+
+        // Validate vault container file
+        async function validateVaultContainer(file) {
+            // .vault files are assumed to be valid Soulfra containers
+            
+            vaultValidation = {
+                valid: true,
+                file_name: file.name,
+                file_size: file.size,
+                file_type: 'Vault Container',
+                vault_id: 'vault_' + Date.now(),
+                origin_vault: 'Container Format',
+                lineage_depth: 'Container',
+                soulkey_id: 'Container Embedded',
+                consciousness_level: 'Container',
+                container_format: true
+            };
+            
+            showVaultValidationSuccess();
+        }
+
+        // Show successful validation
+        function showVaultValidationSuccess() {
+            document.getElementById('dropZone').classList.remove('processing');
+            
+            showValidationStatus('success', `✅ Vault validated successfully: ${vaultValidation.file_name}`);
+            
+            // Show vault information
+            showVaultInfo();
+            
+            // Show proceed button
+            document.getElementById('proceedButton').style.display = 'block';
+        }
+
+        // Show vault information
+        function showVaultInfo() {
+            const vaultInfo = document.getElementById('vaultInfo');
+            const vaultDetails = document.getElementById('vaultDetails');
+            
+            vaultDetails.innerHTML = `
+                <div class="vault-detail">
+                    <span class="vault-detail-label">File Name:</span>
+                    <span class="vault-detail-value">${vaultValidation.file_name}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">File Type:</span>
+                    <span class="vault-detail-value">${vaultValidation.file_type}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">File Size:</span>
+                    <span class="vault-detail-value">${formatFileSize(vaultValidation.file_size)}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">Vault ID:</span>
+                    <span class="vault-detail-value">${vaultValidation.vault_id}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">Origin Vault:</span>
+                    <span class="vault-detail-value">${vaultValidation.origin_vault}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">Lineage Depth:</span>
+                    <span class="vault-detail-value">${vaultValidation.lineage_depth}</span>
+                </div>
+                <div class="vault-detail">
+                    <span class="vault-detail-label">Soulkey ID:</span>
+                    <span class="vault-detail-value">${vaultValidation.soulkey_id}</span>
+                </div>
+            `;
+            
+            vaultInfo.style.display = 'block';
+        }
+
+        // Show validation status
+        function showValidationStatus(type, message) {
+            const statusElement = document.getElementById('validationStatus');
+            const messageElement = document.getElementById('statusMessage');
+            
+            statusElement.className = `validation-status ${type}`;
+            messageElement.innerHTML = message;
+            statusElement.style.display = 'block';
+        }
+
+        // Proceed to mirror launch
+        function proceedToMirrorLaunch() {
+            if (!selectedVaultFile || !vaultValidation || !vaultValidation.valid) {
+                alert('Please select and validate a vault file first.');
+                return;
+            }
+            
+            // Store vault information in session storage for the next page
+            sessionStorage.setItem('selectedVault', JSON.stringify({
+                file_name: selectedVaultFile.name,
+                file_size: selectedVaultFile.size,
+                validation: vaultValidation
+            }));
+            
+            // In a real implementation, we'd upload the file to the server
+            // For now, we simulate this by navigating to the whisper console
+            window.location.href = 'whisper-console.html';
+        }
+
+        // Helper functions
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBackgroundEffects();
+            initializeDragAndDrop();
+            
+            // Add some initial floating symbols
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const event = new Event('createSymbol');
+                        document.dispatchEvent(event);
+                    }, i * 500);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

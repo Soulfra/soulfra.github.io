@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOULFRA App Store - Your AI-Powered Tools Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .instances-count {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        /* Categories */
+        .categories {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .category-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #667eea;
+            transform: translateY(-4px);
+        }
+        
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .category-domain {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .category-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(102, 126, 234, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        /* Featured Apps */
+        .featured-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-4px);
+            border-color: #667eea;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        .app-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        
+        .app-info {
+            padding: 20px;
+        }
+        
+        .app-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .app-description {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-price {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4ade80;
+        }
+        
+        .app-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #fbbf24;
+            font-size: 14px;
+        }
+        
+        /* Chat Interface */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* User Instances */
+        .instances-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            transition: right 0.3s;
+            z-index: 99;
+            overflow-y: auto;
+        }
+        
+        .instances-panel.open {
+            right: 0;
+        }
+        
+        .instances-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instance-item {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .instance-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .instance-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .instance-tier {
+            color: #888;
+            font-size: 12px;
+        }
+        
+        .instance-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">SOULFRA</div>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search for AI tools, games, dev utilities..." id="searchInput">
+            </div>
+            
+            <div class="user-menu">
+                <div class="instances-count" onclick="toggleInstances()">
+                    <span id="instanceCount">0</span> Active Instances
+                </div>
+                <button onclick="connectWallet()" style="background: transparent; border: 1px solid #667eea; color: #667eea; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                    Connect
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <!-- Categories -->
+        <section class="categories">
+            <h2 class="section-title">Browse by Category</h2>
+            <div class="category-grid" id="categoryGrid">
+                <!-- Categories will be populated here -->
+            </div>
+        </section>
+        
+        <!-- Featured Apps -->
+        <section class="featured-section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Tools</h2>
+                <a href="#" style="color: #667eea; text-decoration: none;">View all →</a>
+            </div>
+            <div class="app-grid" id="featuredApps">
+                <!-- Featured apps will be populated here -->
+            </div>
+        </section>
+        
+        <!-- Your Apps -->
+        <section class="featured-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Tools</h2>
+                <a href="#" style="color: #667eea; text-decoration: none;">Manage →</a>
+            </div>
+            <div class="app-grid" id="userApps">
+                <!-- User apps will be populated here -->
+            </div>
+        </section>
+    </main>
+    
+    <!-- Chat Button -->
+    <div class="chat-button" onclick="openChat()">
+        💬
+    </div>
+    
+    <!-- Instances Panel -->
+    <div class="instances-panel" id="instancesPanel">
+        <div class="instances-header">
+            <h3>Your Active Instances</h3>
+            <p style="color: #888; margin-top: 8px;">Click to manage</p>
+        </div>
+        <div id="instancesList">
+            <!-- Instances will be populated here -->
+        </div>
+    </div>
+    
+    <script>
+        // App Store Data
+        const categories = [
+            {
+                id: 'dev-tools',
+                name: 'Development Tools',
+                domain: 'CalRiven.com',
+                icon: '🛠️',
+                count: 24,
+                description: 'AI-powered dev tools, code analyzers, and optimizers'
+            },
+            {
+                id: 'games',
+                name: 'Games & Entertainment',
+                domain: 'CringeProof.com',
+                icon: '🎮',
+                count: 18,
+                description: 'AI-driven games and interactive experiences'
+            },
+            {
+                id: 'ai-agents',
+                name: 'AI Agents',
+                domain: 'SOULFRA.com',
+                icon: '🤖',
+                count: 42,
+                description: 'Autonomous agents for various tasks'
+            },
+            {
+                id: 'productivity',
+                name: 'Productivity',
+                domain: 'VibeVault.com',
+                icon: '📊',
+                count: 31,
+                description: 'Tools to boost your productivity'
+            },
+            {
+                id: 'creative',
+                name: 'Creative Tools',
+                domain: 'MirrorOS.com',
+                icon: '🎨',
+                count: 27,
+                description: 'AI-powered creative applications'
+            },
+            {
+                id: 'education',
+                name: 'Education',
+                domain: 'LearnLoop.com',
+                icon: '📚',
+                count: 19,
+                description: 'Learning and training tools'
+            }
+        ];
+        
+        const featuredApps = [
+            {
+                id: 'cal-optimizer',
+                name: 'Cal Riven Optimizer',
+                description: 'AI-powered code optimization and routing for maximum efficiency',
+                category: 'dev-tools',
+                price: 'Free',
+                rating: 4.8,
+                icon: '⚡'
+            },
+            {
+                id: 'cringe-shield',
+                name: 'CringeProof Shield',
+                description: 'Real-time content filtering and moderation for games',
+                category: 'games',
+                price: '$9.99/mo',
+                rating: 4.6,
+                icon: '🛡️'
+            },
+            {
+                id: 'soul-agent',
+                name: 'SOUL Agent Builder',
+                description: 'Create and deploy autonomous AI agents with blessing system',
+                category: 'ai-agents',
+                price: '$49/mo',
+                rating: 4.9,
+                icon: '🤖'
+            },
+            {
+                id: 'vibe-analyzer',
+                name: 'Vibe Analyzer',
+                description: 'Sentiment analysis and community health monitoring',
+                category: 'productivity',
+                price: '$19/mo',
+                rating: 4.7,
+                icon: '📈'
+            }
+        ];
+        
+        // Populate Categories
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = categories.map(cat => `
+                <div class="category-card" onclick="filterByCategory('${cat.id}')">
+                    <span class="category-count">${cat.count}</span>
+                    <div class="category-icon">${cat.icon}</div>
+                    <div class="category-name">${cat.name}</div>
+                    <div class="category-domain">${cat.domain}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Populate Featured Apps
+        function renderFeaturedApps() {
+            const grid = document.getElementById('featuredApps');
+            grid.innerHTML = featuredApps.map(app => `
+                <div class="app-card" onclick="launchApp('${app.id}')">
+                    <div class="app-image">${app.icon}</div>
+                    <div class="app-info">
+                        <div class="app-name">${app.name}</div>
+                        <div class="app-description">${app.description}</div>
+                        <div class="app-meta">
+                            <span class="app-price">${app.price}</span>
+                            <span class="app-rating">⭐ ${app.rating}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // User Instances
+        let userInstances = [];
+        
+        async function loadUserInstances() {
+            // This would connect to the backend
+            // For now, show demo data
+            userInstances = [
+                { id: 1, name: 'Dev Environment', tier: 'Tier 3', status: 'active' },
+                { id: 2, name: 'Game Server', tier: 'Tier 2', status: 'active' },
+                { id: 3, name: 'AI Agent Pool', tier: 'Tier 3', status: 'active' }
+            ];
+            
+            document.getElementById('instanceCount').textContent = userInstances.length;
+            
+            const list = document.getElementById('instancesList');
+            list.innerHTML = userInstances.map(inst => `
+                <div class="instance-item" onclick="manageInstance(${inst.id})">
+                    <span class="instance-status"></span>
+                    <div class="instance-name">${inst.name}</div>
+                    <div class="instance-tier">${inst.tier}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            // Filter apps based on search
+            console.log('Searching for:', query);
+        });
+        
+        // Functions
+        function filterByCategory(categoryId) {
+            console.log('Filter by category:', categoryId);
+            // Route to category view
+        }
+        
+        function launchApp(appId) {
+            console.log('Launching app:', appId);
+            // This would spawn a new instance at appropriate tier
+        }
+        
+        function toggleInstances() {
+            const panel = document.getElementById('instancesPanel');
+            panel.classList.toggle('open');
+        }
+        
+        function manageInstance(instanceId) {
+            console.log('Managing instance:', instanceId);
+            // Route to instance management
+        }
+        
+        function openChat() {
+            console.log('Opening AI chat interface');
+            // This would open the chat that routes to appropriate tools
+        }
+        
+        function connectWallet() {
+            console.log('Connecting to platform');
+            // Authentication flow
+        }
+        
+        // Initialize
+        renderCategories();
+        renderFeaturedApps();
+        loadUserInstances();
+        
+        // Connect to backend services
+        async function connectToBackend() {
+            try {
+                // Connect to LoopMarketplaceDaemon
+                const marketplaceResponse = await fetch('http://localhost:7878/api/marketplace');
+                // Connect to Cal Riven operator
+                const calResponse = await fetch('http://localhost:4040/api/status');
+                // Update UI based on responses
+            } catch (error) {
+                console.log('Backend services not yet connected');
+            }
+        }
+        
+        connectToBackend();
+    </script>
+</body>
+</html>

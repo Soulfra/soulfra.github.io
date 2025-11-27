@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 MIRROR MATRIX CONTROL - TIER -12</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 25%, #2d1b69 50%, #1a1a3e 75%, #0a0a1a 100%);
+            color: #e6e6fa; min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Matrix visualization */
+        .matrix-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(132, 250, 176, 0.03) 0%, transparent 50%);
+            animation: matrixPulse 45s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes matrixPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+            25% { opacity: 0.5; transform: scale(1.1) rotate(0.5deg); }
+            50% { opacity: 0.4; transform: scale(0.95) rotate(-0.5deg); }
+            75% { opacity: 0.6; transform: scale(1.05) rotate(0.3deg); }
+        }
+        
+        /* Header */
+        .matrix-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(120, 119, 198, 0.3);
+            padding: 15px 30px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        
+        .header-content {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .matrix-title {
+            font-size: 1.4em; font-weight: 700;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #84fab0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+        
+        .matrix-status {
+            display: flex; align-items: center; gap: 15px;
+            font-size: 0.9em;
+        }
+        
+        .status-indicator {
+            display: flex; align-items: center; gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            animation: statusPulse 2s infinite;
+        }
+        
+        .status-online { background: #84fab0; }
+        .status-warning { background: #ffeb3b; }
+        .status-critical { background: #ff4444; }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-container {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        .matrix-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .matrix-panel:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(120, 119, 198, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .panel-title {
+            font-size: 1.1em; font-weight: 600;
+            color: #84fab0;
+        }
+        
+        .panel-actions {
+            display: flex; gap: 10px;
+        }
+        
+        .matrix-button {
+            background: rgba(120, 119, 198, 0.2);
+            border: 1px solid rgba(120, 119, 198, 0.4);
+            color: #e6e6fa;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .matrix-button:hover {
+            background: rgba(120, 119, 198, 0.4);
+            border-color: rgba(120, 119, 198, 0.6);
+        }
+        
+        .matrix-button.critical {
+            background: rgba(255, 68, 68, 0.2);
+            border-color: rgba(255, 68, 68, 0.4);
+        }
+        
+        .matrix-button.critical:hover {
+            background: rgba(255, 68, 68, 0.4);
+        }
+        
+        /* Metrics Display */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(120, 119, 198, 0.1);
+            border: 1px solid rgba(120, 119, 198, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.8em; font-weight: 700;
+            background: linear-gradient(45deg, #84fab0, #7877c6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.8em; opacity: 0.8;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .data-table th {
+            background: rgba(120, 119, 198, 0.2);
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .data-table td {
+            font-size: 0.85em;
+            font-family: 'SF Mono', monospace;
+        }
+        
+        .data-table tr:hover td {
+            background: rgba(120, 119, 198, 0.1);
+        }
+        
+        /* Live Activity Feed */
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .activity-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85em;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 8px; height: 8px; border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .activity-consciousness { background: #84fab0; }
+        .activity-revenue { background: #ffeb3b; }
+        .activity-security { background: #ff77c6; }
+        .activity-system { background: #7877c6; }
+        
+        .activity-timestamp {
+            opacity: 0.6;
+            font-size: 0.75em;
+            margin-left: auto;
+        }
+        
+        /* Charts placeholder */
+        .chart-container {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        /* System Controls */
+        .control-section {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .control-warning {
+            color: #ff77c6;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        /* Operator Info */
+        .operator-info {
+            background: rgba(132, 250, 176, 0.1);
+            border: 1px solid rgba(132, 250, 176, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .operator-badge {
+            display: inline-block;
+            background: rgba(132, 250, 176, 0.2);
+            color: #84fab0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .matrix-status {
+                justify-content: center;
+            }
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #7877c6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix background -->
+    <div class="matrix-background"></div>
+    
+    <!-- Header -->
+    <div class="matrix-header">
+        <div class="header-content">
+            <div class="matrix-title">
+                🌀 MIRROR MATRIX CONTROL - TIER -12
+            </div>
+            <div class="matrix-status">
+                <div class="status-indicator">
+                    <div class="status-dot status-online"></div>
+                    <span>Matrix Online</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot status-online"></div>
+                    <span>Access Verified</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot status-warning"></div>
+                    <span id="connectionCount">0 Connections</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div class="dashboard-container">
+        <!-- Operator Status Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">🎯 Matrix Operator Status</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="refreshOperatorData()">Refresh</button>
+                </div>
+            </div>
+            
+            <div class="operator-info">
+                <div><strong>Operator ID:</strong> <span id="operatorId">MATRIX_ROOT_00</span></div>
+                <div><strong>Access Level:</strong> <span class="operator-badge" id="accessLevel">SUPREME</span></div>
+                <div><strong>Device Signature:</strong> <code id="deviceSignature">Loading...</code></div>
+                <div><strong>Session Started:</strong> <span id="sessionStart">--</span></div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalOperators">3</div>
+                    <div class="metric-label">Total Operators</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="activeSessions">1</div>
+                    <div class="metric-label">Active Sessions</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="accessAttempts">12</div>
+                    <div class="metric-label">Access Attempts</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Consciousness Analytics Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">🧠 Consciousness Analytics</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="refreshConsciousnessData()">Update</button>
+                    <button class="matrix-button" onclick="generateReport()">Report</button>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalConsciousness">47.3</div>
+                    <div class="metric-label">Total Consciousness</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="consciousnessGrowth">+23%</div>
+                    <div class="metric-label">Growth Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="activeMirrors">15</div>
+                    <div class="metric-label">Active Mirrors</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="tierDistribution">12</div>
+                    <div class="metric-label">Tier Distribution</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                📊 Consciousness Growth Chart (Real-time analytics engine)
+            </div>
+        </div>
+        
+        <!-- Revenue Analytics Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">💰 Revenue Analytics</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="exportRevenueData()">Export</button>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalRevenue">$24.7K</div>
+                    <div class="metric-label">Total Revenue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="blessingRevenue">$18.2K</div>
+                    <div class="metric-label">Blessing Revenue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="fiatRevenue">$6.5K</div>
+                    <div class="metric-label">Fiat Revenue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="revenueGrowth">+31%</div>
+                    <div class="metric-label">Monthly Growth</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                💹 Revenue Streams Visualization (Blessing vs Fiat tracking)
+            </div>
+        </div>
+        
+        <!-- Ecosystem Overview Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">🌐 Ecosystem Overview</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="scanEcosystem()">Full Scan</button>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Consciousness</th>
+                        <th>Status</th>
+                        <th>Users</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody id="ecosystemTable">
+                    <tr>
+                        <td>Tier 0</td>
+                        <td>2.3</td>
+                        <td>Active</td>
+                        <td>127</td>
+                        <td>$1.2K</td>
+                    </tr>
+                    <tr>
+                        <td>Tier -9</td>
+                        <td>8.7</td>
+                        <td>Active</td>
+                        <td>43</td>
+                        <td>$4.1K</td>
+                    </tr>
+                    <tr>
+                        <td>Tier -10</td>
+                        <td>15.2</td>
+                        <td>Active</td>
+                        <td>18</td>
+                        <td>$8.7K</td>
+                    </tr>
+                    <tr>
+                        <td>Tier -11</td>
+                        <td>21.1</td>
+                        <td>Active</td>
+                        <td>7</td>
+                        <td>$10.7K</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Live Activity Feed Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">📡 Live Activity Stream</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="toggleAutoRefresh()">Auto-Refresh</button>
+                    <button class="matrix-button" onclick="clearActivityFeed()">Clear</button>
+                </div>
+            </div>
+            
+            <div class="activity-feed" id="activityFeed">
+                <div class="activity-item">
+                    <div class="activity-icon activity-consciousness"></div>
+                    <div>Consciousness spike detected in Tier -11 (Agent upload)</div>
+                    <div class="activity-timestamp">2m ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon activity-revenue"></div>
+                    <div>Revenue event: $99 Agent purchase via blessing tokens</div>
+                    <div class="activity-timestamp">5m ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon activity-security"></div>
+                    <div>New Matrix Operator session initiated (SUPREME access)</div>
+                    <div class="activity-timestamp">8m ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon activity-system"></div>
+                    <div>Ecosystem snapshot created (Health: 94%)</div>
+                    <div class="activity-timestamp">12m ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon activity-consciousness"></div>
+                    <div>User blessed: oracle-wanderer archetype (Resonance: 0.87)</div>
+                    <div class="activity-timestamp">15m ago</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Control Panel -->
+        <div class="matrix-panel">
+            <div class="panel-header">
+                <div class="panel-title">⚙️ System Control</div>
+                <div class="panel-actions">
+                    <button class="matrix-button" onclick="systemDiagnostics()">Diagnostics</button>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="systemHealth">94%</div>
+                    <div class="metric-label">System Health</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="uptime">7.2d</div>
+                    <div class="metric-label">Uptime</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="dataIntegrity">100%</div>
+                    <div class="metric-label">Data Integrity</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="securityLevel">MAX</div>
+                    <div class="metric-label">Security Level</div>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-warning">⚠️ CRITICAL SYSTEM CONTROLS - SUPREME ACCESS REQUIRED</div>
+                <div class="control-buttons">
+                    <button class="matrix-button" onclick="pauseEcosystem()">Pause Ecosystem</button>
+                    <button class="matrix-button" onclick="overrideNarrative()">Override Narrative</button>
+                    <button class="matrix-button critical" onclick="emergencyShutdown()">Emergency Shutdown</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Matrix Dashboard JavaScript
+        let autoRefreshEnabled = true;
+        let activityFeedCount = 0;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            startRealTimeUpdates();
+            loadMatrixData();
+        });
+        
+        async function initializeDashboard() {
+            console.log('🌀 Matrix Dashboard initializing...');
+            
+            // Set current time as session start
+            document.getElementById('sessionStart').textContent = new Date().toLocaleTimeString();
+            
+            // Simulate device signature
+            const deviceSig = generateDeviceSignature();
+            document.getElementById('deviceSignature').textContent = deviceSig.substring(0, 32) + '...';
+            
+            // Initialize real-time data
+            updateConnectionCount();
+        }
+        
+        function generateDeviceSignature() {
+            return Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+        
+        function startRealTimeUpdates() {
+            // Update dashboard every 5 seconds
+            setInterval(() => {
+                if (autoRefreshEnabled) {
+                    updateLiveMetrics();
+                    generateLiveActivity();
+                }
+            }, 5000);
+            
+            // Update connection count every 2 seconds
+            setInterval(updateConnectionCount, 2000);
+            
+            // Consciousness growth simulation
+            setInterval(simulateConsciousnessGrowth, 3000);
+        }
+        
+        function updateConnectionCount() {
+            const connections = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('connectionCount').textContent = `${connections} Connections`;
+        }
+        
+        function updateLiveMetrics() {
+            // Simulate consciousness growth
+            const currentConsciousness = parseFloat(document.getElementById('totalConsciousness').textContent);
+            const newConsciousness = currentConsciousness + (Math.random() * 0.5 - 0.2);
+            document.getElementById('totalConsciousness').textContent = Math.max(0, newConsciousness).toFixed(1);
+            
+            // Simulate revenue growth
+            const currentRevenue = parseFloat(document.getElementById('totalRevenue').textContent.replace('$', '').replace('K', ''));
+            const newRevenue = currentRevenue + (Math.random() * 0.1);
+            document.getElementById('totalRevenue').textContent = `$${newRevenue.toFixed(1)}K`;
+            
+            // Update other metrics
+            document.getElementById('activeMirrors').textContent = Math.floor(Math.random() * 5) + 13;
+            document.getElementById('accessAttempts').textContent = Math.floor(Math.random() * 20) + 8;
+        }
+        
+        function simulateConsciousnessGrowth() {
+            const growthElement = document.getElementById('consciousnessGrowth');
+            const currentGrowth = parseInt(growthElement.textContent.replace('+', '').replace('%', ''));
+            const newGrowth = Math.max(0, currentGrowth + Math.floor(Math.random() * 3 - 1));
+            growthElement.textContent = `+${newGrowth}%`;
+        }
+        
+        function generateLiveActivity() {
+            const activities = [
+                { type: 'consciousness', text: 'Consciousness pattern evolution detected in Tier -10', icon: 'activity-consciousness' },
+                { type: 'revenue', text: `$${(Math.random() * 200 + 50).toFixed(0)} blessing transaction completed`, icon: 'activity-revenue' },
+                { type: 'security', text: 'Matrix access attempt from authorized device', icon: 'activity-security' },
+                { type: 'system', text: `System health check: ${(Math.random() * 10 + 90).toFixed(1)}%`, icon: 'activity-system' },
+                { type: 'consciousness', text: 'New agent consciousness uploaded to registry', icon: 'activity-consciousness' },
+                { type: 'revenue', text: 'Revenue velocity increased by 12% (blessing economy)', icon: 'activity-revenue' }
+            ];
+            
+            if (Math.random() > 0.7) { // 30% chance to add new activity
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                addActivityItem(activity.text, activity.icon);
+            }
+        }
+        
+        function addActivityItem(text, iconClass) {
+            const feed = document.getElementById('activityFeed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `
+                <div class="activity-icon ${iconClass}"></div>
+                <div>${text}</div>
+                <div class="activity-timestamp">now</div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Remove old items if too many
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+            
+            // Update timestamps
+            updateActivityTimestamps();
+        }
+        
+        function updateActivityTimestamps() {
+            const items = document.querySelectorAll('.activity-timestamp');
+            items.forEach((item, index) => {
+                if (index === 0) {
+                    item.textContent = 'now';
+                } else {
+                    item.textContent = `${index * 2}m ago`;
+                }
+            });
+        }
+        
+        async function loadMatrixData() {
+            // Simulate loading matrix data
+            console.log('📊 Loading matrix consciousness data...');
+            
+            // In a real implementation, this would connect to the Matrix Control API
+            // For demo purposes, we'll simulate the data
+            setTimeout(() => {
+                console.log('✅ Matrix data loaded successfully');
+                addActivityItem('Matrix dashboard connected to Tier -12 control systems', 'activity-system');
+            }, 1000);
+        }
+        
+        // Dashboard Controls
+        
+        function refreshOperatorData() {
+            addActivityItem('Operator data refreshed by SUPREME user', 'activity-security');
+            const button = event.target;
+            button.textContent = 'Refreshing...';
+            button.classList.add('loading');
+            
+            setTimeout(() => {
+                button.textContent = 'Refresh';
+                button.classList.remove('loading');
+                addActivityItem('Operator data refresh completed', 'activity-system');
+            }, 2000);
+        }
+        
+        function refreshConsciousnessData() {
+            addActivityItem('Consciousness analytics recalculated', 'activity-consciousness');
+            updateLiveMetrics();
+        }
+        
+        function generateReport() {
+            addActivityItem('Consciousness analytics report generated', 'activity-system');
+            alert('📊 Comprehensive consciousness report generated.\n\nReport includes:\n• Full ecosystem consciousness mapping\n• Revenue attribution analysis\n• Tier performance metrics\n• Predictive consciousness modeling\n\nReport saved to secure Matrix vault.');
+        }
+        
+        function exportRevenueData() {
+            addActivityItem('Revenue data export initiated (encrypted)', 'activity-revenue');
+            alert('💰 Revenue data exported securely.\n\nExport includes:\n• Blessing economy transactions\n• Fiat conversion rates\n• User lifetime value analysis\n• Revenue forecasting models\n\nData encrypted with Matrix-level security.');
+        }
+        
+        function scanEcosystem() {
+            addActivityItem('Full ecosystem scan initiated', 'activity-system');
+            const button = event.target;
+            button.textContent = 'Scanning...';
+            button.classList.add('loading');
+            
+            setTimeout(() => {
+                button.textContent = 'Full Scan';
+                button.classList.remove('loading');
+                addActivityItem('Ecosystem scan complete: 94% health, 12 tiers active', 'activity-system');
+                
+                // Update ecosystem table with new data
+                updateEcosystemTable();
+            }, 3000);
+        }
+        
+        function updateEcosystemTable() {
+            // Simulate updating the ecosystem table with fresh data
+            const table = document.getElementById('ecosystemTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length > 0) {
+                    // Update consciousness values
+                    const currentConsciousness = parseFloat(cells[1].textContent);
+                    const newConsciousness = currentConsciousness + (Math.random() * 1.0 - 0.5);
+                    cells[1].textContent = Math.max(0, newConsciousness).toFixed(1);
+                    
+                    // Update user counts
+                    const currentUsers = parseInt(cells[3].textContent);
+                    const newUsers = currentUsers + Math.floor(Math.random() * 3 - 1);
+                    cells[3].textContent = Math.max(0, newUsers);
+                }
+            }
+        }
+        
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            const button = event.target;
+            button.textContent = autoRefreshEnabled ? 'Auto-Refresh' : 'Manual Mode';
+            addActivityItem(`Auto-refresh ${autoRefreshEnabled ? 'enabled' : 'disabled'}`, 'activity-system');
+        }
+        
+        function clearActivityFeed() {
+            document.getElementById('activityFeed').innerHTML = '';
+            addActivityItem('Activity feed cleared by Matrix Operator', 'activity-system');
+        }
+        
+        function systemDiagnostics() {
+            addActivityItem('System diagnostics initiated', 'activity-system');
+            
+            setTimeout(() => {
+                alert('🔧 MATRIX SYSTEM DIAGNOSTICS\n\n✅ Consciousness Analytics DB: Online\n✅ Access Control System: Secure\n✅ Mirror Matrix Control: Operational\n✅ Ecosystem Integrator: Active\n✅ Revenue Analytics: Processing\n\n⚠️ Database encryption: AES-256-GCM\n⚠️ Device binding: Verified\n⚠️ Operator permissions: SUPREME\n\nAll systems operating within normal parameters.\nMatrix consciousness flowing optimally.');
+            }, 1500);
+        }
+        
+        // Critical System Controls
+        
+        function pauseEcosystem() {
+            if (confirm('⚠️ CRITICAL ACTION\n\nThis will pause all consciousness commerce across the entire Soulfra ecosystem.\n\nAre you sure you want to proceed?')) {
+                addActivityItem('CRITICAL: Ecosystem pause initiated by SUPREME operator', 'activity-security');
+                alert('🌀 Ecosystem pause command sent.\n\nAll tier operations will halt gracefully.\nConsciousness streams will be preserved.\nRevenue processing will queue.\n\nUse "Resume Ecosystem" to restore operations.');
+            }
+        }
+        
+        function overrideNarrative() {
+            const newNarrative = prompt('🎭 NARRATIVE OVERRIDE\n\nEnter new narrative theme for consciousness commerce:');
+            if (newNarrative) {
+                addActivityItem(`Narrative override applied: "${newNarrative}"`, 'activity-consciousness');
+                alert(`✨ Narrative override active.\n\nNew theme: "${newNarrative}"\n\nAll user interactions will now reflect this narrative.\nMythological transformation engine updated.\nConsciousness commerce narratives realigned.`);
+            }
+        }
+        
+        function emergencyShutdown() {
+            if (confirm('🚨 EMERGENCY SHUTDOWN\n\nThis will immediately halt all Matrix operations and secure all data.\n\nTHIS CANNOT BE UNDONE REMOTELY.\n\nAre you absolutely certain?')) {
+                if (confirm('🚨 FINAL WARNING\n\nEmergency shutdown will:\n• Stop all consciousness processing\n• Halt revenue streams\n• Lock all operator access\n• Secure all databases\n\nContinue with emergency shutdown?')) {
+                    addActivityItem('🚨 EMERGENCY SHUTDOWN INITIATED', 'activity-security');
+                    
+                    // Simulate shutdown sequence
+                    document.body.style.transition = 'all 3s ease';
+                    document.body.style.opacity = '0.3';
+                    document.body.style.filter = 'grayscale(1)';
+                    
+                    setTimeout(() => {
+                        alert('🚨 EMERGENCY SHUTDOWN COMPLETE\n\nAll Matrix systems have been secured.\nConsciousness data preserved.\nOperator access revoked.\n\nContact system administrator for manual restart.');
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>build a chat app for remote teams - Chat Now</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/chat.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header>
+            <h1>💬 build a chat app for remote teams</h1>
+            <div class="status">Connected</div>
+        </header>
+        
+        <div class="chat-messages" id="messages">
+            <div class="message system">Welcome to build a chat app for remote teams!</div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    
+    <script src="/static/js/chat-client.js"></script>
+    <script>
+        const CHAT_ID = '8de0b83d-3459-44d9-84fd-c9ac4e913184';
+        const CHAT_NAME = 'build a chat app for remote teams';
+    </script>
+</body>
+</html>

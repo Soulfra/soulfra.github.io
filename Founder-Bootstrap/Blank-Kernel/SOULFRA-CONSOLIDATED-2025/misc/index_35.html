@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Mesh Interface</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0, 40, 20, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 14px;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        input::placeholder {
+            color: rgba(0, 255, 136, 0.4);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            background: #00cc66;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            font-size: 12px;
+            display: none;
+        }
+        .status.error {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .status.success {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+        .hint {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+        .loading {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 MirrorOS Mesh Interface</h1>
+        <form id="meshForm">
+            <div class="form-group">
+                <label for="claudeKey">Claude API Key</label>
+                <input type="password" id="claudeKey" name="claudeKey" placeholder="sk-ant-api03-..." autocomplete="off">
+                <div class="hint">Leave blank to use default reflection key</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="openaiKey">OpenAI API Key</label>
+                <input type="password" id="openaiKey" name="openaiKey" placeholder="sk-..." autocomplete="off">
+                <div class="hint">Optional - for GPT-4 reflection mode</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="ollamaUrl">Ollama URL</label>
+                <input type="text" id="ollamaUrl" name="ollamaUrl" placeholder="http://localhost:11434" value="http://localhost:11434">
+                <div class="hint">Local Ollama instance for offline reflection</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="agentKey">Agent Seed Signature</label>
+                <input type="password" id="agentKey" name="agentKey" placeholder="(optional)" autocomplete="off">
+                <div class="hint">Custom agent signature for advanced users</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="qrCode">QR Verification Code</label>
+                <input type="text" id="qrCode" name="qrCode" placeholder="qr-founder-0000" required>
+                <div class="hint">Required for trust chain initialization</div>
+            </div>
+            
+            <button type="submit" id="submitBtn">Start My Mirror</button>
+        </form>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('meshForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusDiv = document.getElementById('status');
+
+        function showStatus(message, type = 'info') {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        function validateApiKey(key, provider) {
+            if (!key) return true; // Allow empty keys
+            
+            const patterns = {
+                claude: /^sk-ant-api\d{2}-[\w-]{48,}$/,
+                openai: /^sk-[a-zA-Z0-9]{48,}$/,
+                ollama: /^https?:\/\/.+$/
+            };
+            
+            return patterns[provider] ? patterns[provider].test(key) : true;
+        }
+
+        async function initializeMesh(formData) {
+            const uuid = 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            try {
+                // Store configuration
+                const config = {
+                    uuid,
+                    claudeKey: formData.claudeKey || 'default',
+                    openaiKey: formData.openaiKey || null,
+                    ollamaUrl: formData.ollamaUrl || 'http://localhost:11434',
+                    qrCode: formData.qrCode,
+                    trustFlags: {
+                        verified: false,
+                        sandbox: true,
+                        reflection: true
+                    },
+                    timestamp: Date.now()
+                };
+
+                // Send to mesh router
+                const response = await fetch('/api/mesh/initialize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Initialization failed: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus(`✅ Mesh initialized! Session ID: ${result.sessionId}`, 'success');
+                    
+                    // Redirect to chat interface after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = `/chat?session=${result.sessionId}`;
+                    }, 2000);
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Initialize Mesh Connection';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                claudeKey: form.claudeKey.value.trim(),
+                openaiKey: form.openaiKey.value.trim(),
+                ollamaUrl: form.ollamaUrl.value.trim(),
+                agentKey: form.agentKey.value.trim(),
+                qrCode: form.qrCode.value.trim()
+            };
+
+            // Validate QR code
+            if (!formData.qrCode) {
+                showStatus('❌ QR code is required', 'error');
+                return;
+            }
+
+            // Validate API keys
+            if (formData.claudeKey && !validateApiKey(formData.claudeKey, 'claude')) {
+                showStatus('❌ Invalid Claude API key format', 'error');
+                return;
+            }
+
+            if (formData.openaiKey && !validateApiKey(formData.openaiKey, 'openai')) {
+                showStatus('❌ Invalid OpenAI API key format', 'error');
+                return;
+            }
+
+            if (formData.ollamaUrl && !validateApiKey(formData.ollamaUrl, 'ollama')) {
+                showStatus('❌ Invalid Ollama URL format', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Initializing<span class="loading"></span>';
+            showStatus('🔄 Connecting to mesh network...', 'info');
+
+            // Simulate initialization delay
+            setTimeout(() => {
+                initializeMesh(formData);
+            }, 1500);
+        });
+
+        // Auto-focus QR code field
+        document.getElementById('qrCode').focus();
+    </script>
+</body>
+</html>

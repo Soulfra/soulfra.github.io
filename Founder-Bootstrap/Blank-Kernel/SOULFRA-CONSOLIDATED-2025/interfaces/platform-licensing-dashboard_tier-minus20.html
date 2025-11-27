@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💼 Soulfra Platform Licensing - Enterprise Dashboard</title>
+    
+    <!-- Chart.js for advanced charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-header {
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 3px solid #007acc;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #007acc, #00d4aa);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .brand-info h1 {
+            font-size: 28px;
+            background: linear-gradient(45deg, #007acc, #00d4aa, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+        
+        .brand-info .tagline {
+            color: #00d4aa;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .header-stat {
+            text-align: center;
+            padding: 15px 20px;
+            background: rgba(0, 122, 204, 0.1);
+            border: 1px solid #007acc;
+            border-radius: 12px;
+            min-width: 120px;
+        }
+        
+        .header-stat .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d4aa;
+            margin-bottom: 5px;
+        }
+        
+        .header-stat .label {
+            font-size: 12px;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: auto 1fr;
+            height: calc(100vh - 110px);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .sidebar {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #007acc;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-y: auto;
+            grid-row: 1 / -1;
+        }
+        
+        .sidebar h3 {
+            color: #007acc;
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-align: center;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 15px;
+        }
+        
+        .nav-section {
+            margin-bottom: 30px;
+        }
+        
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(0, 122, 204, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(0, 212, 170, 0.2);
+            border-left: 4px solid #00d4aa;
+        }
+        
+        .license-tier {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .license-tier:hover {
+            border-color: #007acc;
+            box-shadow: 0 5px 15px rgba(0, 122, 204, 0.3);
+        }
+        
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .tier-name {
+            font-weight: bold;
+            color: #00d4aa;
+        }
+        
+        .tier-price {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .tier-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .tier-stat {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .kpi-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card:hover {
+            border-color: #007acc;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 122, 204, 0.3);
+        }
+        
+        .kpi-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 122, 204, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .kpi-card:hover:before {
+            left: 100%;
+        }
+        
+        .kpi-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .kpi-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4aa, #007acc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .kpi-label {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-change {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        
+        .kpi-change.positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .kpi-change.negative {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        .chart-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .chart-title {
+            color: #007acc;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            position: relative;
+            height: 300px;
+        }
+        
+        .analytics-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00d4aa;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-y: auto;
+            grid-row: 1 / -1;
+        }
+        
+        .analytics-panel h3 {
+            color: #00d4aa;
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-align: center;
+            border-bottom: 2px solid #00d4aa;
+            padding-bottom: 15px;
+        }
+        
+        .partner-list {
+            margin-bottom: 30px;
+        }
+        
+        .partner-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid #00d4aa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .partner-item:hover {
+            background: rgba(0, 212, 170, 0.2);
+            transform: scale(1.02);
+        }
+        
+        .partner-info {
+            flex: 1;
+        }
+        
+        .partner-name {
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+        
+        .partner-type {
+            font-size: 12px;
+            color: #00d4aa;
+            text-transform: uppercase;
+        }
+        
+        .partner-revenue {
+            text-align: right;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .geographic-section {
+            margin-bottom: 25px;
+        }
+        
+        .geo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .geo-flag {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .geo-info {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .geo-revenue {
+            color: #007acc;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .compliance-status {
+            margin-bottom: 25px;
+        }
+        
+        .compliance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        
+        .compliance-status-indicator {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .compliance-status-indicator.compliant {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .compliance-status-indicator.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .activity-feed {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #007acc;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .activity-time {
+            color: #00d4aa;
+            font-weight: bold;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 3px solid #007acc;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            0% {
+                transform: translateY(-50px) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #007acc, #00d4aa);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 122, 204, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ff5722);
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="header-brand">
+            <div class="brand-logo">S</div>
+            <div class="brand-info">
+                <h1>Soulfra Platform Licensing</h1>
+                <div class="tagline">Enterprise Revenue Intelligence</div>
+            </div>
+        </div>
+        
+        <div class="header-stats">
+            <div class="header-stat">
+                <div class="value" id="totalRevenue">$847M</div>
+                <div class="label">Total Revenue</div>
+            </div>
+            <div class="header-stat">
+                <div class="value" id="activePartners">2,847</div>
+                <div class="label">Active Partners</div>
+            </div>
+            <div class="header-stat">
+                <div class="value" id="apiCalls">12.3M</div>
+                <div class="label">API Calls/Day</div>
+            </div>
+            <div class="header-stat">
+                <div class="value" id="globalReach">47</div>
+                <div class="label">Countries</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <h3>💼 Business Intelligence</h3>
+            
+            <div class="nav-section">
+                <div class="nav-item active" onclick="showSection('overview')">
+                    📊 Revenue Overview
+                </div>
+                <div class="nav-item" onclick="showSection('partners')">
+                    🤝 Partner Management
+                </div>
+                <div class="nav-item" onclick="showSection('geographic')">
+                    🌍 Geographic Expansion
+                </div>
+                <div class="nav-item" onclick="showSection('compliance')">
+                    ⚖️ Legal & Compliance
+                </div>
+                <div class="nav-item" onclick="showSection('forecasting')">
+                    📈 Revenue Forecasting
+                </div>
+            </div>
+            
+            <h3>🎯 License Tiers</h3>
+            <div class="license-tier">
+                <div class="tier-header">
+                    <span class="tier-name">Enterprise</span>
+                    <span class="tier-price">$50K/mo</span>
+                </div>
+                <div class="tier-stats">
+                    <div class="tier-stat">
+                        <span>Clients:</span>
+                        <span>847</span>
+                    </div>
+                    <div class="tier-stat">
+                        <span>Revenue:</span>
+                        <span>$42.4M</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="license-tier">
+                <div class="tier-header">
+                    <span class="tier-name">Professional</span>
+                    <span class="tier-price">$15K/mo</span>
+                </div>
+                <div class="tier-stats">
+                    <div class="tier-stat">
+                        <span>Clients:</span>
+                        <span>1,923</span>
+                    </div>
+                    <div class="tier-stat">
+                        <span>Revenue:</span>
+                        <span>$28.8M</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="license-tier">
+                <div class="tier-header">
+                    <span class="tier-name">Startup</span>
+                    <span class="tier-price">$2.5K/mo</span>
+                </div>
+                <div class="tier-stats">
+                    <div class="tier-stat">
+                        <span>Clients:</span>
+                        <span>4,729</span>
+                    </div>
+                    <div class="tier-stat">
+                        <span>Revenue:</span>
+                        <span>$11.8M</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-icon">💰</span>
+                    <div class="kpi-value" id="monthlyRecurring">$83.2M</div>
+                    <div class="kpi-label">Monthly Recurring Revenue</div>
+                    <div class="kpi-change positive">+23.7% MoM</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <span class="kpi-icon">📈</span>
+                    <div class="kpi-value" id="growthRate">47.2%</div>
+                    <div class="kpi-label">YoY Growth Rate</div>
+                    <div class="kpi-change positive">+8.3% vs target</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <span class="kpi-icon">🎯</span>
+                    <div class="kpi-value" id="churnRate">2.8%</div>
+                    <div class="kpi-label">Monthly Churn Rate</div>
+                    <div class="kpi-change positive">-0.4% MoM</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <span class="kpi-icon">⚡</span>
+                    <div class="kpi-value" id="apiUptime">99.97%</div>
+                    <div class="kpi-label">Platform Uptime</div>
+                    <div class="kpi-change positive">+0.02% MoM</div>
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">📊 Revenue Trend Analysis</div>
+                    <div class="chart-canvas">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">🥧 License Distribution</div>
+                    <div class="chart-canvas">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Analytics Panel -->
+        <div class="analytics-panel">
+            <h3>🚀 Strategic Partners</h3>
+            
+            <div class="partner-list">
+                <div class="partner-item">
+                    <div class="partner-info">
+                        <div class="partner-name">Microsoft Corporation</div>
+                        <div class="partner-type">Enterprise</div>
+                    </div>
+                    <div class="partner-revenue">$2.4M/mo</div>
+                </div>
+                
+                <div class="partner-item">
+                    <div class="partner-info">
+                        <div class="partner-name">Amazon Web Services</div>
+                        <div class="partner-type">Enterprise</div>
+                    </div>
+                    <div class="partner-revenue">$1.8M/mo</div>
+                </div>
+                
+                <div class="partner-item">
+                    <div class="partner-info">
+                        <div class="partner-name">Goldman Sachs</div>
+                        <div class="partner-type">Professional</div>
+                    </div>
+                    <div class="partner-revenue">$847K/mo</div>
+                </div>
+                
+                <div class="partner-item">
+                    <div class="partner-info">
+                        <div class="partner-name">Tesla Inc.</div>
+                        <div class="partner-type">Enterprise</div>
+                    </div>
+                    <div class="partner-revenue">$723K/mo</div>
+                </div>
+            </div>
+            
+            <h3>🌍 Geographic Revenue</h3>
+            <div class="geographic-section">
+                <div class="geo-item">
+                    <span class="geo-flag">🇺🇸</span>
+                    <span class="geo-info">United States</span>
+                    <span class="geo-revenue">$47.2M</span>
+                </div>
+                <div class="geo-item">
+                    <span class="geo-flag">🇬🇧</span>
+                    <span class="geo-info">United Kingdom</span>
+                    <span class="geo-revenue">$12.8M</span>
+                </div>
+                <div class="geo-item">
+                    <span class="geo-flag">🇩🇪</span>
+                    <span class="geo-info">Germany</span>
+                    <span class="geo-revenue">$8.7M</span>
+                </div>
+                <div class="geo-item">
+                    <span class="geo-flag">🇯🇵</span>
+                    <span class="geo-info">Japan</span>
+                    <span class="geo-revenue">$6.4M</span>
+                </div>
+                <div class="geo-item">
+                    <span class="geo-flag">🇦🇺</span>
+                    <span class="geo-info">Australia</span>
+                    <span class="geo-revenue">$4.1M</span>
+                </div>
+            </div>
+            
+            <h3>⚖️ Compliance Status</h3>
+            <div class="compliance-status">
+                <div class="compliance-item">
+                    <span>GDPR Compliance</span>
+                    <span class="compliance-status-indicator compliant">Compliant</span>
+                </div>
+                <div class="compliance-item">
+                    <span>SOC 2 Type II</span>
+                    <span class="compliance-status-indicator compliant">Certified</span>
+                </div>
+                <div class="compliance-item">
+                    <span>ISO 27001</span>
+                    <span class="compliance-status-indicator compliant">Certified</span>
+                </div>
+                <div class="compliance-item">
+                    <span>CCPA Compliance</span>
+                    <span class="compliance-status-indicator pending">Review</span>
+                </div>
+            </div>
+            
+            <h3>📡 Recent Activity</h3>
+            <div class="activity-feed">
+                <div class="activity-item">
+                    <span class="activity-time">14:23</span> - Microsoft renewed Enterprise license (+$2.4M ARR)
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">13:47</span> - New startup onboarded: TechCorp Inc. (+$2.5K MRR)
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">12:35</span> - API usage spike: 847% above normal in EU region
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">11:29</span> - Goldman Sachs upgraded to Enterprise tier (+$427K MRR)
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">10:18</span> - Compliance audit completed: SOC 2 renewed
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">09:45</span> - Revenue milestone: $850M total platform revenue
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for detailed views -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Partner Details</h2>
+            <div id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            <button class="btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        // Dashboard state
+        let dashboardData = {
+            revenue: {
+                monthly: [67.2, 71.8, 75.3, 79.6, 83.2],
+                quarters: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1'],
+                growth: [23.7, 28.9, 31.2, 35.8, 47.2]
+            },
+            partners: [
+                { name: 'Microsoft Corporation', tier: 'Enterprise', revenue: 2400000, growth: 15.7 },
+                { name: 'Amazon Web Services', tier: 'Enterprise', revenue: 1800000, growth: 23.4 },
+                { name: 'Goldman Sachs', tier: 'Professional', revenue: 847000, growth: 45.8 },
+                { name: 'Tesla Inc.', tier: 'Enterprise', revenue: 723000, growth: 67.2 }
+            ],
+            metrics: {
+                totalRevenue: 847000000,
+                activePartners: 2847,
+                apiCalls: 12300000,
+                globalReach: 47,
+                monthlyRecurring: 83200000,
+                growthRate: 47.2,
+                churnRate: 2.8,
+                apiUptime: 99.97
+            }
+        };
+        
+        // Initialize charts
+        function initializeCharts() {
+            // Revenue Trend Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: dashboardData.revenue.quarters,
+                    datasets: [{
+                        label: 'Monthly Recurring Revenue',
+                        data: dashboardData.revenue.monthly,
+                        borderColor: '#007acc',
+                        backgroundColor: 'rgba(0, 122, 204, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Growth Rate %',
+                        data: dashboardData.revenue.growth,
+                        borderColor: '#00d4aa',
+                        backgroundColor: 'rgba(0, 212, 170, 0.1)',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: { 
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return '$' + value + 'M';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: { 
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+            
+            // License Distribution Chart
+            const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+            new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Enterprise', 'Professional', 'Startup'],
+                    datasets: [{
+                        data: [42.4, 28.8, 11.8],
+                        backgroundColor: ['#007acc', '#00d4aa', '#ff6b6b'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Show different sections
+        function showSection(section) {
+            // Update active navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show modal with section content
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            switch(section) {
+                case 'partners':
+                    title.textContent = '🤝 Partner Management Dashboard';
+                    content.innerHTML = generatePartnerDetails();
+                    break;
+                case 'geographic':
+                    title.textContent = '🌍 Geographic Expansion Analysis';
+                    content.innerHTML = generateGeographicDetails();
+                    break;
+                case 'compliance':
+                    title.textContent = '⚖️ Legal & Compliance Framework';
+                    content.innerHTML = generateComplianceDetails();
+                    break;
+                case 'forecasting':
+                    title.textContent = '📈 Revenue Forecasting Model';
+                    content.innerHTML = generateForecastingDetails();
+                    break;
+                default:
+                    return;
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // Generate partner details
+        function generatePartnerDetails() {
+            return `
+                <div style="text-align: left; margin: 20px 0;">
+                    <h3 style="color: #007acc; margin-bottom: 15px;">Enterprise Partnership Analytics</h3>
+                    
+                    <div style="background: rgba(0, 122, 204, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #00d4aa;">Top Revenue Contributors</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Microsoft: $2.4M/mo (Enterprise tier, 15.7% growth)</li>
+                            <li>AWS: $1.8M/mo (Enterprise tier, 23.4% growth)</li>
+                            <li>Goldman Sachs: $847K/mo (Professional tier, 45.8% growth)</li>
+                            <li>Tesla: $723K/mo (Enterprise tier, 67.2% growth)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(0, 212, 170, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #ff6b6b;">Partnership ROI Metrics</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Average deal size: $847K annually</li>
+                            <li>Sales cycle: 127 days average</li>
+                            <li>Customer lifetime value: $12.4M</li>
+                            <li>Net revenue retention: 147%</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="color: #cccccc; font-size: 14px; margin-top: 20px;">
+                        Our enterprise partnership program has generated $847M in total revenue across 2,847 active partners. 
+                        The platform's API-first architecture enables seamless integration with enterprise systems, 
+                        resulting in industry-leading retention rates and expansion revenue.
+                    </p>
+                </div>
+            `;
+        }
+        
+        // Generate geographic details
+        function generateGeographicDetails() {
+            return `
+                <div style="text-align: left; margin: 20px 0;">
+                    <h3 style="color: #007acc; margin-bottom: 15px;">Global Market Penetration</h3>
+                    
+                    <div style="background: rgba(0, 122, 204, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #00d4aa;">Revenue by Region (Monthly)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>🇺🇸 North America: $47.2M (56.8% of total)</li>
+                            <li>🇪🇺 Europe: $21.5M (25.8% of total)</li>
+                            <li>🇦🇵 Asia-Pacific: $10.9M (13.1% of total)</li>
+                            <li>🌍 Rest of World: $3.6M (4.3% of total)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(0, 212, 170, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #ff6b6b;">Expansion Opportunities</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>India: $2.1B total addressable market</li>
+                            <li>Brazil: $890M TAM, regulatory approval pending</li>
+                            <li>South Korea: $654M TAM, pilot program Q3</li>
+                            <li>Nordic region: $423M TAM, partnerships established</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="color: #cccccc; font-size: 14px; margin-top: 20px;">
+                        Our platform operates in 47 countries with full regulatory compliance. 
+                        The geographic expansion strategy focuses on markets with favorable regulatory environments 
+                        and high digital adoption rates.
+                    </p>
+                </div>
+            `;
+        }
+        
+        // Generate compliance details
+        function generateComplianceDetails() {
+            return `
+                <div style="text-align: left; margin: 20px 0;">
+                    <h3 style="color: #007acc; margin-bottom: 15px;">Legal & Compliance Framework</h3>
+                    
+                    <div style="background: rgba(0, 122, 204, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #00d4aa;">Current Certifications</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>✅ SOC 2 Type II: Certified until Dec 2024</li>
+                            <li>✅ ISO 27001: Information security management</li>
+                            <li>✅ GDPR: Full compliance across EU operations</li>
+                            <li>✅ HIPAA: Healthcare data protection ready</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(255, 193, 7, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #ffc107;">Regulatory Pipeline</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>🔄 CCPA: California privacy compliance review</li>
+                            <li>🔄 PCI DSS: Payment card industry standards</li>
+                            <li>🔄 FedRAMP: US federal government authorization</li>
+                            <li>🔄 CSA STAR: Cloud security alliance certification</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="color: #cccccc; font-size: 14px; margin-top: 20px;">
+                        Our legal team maintains relationships with regulatory bodies across all operating jurisdictions. 
+                        Compliance costs are approximately 3.2% of revenue, well below industry averages of 5.8%.
+                    </p>
+                </div>
+            `;
+        }
+        
+        // Generate forecasting details
+        function generateForecastingDetails() {
+            return `
+                <div style="text-align: left; margin: 20px 0;">
+                    <h3 style="color: #007acc; margin-bottom: 15px;">Revenue Forecasting Model</h3>
+                    
+                    <div style="background: rgba(0, 122, 204, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #00d4aa;">12-Month Projections</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Q2 2024: $91.7M MRR (+10.2% QoQ)</li>
+                            <li>Q3 2024: $105.3M MRR (+14.8% QoQ)</li>
+                            <li>Q4 2024: $122.6M MRR (+16.4% QoQ)</li>
+                            <li>Q1 2025: $143.8M MRR (+17.3% QoQ)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(0, 212, 170, 0.1); padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #ff6b6b;">Growth Drivers</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Enterprise upsells: +$23.4M ARR expected</li>
+                            <li>Geographic expansion: +$15.7M ARR</li>
+                            <li>New product features: +$8.9M ARR</li>
+                            <li>API usage monetization: +$12.1M ARR</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="color: #cccccc; font-size: 14px; margin-top: 20px;">
+                        Our forecasting model incorporates machine learning algorithms analyzing 847+ data points 
+                        including partner behavior, market conditions, and seasonal trends. Accuracy rate: 94.7%.
+                    </p>
+                </div>
+            `;
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        // Real-time updates
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                // Simulate real-time metric updates
+                dashboardData.metrics.apiCalls += Math.floor(Math.random() * 50000);
+                dashboardData.metrics.totalRevenue += Math.floor(Math.random() * 100000);
+                
+                // Update display
+                document.getElementById('apiCalls').textContent = (dashboardData.metrics.apiCalls / 1000000).toFixed(1) + 'M';
+                document.getElementById('totalRevenue').textContent = '$' + Math.floor(dashboardData.metrics.totalRevenue / 1000000) + 'M';
+                
+                // Add activity
+                addActivityUpdate();
+                
+            }, 10000); // Update every 10 seconds
+        }
+        
+        // Add activity update
+        function addActivityUpdate() {
+            const activities = [
+                'New enterprise lead: Fortune 500 company (+$2.3M potential ARR)',
+                'API usage milestone: 15M daily calls exceeded',
+                'Partner upgrade: StartupCorp moved to Professional tier',
+                'Geographic expansion: Brazil regulatory approval received',
+                'Compliance update: PCI DSS audit scheduled for next month',
+                'Revenue milestone: $900M total platform revenue achieved'
+            ];
+            
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const feed = document.querySelector('.activity-feed');
+            const newItem = document.createElement('div');
+            newItem.className = 'activity-item';
+            newItem.innerHTML = `<span class="activity-time">${time}</span> - ${activity}`;
+            
+            feed.insertBefore(newItem, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        // Initialize dashboard
+        function initializeDashboard() {
+            initializeCharts();
+            startRealTimeUpdates();
+            
+            console.log('💼 Soulfra Platform Licensing Dashboard initialized');
+            console.log('📊 Revenue analytics and partner management active');
+            console.log('🌍 Global market intelligence enabled');
+            console.log('⚖️ Compliance monitoring operational');
+        }
+        
+        // Start dashboard
+        initializeDashboard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+// sessionManager.js - Sacred Starter

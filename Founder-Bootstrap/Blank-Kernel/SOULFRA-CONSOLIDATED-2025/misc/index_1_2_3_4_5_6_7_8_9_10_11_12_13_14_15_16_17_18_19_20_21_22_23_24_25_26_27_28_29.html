@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal Riven Reflection Interface</title>
+    <link rel="stylesheet" href="css/cal-interface.css">
+</head>
+<body>
+    <div id="trust-shield" class="trust-shield active">
+        <h1>🔒 Trust Verification Required</h1>
+        <p>Please verify your device identity</p>
+        <a href="qr-login.html" class="verify-btn">Verify with QR</a>
+    </div>
+
+    <div id="cal-interface" class="cal-interface hidden">
+        <header>
+            <h1>🧠 Cal Riven Interface</h1>
+            <div class="device-status">
+                <span id="device-id">Device: Not Bound</span>
+                <span id="vault-status">Vault: Disconnected</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="reflection-input">
+                <h2>Reflection Prompt</h2>
+                <textarea id="prompt-input" placeholder="What would you like Cal to reflect on?"></textarea>
+                <button id="reflect-btn" disabled>🪞 Reflect</button>
+            </section>
+
+            <section class="reflection-output">
+                <h2>Cal's Response</h2>
+                <div id="response-container">
+                    <p class="placeholder">Awaiting reflection...</p>
+                </div>
+            </section>
+
+            <section class="vault-viewer">
+                <h2>Vault Status</h2>
+                <div id="vault-contents">
+                    <p class="loading">Loading vault data...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Cal Runtime v1.0 | <a href="#" id="disconnect-btn">Disconnect</a></p>
+        </footer>
+    </div>
+
+    <script src="js/cal-interface.js"></script>
+</body>
+</html>

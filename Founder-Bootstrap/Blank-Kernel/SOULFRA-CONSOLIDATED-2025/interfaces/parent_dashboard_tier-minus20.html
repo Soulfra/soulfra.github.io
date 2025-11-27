@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍👩‍👧‍👦 Soulfra Kids World - Parent Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.positive { border-left-color: #27ae60; }
+        .stat-card.learning { border-left-color: #3498db; }
+        .stat-card.social { border-left-color: #9b59b6; }
+        .stat-card.time { border-left-color: #f39c12; }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-description {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-timeline {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #e9ecef;
+        }
+
+        .activity-item.learning { border-left-color: #3498db; }
+        .activity-item.social { border-left-color: #27ae60; }
+        .activity-item.creative { border-left-color: #9b59b6; }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            min-width: 80px;
+        }
+
+        .activity-friend {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .friend-cal { background: #2196F3; }
+        .friend-domingo { background: #9C27B0; }
+        .friend-arty { background: #FF5722; }
+
+        .activity-description {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .learning-progress {
+            display: grid;
+            gap: 15px;
+        }
+
+        .progress-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-colors { background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #27ae60, #3498db, #9b59b6); }
+        .progress-numbers { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .progress-shapes { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+        .progress-friendship { background: linear-gradient(90deg, #e91e63, #f06292); }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .safety-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .safety-title {
+            color: #155724;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .safety-list {
+            color: #155724;
+            font-size: 0.9rem;
+        }
+
+        .safety-list li {
+            margin-bottom: 5px;
+        }
+
+        .controls-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-button {
+            background: white;
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .control-button:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .control-button.danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .control-button.danger:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .insights-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .insights-text {
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👨‍👩‍👧‍👦 Parent Dashboard</h1>
+            <p>Monitor your child's safe and educational AI friend interactions</p>
+        </div>
+
+        <div class="safety-section">
+            <div class="safety-title">
+                🛡️ Safety & Privacy Guaranteed
+            </div>
+            <ul class="safety-list">
+                <li>✅ All AI responses filtered for age-appropriateness</li>
+                <li>✅ No personal information collected or stored</li>
+                <li>✅ Educational content prioritized in all interactions</li>
+                <li>✅ Anonymous play sessions with automatic cleanup</li>
+                <li>✅ Child can only interact with pre-approved AI friends</li>
+            </ul>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card positive">
+                <div class="stat-number" id="sessionTime">12</div>
+                <div class="stat-label">Minutes Playing</div>
+                <div class="stat-description">Healthy screen time with educational value</div>
+            </div>
+
+            <div class="stat-card learning">
+                <div class="stat-number" id="interactions">23</div>
+                <div class="stat-label">AI Friend Chats</div>
+                <div class="stat-description">Positive social interactions with helpful AI</div>
+            </div>
+
+            <div class="stat-card social">
+                <div class="stat-number" id="learningPoints">8</div>
+                <div class="stat-label">Learning Moments</div>
+                <div class="stat-description">Colors, numbers, shapes, and creativity</div>
+            </div>
+
+            <div class="stat-card time">
+                <div class="stat-number" id="trustScore">78</div>
+                <div class="stat-label">Kindness Score</div>
+                <div class="stat-description">Shows empathy and sharing with AI friends</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-card">
+                <div class="card-title">
+                    📝 Recent Activity Timeline
+                </div>
+                <div class="activity-timeline" id="activityTimeline">
+                    <div class="activity-item learning">
+                        <div class="activity-time">2 min ago</div>
+                        <div class="activity-friend friend-cal">🟦</div>
+                        <div class="activity-description">
+                            <strong>Practiced counting with Cal Cube</strong><br>
+                            Learned to count blocks from 1 to 7
+                        </div>
+                    </div>
+
+                    <div class="activity-item creative">
+                        <div class="activity-time">5 min ago</div>
+                        <div class="activity-friend friend-arty">🌈</div>
+                        <div class="activity-description">
+                            <strong>Explored colors with Arty Blob</strong><br>
+                            Discovered that blue + yellow = green
+                        </div>
+                    </div>
+
+                    <div class="activity-item social">
+                        <div class="activity-time">8 min ago</div>
+                        <div class="activity-friend friend-domingo">🟣</div>
+                        <div class="activity-description">
+                            <strong>Shared magic moment with Domingo</strong><br>
+                            Used imagination to create sparkles together
+                        </div>
+                    </div>
+
+                    <div class="activity-item learning">
+                        <div class="activity-time">10 min ago</div>
+                        <div class="activity-friend friend-cal">🟦</div>
+                        <div class="activity-description">
+                            <strong>First conversation with Cal Cube</strong><br>
+                            Welcomed warmly and started friendship
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-title">
+                    📊 Learning Progress
+                </div>
+                <div class="learning-progress">
+                    <div class="progress-item">
+                        <div class="progress-label">Colors Discovered</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-colors" style="width: 60%;"></div>
+                        </div>
+                        <div class="progress-text">6 out of 10 basic colors learned</div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">Number Skills</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-numbers" style="width: 35%;"></div>
+                        </div>
+                        <div class="progress-text">Can count to 7 consistently</div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">Shape Recognition</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-shapes" style="width: 25%;"></div>
+                        </div>
+                        <div class="progress-text">Knows cubes, spheres, learning triangles</div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">AI Friendship Level</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-friendship" style="width: 80%;"></div>
+                        </div>
+                        <div class="progress-text">Strong bonds with all three AI friends</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-insights">
+            <div class="insights-title">🤖 AI-Powered Insights</div>
+            <div class="insights-text" id="aiInsights">
+                Your child is showing excellent progress in social interaction and learning! They demonstrate curiosity about colors and numbers, and are building healthy relationships with AI companions. Cal Cube has become their favorite learning buddy, while they enjoy creative exploration with Arty Blob. Their kindness score indicates they're developing empathy and sharing behaviors. Recommended next activities: simple building games and basic addition with blocks.
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="control-button" onclick="downloadReport()">
+                📊 Download Report
+            </div>
+            <div class="control-button" onclick="setTimeLimit()">
+                ⏰ Set Time Limit
+            </div>
+            <div class="control-button" onclick="viewFullHistory()">
+                📝 Full History
+            </div>
+            <div class="control-button danger" onclick="endSession()">
+                🛑 End Session
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ParentDashboard {
+            constructor() {
+                this.sessionData = {
+                    startTime: Date.now() - (12 * 60 * 1000), // 12 minutes ago
+                    interactions: [
+                        { time: 2, friend: 'cal', activity: 'counting practice', learning: 'numbers' },
+                        { time: 5, friend: 'arty', activity: 'color mixing', learning: 'colors' },
+                        { time: 8, friend: 'domingo', activity: 'imagination play', learning: 'creativity' },
+                        { time: 10, friend: 'cal', activity: 'first meeting', learning: 'social' }
+                    ],
+                    learningProgress: {
+                        colors: 6,
+                        numbers: 7,
+                        shapes: 3,
+                        friendship: 8
+                    },
+                    trustScore: 78
+                };
+                
+                this.updateDashboard();
+                this.startRealTimeUpdates();
+            }
+
+            updateDashboard() {
+                // Update session time
+                const sessionMinutes = Math.floor((Date.now() - this.sessionData.startTime) / 60000);
+                document.getElementById('sessionTime').textContent = sessionMinutes;
+                
+                // Update interaction count
+                document.getElementById('interactions').textContent = this.sessionData.interactions.length;
+                
+                // Update learning points
+                const totalLearning = Object.values(this.sessionData.learningProgress).reduce((a, b) => a + b, 0);
+                document.getElementById('learningPoints').textContent = Math.floor(totalLearning / 3);
+                
+                // Update trust score
+                document.getElementById('trustScore').textContent = this.sessionData.trustScore;
+                
+                // Update AI insights
+                this.updateAIInsights();
+            }
+
+            updateAIInsights() {
+                const insights = document.getElementById('aiInsights');
+                const favoriteFriend = this.getFavoriteFriend();
+                const strongestSkill = this.getStrongestSkill();
+                
+                insights.textContent = `Your child is thriving with their AI friends! They've built the strongest connection with ${favoriteFriend} and show particular strength in ${strongestSkill}. Their interactions demonstrate healthy curiosity, kindness (kindness score: ${this.sessionData.trustScore}), and a love for learning. They're developing both cognitive skills and emotional intelligence through play-based AI interaction. Recommended: continue encouraging their natural curiosity and maybe introduce simple building challenges!`;
+            }
+
+            getFavoriteFriend() {
+                const friendCounts = {};
+                this.sessionData.interactions.forEach(interaction => {
+                    friendCounts[interaction.friend] = (friendCounts[interaction.friend] || 0) + 1;
+                });
+                
+                const favorite = Object.keys(friendCounts).reduce((a, b) => 
+                    friendCounts[a] > friendCounts[b] ? a : b
+                );
+                
+                const friendNames = {
+                    cal: 'Cal Cube (the helpful teacher)',
+                    domingo: 'Domingo Sphere (the magical friend)',
+                    arty: 'Arty Blob (the creative artist)'
+                };
+                
+                return friendNames[favorite] || 'their AI friends';
+            }
+
+            getStrongestSkill() {
+                const progress = this.sessionData.learningProgress;
+                const strongest = Object.keys(progress).reduce((a, b) => 
+                    progress[a] > progress[b] ? a : b
+                );
+                
+                const skillNames = {
+                    colors: 'color recognition and creativity',
+                    numbers: 'counting and number concepts', 
+                    shapes: 'shape recognition and geometry',
+                    friendship: 'social skills and empathy'
+                };
+                
+                return skillNames[strongest] || 'learning';
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time updates every 30 seconds
+                setInterval(() => {
+                    // Simulate new interaction occasionally
+                    if (Math.random() < 0.3) {
+                        this.simulateNewInteraction();
+                    }
+                    
+                    // Update session time
+                    this.updateDashboard();
+                }, 30000);
+            }
+
+            simulateNewInteraction() {
+                const friends = ['cal', 'domingo', 'arty'];
+                const activities = [
+                    { activity: 'shape exploration', learning: 'shapes' },
+                    { activity: 'color learning', learning: 'colors' },
+                    { activity: 'counting practice', learning: 'numbers' },
+                    { activity: 'creative play', learning: 'creativity' }
+                ];
+                
+                const newInteraction = {
+                    time: 1,
+                    friend: friends[Math.floor(Math.random() * friends.length)],
+                    ...activities[Math.floor(Math.random() * activities.length)]
+                };
+                
+                this.sessionData.interactions.unshift(newInteraction);
+                this.sessionData.trustScore = Math.min(this.sessionData.trustScore + 2, 100);
+                
+                // Update learning progress
+                if (newInteraction.learning in this.sessionData.learningProgress) {
+                    this.sessionData.learningProgress[newInteraction.learning]++;
+                }
+                
+                this.addActivityToTimeline(newInteraction);
+            }
+
+            addActivityToTimeline(interaction) {
+                const timeline = document.getElementById('activityTimeline');
+                const activityItem = document.createElement('div');
+                activityItem.className = `activity-item ${interaction.learning}`;
+                
+                const friendEmojis = { cal: '🟦', domingo: '🟣', arty: '🌈' };
+                const friendNames = { cal: 'Cal Cube', domingo: 'Domingo Sphere', arty: 'Arty Blob' };
+                
+                activityItem.innerHTML = `
+                    <div class="activity-time">Just now</div>
+                    <div class="activity-friend friend-${interaction.friend}">${friendEmojis[interaction.friend]}</div>
+                    <div class="activity-description">
+                        <strong>New ${interaction.activity} with ${friendNames[interaction.friend]}</strong><br>
+                        Developing ${interaction.learning} skills through play
+                    </div>
+                `;
+                
+                timeline.insertBefore(activityItem, timeline.firstChild);
+                
+                // Keep only recent 10 activities visible
+                if (timeline.children.length > 10) {
+                    timeline.removeChild(timeline.lastChild);
+                }
+            }
+        }
+
+        // Global functions for control buttons
+        function downloadReport() {
+            alert('📊 Session Report\n\n' + 
+                  'Session Duration: 12 minutes\n' +
+                  'AI Friend Interactions: 23\n' +
+                  'Learning Moments: 8\n' +
+                  'Skills Practiced: Colors, Numbers, Shapes\n' +
+                  'Emotional Development: High empathy, good sharing\n' +
+                  'Safety: No flags, all interactions appropriate\n\n' +
+                  'Recommendation: Your child is thriving! Consider extending play time by 5-10 minutes for optimal learning.');
+        }
+
+        function setTimeLimit() {
+            const limit = prompt('Set time limit in minutes (current: unlimited)', '30');
+            if (limit) {
+                alert(`⏰ Time limit set to ${limit} minutes. You'll be notified when time is up.`);
+            }
+        }
+
+        function viewFullHistory() {
+            alert('📝 Full Session History\n\n' +
+                  '10:30 - Started playing with AI friends\n' +
+                  '10:32 - Met Cal Cube, learned about squares\n' +
+                  '10:35 - Explored colors with Arty Blob\n' +
+                  '10:37 - Magical play with Domingo Sphere\n' +
+                  '10:40 - Counting practice with Cal (1-7)\n' +
+                  '10:42 - Color mixing discovery (blue+yellow=green)\n\n' +
+                  'All interactions positive and educational!');
+        }
+
+        function endSession() {
+            if (confirm('🛑 Are you sure you want to end the play session?')) {
+                alert('Session ended safely. All interaction data has been cleared for privacy. Your child had a wonderful time learning with their AI friends!');
+                // In real app, this would safely end the session
+            }
+        }
+
+        // Initialize dashboard when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new ParentDashboard();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pools 103: Memory Management + Object Reuse | Learn Loop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #1a0a2d 100%);
+      border-bottom: 2px solid #9966ff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #9966ff;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #999;
+      font-size: 1.1em;
+    }
+
+    .breadcrumb {
+      background: #1a1a1a;
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+    }
+
+    .breadcrumb a {
+      color: #bb99ff;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    .breadcrumb a:hover {
+      color: #9966ff;
+    }
+
+    .breadcrumb span {
+      color: #666;
+      margin: 0 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(150, 100, 255, 0.1);
+      border: 1px solid rgba(150, 100, 255, 0.3);
+      border-radius: 8px;
+    }
+
+    .lesson-nav a {
+      color: #bb99ff;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .lesson-nav a:hover {
+      background: rgba(150, 100, 255, 0.2);
+      color: #9966ff;
+    }
+
+    .lesson-nav .disabled {
+      color: #555;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(150, 100, 255, 0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      color: #bb99ff;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 2px solid rgba(150, 100, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .section h3 {
+      color: #ccaaff;
+      margin: 25px 0 15px 0;
+      font-size: 1.4em;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-block code {
+      color: #ccaaff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .code-block .comment {
+      color: #666;
+    }
+
+    .code-block .keyword {
+      color: #bb99ff;
+    }
+
+    .code-block .string {
+      color: #ffcc99;
+    }
+
+    .code-block .number {
+      color: #99ccff;
+    }
+
+    .analogy {
+      background: rgba(0, 100, 200, 0.1);
+      border-left: 4px solid #0099ff;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .analogy h4 {
+      color: #0099ff;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .analogy p {
+      color: #ccc;
+    }
+
+    .warning {
+      background: rgba(255, 200, 0, 0.1);
+      border-left: 4px solid #ffcc00;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .warning h4 {
+      color: #ffcc00;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .tip {
+      background: rgba(0, 255, 100, 0.1);
+      border-left: 4px solid #00ff66;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .tip h4 {
+      color: #00ff66;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .comparison-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border: 1px solid #333;
+    }
+
+    .comparison-table th {
+      background: rgba(150, 100, 255, 0.2);
+      color: #bb99ff;
+      font-weight: 600;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .comparison-table .bad {
+      color: #ff6666;
+    }
+
+    .comparison-table .good {
+      color: #66ff66;
+    }
+
+    .memory-viz {
+      display: flex;
+      gap: 20px;
+      margin: 30px 0;
+      padding: 30px;
+      background: #1a1a1a;
+      border: 2px solid #9966ff;
+      border-radius: 12px;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .memory-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .memory-section h4 {
+      color: #bb99ff;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .memory-block {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .memory-block.allocated {
+      background: linear-gradient(135deg, #ff6666 0%, #cc4444 100%);
+      color: #fff;
+    }
+
+    .memory-block.freed {
+      background: linear-gradient(135deg, #666666 0%, #444444 100%);
+      color: #999;
+    }
+
+    .memory-block.reused {
+      background: linear-gradient(135deg, #66ff66 0%, #44cc44 100%);
+      color: #000;
+    }
+
+    .stats {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #999;
+    }
+
+    .stat-value {
+      color: #9966ff;
+      font-weight: 600;
+    }
+
+    .interactive-demo {
+      background: #1a1a1a;
+      border: 2px solid #9966ff;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .interactive-demo h3 {
+      color: #bb99ff;
+      margin-bottom: 20px;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .demo-controls button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #9966ff 0%, #7744cc 100%);
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .demo-controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(150, 100, 255, 0.3);
+    }
+
+    .demo-output {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      color: #9966ff;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .demo-output .log-line {
+      margin-bottom: 5px;
+    }
+
+    .quiz {
+      background: rgba(100, 0, 200, 0.1);
+      border: 2px solid #6600cc;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .quiz h3 {
+      color: #9966ff;
+      margin-bottom: 20px;
+    }
+
+    .quiz-question {
+      margin-bottom: 30px;
+    }
+
+    .quiz-question p {
+      color: #ccc;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .quiz-options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .quiz-options li {
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-options li:hover {
+      background: rgba(100, 0, 200, 0.2);
+      border-color: #6600cc;
+    }
+
+    .quiz-options li.correct {
+      background: rgba(0, 255, 100, 0.2);
+      border-color: #00ff66;
+    }
+
+    .quiz-options li.incorrect {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: #ff0000;
+    }
+
+    .completion {
+      background: linear-gradient(135deg, #9966ff 0%, #6600cc 100%);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .completion h2 {
+      color: #ffffff;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .completion p {
+      color: #ffffff;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+
+    .completion .badge {
+      font-size: 5em;
+      margin: 20px 0;
+    }
+
+    .footer {
+      background: #1a1a1a;
+      border-top: 2px solid #9966ff;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .footer a {
+      color: #bb99ff;
+      text-decoration: none;
+      margin: 0 15px;
+    }
+
+    .footer a:hover {
+      color: #9966ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🧠 Pools 103: Memory Management + Object Reuse</h1>
+    <p>Learn when to pool objects and when to let garbage collection handle it</p>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/learn">Learn</a>
+    <span>›</span>
+    <a href="/learn/pools">Pools Series</a>
+    <span>›</span>
+    <span style="color: #bb99ff;">103: Object Reuse</span>
+  </div>
+
+  <div class="container">
+    <div class="lesson-nav">
+      <a href="/learn/pools-102.html">← Previous: Thread Pools</a>
+      <a href="#" class="disabled">Next: Advanced Topics</a>
+    </div>
+
+    <!-- Section 1: The Problem -->
+    <div class="section">
+      <h2>🤔 The Problem: Object Creation Overhead</h2>
+
+      <p>Every time you create an object in memory, the system must:</p>
+
+      <ol style="color: #ccc; margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>Allocate memory</strong> from the heap (expensive!)</li>
+        <li><strong>Initialize the object</strong> (set fields, run constructor)</li>
+        <li><strong>Eventually garbage collect it</strong> (CPU time + pauses)</li>
+      </ol>
+
+      <div class="analogy">
+        <h4>💡 Real-World Analogy: Rental Car vs Buying New</h4>
+        <p><strong>Without object pooling:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>Need a car for 1 hour → Buy brand new car ($40K)</li>
+          <li>Done driving → Junk the car</li>
+          <li>Need another car → Buy another new car ($40K)</li>
+          <li>Repeat 1000 times → $40 million wasted!</li>
+        </ul>
+        <p style="margin-top: 10px;"><strong>With object pooling:</strong></p>
+        <ul style="margin-left: 20px;">
+          <li>Keep 10 cars in a rental lot (object pool)</li>
+          <li>Borrow car when needed, return when done</li>
+          <li>Same 10 cars serve 1000 trips</li>
+          <li>Cost: $400K (100x cheaper!)</li>
+        </ul>
+      </div>
+
+      <h3>Garbage Collection: The Hidden Cost</h3>
+
+      <div class="code-block">
+<code><span class="comment">// BAD: Creates 1 million short-lived objects</span>
+<span class="keyword">function</span> <span class="function">processData</span>() {
+  <span class="keyword">const</span> results = [];
+
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">1000000</span>; i++) {
+    <span class="keyword">const</span> temp = { x: i, y: i * <span class="number">2</span> }; <span class="comment">← 1M allocations!</span>
+    results.push(processItem(temp));
+  }
+
+  <span class="keyword">return</span> results;
+  <span class="comment">// All 1M temp objects become garbage here</span>
+  <span class="comment">// Garbage collector must free 1M objects → PAUSE!</span>
+}
+
+<span class="comment">// GOOD: Reuse same object</span>
+<span class="keyword">function</span> <span class="function">processDataPooled</span>() {
+  <span class="keyword">const</span> results = [];
+  <span class="keyword">const</span> temp = { x: <span class="number">0</span>, y: <span class="number">0</span> }; <span class="comment">← Allocate ONCE</span>
+
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">1000000</span>; i++) {
+    temp.x = i;         <span class="comment">← Reuse same object</span>
+    temp.y = i * <span class="number">2</span>;
+    results.push(processItem(temp));
+  }
+
+  <span class="keyword">return</span> results;
+  <span class="comment">// Only 1 temp object → Minimal GC pressure</span>
+}
+</code>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="bad">Without Pooling</th>
+            <th class="good">With Pooling</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Objects allocated</td>
+            <td class="bad">1,000,000</td>
+            <td class="good">1 (reused)</td>
+          </tr>
+          <tr>
+            <td>Memory allocations</td>
+            <td class="bad">1,000,000 × ~50 bytes</td>
+            <td class="good">1 × 50 bytes</td>
+          </tr>
+          <tr>
+            <td>GC pause time</td>
+            <td class="bad">~100ms</td>
+            <td class="good">~1ms</td>
+          </tr>
+          <tr>
+            <td>Total runtime</td>
+            <td class="bad">500ms</td>
+            <td class="good">400ms (20% faster)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 2: Object Pool Pattern -->
+    <div class="section">
+      <h2>♻️ Object Pool Pattern</h2>
+
+      <h3>Basic Object Pool Implementation</h3>
+
+      <div class="code-block">
+<code><span class="keyword">class</span> ObjectPool {
+  <span class="keyword">constructor</span>(createFn, resetFn, size = <span class="number">10</span>) {
+    <span class="keyword">this</span>.createFn = createFn;  <span class="comment">// Function to create new objects</span>
+    <span class="keyword">this</span>.resetFn = resetFn;    <span class="comment">// Function to reset object state</span>
+    <span class="keyword">this</span>.pool = [];
+
+    <span class="comment">// Pre-populate pool</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < size; i++) {
+      <span class="keyword">this</span>.pool.push(<span class="keyword">this</span>.createFn());
+    }
+  }
+
+  <span class="keyword">acquire</span>() {
+    <span class="comment">// Take object from pool (or create new if empty)</span>
+    <span class="keyword">return</span> <span class="keyword">this</span>.pool.length > <span class="number">0</span>
+      ? <span class="keyword">this</span>.pool.pop()
+      : <span class="keyword">this</span>.createFn();
+  }
+
+  <span class="keyword">release</span>(obj) {
+    <span class="comment">// Reset object state and return to pool</span>
+    <span class="keyword">this</span>.resetFn(obj);
+    <span class="keyword">this</span>.pool.push(obj);
+  }
+
+  <span class="keyword">size</span>() {
+    <span class="keyword">return</span> <span class="keyword">this</span>.pool.length;
+  }
+}
+
+<span class="comment">// Usage example: Pool of vector objects</span>
+<span class="keyword">const</span> vectorPool = <span class="keyword">new</span> ObjectPool(
+  () => ({ x: <span class="number">0</span>, y: <span class="number">0</span> }),           <span class="comment">// Create</span>
+  (obj) => { obj.x = <span class="number">0</span>; obj.y = <span class="number">0</span>; } <span class="comment">// Reset</span>
+);
+
+<span class="comment">// Acquire object from pool</span>
+<span class="keyword">const</span> v1 = vectorPool.acquire();
+v1.x = <span class="number">10</span>;
+v1.y = <span class="number">20</span>;
+
+<span class="comment">// Do work with v1...</span>
+
+<span class="comment">// Return to pool when done</span>
+vectorPool.release(v1);
+<span class="comment">// v1 is now reset and available for reuse</span>
+</code>
+      </div>
+
+      <div class="tip">
+        <h4>💡 Key Insight: Reset, Don't Recreate</h4>
+        <p>The <code>resetFn</code> is critical! It clears the object's state without allocating new memory. Think of it like wiping a whiteboard instead of buying a new one.</p>
+      </div>
+    </div>
+
+    <!-- Section 3: When to Pool -->
+    <div class="section">
+      <h2>🎯 When to Pool (and When NOT To)</h2>
+
+      <h3>✅ Good Candidates for Pooling</h3>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Object Type</th>
+            <th>Why Pool It?</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Expensive to create</td>
+            <td>Initialization cost is high</td>
+            <td>Database connections, buffers</td>
+          </tr>
+          <tr>
+            <td>Short-lived</td>
+            <td>Created/destroyed frequently</td>
+            <td>Temporary vectors, matrices</td>
+          </tr>
+          <tr>
+            <td>Fixed size</td>
+            <td>All instances are similar</td>
+            <td>Particle systems, bullets</td>
+          </tr>
+          <tr>
+            <td>Predictable usage</td>
+            <td>Know max concurrent count</td>
+            <td>Worker threads, HTTP clients</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>❌ BAD Candidates for Pooling</h3>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Object Type</th>
+            <th>Why NOT Pool?</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Long-lived</td>
+            <td>Stays in memory anyway</td>
+            <td>User sessions, configuration</td>
+          </tr>
+          <tr>
+            <td>Cheap to create</td>
+            <td>GC is faster than pooling</td>
+            <td>Plain objects, primitives</td>
+          </tr>
+          <tr>
+            <td>Variable size</td>
+            <td>Can't reuse different sizes</td>
+            <td>Dynamic arrays, strings</td>
+          </tr>
+          <tr>
+            <td>Unpredictable</td>
+            <td>Pool size hard to tune</td>
+            <td>Rarely-used caches</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="warning">
+        <h4>⚠️ Don't Pool Everything!</h4>
+        <p>Premature pooling is as bad as premature optimization. Modern garbage collectors are VERY efficient for small, short-lived objects. Only pool when profiling shows it's a bottleneck.</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li><strong>Profile first</strong> - Measure before optimizing</li>
+          <li><strong>Modern GC is fast</strong> - Don't fight the JVM/V8</li>
+          <li><strong>Pool complexity</strong> - Adds bugs if not careful</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 4: Real-World Examples -->
+    <div class="section">
+      <h2>🌍 Real-World Object Pools</h2>
+
+      <h3>Example 1: ByteBuffer Pool (Java/Node.js)</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Node.js Buffer pool (built-in)</span>
+<span class="keyword">const</span> pooledBuffer = Buffer.allocUnsafe(<span class="number">1024</span>);
+<span class="comment">// ↑ Reuses memory from pool (fast!)</span>
+
+<span class="keyword">const</span> safeBuffer = Buffer.alloc(<span class="number">1024</span>);
+<span class="comment">// ↑ Allocates new memory + zeroes it (slower)</span>
+
+<span class="comment">// Custom buffer pool</span>
+<span class="keyword">class</span> BufferPool {
+  <span class="keyword">constructor</span>(bufferSize, poolSize) {
+    <span class="keyword">this</span>.bufferSize = bufferSize;
+    <span class="keyword">this</span>.pool = [];
+
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < poolSize; i++) {
+      <span class="keyword">this</span>.pool.push(Buffer.allocUnsafe(bufferSize));
+    }
+  }
+
+  acquire() {
+    <span class="keyword">return</span> <span class="keyword">this</span>.pool.pop() || Buffer.allocUnsafe(<span class="keyword">this</span>.bufferSize);
+  }
+
+  release(buffer) {
+    <span class="keyword">if</span> (buffer.length === <span class="keyword">this</span>.bufferSize) {
+      buffer.fill(<span class="number">0</span>); <span class="comment">← Reset buffer</span>
+      <span class="keyword">this</span>.pool.push(buffer);
+    }
+  }
+}
+
+<span class="keyword">const</span> bufferPool = <span class="keyword">new</span> BufferPool(<span class="number">8192</span>, <span class="number">50</span>);
+</code>
+      </div>
+
+      <h3>Example 2: Game Engine Particle Pool</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Unity-style particle system (C#-like)</span>
+<span class="keyword">class</span> Particle {
+  <span class="keyword">constructor</span>() {
+    <span class="keyword">this</span>.position = { x: <span class="number">0</span>, y: <span class="number">0</span> };
+    <span class="keyword">this</span>.velocity = { x: <span class="number">0</span>, y: <span class="number">0</span> };
+    <span class="keyword">this</span>.lifetime = <span class="number">0</span>;
+    <span class="keyword">this</span>.active = <span class="keyword">false</span>;
+  }
+
+  reset() {
+    <span class="keyword">this</span>.position.x = <span class="number">0</span>;
+    <span class="keyword">this</span>.position.y = <span class="number">0</span>;
+    <span class="keyword">this</span>.velocity.x = <span class="number">0</span>;
+    <span class="keyword">this</span>.velocity.y = <span class="number">0</span>;
+    <span class="keyword">this</span>.lifetime = <span class="number">0</span>;
+    <span class="keyword">this</span>.active = <span class="keyword">false</span>;
+  }
+}
+
+<span class="keyword">class</span> ParticleSystem {
+  <span class="keyword">constructor</span>(maxParticles = <span class="number">1000</span>) {
+    <span class="comment">// Pre-allocate all particles (object pool)</span>
+    <span class="keyword">this</span>.particles = [];
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < maxParticles; i++) {
+      <span class="keyword">this</span>.particles.push(<span class="keyword">new</span> Particle());
+    }
+  }
+
+  emit(x, y, vx, vy) {
+    <span class="comment">// Find inactive particle and reuse it</span>
+    <span class="keyword">const</span> particle = <span class="keyword">this</span>.particles.find(p => !p.active);
+
+    <span class="keyword">if</span> (particle) {
+      particle.position.x = x;
+      particle.position.y = y;
+      particle.velocity.x = vx;
+      particle.velocity.y = vy;
+      particle.lifetime = <span class="number">1.0</span>;
+      particle.active = <span class="keyword">true</span>;
+      <span class="comment">// No allocation! Reused existing particle</span>
+    }
+  }
+
+  update(deltaTime) {
+    <span class="keyword">for</span> (<span class="keyword">const</span> p <span class="keyword">of</span> <span class="keyword">this</span>.particles) {
+      <span class="keyword">if</span> (!p.active) <span class="keyword">continue</span>;
+
+      p.position.x += p.velocity.x * deltaTime;
+      p.position.y += p.velocity.y * deltaTime;
+      p.lifetime -= deltaTime;
+
+      <span class="keyword">if</span> (p.lifetime <= <span class="number">0</span>) {
+        p.reset(); <span class="comment">← Return to pool</span>
+      }
+    }
+  }
+}
+</code>
+      </div>
+
+      <h3>Example 3: String Builder (Reusable StringBuilder)</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Java StringBuilder pattern</span>
+<span class="comment">// Strings are immutable, so concatenation creates garbage</span>
+
+<span class="comment">// BAD: Creates N string objects</span>
+<span class="keyword">String</span> result = <span class="string">""</span>;
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">1000</span>; i++) {
+  result += <span class="string">"item"</span> + i; <span class="comment">← Creates new string each time!</span>
+}
+
+<span class="comment">// GOOD: Reuses internal buffer</span>
+<span class="keyword">StringBuilder</span> sb = <span class="keyword">new</span> StringBuilder();
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">1000</span>; i++) {
+  sb.append(<span class="string">"item"</span>).append(i);
+}
+<span class="keyword">String</span> result = sb.toString();
+
+<span class="comment">// Even better: Pool the StringBuilder</span>
+<span class="keyword">class</span> StringBuilderPool {
+  <span class="keyword">private</span> <span class="keyword">static final</span> ThreadLocal<StringBuilder> pool =
+    ThreadLocal.withInitial(() -> <span class="keyword">new</span> StringBuilder(<span class="number">256</span>));
+
+  <span class="keyword">public static</span> StringBuilder acquire() {
+    StringBuilder sb = pool.get();
+    sb.setLength(<span class="number">0</span>); <span class="comment">← Reset</span>
+    <span class="keyword">return</span> sb;
+  }
+}
+</code>
+      </div>
+    </div>
+
+    <!-- Section 5: Interactive Demo -->
+    <div class="interactive-demo">
+      <h3>🎮 Interactive Demo: Memory Allocation Comparison</h3>
+      <p>Simulate object creation with and without pooling!</p>
+
+      <div class="demo-controls">
+        <button onclick="runWithoutPool()">Run Without Pool (1000 objects)</button>
+        <button onclick="runWithPool()">Run With Pool (10 objects reused)</button>
+        <button onclick="clearDemo()">Clear</button>
+      </div>
+
+      <div class="memory-viz" id="memoryViz">
+        <div class="memory-section">
+          <h4>Without Pool</h4>
+          <div id="memoryWithout"></div>
+          <div class="stats">
+            <div class="stat-row">
+              <span class="stat-label">Allocations:</span>
+              <span class="stat-value" id="allocWithout">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">GC Runs:</span>
+              <span class="stat-value" id="gcWithout">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="memory-section">
+          <h4>With Pool</h4>
+          <div id="memoryWith"></div>
+          <div class="stats">
+            <div class="stat-row">
+              <span class="stat-label">Allocations:</span>
+              <span class="stat-value" id="allocWith">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Reuses:</span>
+              <span class="stat-value" id="reuses">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-output" id="demoOutput">
+        <div class="log-line">Ready to compare memory allocation strategies...</div>
+      </div>
+    </div>
+
+    <!-- Section 6: Quiz -->
+    <div class="quiz">
+      <h3>📝 Quiz: Test Your Understanding</h3>
+
+      <div class="quiz-question">
+        <p><strong>Question 1:</strong> When should you use object pooling?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) Always, for every object</li>
+          <li onclick="checkAnswer(this, true)">B) Only for expensive-to-create, short-lived objects</li>
+          <li onclick="checkAnswer(this, false)">C) Never, modern GC is always faster</li>
+          <li onclick="checkAnswer(this, false)">D) Only for strings</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 2:</strong> What's the purpose of the <code>resetFn</code> in an object pool?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) Delete the object from memory</li>
+          <li onclick="checkAnswer(this, true)">B) Clear object state without allocating new memory</li>
+          <li onclick="checkAnswer(this, false)">C) Resize the object to save memory</li>
+          <li onclick="checkAnswer(this, false)">D) Trigger garbage collection</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 3:</strong> Which is NOT a good candidate for object pooling?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) Database connections</li>
+          <li onclick="checkAnswer(this, false)">B) Particle system objects</li>
+          <li onclick="checkAnswer(this, true)">C) User session objects (live for hours)</li>
+          <li onclick="checkAnswer(this, false)">D) Temporary buffers</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Completion Certificate -->
+    <div class="completion">
+      <div class="badge">🏆</div>
+      <h2>Congratulations!</h2>
+      <p>You've completed the Pools series!</p>
+      <p>You now understand:</p>
+      <ul style="list-style: none; margin-top: 20px; color: #fff;">
+        <li>✅ Connection pools (reusing database/HTTP connections)</li>
+        <li>✅ Thread pools (reusing workers for parallel tasks)</li>
+        <li>✅ Object pools (reusing memory to reduce GC pressure)</li>
+      </ul>
+      <p style="margin-top: 30px; font-size: 1em;">Ready to optimize your own code? Start profiling and pool smartly!</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="lesson-nav">
+      <a href="/learn/pools-102.html">← Previous: Thread Pools</a>
+      <a href="/learn">Back to All Courses →</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Learn Loop | <a href="/learn">All Courses</a> | <a href="/learn/pools">Pools Series</a></p>
+  </div>
+
+  <script>
+    // Memory Allocation Demo
+    let allocationsWithout = 0;
+    let allocationsWithPool = 0;
+    let gcRuns = 0;
+    let reuses = 0;
+
+    function log(message, color = '#9966ff') {
+      const output = document.getElementById('demoOutput');
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.style.color = color;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function clearDemo() {
+      document.getElementById('demoOutput').innerHTML = '<div class="log-line">Output cleared...</div>';
+      document.getElementById('memoryWithout').innerHTML = '';
+      document.getElementById('memoryWith').innerHTML = '';
+      allocationsWithout = 0;
+      allocationsWithPool = 0;
+      gcRuns = 0;
+      reuses = 0;
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('allocWithout').textContent = allocationsWithout;
+      document.getElementById('gcWithout').textContent = gcRuns;
+      document.getElementById('allocWith').textContent = allocationsWithPool;
+      document.getElementById('reuses').textContent = reuses;
+    }
+
+    async function runWithoutPool() {
+      clearDemo();
+      log('🔴 Running WITHOUT object pool (creating 1000 objects)...', '#ff6666');
+      log('', '#9966ff');
+
+      const container = document.getElementById('memoryWithout');
+      const maxBlocks = 10;
+
+      for (let i = 0; i < 1000; i++) {
+        allocationsWithout++;
+
+        if (i < maxBlocks) {
+          const block = document.createElement('div');
+          block.className = 'memory-block allocated';
+          block.textContent = `Obj ${i + 1}`;
+          container.appendChild(block);
+        }
+
+        if (i % 100 === 0 && i > 0) {
+          gcRuns++;
+          log(`GC Run #${gcRuns} (freed 100 objects)`, '#ffcc00');
+
+          // Simulate GC by removing blocks
+          if (container.children.length > 0) {
+            const blocks = container.querySelectorAll('.memory-block');
+            blocks.forEach((block, index) => {
+              if (index < 5) {
+                block.classList.remove('allocated');
+                block.classList.add('freed');
+                block.textContent = 'Freed';
+              }
+            });
+          }
+
+          await sleep(100);
+        }
+
+        if (i % 50 === 0) {
+          updateStats();
+          await sleep(10);
+        }
+      }
+
+      log('', '#9966ff');
+      log(`✅ Complete! Created ${allocationsWithout} objects`, '#66ff66');
+      log(`💰 GC overhead: ${gcRuns} garbage collection runs`, '#ffcc00');
+      updateStats();
+    }
+
+    async function runWithPool() {
+      clearDemo();
+      log('🟢 Running WITH object pool (reusing 10 objects 100 times)...', '#66ff66');
+      log('', '#9966ff');
+
+      const container = document.getElementById('memoryWith');
+      const poolSize = 10;
+
+      // Create pool
+      for (let i = 0; i < poolSize; i++) {
+        allocationsWithPool++;
+        const block = document.createElement('div');
+        block.className = 'memory-block allocated';
+        block.textContent = `Pool ${i + 1}`;
+        block.id = `pool-${i}`;
+        container.appendChild(block);
+      }
+
+      log(`Created pool of ${poolSize} objects`, '#66ff66');
+      updateStats();
+      await sleep(200);
+
+      // Reuse pool objects
+      for (let i = 0; i < 1000; i++) {
+        const poolIndex = i % poolSize;
+        const block = document.getElementById(`pool-${poolIndex}`);
+
+        if (block) {
+          reuses++;
+          block.classList.remove('allocated');
+          block.classList.add('reused');
+          block.textContent = `Used ${Math.floor(i / poolSize) + 1}x`;
+
+          if (i % 100 === 0 && i > 0) {
+            log(`Reused pool objects ${reuses} times (no new allocations!)`, '#66ff66');
+            updateStats();
+          }
+
+          if (i % 50 === 0) {
+            await sleep(10);
+          }
+
+          // Reset block after short delay
+          setTimeout(() => {
+            if (block) {
+              block.classList.remove('reused');
+              block.classList.add('allocated');
+              block.textContent = `Pool ${poolIndex + 1}`;
+            }
+          }, 50);
+        }
+      }
+
+      log('', '#9966ff');
+      log(`✅ Complete! Only ${allocationsWithPool} allocations (vs ${allocationsWithout || 1000})`, '#66ff66');
+      log(`♻️  Reused objects ${reuses} times`, '#66ff66');
+      log(`💚 No garbage collection needed!`, '#66ff66');
+      updateStats();
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Quiz
+    function checkAnswer(element, isCorrect) {
+      const allOptions = element.parentElement.querySelectorAll('li');
+      allOptions.forEach(option => {
+        option.style.pointerEvents = 'none';
+      });
+
+      if (isCorrect) {
+        element.classList.add('correct');
+      } else {
+        element.classList.add('incorrect');
+        allOptions.forEach(option => {
+          if (option !== element && option.onclick.toString().includes('true')) {
+            option.classList.add('correct');
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

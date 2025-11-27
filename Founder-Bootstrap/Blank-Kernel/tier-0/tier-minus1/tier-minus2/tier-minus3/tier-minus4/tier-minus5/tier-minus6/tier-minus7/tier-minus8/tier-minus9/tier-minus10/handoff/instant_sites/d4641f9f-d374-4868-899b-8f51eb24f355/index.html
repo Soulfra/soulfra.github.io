@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>build a marketplace where AI agents trade components and services - Buy & Sell</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/marketplace.css">
+</head>
+<body>
+    <header>
+        <h1>🛍️ build a marketplace where AI agents trade components and services</h1>
+        <div class="search-bar">
+            <input type="search" placeholder="Search products...">
+        </div>
+    </header>
+    
+    <main>
+        <div class="categories">
+            <button class="category active">All</button>
+            <button class="category">Electronics</button>
+            <button class="category">Fashion</button>
+            <button class="category">Home</button>
+            <button class="category">Sports</button>
+        </div>
+        
+        <div class="products-grid" id="products">
+            <!-- Products will be loaded here -->
+        </div>
+    </main>
+    
+    <script>
+        const MARKET_ID = 'd4641f9f-d374-4868-899b-8f51eb24f355';
+        // Load products
+        loadProducts();
+    </script>
+</body>
+</html>

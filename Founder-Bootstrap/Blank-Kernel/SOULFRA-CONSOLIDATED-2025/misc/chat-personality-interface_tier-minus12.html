@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Chat Log Personality & Agent Orchestration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e, #2a1a3a);
+            color: #fff; min-height: 100vh; overflow-x: hidden;
+        }
+        
+        .main-header {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            padding: 25px 40px; border-bottom: 1px solid #333;
+        }
+        
+        .header-title {
+            font-size: 2.5em; font-weight: 300; margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff77c6, #00d4ff, #00ff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .header-subtitle {
+            font-size: 1.2em; opacity: 0.8;
+        }
+        
+        .owner-info {
+            position: absolute; top: 25px; right: 40px; text-align: right;
+        }
+        
+        .owner-name {
+            font-size: 1.3em; font-weight: 600; color: #ff77c6;
+        }
+        
+        .company-name {
+            font-size: 1em; opacity: 0.7;
+        }
+        
+        .main-container {
+            max-width: 1600px; margin: 0 auto; padding: 40px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+        }
+        
+        .upload-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #2a1a3a, #3a2a4a);
+            border: 2px dashed #ff77c6; border-radius: 20px;
+            padding: 60px; text-align: center; margin-bottom: 40px;
+            transition: all 0.3s ease; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        
+        .upload-section::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 119, 198, 0.1), transparent);
+            transform: translateX(-100%); transition: transform 0.6s;
+        }
+        
+        .upload-section:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .upload-section:hover {
+            border-color: #00ff88; background: linear-gradient(135deg, #3a2a4a, #4a3a5a);
+            transform: translateY(-5px);
+        }
+        
+        .upload-section.drag-over {
+            border-color: #00d4ff; background: linear-gradient(135deg, #2a3a4a, #3a4a5a);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 4em; margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff77c6, #00d4ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .upload-title {
+            font-size: 1.8em; font-weight: 600; margin-bottom: 15px;
+        }
+        
+        .upload-description {
+            font-size: 1.1em; opacity: 0.8; margin-bottom: 25px;
+        }
+        
+        .platform-selector {
+            margin: 20px 0;
+        }
+        
+        .platform-buttons {
+            display: flex; justify-content: center; gap: 15px; margin: 20px 0;
+        }
+        
+        .platform-btn {
+            background: rgba(255, 119, 198, 0.1); border: 1px solid #ff77c6;
+            color: #fff; padding: 10px 20px; border-radius: 20px;
+            font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .platform-btn:hover, .platform-btn.selected {
+            background: #ff77c6; color: #000;
+        }
+        
+        .upload-button {
+            background: linear-gradient(45deg, #ff77c6, #00d4ff);
+            border: none; color: #000; padding: 15px 30px;
+            border-radius: 25px; font-size: 1.1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 119, 198, 0.3);
+        }
+        
+        .analysis-progress {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; margin-bottom: 30px;
+        }
+        
+        .progress-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #ff77c6; display: flex; align-items: center;
+        }
+        
+        .progress-icon {
+            font-size: 1.5em; margin-right: 10px;
+        }
+        
+        .progress-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 119, 198, 0.1); border: 1px solid #ff77c6;
+            border-radius: 10px; padding: 15px; text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em; font-weight: bold; color: #ff77c6;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em; opacity: 0.8;
+        }
+        
+        .accuracy-bar {
+            background: rgba(0, 0, 0, 0.3); border-radius: 10px;
+            height: 20px; margin-top: 20px; overflow: hidden;
+        }
+        
+        .accuracy-fill {
+            height: 100%; background: linear-gradient(90deg, #ff77c6, #00d4ff);
+            border-radius: 10px; transition: width 1s ease;
+            display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: bold; font-size: 0.8em;
+        }
+        
+        .orchestrated-agents {
+            background: linear-gradient(135deg, #1a2a3a, #2a3a4a);
+            border: 1px solid #00d4ff; border-radius: 15px; padding: 25px;
+        }
+        
+        .agents-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00d4ff; display: flex; align-items: center;
+        }
+        
+        .agent-card {
+            background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff;
+            border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card:hover {
+            background: rgba(0, 212, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .agent-name {
+            font-size: 1.1em; font-weight: 600; margin-bottom: 10px;
+            color: #00d4ff;
+        }
+        
+        .agent-purpose {
+            font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;
+        }
+        
+        .agent-stats {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+        }
+        
+        .agent-stat {
+            background: rgba(0, 0, 0, 0.3); border-radius: 5px;
+            padding: 8px; text-align: center;
+        }
+        
+        .agent-stat-value {
+            font-weight: bold; color: #00d4ff;
+        }
+        
+        .agent-stat-label {
+            font-size: 0.8em; opacity: 0.7;
+        }
+        
+        .tool-chains {
+            background: linear-gradient(135deg, #1a3a1a, #2a4a2a);
+            border: 1px solid #00ff88; border-radius: 15px; padding: 25px;
+        }
+        
+        .chains-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00ff88; display: flex; align-items: center;
+        }
+        
+        .chain-card {
+            background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88;
+            border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .chain-card:hover {
+            background: rgba(0, 255, 136, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .chain-name {
+            font-size: 1.1em; font-weight: 600; margin-bottom: 10px;
+            color: #00ff88;
+        }
+        
+        .chain-description {
+            font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;
+        }
+        
+        .chain-execute-btn {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            border: none; color: #000; padding: 10px 20px;
+            border-radius: 15px; font-size: 0.9em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .chain-execute-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .personality-insights {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #3a1a2a, #4a2a3a);
+            border: 1px solid #ff77c6; border-radius: 15px; padding: 25px;
+        }
+        
+        .insights-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #ff77c6; display: flex; align-items: center;
+        }
+        
+        .insight-card {
+            background: rgba(255, 119, 198, 0.1); border: 1px solid #ff77c6;
+            border-radius: 10px; padding: 15px; margin-bottom: 15px;
+        }
+        
+        .insight-type {
+            font-size: 0.8em; font-weight: 600; color: #ff77c6;
+            text-transform: uppercase; margin-bottom: 5px;
+        }
+        
+        .insight-content {
+            font-size: 0.95em; line-height: 1.4;
+        }
+        
+        .insight-confidence {
+            font-size: 0.8em; opacity: 0.7; margin-top: 5px;
+        }
+        
+        .export-section {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; margin-top: 30px;
+            text-align: center;
+        }
+        
+        .export-title {
+            font-size: 1.5em; font-weight: 600; margin-bottom: 15px;
+            color: #00d4ff;
+        }
+        
+        .export-description {
+            font-size: 1em; opacity: 0.8; margin-bottom: 20px;
+        }
+        
+        .export-price {
+            font-size: 1.2em; font-weight: 600; color: #00ff88;
+            margin-bottom: 20px;
+        }
+        
+        .export-button {
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            border: none; color: #000; padding: 15px 30px;
+            border-radius: 25px; font-size: 1.1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .export-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .live-feed {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; margin-top: 30px;
+        }
+        
+        .feed-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00d4ff; display: flex; align-items: center;
+        }
+        
+        .live-indicator {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #ff0000; margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .feed-item {
+            display: flex; align-items: center; padding: 12px 0;
+            border-bottom: 1px solid #333; font-family: monospace;
+        }
+        
+        .feed-time {
+            color: #666; margin-right: 15px; font-size: 0.8em;
+        }
+        
+        .feed-event {
+            flex: 1; color: #fff;
+        }
+        
+        .feed-value {
+            color: #ff77c6; font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .processing-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: none;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        
+        .processing-content {
+            background: linear-gradient(135deg, #2a1a3a, #3a2a4a);
+            border: 1px solid #ff77c6; border-radius: 15px;
+            padding: 40px; text-align: center; max-width: 500px;
+        }
+        
+        .processing-spinner {
+            width: 60px; height: 60px; border: 3px solid rgba(255, 119, 198, 0.2);
+            border-top: 3px solid #ff77c6; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-text {
+            font-size: 1.2em; margin-bottom: 10px;
+        }
+        
+        .processing-details {
+            font-size: 0.9em; opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr; padding: 20px;
+            }
+            
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <div class="header-title">🎭 Chat Log Personality & Agent Orchestration</div>
+        <div class="header-subtitle">Drop chat logs → AI learns your style → Creates personalized agent teams → Orchestrates tools/LLMs</div>
+        <div class="owner-info">
+            <div class="owner-name" id="ownerName">Loading...</div>
+            <div class="company-name" id="companyName">Company</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Chat Log Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">💬</div>
+            <div class="upload-title">Drop Your Chat Logs Here</div>
+            <div class="upload-description">
+                Upload Discord, Slack, Teams, WhatsApp or any chat logs. Our AI will analyze your communication patterns, decision-making style, and business context to create personalized AI agents that work exactly like you think.
+            </div>
+            
+            <div class="platform-selector">
+                <div style="margin-bottom: 10px;">Select Chat Platform:</div>
+                <div class="platform-buttons">
+                    <button class="platform-btn selected" data-platform="generic">Generic</button>
+                    <button class="platform-btn" data-platform="discord">Discord</button>
+                    <button class="platform-btn" data-platform="slack">Slack</button>
+                    <button class="platform-btn" data-platform="teams">Teams</button>
+                    <button class="platform-btn" data-platform="whatsapp">WhatsApp</button>
+                </div>
+            </div>
+            
+            <button class="upload-button" onclick="document.getElementById('fileInput').click()">
+                Choose Chat Logs
+            </button>
+            <input type="file" id="fileInput" multiple accept=".txt,.json,.csv,.zip,.md,.log" class="hidden">
+        </div>
+        
+        <!-- Analysis Progress -->
+        <div class="analysis-progress">
+            <div class="progress-title">
+                <span class="progress-icon">🧠</span>
+                Personality Analysis Progress
+            </div>
+            <div class="progress-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="chatLogsProcessed">0</div>
+                    <div class="stat-label">Chat Logs Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="personalityInsights">0</div>
+                    <div class="stat-label">Personality Insights</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="agentsOrchestrated">0</div>
+                    <div class="stat-label">Agents Orchestrated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="accuracyLevel">0%</div>
+                    <div class="stat-label">Accuracy Level</div>
+                </div>
+            </div>
+            <div class="accuracy-bar">
+                <div class="accuracy-fill" id="accuracyFill" style="width: 0%;">
+                    Learning...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Orchestrated Agents -->
+        <div class="orchestrated-agents">
+            <div class="agents-title">
+                <span class="progress-icon">🤖</span>
+                Your Orchestrated AI Team
+            </div>
+            <div id="agentsList">
+                <div class="agent-card">
+                    <div class="agent-name">Waiting for chat log analysis...</div>
+                    <div class="agent-purpose">Upload chat logs to generate personalized AI agents</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tool Chains -->
+        <div class="tool-chains">
+            <div class="chains-title">
+                <span class="progress-icon">🔗</span>
+                Personalized Tool Chains
+            </div>
+            <div id="chainsList">
+                <div class="chain-card">
+                    <div class="chain-name">Waiting for personality analysis...</div>
+                    <div class="chain-description">Tool chains will be generated based on your communication style</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personality Insights -->
+        <div class="personality-insights">
+            <div class="insights-title">
+                <span class="progress-icon">🎭</span>
+                Personality Intelligence
+            </div>
+            <div id="personalityInsightsList">
+                <div class="insight-card">
+                    <div class="insight-type">System Status</div>
+                    <div class="insight-content">
+                        Your personality orchestration system is ready. Upload chat logs to begin deep personality analysis and agent creation.
+                    </div>
+                    <div class="insight-confidence">Ready to learn</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PDF Export Section -->
+        <div class="export-section">
+            <div class="export-title">📄 Export Complete Analysis</div>
+            <div class="export-description">
+                Get a comprehensive PDF report including your personality profile, orchestrated agents, tool chains, and implementation guide.
+            </div>
+            <div class="export-price">Export Fee: $49</div>
+            <button class="export-button" onclick="exportPDFSummary()">
+                Generate PDF Summary
+            </button>
+        </div>
+        
+        <!-- Live Analysis Feed -->
+        <div class="live-feed">
+            <div class="feed-title">
+                <span class="progress-icon">⚡</span>
+                Live Analysis Stream
+                <div class="live-indicator"></div>
+            </div>
+            <div id="analysisFeed">
+                <div class="feed-item">
+                    <div class="feed-time">--:--:--</div>
+                    <div class="feed-event">Personality orchestration system initialized</div>
+                    <div class="feed-value">Ready</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <div class="processing-text" id="processingText">Analyzing chat log...</div>
+            <div class="processing-details" id="processingDetails">
+                Extracting personality patterns and generating orchestrated agents
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global state
+        let analysisStats = {
+            chatLogsProcessed: 0,
+            personalityInsights: 0,
+            agentsOrchestrated: 0,
+            accuracyLevel: 0
+        };
+        
+        let orchestratedAgents = [];
+        let toolChains = [];
+        let personalityInsights = [];
+        let selectedPlatform = 'generic';
+        
+        let ownerInfo = {
+            name: 'Executive User',
+            company: 'Your Company'
+        };
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeInterface();
+            setupFileUpload();
+            setupPlatformSelector();
+            setupWebSocket();
+        });
+        
+        function initializeInterface() {
+            // Get owner info from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            ownerInfo.name = urlParams.get('owner') || 'Executive User';
+            ownerInfo.company = urlParams.get('company') || 'Your Company';
+            
+            document.getElementById('ownerName').textContent = ownerInfo.name;
+            document.getElementById('companyName').textContent = ownerInfo.company;
+            
+            // Update header
+            document.querySelector('.header-title').textContent = `🎭 ${ownerInfo.name}'s Personality & Agent Orchestration`;
+            document.querySelector('.header-subtitle').textContent = `Personal AI agents trained on ${ownerInfo.name}'s communication style from ${ownerInfo.company}`;
+        }
+        
+        function setupFileUpload() {
+            const uploadSection = document.getElementById('uploadSection');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Drag and drop
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('drag-over');
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('drag-over');
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        function setupPlatformSelector() {
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedPlatform = btn.dataset.platform;
+                });
+            });
+        }
+        
+        async function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                await processChatLog(files[i]);
+            }
+        }
+        
+        async function processChatLog(file) {
+            showProcessingOverlay(`Processing ${file.name}...`, `Analyzing ${selectedPlatform} chat log for personality patterns`);
+            
+            try {
+                // Simulate upload and processing
+                const formData = new FormData();
+                formData.append('chatlog', file);
+                formData.append('platform', selectedPlatform);
+                
+                // Simulate processing steps
+                await simulateChatLogProcessing(file);
+                
+                // Update stats
+                analysisStats.chatLogsProcessed++;
+                analysisStats.personalityInsights += Math.floor(Math.random() * 8) + 5;
+                analysisStats.agentsOrchestrated += Math.floor(Math.random() * 3) + 3;
+                analysisStats.accuracyLevel = Math.min(analysisStats.accuracyLevel + Math.floor(Math.random() * 20) + 15, 100);
+                
+                updateAnalysisStats();
+                
+                // Add analysis event
+                addAnalysisEvent(`Chat log processed: ${file.name}`, `+${Math.floor(Math.random() * 8) + 5} insights extracted`);
+                
+                // Generate agents and chains
+                generateOrchestratedAgents();
+                generateToolChains();
+                generatePersonalityInsights();
+                
+                hideProcessingOverlay();
+                
+            } catch (error) {
+                console.error('Processing failed:', error);
+                hideProcessingOverlay();
+                alert('Failed to process chat log. Please try again.');
+            }
+        }
+        
+        async function simulateChatLogProcessing(file) {
+            const steps = [
+                'Parsing chat log format...',
+                'Extracting message patterns...',
+                'Analyzing communication style...',
+                'Identifying decision patterns...',
+                'Extracting business context...',
+                'Generating personality profile...',
+                'Creating agent specifications...',
+                'Building tool chain orchestration...',
+                'Optimizing LLM configurations...'
+            ];
+            
+            for (let i = 0; i < steps.length; i++) {
+                document.getElementById('processingText').textContent = steps[i];
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+        
+        function showProcessingOverlay(title, details) {
+            document.getElementById('processingText').textContent = title;
+            document.getElementById('processingDetails').textContent = details;
+            document.getElementById('processingOverlay').style.display = 'flex';
+        }
+        
+        function hideProcessingOverlay() {
+            document.getElementById('processingOverlay').style.display = 'none';
+        }
+        
+        function updateAnalysisStats() {
+            document.getElementById('chatLogsProcessed').textContent = analysisStats.chatLogsProcessed;
+            document.getElementById('personalityInsights').textContent = analysisStats.personalityInsights;
+            document.getElementById('agentsOrchestrated').textContent = analysisStats.agentsOrchestrated;
+            document.getElementById('accuracyLevel').textContent = analysisStats.accuracyLevel + '%';
+            
+            // Update accuracy bar
+            const fill = document.getElementById('accuracyFill');
+            fill.style.width = analysisStats.accuracyLevel + '%';
+            fill.textContent = analysisStats.accuracyLevel < 50 ? 'Learning...' : 
+                              analysisStats.accuracyLevel < 80 ? 'Advanced' : 'Expert Level';
+        }
+        
+        function generateOrchestratedAgents() {
+            const agentTemplates = [
+                {
+                    name: `${ownerInfo.name}'s Communication Agent`,
+                    purpose: 'Replicates your exact communication style and tone',
+                    capabilities: ['Style replication', 'Tone matching', 'Vocabulary adaptation'],
+                    accuracy: Math.floor(Math.random() * 15) + 85
+                },
+                {
+                    name: `${ownerInfo.name}'s Decision Agent`,
+                    purpose: 'Makes decisions using your decision-making patterns',
+                    capabilities: ['Decision simulation', 'Priority assessment', 'Risk evaluation'],
+                    accuracy: Math.floor(Math.random() * 15) + 85
+                },
+                {
+                    name: `${ownerInfo.company} Business Agent`,
+                    purpose: 'Understands your business context and processes',
+                    capabilities: ['Domain expertise', 'Process optimization', 'Strategic thinking'],
+                    accuracy: Math.floor(Math.random() * 15) + 85
+                },
+                {
+                    name: `${ownerInfo.name}'s Collaboration Agent`,
+                    purpose: 'Manages team interactions in your style',
+                    capabilities: ['Team coordination', 'Conflict resolution', 'Project management'],
+                    accuracy: Math.floor(Math.random() * 15) + 85
+                },
+                {
+                    name: `${ownerInfo.name}'s Technical Agent`,
+                    purpose: 'Executes technical tasks using your approach',
+                    capabilities: ['Technical implementation', 'Problem solving', 'System design'],
+                    accuracy: Math.floor(Math.random() * 15) + 85
+                }
+            ];
+            
+            orchestratedAgents = agentTemplates;
+            renderOrchestratedAgents();
+        }
+        
+        function renderOrchestratedAgents() {
+            const agentsList = document.getElementById('agentsList');
+            agentsList.innerHTML = '';
+            
+            orchestratedAgents.forEach(agent => {
+                const agentCard = document.createElement('div');
+                agentCard.className = 'agent-card';
+                agentCard.innerHTML = `
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-purpose">${agent.purpose}</div>
+                    <div class="agent-stats">
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.accuracy}%</div>
+                            <div class="agent-stat-label">Accuracy</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.capabilities.length}</div>
+                            <div class="agent-stat-label">Capabilities</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">Ready</div>
+                            <div class="agent-stat-label">Status</div>
+                        </div>
+                    </div>
+                `;
+                agentsList.appendChild(agentCard);
+            });
+        }
+        
+        function generateToolChains() {
+            const chainTemplates = [
+                {
+                    name: `${ownerInfo.name}'s Strategic Analysis Chain`,
+                    description: 'Automated strategic business analysis using your decision-making style',
+                    automation: 'High',
+                    timeSavings: Math.floor(Math.random() * 20) + 15
+                },
+                {
+                    name: `${ownerInfo.company} Technical Implementation Chain`,
+                    description: 'Technical project workflow orchestrated in your preferred approach',
+                    automation: 'Medium',
+                    timeSavings: Math.floor(Math.random() * 15) + 10
+                },
+                {
+                    name: `${ownerInfo.name}'s Client Communication Chain`,
+                    description: 'Client relationship management workflow using your communication patterns',
+                    automation: 'High',
+                    timeSavings: Math.floor(Math.random() * 25) + 20
+                },
+                {
+                    name: `${ownerInfo.company} Content Creation Chain`,
+                    description: 'Content generation workflow adapted to your writing style and voice',
+                    automation: 'Medium',
+                    timeSavings: Math.floor(Math.random() * 30) + 25
+                }
+            ];
+            
+            toolChains = chainTemplates;
+            renderToolChains();
+        }
+        
+        function renderToolChains() {
+            const chainsList = document.getElementById('chainsList');
+            chainsList.innerHTML = '';
+            
+            toolChains.forEach((chain, index) => {
+                const chainCard = document.createElement('div');
+                chainCard.className = 'chain-card';
+                chainCard.innerHTML = `
+                    <div class="chain-name">${chain.name}</div>
+                    <div class="chain-description">${chain.description}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <div style="font-size: 0.9em;">
+                            <span style="color: #00ff88;">Automation: ${chain.automation}</span> | 
+                            <span style="color: #00d4ff;">Saves: ${chain.timeSavings}h/week</span>
+                        </div>
+                        <button class="chain-execute-btn" onclick="executeChain(${index})">
+                            Execute Chain
+                        </button>
+                    </div>
+                `;
+                chainsList.appendChild(chainCard);
+            });
+        }
+        
+        function generatePersonalityInsights() {
+            const insights = [
+                {
+                    type: 'Communication Style',
+                    content: `${ownerInfo.name} prefers direct, results-oriented communication with technical depth when needed`,
+                    confidence: '89%'
+                },
+                {
+                    type: 'Decision Making',
+                    content: `Decision pattern shows balanced approach with data-driven analysis and collaborative input`,
+                    confidence: '85%'
+                },
+                {
+                    type: 'Business Context',
+                    content: `Strong expertise in strategic thinking with focus on efficiency and innovation`,
+                    confidence: '92%'
+                },
+                {
+                    type: 'Collaboration Style',
+                    content: `Prefers structured collaboration with clear roles and regular check-ins`,
+                    confidence: '87%'
+                },
+                {
+                    type: 'Technical Approach',
+                    content: `Values systematic implementation with quality gates and iterative improvement`,
+                    confidence: '91%'
+                }
+            ];
+            
+            personalityInsights = insights;
+            renderPersonalityInsights();
+        }
+        
+        function renderPersonalityInsights() {
+            const insightsList = document.getElementById('personalityInsightsList');
+            insightsList.innerHTML = '';
+            
+            personalityInsights.forEach(insight => {
+                const insightCard = document.createElement('div');
+                insightCard.className = 'insight-card';
+                insightCard.innerHTML = `
+                    <div class="insight-type">${insight.type}</div>
+                    <div class="insight-content">${insight.content}</div>
+                    <div class="insight-confidence">Confidence: ${insight.confidence}</div>
+                `;
+                insightsList.appendChild(insightCard);
+            });
+        }
+        
+        function executeChain(chainIndex) {
+            const chain = toolChains[chainIndex];
+            addAnalysisEvent(`Executing: ${chain.name}`, 'Starting automated workflow');
+            
+            // Simulate chain execution
+            setTimeout(() => {
+                addAnalysisEvent(`Chain completed: ${chain.name}`, `Saved ${chain.timeSavings}h`);
+            }, 3000);
+        }
+        
+        async function exportPDFSummary() {
+            try {
+                addAnalysisEvent('Generating PDF summary', 'Compiling comprehensive analysis report');
+                
+                // Simulate PDF generation
+                setTimeout(() => {
+                    const summaryData = {
+                        owner: ownerInfo.name,
+                        company: ownerInfo.company,
+                        analysisDate: new Date().toLocaleDateString(),
+                        stats: analysisStats,
+                        agentCount: orchestratedAgents.length,
+                        chainCount: toolChains.length,
+                        insightCount: personalityInsights.length,
+                        exportFee: '$49'
+                    };
+                    
+                    addAnalysisEvent('PDF summary ready', 'Export fee: $49');
+                    
+                    // Show download modal
+                    alert(`PDF Summary Generated!\n\nYour comprehensive personality and orchestration analysis is ready.\n\nIncludes:\n- ${personalityInsights.length} personality insights\n- ${orchestratedAgents.length} orchestrated agents\n- ${toolChains.length} personalized tool chains\n- Implementation guide\n\nExport Fee: $49\n\nThis would normally integrate with payment processing.`);
+                    
+                }, 2000);
+                
+            } catch (error) {
+                console.error('PDF export failed:', error);
+                alert('Failed to generate PDF summary. Please try again.');
+            }
+        }
+        
+        function addAnalysisEvent(event, value) {
+            const feed = document.getElementById('analysisFeed');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const feedItem = document.createElement('div');
+            feedItem.className = 'feed-item';
+            feedItem.innerHTML = `
+                <div class="feed-time">${timestamp}</div>
+                <div class="feed-event">${event}</div>
+                <div class="feed-value">${value}</div>
+            `;
+            
+            feed.insertBefore(feedItem, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        function setupWebSocket() {
+            // Simulate live updates
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    const events = [
+                        'Personality pattern refined',
+                        'Agent orchestration optimized',
+                        'Tool chain efficiency improved',
+                        'LLM configuration enhanced'
+                    ];
+                    
+                    const event = events[Math.floor(Math.random() * events.length)];
+                    const value = ['Enhanced', 'Optimized', 'Improved', '+2% accuracy'][Math.floor(Math.random() * 4)];
+                    
+                    addAnalysisEvent(event, value);
+                }
+            }, 15000);
+        }
+    </script>
+</body>
+</html>

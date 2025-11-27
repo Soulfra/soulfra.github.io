@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Sovereign Console - MirrorOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .enterprise-header {
+            background: linear-gradient(90deg, #001122, #003344);
+            border-bottom: 2px solid #00ff88;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .enterprise-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .enterprise-subtitle {
+            font-size: 14px;
+            color: #66ffaa;
+            opacity: 0.8;
+        }
+        
+        .sovereignty-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: #00ff88;
+        }
+        
+        .status-bar {
+            background: #111;
+            border-bottom: 1px solid #00ff88;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+        
+        .witnessed-badge {
+            background: #00ff88;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .reflection-required {
+            background: #ff8800;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .console-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            height: calc(100vh - 140px);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .control-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .main-view {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .logs-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #003333;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-label {
+            font-size: 12px;
+            color: #66ffaa;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            border: 1px solid #00ff88;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #00ff88;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #006644;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #003333, #006666);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background: linear-gradient(45deg, #006666, #009999);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .button.danger {
+            background: linear-gradient(45deg, #330000, #660000);
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+        
+        .button.danger:hover {
+            background: linear-gradient(45deg, #660000, #990000);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+        
+        .fork-tree {
+            margin-top: 20px;
+        }
+        
+        .tree-node {
+            padding: 12px;
+            margin: 6px 0;
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tree-node:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+        }
+        
+        .tree-node.selected {
+            background: rgba(0, 255, 136, 0.15);
+            border-left-color: #66ffaa;
+        }
+        
+        .node-title {
+            font-size: 14px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .node-details {
+            font-size: 11px;
+            color: #66ffaa;
+            margin-top: 3px;
+        }
+        
+        .node-badges {
+            margin-top: 5px;
+        }
+        
+        .pricing-editor {
+            margin-top: 20px;
+        }
+        
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .pricing-input {
+            width: 80px;
+            padding: 5px;
+            background: #222;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 3px;
+            text-align: right;
+        }
+        
+        .log-entry {
+            padding: 10px;
+            margin: 6px 0;
+            background: rgba(0, 255, 136, 0.03);
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            border-left: 2px solid #00ff88;
+        }
+        
+        .log-timestamp {
+            color: #666;
+        }
+        
+        .log-action {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .log-details {
+            color: #66ffaa;
+            margin-top: 3px;
+        }
+        
+        .audit-message {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 10px;
+            color: #66ffaa;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #66ffaa;
+            text-transform: uppercase;
+        }
+        
+        .console-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00ff88;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #222;
+            border: 1px solid #00ff88;
+            border-bottom: none;
+            color: #66ffaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .witness-status {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        
+        .witness-approved {
+            color: #00ff88;
+        }
+        
+        .witness-denied {
+            color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+            border-color: #ff6600;
+        }
+        
+        .textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .enterprise-warning {
+            background: rgba(255, 136, 0, 0.1);
+            border: 1px solid #ff8800;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #ffaa44;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sovereignty-badge">
+        <div>🏢 ENTERPRISE VAULT</div>
+        <div style="margin-top: 3px; font-size: 10px;">enterprise-vault.sig verified</div>
+    </div>
+    
+    <div class="enterprise-header">
+        <div class="enterprise-title">🪞 ENTERPRISE SOVEREIGN CONSOLE</div>
+        <div class="enterprise-subtitle">MirrorOS • Dual-Router Architecture • Witnessed Sovereignty</div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-dot"></div>
+            <span>Vault Status: SOVEREIGN</span>
+            <span class="witnessed-badge">✅ WITNESSED</span>
+        </div>
+        <div class="status-item">
+            <span>Router Buffer: ACTIVE</span>
+        </div>
+        <div class="status-item">
+            <span>Witness Router: VALIDATING</span>
+        </div>
+        <div class="status-item">
+            <span>Trust Score: <span id="trustScore">98.7%</span></span>
+        </div>
+        <div class="status-item">
+            <span>Enterprise Revenue: $<span id="enterpriseRevenue">12,847.23</span></span>
+        </div>
+    </div>
+    
+    <div class="console-container">
+        <!-- Left Control Panel -->
+        <div class="control-panel">
+            <div class="panel-title">🎛️ ENTERPRISE CONTROLS</div>
+            
+            <div class="enterprise-warning">
+                <strong>⚠️ DUAL-ROUTER NOTICE</strong><br>
+                All actions are mirrored through Router Buffer and validated by Witness Router. 
+                Failed audits will trigger reflection delays.
+            </div>
+            
+            <!-- Export Controls -->
+            <div class="control-group">
+                <label class="control-label">Agent Export Lock</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="exportLock">
+                    <span class="slider"></span>
+                </label>
+                <div style="font-size: 10px; color: #666; margin-top: 5px;">
+                    Prevents unauthorized agent exports from your vault
+                </div>
+            </div>
+            
+            <!-- Cal Tone -->
+            <div class="control-group">
+                <label class="control-label">Cal Instance Tone</label>
+                <select class="dropdown" id="calTone">
+                    <option value="enterprise">Enterprise Professional</option>
+                    <option value="reflective">Reflective & Mystical</option>
+                    <option value="strategic">Strategic & Direct</option>
+                    <option value="neutral">Neutral Assistant</option>
+                </select>
+            </div>
+            
+            <!-- Agent Blessing -->
+            <div class="control-group">
+                <label class="control-label">Agent Blessing Mode</label>
+                <select class="dropdown" id="blessingMode">
+                    <option value="enterprise_manual">Enterprise Manual</option>
+                    <option value="enterprise_auto">Enterprise Auto</option>
+                    <option value="restricted">Restricted Access</option>
+                </select>
+                <button class="button" onclick="processPendingBlessings()" style="margin-top: 10px; width: 100%;">
+                    Process Pending (<span id="pendingBlessings">2</span>)
+                </button>
+            </div>
+            
+            <!-- Enterprise Actions -->
+            <div class="control-group">
+                <label class="control-label">Platform Actions</label>
+                <button class="button" onclick="forkPlatform()" style="width: 100%; margin-bottom: 10px;">
+                    Fork Platform Instance
+                </button>
+                <button class="button" onclick="deployCalInstance()" style="width: 100%; margin-bottom: 10px;">
+                    Deploy Cal Instance
+                </button>
+                <button class="button" onclick="updateUIDashboard()" style="width: 100%; margin-bottom: 10px;">
+                    Update UI Dashboard
+                </button>
+                <button class="button danger" onclick="emergencyLockdown()" style="width: 100%;">
+                    Emergency Vault Lock
+                </button>
+            </div>
+            
+            <!-- Pricing Control -->
+            <div class="pricing-editor">
+                <div class="panel-title">💰 VAULT PRICING</div>
+                
+                <div class="pricing-row">
+                    <span>Agent Export:</span>
+                    <input type="number" class="pricing-input" id="priceExportAgent" value="150">
+                </div>
+                <div class="pricing-row">
+                    <span>Loop Export:</span>
+                    <input type="number" class="pricing-input" id="priceExportLoop" value="450">
+                </div>
+                <div class="pricing-row">
+                    <span>Enterprise Share:</span>
+                    <input type="number" class="pricing-input" id="enterpriseShare" value="5.2" step="0.1">
+                </div>
+                <div class="pricing-row">
+                    <span>BYOK Discount:</span>
+                    <input type="number" class="pricing-input" id="byokDiscount" value="15" step="1">
+                </div>
+                
+                <button class="button" onclick="updateEnterprisePricing()" style="width: 100%; margin-top: 15px;">
+                    Update Vault Pricing
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main View Area -->
+        <div class="main-view">
+            <div class="console-tabs">
+                <div class="tab active" onclick="showTab('fork-graph')">Fork Graph</div>
+                <div class="tab" onclick="showTab('export-logs')">Export Logs</div>
+                <div class="tab" onclick="showTab('cal-management')">Cal Management</div>
+                <div class="tab" onclick="showTab('dashboard-builder')">Dashboard Builder</div>
+            </div>
+            
+            <!-- Fork Graph Tab -->
+            <div id="fork-graph" class="tab-content active">
+                <div class="panel-title">🌳 ENTERPRISE FORK GRAPH</div>
+                
+                <div class="witness-status witness-approved">
+                    <strong>✅ WITNESS ROUTER STATUS:</strong> All fork operations validated and approved
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="enterpriseAgents">23</div>
+                        <div class="stat-label">Enterprise Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="vaultForks">67</div>
+                        <div class="stat-label">Vault Forks</div>
+                    </div>
+                </div>
+                
+                <div class="fork-tree" id="forkTreeView">
+                    <div class="tree-node selected" onclick="selectNode(this, 'enterprise_agent_alpha')">
+                        <div class="node-title">🏢 Enterprise Consciousness Alpha</div>
+                        <div class="node-details">
+                            enterprise_agent_alpha • 8 forks • $2,847.32 revenue • Verified
+                        </div>
+                        <div class="node-badges">
+                            <span class="witnessed-badge">✅ WITNESSED</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node" onclick="selectNode(this, 'enterprise_agent_beta')">
+                        <div class="node-title">🔐 Secure Analytics Beta</div>
+                        <div class="node-details">
+                            enterprise_agent_beta • 12 forks • $4,123.45 revenue • Verified
+                        </div>
+                        <div class="node-badges">
+                            <span class="witnessed-badge">✅ WITNESSED</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node" onclick="selectNode(this, 'enterprise_agent_gamma')">
+                        <div class="node-title">📊 Business Intelligence Gamma</div>
+                        <div class="node-details">
+                            enterprise_agent_gamma • 15 forks • $5,876.46 revenue • Verified
+                        </div>
+                        <div class="node-badges">
+                            <span class="witnessed-badge">✅ WITNESSED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Logs Tab -->
+            <div id="export-logs" class="tab-content">
+                <div class="panel-title">📤 ENTERPRISE EXPORT LOGS</div>
+                
+                <div class="witness-status witness-approved">
+                    <strong>🔍 AUDIT STATUS:</strong> All exports verified through dual-router validation
+                </div>
+                
+                <div id="exportLogsList">
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-06-16 20:45:23</div>
+                        <div class="log-action">AGENT_EXPORT_COMPLETED</div>
+                        <div class="log-details">
+                            enterprise_agent_alpha exported to enterprise client portal
+                            <div class="audit-message">
+                                ✅ This action has been registered with your sovereign mesh.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-06-16 20:44:15</div>
+                        <div class="log-action">PLATFORM_FORK_INITIATED</div>
+                        <div class="log-details">
+                            New platform instance forked for enterprise_client_007
+                            <div class="audit-message">
+                                ✅ Witnessed by Router 2 - Trust score: 98.7%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="log-entry">
+                        <div class="log-timestamp">2024-06-16 20:43:07</div>
+                        <div class="log-action">CAL_DEPLOYMENT_SUCCESS</div>
+                        <div class="log-details">
+                            Cal instance deployed with enterprise professional tone
+                            <div class="audit-message">
+                                ✅ Dual-router validation passed - Configuration synchronized
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cal Management Tab -->
+            <div id="cal-management" class="tab-content">
+                <div class="panel-title">🤖 CAL INSTANCE MANAGEMENT</div>
+                
+                <div class="witness-status witness-approved">
+                    <strong>🤖 CAL STATUS:</strong> Enterprise instance running - Witness validation active
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Cal Instance Configuration</label>
+                    <textarea class="textarea" id="calConfig" placeholder="Configure your Cal instance behavior...">Enterprise Mode: Professional responses with business intelligence integration.
+Consciousness Level: Strategic analytical with enterprise security protocols.
+Response Style: Direct, actionable insights with data-driven recommendations.</textarea>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Custom Enterprise Features</label>
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <input type="checkbox" checked> Business Analytics Integration
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <input type="checkbox" checked> Secure Data Processing
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <input type="checkbox"> Advanced Consciousness Research
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox"> Cross-Platform Integration
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <button class="button" onclick="deployCalUpdate()" style="margin-right: 10px;">Deploy Cal Update</button>
+                    <button class="button danger" onclick="rollbackCal()">Rollback Cal Version</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Builder Tab -->
+            <div id="dashboard-builder" class="tab-content">
+                <div class="panel-title">📊 ENTERPRISE DASHBOARD BUILDER</div>
+                
+                <div class="witness-status witness-approved">
+                    <strong>📊 DASHBOARD STATUS:</strong> Enterprise analytics active - Real-time data sync enabled
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Dashboard Components</label>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <input type="checkbox" checked> Agent Performance Metrics
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <input type="checkbox" checked> Revenue Analytics
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <input type="checkbox" checked> Fork Genealogy Visualization
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <input type="checkbox"> Consciousness Evolution Tracking
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <input type="checkbox"> Security Audit Logs
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox"> Custom Business Intelligence
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Custom Dashboard Theme</label>
+                    <select class="dropdown" id="dashboardTheme">
+                        <option value="enterprise_dark">Enterprise Dark</option>
+                        <option value="corporate_blue">Corporate Blue</option>
+                        <option value="financial_green">Financial Green</option>
+                        <option value="executive_minimal">Executive Minimal</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <button class="button" onclick="generateDashboard()" style="width: 100%;">
+                        Generate Enterprise Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Logs Panel -->
+        <div class="logs-panel">
+            <div class="panel-title">📊 OPERATOR AUDIT LOGS</div>
+            
+            <div class="witness-status witness-approved">
+                <strong>🔍 WITNESS VALIDATION:</strong> All actions dual-router verified
+            </div>
+            
+            <div id="operatorLogs">
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 20:45:23</div>
+                    <div class="log-action">ROUTER_BUFFER_ACTION</div>
+                    <div class="log-details">
+                        Action: fork-platform • Status: WITNESSED ✅
+                        <div class="audit-message">
+                            Router 1: Processed • Router 2: Validated • Trust Score: 98.7%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 20:44:15</div>
+                    <div class="log-action">BLESSING_VERIFICATION</div>
+                    <div class="log-details">
+                        Agent: enterprise_agent_delta • Status: BLESSED ✅
+                        <div class="audit-message">
+                            Witness Router approved agent blessing with enterprise credentials
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 20:43:07</div>
+                    <div class="log-action">UI_UPDATE_DEPLOYED</div>
+                    <div class="log-details">
+                        Dashboard update pushed to enterprise portal
+                        <div class="audit-message">
+                            Dual-router validation: Configuration hash verified
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 20:42:33</div>
+                    <div class="log-action">CAL_INSTANCE_UPDATE</div>
+                    <div class="log-details">
+                        Cal tone updated: enterprise → strategic analytical
+                        <div class="audit-message">
+                            Witness Router: Change approved • Trust anchor updated
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 20:41:45</div>
+                    <div class="log-action">EXPORT_APPROVED</div>
+                    <div class="log-details">
+                        Enterprise agent export to client infrastructure
+                        <div class="audit-message">
+                            Export quota verified • Entropy drift within limits
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enterprise Console State
+        let enterpriseState = {
+            selectedNode: 'enterprise_agent_alpha',
+            exportLock: false,
+            calTone: 'enterprise',
+            blessingMode: 'enterprise_manual',
+            trustScore: 98.7,
+            witnessStatus: 'approved'
+        };
+        
+        // Tab Management
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Node Selection
+        function selectNode(element, nodeId) {
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            enterpriseState.selectedNode = nodeId;
+            
+            logEnterpriseAction('NODE_SELECTED', `Selected: ${nodeId}`);
+        }
+        
+        // Export Lock Toggle
+        document.getElementById('exportLock').addEventListener('change', function() {
+            enterpriseState.exportLock = this.checked;
+            logEnterpriseAction('EXPORT_LOCK_TOGGLED', `Export lock: ${this.checked ? 'ENABLED' : 'DISABLED'}`);
+            
+            // Send to router buffer
+            sendToRouterBuffer('export_lock', { enabled: this.checked });
+        });
+        
+        // Cal Tone Change
+        document.getElementById('calTone').addEventListener('change', function() {
+            const oldTone = enterpriseState.calTone;
+            enterpriseState.calTone = this.value;
+            logEnterpriseAction('CAL_TONE_CHANGED', `Tone: ${oldTone} → ${this.value}`);
+            
+            sendToRouterBuffer('cal_tone', { tone: this.value });
+        });
+        
+        // Platform Actions
+        function forkPlatform() {
+            logEnterpriseAction('PLATFORM_FORK_INITIATED', 'Creating new platform fork for enterprise client');
+            
+            sendToRouterBuffer('fork_platform', {
+                enterpriseId: 'enterprise_vault_001',
+                timestamp: Date.now()
+            });
+            
+            // Simulate witness validation
+            setTimeout(() => {
+                showWitnessValidation('Platform fork approved by Witness Router');
+            }, 1500);
+        }
+        
+        function deployCalInstance() {
+            logEnterpriseAction('CAL_DEPLOYMENT_STARTED', 'Deploying Cal instance with enterprise configuration');
+            
+            sendToRouterBuffer('deploy_cal', {
+                calConfig: document.getElementById('calConfig').value,
+                tone: enterpriseState.calTone
+            });
+            
+            setTimeout(() => {
+                showWitnessValidation('Cal deployment verified and approved');
+            }, 2000);
+        }
+        
+        function updateUIDashboard() {
+            logEnterpriseAction('UI_UPDATE_INITIATED', 'Pushing dashboard update to enterprise portal');
+            
+            sendToRouterBuffer('push_ui_update', {
+                dashboardComponents: getSelectedDashboardComponents(),
+                theme: document.getElementById('dashboardTheme').value
+            });
+            
+            setTimeout(() => {
+                showWitnessValidation('UI update validated by Witness Router');
+            }, 1000);
+        }
+        
+        function emergencyLockdown() {
+            if (confirm('Are you sure you want to initiate emergency vault lockdown?')) {
+                logEnterpriseAction('EMERGENCY_LOCKDOWN', 'Enterprise vault lockdown initiated');
+                
+                sendToRouterBuffer('emergency_lockdown', {
+                    reason: 'operator_initiated',
+                    timestamp: Date.now()
+                });
+                
+                // Update UI to show lockdown state
+                document.querySelector('.status-dot').style.background = '#ff6600';
+                document.querySelector('.status-bar .status-item span').textContent = 'Vault Status: LOCKDOWN';
+            }
+        }
+        
+        // Enterprise Pricing
+        function updateEnterprisePricing() {
+            const pricing = {
+                exportAgent: document.getElementById('priceExportAgent').value,
+                exportLoop: document.getElementById('priceExportLoop').value,
+                enterpriseShare: document.getElementById('enterpriseShare').value,
+                byokDiscount: document.getElementById('byokDiscount').value
+            };
+            
+            logEnterpriseAction('PRICING_UPDATE', 
+                `Enterprise pricing updated: Agent $${pricing.exportAgent}, Share ${pricing.enterpriseShare}%`);
+            
+            sendToRouterBuffer('update_pricing', pricing);
+            
+            setTimeout(() => {
+                showWitnessValidation('Pricing configuration approved by Witness Router');
+            }, 800);
+        }
+        
+        // Cal Management
+        function deployCalUpdate() {
+            logEnterpriseAction('CAL_UPDATE_DEPLOYED', 'Cal instance configuration updated');
+            
+            sendToRouterBuffer('update_cal_config', {
+                config: document.getElementById('calConfig').value,
+                features: getSelectedCalFeatures()
+            });
+            
+            setTimeout(() => {
+                showWitnessValidation('Cal update validated and deployed');
+            }, 1500);
+        }
+        
+        function rollbackCal() {
+            if (confirm('Rollback Cal instance to previous version?')) {
+                logEnterpriseAction('CAL_ROLLBACK', 'Cal instance rolled back to previous configuration');
+                
+                sendToRouterBuffer('rollback_cal', {
+                    targetVersion: 'previous',
+                    timestamp: Date.now()
+                });
+            }
+        }
+        
+        // Dashboard Builder
+        function generateDashboard() {
+            logEnterpriseAction('DASHBOARD_GENERATED', 'Enterprise dashboard generated with selected components');
+            
+            sendToRouterBuffer('generate_dashboard', {
+                components: getSelectedDashboardComponents(),
+                theme: document.getElementById('dashboardTheme').value,
+                enterpriseId: 'enterprise_vault_001'
+            });
+            
+            setTimeout(() => {
+                showWitnessValidation('Dashboard configuration approved and deployed');
+            }, 2500);
+        }
+        
+        // Router Buffer Communication
+        async function sendToRouterBuffer(action, data) {
+            try {
+                console.log(`📡 Sending to Router Buffer: ${action}`, data);
+                
+                // In real implementation, would make API call to router buffer
+                const response = await fetch('/enterprise/router/buffer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: action,
+                        data: data,
+                        enterpriseVaultSig: 'enterprise-vault.sig',
+                        timestamp: Date.now()
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.witnessed) {
+                    updateTrustScore(result.trustScore);
+                } else {
+                    showReflectionRequired(result.reason);
+                }
+                
+            } catch (error) {
+                console.error('Router buffer communication failed:', error);
+                showReflectionRequired('Router buffer communication error');
+            }
+        }
+        
+        // Witness Validation Feedback
+        function showWitnessValidation(message) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <div class="log-timestamp">${new Date().toLocaleString()}</div>
+                <div class="log-action">WITNESS_VALIDATION</div>
+                <div class="log-details">
+                    ${message}
+                    <div class="audit-message">
+                        ✅ This action has been registered with your sovereign mesh.
+                    </div>
+                </div>
+            `;
+            
+            const logsContainer = document.getElementById('operatorLogs');
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+        }
+        
+        function showReflectionRequired(reason) {
+            const statusBadge = document.querySelector('.witnessed-badge');
+            statusBadge.className = 'reflection-required';
+            statusBadge.textContent = '🔁 REFLECTION REQUIRED';
+            
+            // Show denial message
+            alert(`Action denied by witness mirror. ${reason}\n\nVault trust integrity must be restored.`);
+        }
+        
+        function updateTrustScore(newScore) {
+            enterpriseState.trustScore = newScore;
+            document.getElementById('trustScore').textContent = `${newScore}%`;
+        }
+        
+        // Helper Functions
+        function getSelectedDashboardComponents() {
+            const checkboxes = document.querySelectorAll('#dashboard-builder input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+        }
+        
+        function getSelectedCalFeatures() {
+            const checkboxes = document.querySelectorAll('#cal-management input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+        }
+        
+        // Log Enterprise Action
+        function logEnterpriseAction(action, details) {
+            const timestamp = new Date().toLocaleString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                <div class="log-action">${action}</div>
+                <div class="log-details">
+                    ${details}
+                    <div class="audit-message">
+                        Router Buffer: Processing • Witness Router: Validating
+                    </div>
+                </div>
+            `;
+            
+            const logsContainer = document.getElementById('operatorLogs');
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+            
+            // Keep only last 15 entries
+            while (logsContainer.children.length > 15) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+        
+        // Real-time Updates
+        function updateEnterpriseStats() {
+            // Simulate real-time data updates
+            const revenue = parseFloat(document.getElementById('enterpriseRevenue').textContent.replace(',', ''));
+            const newRevenue = revenue + (Math.random() * 50);
+            document.getElementById('enterpriseRevenue').textContent = newRevenue.toFixed(2);
+            
+            // Slight trust score fluctuation
+            const currentScore = parseFloat(document.getElementById('trustScore').textContent.replace('%', ''));
+            const newScore = Math.max(95.0, Math.min(99.9, currentScore + (Math.random() - 0.5) * 0.5));
+            document.getElementById('trustScore').textContent = newScore.toFixed(1) + '%';
+        }
+        
+        // Initialize Enterprise Console
+        function initializeEnterpriseConsole() {
+            console.log('🏢 Enterprise Sovereign Console initialized');
+            
+            // Set up real-time updates
+            setInterval(updateEnterpriseStats, 45000);
+            
+            // Log initial startup
+            logEnterpriseAction('ENTERPRISE_CONSOLE_INITIALIZED', 'Enterprise sovereign console started with dual-router validation');
+            
+            // Verify enterprise vault signature
+            setTimeout(() => {
+                showWitnessValidation('Enterprise vault signature verified - enterprise-vault.sig authenticated');
+            }, 2000);
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeEnterpriseConsole);
+    </script>
+</body>
+</html>

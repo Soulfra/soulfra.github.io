@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>create a music collaboration platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ create a music collaboration platform</h1>
+            <p>Powered by Soulfra</p>
+        </header>
+        
+        <main>
+            <section class="hero">
+                <h2>Welcome to Your Instant Site</h2>
+                <p>This site was automatically generated from your idea.</p>
+                <p>Site ID: <code>6aa04093-936e-44e1-a057-265983bc856c</code></p>
+            </section>
+            
+            <section class="features">
+                <h3>Features</h3>
+                <ul>
+                    <li>Instant deployment</li>
+                    <li>Custom domain ready</li>
+                    <li>Mobile responsive</li>
+                    <li>API enabled</li>
+                    <li>Analytics ready</li>
+                </ul>
+            </section>
+            
+            <section class="cta">
+                <button onclick="shareThis()">Share This Site</button>
+                <button onclick="customizeThis()">Customize</button>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Created with Soulfra Instant Sites</p>
+        </footer>
+    </div>
+    
+    <script>
+        const SITE_ID = '6aa04093-936e-44e1-a057-265983bc856c';
+        const SITE_URL = 'https://6aa04093.jamtogether.music';
+        
+        function shareThis() {
+            navigator.clipboard.writeText(SITE_URL);
+            alert('Site URL copied to clipboard!');
+        }
+        
+        function customizeThis() {
+            window.location.href = '/customize';
+        }
+    </script>
+</body>
+</html>

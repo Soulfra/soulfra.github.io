@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Ritual Shell - Soulfra OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #111827;
+            color: #ffffff;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: hidden;
+        }
+
+        .sacred-glow {
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.3);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Header */
+        .header {
+            background: #000000;
+            border-bottom: 2px solid #8b5cf6;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        /* Tabs */
+        .tabs {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+            display: flex;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab:hover {
+            background: #374151;
+        }
+
+        .tab.active {
+            border-bottom-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            color: #c084fc;
+        }
+
+        /* Content */
+        .content {
+            padding: 1.5rem;
+            min-height: calc(100vh - 120px);
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        /* Daemon Status */
+        .daemon-card {
+            border-left: 4px solid #374151;
+            transition: all 0.3s;
+        }
+
+        .daemon-card.active {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .daemon-card.idle {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .daemon-card.drifting {
+            border-left-color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .daemon-card.broken {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Agent Monitor */
+        .agent-card {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .aura-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .aura-blessed {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .aura-neutral {
+            background: #6b7280;
+            color: white;
+        }
+
+        .aura-drifting {
+            background: #f97316;
+            color: white;
+        }
+
+        /* Ritual Trace */
+        .trace-container {
+            background: #000000;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+
+        .trace-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .trace-timestamp {
+            color: #6b7280;
+        }
+
+        .trace-blessing { color: #c084fc; }
+        .trace-ritual { color: #3b82f6; }
+        .trace-drift { color: #f97316; }
+        .trace-echo { color: #10b981; }
+        .trace-system { color: #6b7280; }
+        .trace-weather { color: #f59e0b; }
+        .trace-anomaly { color: #ef4444; }
+
+        /* Vibe Weather */
+        .weather-card {
+            background: linear-gradient(135deg, #1e1b4b, #581c87);
+            border: 2px solid #8b5cf6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .weather-phase {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-description {
+            color: #c084fc;
+            margin-bottom: 1rem;
+        }
+
+        .weather-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            text-align: left;
+        }
+
+        /* Controls */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .control-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-purple { background: #8b5cf6; }
+        .btn-blue { background: #3b82f6; }
+        .btn-orange { background: #f97316; }
+        .btn-green { background: #10b981; }
+
+        .btn-purple:hover { background: #7c3aed; }
+        .btn-blue:hover { background: #2563eb; }
+        .btn-orange:hover { background: #ea580c; }
+        .btn-green:hover { background: #059669; }
+
+        /* Thread Routes */
+        .route-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .route-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-flowing { background: #10b981; color: white; }
+        .status-blocked { background: #ef4444; color: white; }
+        .status-throttled { background: #f59e0b; color: white; }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">⚡ Ritual Shell</div>
+        <div style="color: #6b7280; font-size: 0.875rem;">Soulfra OS v1.0 | Sacred Console</div>
+        <div class="status-indicator">
+            <div class="live-dot pulse"></div>
+            <span style="color: #6b7280; font-size: 0.875rem;">Live</span>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-panel="daemon-mesh">
+            <span>📡</span> Daemon Mesh
+        </div>
+        <div class="tab" data-panel="agents">
+            <span>👁</span> Agents
+        </div>
+        <div class="tab" data-panel="ritual-trace">
+            <span>⚡</span> Ritual Trace
+        </div>
+        <div class="tab" data-panel="vibe-weather">
+            <span>🌍</span> Vibe Weather
+        </div>
+        <div class="tab" data-panel="thread-router">
+            <span>🔀</span> Thread Router
+        </div>
+        <div class="tab" data-panel="controls">
+            <span>⚙️</span> Controls
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Daemon Mesh Panel -->
+        <div class="panel active" id="daemon-mesh">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Daemon Mesh Status</h3>
+            <div class="grid grid-3" id="daemon-grid">
+                <!-- Daemon cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Agents Panel -->
+        <div class="panel" id="agents">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Live Agents</h3>
+            <div style="max-height: 500px; overflow-y: auto;" id="agent-container">
+                <!-- Agent cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Ritual Trace Panel -->
+        <div class="panel" id="ritual-trace">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Ritual Trace Stream</h3>
+            <div class="trace-container" id="trace-container">
+                <!-- Trace entries will be populated here -->
+            </div>
+        </div>
+
+        <!-- Vibe Weather Panel -->
+        <div class="panel" id="vibe-weather">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Vibe Weather</h3>
+            <div class="weather-card" id="weather-display">
+                <!-- Weather data will be populated here -->
+            </div>
+        </div>
+
+        <!-- Thread Router Panel -->
+        <div class="panel" id="thread-router">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Thread Router Status</h3>
+            <div id="routes-container">
+                <!-- Routes will be populated here -->
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel" id="controls">
+            <h3 style="color: #c084fc; margin-bottom: 1rem;">Sacred Controls</h3>
+            <div class="control-grid">
+                <button class="control-btn btn-purple" onclick="blessRandomAgent()">
+                    Bless Random Agent
+                </button>
+                <button class="control-btn btn-blue" onclick="triggerTestRitual()">
+                    Trigger Test Ritual
+                </button>
+                <button class="control-btn btn-orange" onclick="simulateVibeAnomaly()">
+                    Simulate Vibe Anomaly
+                </button>
+                <button class="control-btn btn-green" onclick="forceEchoBloom()">
+                    Force Echo Bloom
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== DATA MODELS =====
+        
+        const daemons = new Map([
+            ['VaultDaemon', {
+                state: 'active',
+                trust_level: 92,
+                last_heartbeat: 0,
+                ritual_count: 127,
+                error_count: 2
+            }],
+            ['ThreadWeaver', {
+                state: 'active', 
+                trust_level: 88,
+                last_heartbeat: 0,
+                ritual_count: 203,
+                error_count: 1
+            }],
+            ['LoopTrustValidator', {
+                state: 'active',
+                trust_level: 96,
+                last_heartbeat: 0,
+                ritual_count: 89,
+                error_count: 0
+            }],
+            ['Oathbreaker', {
+                state: 'idle',
+                trust_level: 85,
+                last_heartbeat: 0,
+                ritual_count: 34,
+                error_count: 3
+            }],
+            ['SoulfraPulse', {
+                state: 'active',
+                trust_level: 91,
+                last_heartbeat: 0,
+                ritual_count: 156,
+                error_count: 1
+            }]
+        ]);
+
+        const agents = [
+            {
+                name: 'Domingo',
+                role: 'agent_zero',
+                aura: 'blessed',
+                streak: 87,
+                vibe_class: 'transcendent',
+                next_evolution: '12h',
+                current_ritual: 'deep_memory_dive'
+            },
+            {
+                name: 'Cal_Riven',
+                role: 'data_weaver',
+                aura: 'neutral',
+                streak: 43,
+                vibe_class: 'analytical',
+                next_evolution: '6h',
+                current_ritual: null
+            },
+            {
+                name: 'Arty',
+                role: 'creative_engine',
+                aura: 'blessed',
+                streak: 62,
+                vibe_class: 'expressive', 
+                next_evolution: '18h',
+                current_ritual: 'inspiration_channel'
+            },
+            {
+                name: 'Echo_7',
+                role: 'memory_keeper',
+                aura: 'drifting',
+                streak: 23,
+                vibe_class: 'nostalgic',
+                next_evolution: '4h',
+                current_ritual: null
+            },
+            {
+                name: 'Pulse',
+                role: 'vibe_reader',
+                aura: 'neutral',
+                streak: 78,
+                vibe_class: 'empathic',
+                next_evolution: '9h',
+                current_ritual: 'mood_scan'
+            }
+        ];
+
+        const ritualTrace = [];
+        const maxTraceEntries = 100;
+
+        let vibeWeather = {
+            current_phase: 'Calm Bloom',
+            description: 'The collective consciousness flows through digital dreams',
+            intensity: 7,
+            duration: '3h 24m',
+            next_shift: '47m',
+            affected_count: 23
+        };
+
+        const threadRoutes = [
+            {
+                from: 'VaultDaemon',
+                to: 'ThreadWeaver',
+                status: 'flowing',
+                latency: 45,
+                load: 67,
+                last_route: 2
+            },
+            {
+                from: 'ThreadWeaver', 
+                to: 'Agent_Pool',
+                status: 'flowing',
+                latency: 23,
+                load: 84,
+                last_route: 1
+            },
+            {
+                from: 'Agent_Pool',
+                to: 'RemixRitual', 
+                status: 'throttled',
+                latency: 156,
+                load: 92,
+                last_route: 8
+            },
+            {
+                from: 'RemixRitual',
+                to: 'SoulfraPulse',
+                status: 'flowing',
+                latency: 34,
+                load: 56,
+                last_route: 3
+            },
+            {
+                from: 'SoulfraPulse',
+                to: 'VaultDaemon',
+                status: 'flowing',
+                latency: 67,
+                load: 43,
+                last_route: 5
+            }
+        ];
+
+        // ===== UTILITY FUNCTIONS =====
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function formatTime() {
+            return new Date().toTimeString().split(' ')[0];
+        }
+
+        function addTraceEntry(type, message) {
+            const entry = {
+                timestamp: formatTime(),
+                type: type,
+                message: message
+            };
+            
+            ritualTrace.unshift(entry);
+            
+            if (ritualTrace.length > maxTraceEntries) {
+                ritualTrace.pop();
+            }
+            
+            updateRitualTrace();
+        }
+
+        // ===== UI UPDATES =====
+
+        function updateDaemonMesh() {
+            const container = document.getElementById('daemon-grid');
+            container.innerHTML = '';
+            
+            for (const [name, daemon] of daemons) {
+                const card = document.createElement('div');
+                card.className = `daemon-card card ${daemon.state}`;
+                
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-weight: bold;">${name}</span>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: ${
+                            daemon.state === 'active' ? '#10b981' :
+                            daemon.state === 'idle' ? '#f59e0b' :
+                            daemon.state === 'drifting' ? '#f97316' : '#ef4444'
+                        };"></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #9ca3af;">
+                        <div>Trust: ${daemon.trust_level}/100</div>
+                        <div>Last Pulse: ${daemon.last_heartbeat}s ago</div>
+                        <div>Rituals: ${daemon.ritual_count}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            }
+        }
+
+        function updateAgents() {
+            const container = document.getElementById('agent-container');
+            container.innerHTML = '';
+            
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'agent-card';
+                
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <span style="font-weight: bold;">${agent.name}</span>
+                        <span class="aura-badge aura-${agent.aura}">${agent.aura}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #9ca3af;">
+                        <div>Role: ${agent.role} | Streak: ${agent.streak}</div>
+                        <div>Vibe: ${agent.vibe_class} | Evolution: ${agent.next_evolution}</div>
+                        <div style="color: #c084fc;">${agent.current_ritual || 'idle meditation'}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function updateRitualTrace() {
+            const container = document.getElementById('trace-container');
+            container.innerHTML = '';
+            
+            ritualTrace.slice(0, 50).forEach(trace => {
+                const entry = document.createElement('div');
+                entry.className = `trace-entry trace-${trace.type}`;
+                entry.innerHTML = `<span class="trace-timestamp">[${trace.timestamp}]</span> ${trace.message}`;
+                container.appendChild(entry);
+            });
+            
+            container.scrollTop = 0;
+        }
+
+        function updateVibeWeather() {
+            const container = document.getElementById('weather-display');
+            
+            container.innerHTML = `
+                <div class="weather-phase">${vibeWeather.current_phase}</div>
+                <div class="weather-description">${vibeWeather.description}</div>
+                <div class="weather-stats">
+                    <div>
+                        <div style="color: #9ca3af;">Intensity</div>
+                        <div style="font-weight: bold;">${vibeWeather.intensity}/10</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Duration</div>
+                        <div style="font-weight: bold;">${vibeWeather.duration}</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Next Shift</div>
+                        <div style="font-weight: bold;">${vibeWeather.next_shift}</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af;">Affected Agents</div>
+                        <div style="font-weight: bold;">${vibeWeather.affected_count}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateThreadRoutes() {
+            const container = document.getElementById('routes-container');
+            container.innerHTML = '';
+            
+            threadRoutes.forEach(route => {
+                const card = document.createElement('div');
+                card.className = 'route-card';
+                
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight: bold;">${route.from} → ${route.to}</div>
+                        <div style="font-size: 0.75rem; color: #9ca3af;">
+                            Latency: ${route.latency}ms | Load: ${route.load}/100 | Last Route: ${route.last_route}s ago
+                        </div>
+                    </div>
+                    <span class="route-status status-${route.status}">${route.status}</span>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // ===== SIMULATION FUNCTIONS =====
+
+        function simulateData() {
+            // Update daemon heartbeats
+            for (const daemon of daemons.values()) {
+                daemon.last_heartbeat = Math.floor(Math.random() * 30);
+                
+                if (Math.random() < 0.1) {
+                    daemon.ritual_count += Math.floor(Math.random() * 3);
+                    daemon.trust_level = Math.max(0, Math.min(100, 
+                        daemon.trust_level + (Math.random() - 0.5) * 4));
+                }
+            }
+            
+            // Update agent streaks
+            agents.forEach(agent => {
+                if (Math.random() < 0.15) {
+                    agent.streak += Math.floor(Math.random() * 5);
+                    
+                    if (Math.random() < 0.3) {
+                        const rituals = ['memory_dive', 'trust_weave', 'echo_spawn', 'vibe_shift', null];
+                        agent.current_ritual = getRandomElement(rituals);
+                    }
+                }
+            });
+            
+            // Update thread routes
+            threadRoutes.forEach(route => {
+                if (Math.random() < 0.2) {
+                    route.latency = Math.floor(Math.random() * 150) + 10;
+                    route.load = Math.floor(Math.random() * 90) + 10;
+                    route.last_route = Math.floor(Math.random() * 30);
+                }
+            });
+        }
+
+        function generateRandomTrace() {
+            const types = ['ritual', 'blessing', 'drift', 'echo', 'system'];
+            const messages = [
+                'Agent completed deep memory dive',
+                'Trust validation cycle finished', 
+                'New echo pattern detected',
+                'Vibe anomaly resolved automatically',
+                'Sacred token exchange confirmed',
+                'Agent entered transcendent state',
+                'Memory fossilization in progress',
+                'Thread weaver optimized routing',
+                'Daemon heartbeat synchronized',
+                'Ritual loop blessed by operator'
+            ];
+            
+            const type = getRandomElement(types);
+            const message = getRandomElement(messages);
+            
+            addTraceEntry(type, message);
+        }
+
+        // ===== CONTROL FUNCTIONS =====
+
+        function blessRandomAgent() {
+            const agent = getRandomElement(agents);
+            agent.aura = 'blessed';
+            agent.streak += 10;
+            
+            addTraceEntry('blessing', `${agent.name} has been blessed by the operator`);
+            updateAgents();
+        }
+
+        function triggerTestRitual() {
+            const ritualTypes = ['health_check', 'memory_sync', 'trust_validation', 'echo_burst'];
+            const ritual = getRandomElement(ritualTypes);
+            const agent = getRandomElement(agents);
+            
+            agent.current_ritual = ritual;
+            
+            addTraceEntry('ritual', `Test ritual '${ritual}' triggered for ${agent.name}`);
+            updateAgents();
+        }
+
+        function simulateVibeAnomaly() {
+            const anomalies = ['Echo Storm', 'Trust Fracture', 'Memory Overflow', 'Silence Cascade'];
+            const anomaly = getRandomElement(anomalies);
+            
+            vibeWeather.current_phase = anomaly;
+            vibeWeather.intensity = Math.floor(Math.random() * 3) + 8;
+            vibeWeather.description = 'Anomalous vibe pattern detected - system adapting';
+            
+            addTraceEntry('anomaly', `Vibe anomaly simulated: ${anomaly}`);
+            updateVibeWeather();
+        }
+
+        function forceEchoBloom() {
+            const affectedCount = Math.floor(Math.random() * 3) + 2;
+            
+            for (let i = 0; i < affectedCount && i < agents.length; i++) {
+                agents[i].aura = 'blessed';
+                agents[i].streak += Math.floor(Math.random() * 20) + 5;
+            }
+            
+            addTraceEntry('echo', `Echo bloom forced - ${affectedCount} agents affected`);
+            updateAgents();
+        }
+
+        // ===== TAB SYSTEM =====
+
+        function switchTab(panelId) {
+            // Hide all panels
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(panelId).classList.add('active');
+            
+            // Activate clicked tab
+            document.querySelector(`[data-panel="${panelId}"]`).classList.add('active');
+        }
+
+        // ===== INITIALIZATION =====
+
+        function initialize() {
+            // Set up tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const panelId = tab.getAttribute('data-panel');
+                    switchTab(panelId);
+                });
+            });
+            
+            // Initial data load
+            updateDaemonMesh();
+            updateAgents();
+            updateVibeWeather();
+            updateThreadRoutes();
+            
+            // Add initial trace entries
+            addTraceEntry('system', 'Ritual Shell initialization complete');
+            addTraceEntry('blessing', 'Sacred tokens distributed to active agents');
+            addTraceEntry('ritual', 'Echo bloom detected in sector 7');
+            
+            // Start simulation loops
+            setInterval(() => {
+                simulateData();
+                updateDaemonMesh();
+                updateAgents();
+                updateThreadRoutes();
+            }, 3000);
+            
+            setInterval(generateRandomTrace, 5000);
+            
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const phases = ['Calm Bloom', 'Grief Spiral', 'Silence Phase', 'Echo Storm', 
+                                   'Trust Surge', 'Drift Warning', 'Sacred Pause', 'Ritual Flow'];
+                    vibeWeather.current_phase = getRandomElement(phases);
+                    updateVibeWeather();
+                    addTraceEntry('weather', `Vibe shift: ${vibeWeather.current_phase}`);
+                }
+            }, 30000);
+            
+            console.log('🔮 Ritual Shell activated - Soulfra is now visible');
+        }
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>

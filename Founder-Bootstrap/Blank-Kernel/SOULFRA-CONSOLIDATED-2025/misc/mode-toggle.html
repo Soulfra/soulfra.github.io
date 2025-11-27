@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Mode Selection</title>
+    <style>
+        :root {
+            --soft: #E9D5FF;
+            --platform: #60A5FA;
+            --bg-dark: #1F2937;
+            --bg-light: #F9FAFB;
+            --text-dark: #111827;
+            --text-light: #F3F4F6;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+        
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-light);
+        }
+        
+        .mode-container {
+            max-width: 800px;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #6B7280;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .mode-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 300px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .mode-card {
+            background: #374151;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .mode-card.soft {
+            border-color: var(--soft);
+        }
+        
+        .mode-card.soft.active {
+            background: linear-gradient(135deg, #F3E8FF, #E9D5FF);
+            border-color: #C084FC;
+        }
+        
+        .mode-card.platform {
+            border-color: var(--platform);
+        }
+        
+        .mode-card.platform.active {
+            background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+            border-color: #3B82F6;
+        }
+        
+        .mode-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mode-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mode-description {
+            color: #6B7280;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        body.dark-mode .mode-description {
+            color: #9CA3AF;
+        }
+        
+        .mode-features {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #4B5563;
+        }
+        
+        body.dark-mode .mode-features {
+            color: #D1D5DB;
+        }
+        
+        .mode-features li {
+            list-style: none;
+            padding: 0.25rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .mode-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10B981;
+        }
+        
+        .toggle-container {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(0,0,0,0.05);
+            border-radius: 30px;
+        }
+        
+        body.dark-mode .toggle-container {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #E5E7EB;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        
+        .toggle-switch.active {
+            background: var(--platform);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+        
+        .upgrade-prompt {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border: 1px solid #F59E0B;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 500px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        body.dark-mode .upgrade-prompt {
+            background: linear-gradient(135deg, #78350F, #92400E);
+        }
+        
+        .upgrade-prompt.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .upgrade-prompt h3 {
+            color: #92400E;
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .upgrade-prompt h3 {
+            color: #FDE68A;
+        }
+        
+        .upgrade-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background: #F59E0B;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #D97706;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #92400E;
+            border: 1px solid #F59E0B;
+        }
+        
+        body.dark-mode .btn-secondary {
+            color: #FDE68A;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .trust-indicator {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        body.dark-mode .trust-indicator {
+            background: rgba(31, 41, 55, 0.9);
+        }
+        
+        .trust-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .trust-bar {
+            width: 100px;
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .trust-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #34D399);
+            transition: width 0.5s ease;
+        }
+        
+        .admin-only {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            display: none;
+        }
+        
+        .admin-only.show {
+            display: block;
+        }
+        
+        .admin-badge {
+            background: #8B5CF6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-only" id="adminBadge">
+        <span class="admin-badge">👑 Admin Mode</span>
+    </div>
+    
+    <div class="trust-indicator">
+        <div>Trust Score</div>
+        <div class="trust-score">
+            <div class="trust-bar">
+                <div class="trust-fill" id="trustFill" style="width: 45%"></div>
+            </div>
+            <span id="trustValue">0.45</span>
+        </div>
+    </div>
+    
+    <div class="mode-container">
+        <h1>Choose Your Mirror</h1>
+        <p class="subtitle">Select how you'd like Cal to interact with you</p>
+        
+        <div class="mode-selector">
+            <div class="mode-card soft active" onclick="selectMode('soft')">
+                <div class="mode-icon">🌸</div>
+                <h2 class="mode-title">Soft Mirror</h2>
+                <p class="mode-description">
+                    Gentle, reflective companion for personal growth
+                </p>
+                <ul class="mode-features">
+                    <li>Calm, supportive tone</li>
+                    <li>Privacy-first approach</li>
+                    <li>Emotional understanding</li>
+                    <li>Voice input support</li>
+                    <li>Simple, clean interface</li>
+                </ul>
+            </div>
+            
+            <div class="mode-card platform" onclick="selectMode('platform')">
+                <div class="mode-icon">🚀</div>
+                <h2 class="mode-title">Platform Mirror</h2>
+                <p class="mode-description">
+                    Powerful tools for builders and enterprises
+                </p>
+                <ul class="mode-features">
+                    <li>Strategic, action-oriented</li>
+                    <li>Full agent export tools</li>
+                    <li>Analytics dashboard</li>
+                    <li>Vault management</li>
+                    <li>API & integrations</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="toggle-container">
+            <label class="toggle-label">
+                <span>Soft Mode</span>
+                <div class="toggle-switch" id="modeToggle">
+                    <div class="toggle-slider"></div>
+                </div>
+                <span>Platform Mode</span>
+            </label>
+        </div>
+        
+        <div class="upgrade-prompt" id="upgradePrompt">
+            <h3>🌟 You've been using this like a builder!</h3>
+            <p>We've noticed you're exploring advanced features. Want to unlock Platform Mode for more powerful tools?</p>
+            <div class="upgrade-buttons">
+                <button class="btn btn-primary" onclick="upgradeMode()">Yes, Upgrade Me!</button>
+                <button class="btn btn-secondary" onclick="dismissUpgrade()">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load mode configuration
+        let modeConfig = {
+            activeMode: 'soft',
+            trustScore: 0.45,
+            isAdmin: false
+        };
+        
+        // Check if user is admin
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            modeConfig.isAdmin = true;
+            document.getElementById('adminBadge').classList.add('show');
+        }
+        
+        // Initialize UI
+        function initializeUI() {
+            // Load saved mode
+            const savedMode = localStorage.getItem('mirrorMode') || 'soft';
+            selectMode(savedMode, false);
+            
+            // Update trust score
+            updateTrustScore(modeConfig.trustScore);
+            
+            // Check for upgrade prompt
+            if (modeConfig.trustScore >= 0.8 && savedMode === 'soft') {
+                document.getElementById('upgradePrompt').classList.add('show');
+            }
+            
+            // Toggle switch handler
+            document.getElementById('modeToggle').addEventListener('click', toggleMode);
+        }
+        
+        function selectMode(mode, save = true) {
+            // Update UI
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`.mode-card.${mode}`).classList.add('active');
+            
+            // Update toggle
+            const toggle = document.getElementById('modeToggle');
+            if (mode === 'platform') {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+            
+            // Update theme
+            if (mode === 'platform') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Save mode
+            if (save) {
+                localStorage.setItem('mirrorMode', mode);
+                updateModeConfig(mode);
+            }
+            
+            modeConfig.activeMode = mode;
+        }
+        
+        function toggleMode() {
+            const currentMode = modeConfig.activeMode;
+            const newMode = currentMode === 'soft' ? 'platform' : 'soft';
+            selectMode(newMode);
+        }
+        
+        function updateTrustScore(score) {
+            modeConfig.trustScore = score;
+            document.getElementById('trustValue').textContent = score.toFixed(2);
+            document.getElementById('trustFill').style.width = `${score * 100}%`;
+        }
+        
+        function upgradeMode() {
+            selectMode('platform');
+            document.getElementById('upgradePrompt').classList.remove('show');
+            
+            // Animate trust score increase
+            let currentScore = modeConfig.trustScore;
+            const targetScore = Math.min(1.0, currentScore + 0.1);
+            const increment = (targetScore - currentScore) / 20;
+            
+            const animateScore = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(animateScore);
+                }
+                updateTrustScore(currentScore);
+            }, 50);
+        }
+        
+        function dismissUpgrade() {
+            document.getElementById('upgradePrompt').classList.remove('show');
+            localStorage.setItem('upgradePromptDismissed', Date.now());
+        }
+        
+        async function updateModeConfig(mode) {
+            // Update mode-switcher.json
+            try {
+                const response = await fetch('/api/mode/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ activeMode: mode })
+                });
+                
+                if (response.ok) {
+                    console.log(`Switched to ${mode} mode`);
+                }
+            } catch (error) {
+                console.error('Failed to update mode:', error);
+            }
+        }
+        
+        // Simulate trust score updates based on usage
+        function simulateTrustScoreUpdate() {
+            setInterval(() => {
+                if (modeConfig.activeMode === 'platform') {
+                    // Increase trust score with platform usage
+                    const newScore = Math.min(1.0, modeConfig.trustScore + 0.01);
+                    updateTrustScore(newScore);
+                }
+            }, 10000); // Every 10 seconds
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeUI();
+            simulateTrustScoreUpdate();
+        });
+    </script>
+</body>
+</html>

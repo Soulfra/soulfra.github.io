@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinishThisIdea - Multi-Agent Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .progress-bar {
+            background: #2a2a2a;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .agent-list {
+            list-style: none;
+        }
+
+        .agent-item {
+            background: #2a2a2a;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .agent-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-idle { background: #4a5568; }
+        .status-working { background: #48bb78; }
+        .status-error { background: #f56565; }
+
+        .worktree-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .worktree-item {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .branch-name {
+            font-family: monospace;
+            color: #764ba2;
+        }
+
+        .task-queue {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: #2a2a2a;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .task-available { border-left: 3px solid #48bb78; }
+        .task-locked { border-left: 3px solid #f56565; opacity: 0.6; }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        button:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            background: #2d3748;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            border-left-color: #48bb78;
+        }
+
+        .activity-log {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2a2a;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .timestamp {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .working {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 FinishThisIdea Dashboard</h1>
+            <p class="subtitle">Multi-Agent Development Control Center</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="refreshData()">🔄 Refresh</button>
+            <button onclick="startNewAgent()">➕ Start Agent</button>
+            <button onclick="assignTasks()">📋 Auto-Assign Tasks</button>
+            <button onclick="generateReport()">📊 Generate Report</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Overall Progress -->
+            <div class="card">
+                <h2>📚 Documentation Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="doc-progress" style="width: 70%">
+                        70%
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat">
+                        <div class="stat-value" id="docs-completed">51</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="docs-remaining">29</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Status -->
+            <div class="card">
+                <h2>🤖 Active Agents</h2>
+                <ul class="agent-list" id="agent-list">
+                    <li class="agent-item">
+                        <span><span class="agent-status status-idle"></span>Documentation Agent #1</span>
+                        <span>Idle</span>
+                    </li>
+                    <li class="agent-item">
+                        <span><span class="agent-status status-working"></span>Test Agent #1</span>
+                        <span class="working">Working...</span>
+                    </li>
+                </ul>
+                <div class="stat-grid" style="margin-top: 15px;">
+                    <div class="stat">
+                        <div class="stat-value" id="agents-total">2</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="agents-working">1</div>
+                        <div class="stat-label">Working</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Worktree Status -->
+            <div class="card">
+                <h2>🌳 Git Worktrees</h2>
+                <div class="worktree-list" id="worktree-list">
+                    <div class="worktree-item">
+                        <span>Main</span>
+                        <span class="branch-name">main</span>
+                    </div>
+                    <div class="worktree-item">
+                        <span>API Documentation</span>
+                        <span class="branch-name">docs/api-documentation</span>
+                    </div>
+                    <div class="worktree-item">
+                        <span>Service Specs</span>
+                        <span class="branch-name">docs/service-specs-batch1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Queue -->
+            <div class="card">
+                <h2>📋 Task Queue</h2>
+                <div class="task-queue" id="task-queue">
+                    <div class="task-item task-available">
+                        <span>github-integration.md</span>
+                        <span style="color: #48bb78;">Available</span>
+                    </div>
+                    <div class="task-item task-locked">
+                        <span>vscode-integration.md</span>
+                        <span style="color: #f56565;">Locked</span>
+                    </div>
+                    <div class="task-item task-available">
+                        <span>monitoring.md</span>
+                        <span style="color: #48bb78;">Available</span>
+                    </div>
+                </div>
+                <p style="margin-top: 10px; opacity: 0.7;">
+                    28 tasks remaining
+                </p>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="activity-log">
+            <h2 style="margin-bottom: 15px;">📜 Activity Log</h2>
+            <div id="activity-log">
+                <div class="log-entry">
+                    <span class="timestamp">11:15:42</span>
+                    Agent docs-1 completed: api-versioning.md
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">11:14:28</span>
+                    Started new documentation agent: agent-docs-1234
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">11:12:15</span>
+                    Memory system updated automatically
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">11:10:03</span>
+                    Duplicate detected and removed: test.md.backup
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection for real-time updates
+        let ws;
+        
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:3333/ws');
+            
+            ws.onopen = () => {
+                console.log('Connected to dashboard server');
+                addLogEntry('Connected to real-time updates');
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateDashboard(data);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                addLogEntry('Connection error - retrying...', 'error');
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket closed, reconnecting...');
+                setTimeout(connectWebSocket, 5000);
+            };
+        }
+
+        function updateDashboard(data) {
+            // Update documentation progress
+            if (data.documentation) {
+                const progress = data.documentation.progress;
+                document.getElementById('doc-progress').style.width = progress + '%';
+                document.getElementById('doc-progress').textContent = progress + '%';
+                document.getElementById('docs-completed').textContent = data.documentation.completed;
+                document.getElementById('docs-remaining').textContent = data.documentation.remaining;
+            }
+            
+            // Update agent list
+            if (data.agents) {
+                updateAgentList(data.agents);
+            }
+            
+            // Update worktrees
+            if (data.worktrees) {
+                updateWorktreeList(data.worktrees);
+            }
+            
+            // Update task queue
+            if (data.tasks) {
+                updateTaskQueue(data.tasks);
+            }
+            
+            // Add log entry if provided
+            if (data.logEntry) {
+                addLogEntry(data.logEntry.message, data.logEntry.type);
+            }
+        }
+
+        function updateAgentList(agents) {
+            const list = document.getElementById('agent-list');
+            list.innerHTML = '';
+            
+            let totalAgents = 0;
+            let workingAgents = 0;
+            
+            agents.forEach(agent => {
+                totalAgents++;
+                if (agent.status === 'working') workingAgents++;
+                
+                const li = document.createElement('li');
+                li.className = 'agent-item';
+                li.innerHTML = `
+                    <span>
+                        <span class="agent-status status-${agent.status}"></span>
+                        ${agent.name}
+                    </span>
+                    <span ${agent.status === 'working' ? 'class="working"' : ''}>
+                        ${agent.status === 'working' ? 'Working...' : 'Idle'}
+                    </span>
+                `;
+                list.appendChild(li);
+            });
+            
+            document.getElementById('agents-total').textContent = totalAgents;
+            document.getElementById('agents-working').textContent = workingAgents;
+        }
+
+        function updateWorktreeList(worktrees) {
+            const list = document.getElementById('worktree-list');
+            list.innerHTML = '';
+            
+            worktrees.forEach(worktree => {
+                const div = document.createElement('div');
+                div.className = 'worktree-item';
+                div.innerHTML = `
+                    <span>${worktree.name}</span>
+                    <span class="branch-name">${worktree.branch}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function updateTaskQueue(tasks) {
+            const queue = document.getElementById('task-queue');
+            queue.innerHTML = '';
+            
+            tasks.slice(0, 10).forEach(task => {
+                const div = document.createElement('div');
+                div.className = `task-item task-${task.status}`;
+                div.innerHTML = `
+                    <span>${task.name}</span>
+                    <span style="color: ${task.status === 'available' ? '#48bb78' : '#f56565'};">
+                        ${task.status === 'available' ? 'Available' : 'Locked'}
+                    </span>
+                `;
+                queue.appendChild(div);
+            });
+        }
+
+        function addLogEntry(message, type = 'info') {
+            const log = document.getElementById('activity-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `
+                <span class="timestamp">${timestamp}</span>
+                ${message}
+            `;
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep only last 50 entries
+            while (log.children.length > 50) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        // Control functions
+        function refreshData() {
+            fetch('/api/status')
+                .then(res => res.json())
+                .then(data => updateDashboard(data))
+                .catch(err => addLogEntry('Failed to refresh data', 'error'));
+        }
+
+        function startNewAgent() {
+            fetch('/api/agent/start', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    addLogEntry(`Started new agent: ${data.agentId}`);
+                    refreshData();
+                })
+                .catch(err => addLogEntry('Failed to start agent', 'error'));
+        }
+
+        function assignTasks() {
+            fetch('/api/tasks/assign', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    addLogEntry(`Assigned ${data.assigned} tasks to agents`);
+                    refreshData();
+                })
+                .catch(err => addLogEntry('Failed to assign tasks', 'error'));
+        }
+
+        function generateReport() {
+            window.open('/api/report', '_blank');
+        }
+
+        // Initialize
+        // connectWebSocket();  // Uncomment when server is running
+        
+        // Simulate data for now
+        setTimeout(() => {
+            addLogEntry('Dashboard initialized');
+            addLogEntry('Memory system auto-update enabled');
+            addLogEntry('Duplicate detection active');
+        }, 500);
+        
+        // Auto-refresh every 5 seconds (remove when WebSocket is active)
+        setInterval(refreshData, 5000);
+    </script>
+</body>
+</html>

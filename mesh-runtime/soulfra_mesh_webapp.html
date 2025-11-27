@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra AI Orchestration Platform - LIVE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0F0F23 0%, #1a1a3a 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .pricing-highlight {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-top: 10px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chat-area {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 106, 0.1));
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .active-model {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .model-indicator {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .cost-counter {
+            font-size: 0.9rem;
+            background: rgba(0, 255, 136, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            align-self: flex-start;
+        }
+
+        .message-header {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .model-tag {
+            background: rgba(0, 255, 136, 0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .chat-input-area {
+            padding: 20px 25px;
+            border-top: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 16px;
+            resize: none;
+            min-height: 60px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .orchestration-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drop-zone {
+            border: 3px dashed rgba(0, 255, 136, 0.5);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.15);
+            transform: scale(1.02);
+        }
+
+        .drop-zone-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drop-icon {
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+
+        .drop-text {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .drop-subtext {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .model-router {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .model-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .model-option:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .model-option.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .model-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .model-cost {
+            font-size: 0.8rem;
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .model-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+
+        .pricing-breakdown {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 106, 0.1));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .price-item:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 1rem;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .ai-twin-preview {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .twin-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .twin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .twin-info {
+            flex: 1;
+        }
+
+        .twin-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .twin-learned {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            border: none;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .live-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff0040, #ff4060);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+            text-transform: uppercase;
+        }
+
+        .pricing-badge {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 1000;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .orchestration-panel {
+                order: -1;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 2rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .model-router { grid-template-columns: 1fr; }
+            .chat-area { min-height: 400px; }
+        }
+
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: typingDots 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingDots {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="live-indicator">🔴 LIVE</div>
+    <div class="pricing-badge">1¢ per message</div>
+
+    <div class="container">
+        <div class="header">
+            <div class="status-badge">✅ AI ORCHESTRATION LIVE</div>
+            <h1>Soulfra AI Platform</h1>
+            <p class="subtitle">Drag your chat logs → Create AI twins → Route to best LLMs</p>
+            <p class="pricing-highlight">1¢ per message • 80% cost savings • Infinite continuity</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalMessages">847K</div>
+                <div class="stat-label">Messages Processed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="costSavings">$127K</div>
+                <div class="stat-label">Customer Savings</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="activeModels">12</div>
+                <div class="stat-label">AI Models Live</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="aiTwins">2.3K</div>
+                <div class="stat-label">AI Twins Created</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div class="active-model">
+                        <div class="model-indicator"></div>
+                        <span id="currentModel">Claude Sonnet 4</span>
+                        <span style="opacity: 0.7;">→ Auto-routing enabled</span>
+                    </div>
+                    <div class="cost-counter">
+                        Total cost: $<span id="sessionCost">0.23</span>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        <div class="message-header">
+                            <span>Claude Sonnet 4</span>
+                            <span class="model-tag">$0.01</span>
+                        </div>
+                        <div>Hi! I'm your AI twin created from your chat history. I've learned your preferences, communication style, and can seamlessly route between all major AI models to give you the best response for each query.</div>
+                    </div>
+                    
+                    <div class="message user">
+                        <div class="message-header">
+                            <span>You</span>
+                        </div>
+                        <div>Can you help me write code and then analyze some data?</div>
+                    </div>
+                    
+                    <div class="message ai">
+                        <div class="message-header">
+                            <span>Auto-routed to GPT-4</span>
+                            <span class="model-tag">$0.01</span>
+                        </div>
+                        <div>I'll route the coding task to GPT-4 (excellent for code generation) and then switch to Claude for data analysis (superior reasoning). You get the best of both worlds at 1¢ per message instead of 3-5¢ elsewhere.</div>
+                    </div>
+                </div>
+
+                <div class="typing-indicator" id="typingIndicator">
+                    <span>AI twin is thinking</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <textarea class="chat-input" id="chatInput" placeholder="Ask anything - your AI twin will route to the perfect model automatically..." rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="orchestration-panel">
+                <div class="panel-card">
+                    <div class="panel-title">
+                        <span>🧠</span>
+                        Create AI Twin from Chat Log
+                    </div>
+                    
+                    <div class="drop-zone" id="dropZone" onclick="openFileDialog()">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">📄</div>
+                            <div class="drop-text">Drop your chat history here</div>
+                            <div class="drop-subtext">Claude, ChatGPT, any AI conversation</div>
+                        </div>
+                    </div>
+                    
+                    <input type="file" id="fileInput" style="display: none;" accept=".txt,.json,.csv,.md" multiple>
+                    
+                    <div class="ai-twin-preview" id="twinPreview" style="display: none;">
+                        <div class="twin-status">
+                            <div class="twin-avatar">AI</div>
+                            <div class="twin-info">
+                                <div class="twin-name">Your AI Twin</div>
+                                <div class="twin-learned">Learned from <span id="messageCount">0</span> messages</div>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="activateTwin()">
+                            🚀 Activate AI Twin
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-title">
+                        <span>🎯</span>
+                        Smart Model Router
+                    </div>
+                    
+                    <div class="model-router">
+                        <div class="model-option active" data-model="claude">
+                            <div class="model-status"></div>
+                            <div class="model-name">Claude</div>
+                            <div class="model-cost">$0.01/msg</div>
+                        </div>
+                        <div class="model-option" data-model="gpt4">
+                            <div class="model-status"></div>
+                            <div class="model-name">GPT-4</div>
+                            <div class="model-cost">$0.01/msg</div>
+                        </div>
+                        <div class="model-option" data-model="gemini">
+                            <div class="model-status"></div>
+                            <div class="model-name">Gemini</div>
+                            <div class="model-cost">$0.01/msg</div>
+                        </div>
+                        <div class="model-option" data-model="llama">
+                            <div class="model-status"></div>
+                            <div class="model-name">Llama 3</div>
+                            <div class="model-cost">$0.01/msg</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(0,255,136,0.1); border-radius: 8px; font-size: 0.9rem;">
+                        <strong>Auto-routing active:</strong> Your twin chooses the optimal model for each message type
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-title">
+                        <span>💰</span>
+                        Pricing Breakdown
+                    </div>
+                    
+                    <div class="pricing-breakdown">
+                        <div class="price-item">
+                            <span>Typical AI platforms:</span>
+                            <span>$0.03-0.05/msg</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Soulfra routing:</span>
+                            <span>$0.01/msg</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Your savings:</span>
+                            <span style="color: #00ff88;">80% less</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
+                        💡 <strong>Smart routing</strong> selects cheaper models when quality is equivalent, premium models only when needed.
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="showPricingDetails()" style="margin-top: 15px;">
+                        📊 View Full Pricing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        let sessionCost = 0.23;
+        let twinActive = false;
+
+        // File drag and drop
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function openFileDialog() {
+            fileInput.click();
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            showToast(`Processing ${file.name}...`);
+            
+            // Simulate file processing
+            setTimeout(() => {
+                const messageCount = Math.floor(Math.random() * 1000) + 500;
+                displayTwinPreview(messageCount);
+                showToast(`AI Twin ready! Learned from ${messageCount} messages.`);
+            }, 2000);
+        }
+
+        function displayTwinPreview(count) {
+            document.getElementById('messageCount').textContent = count.toLocaleString();
+            document.getElementById('twinPreview').style.display = 'block';
+        }
+
+        function activateTwin() {
+            twinActive = true;
+            showToast('🚀 AI Twin activated! It can now respond as you.');
+            
+            // Update chat interface
+            addMessage('ai', 'Your AI Twin', 'Perfect! I\'ve absorbed your conversation patterns and preferences. I can now continue conversations exactly as you would, while intelligently routing to the best AI models for each task.');
+        }
+
+        // Chat functionality
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            addMessage('user', 'You', message);
+            chatInput.value = '';
+            
+            // Show typing indicator
+            typingIndicator.classList.add('active');
+            
+            // Simulate AI response with model routing
+            setTimeout(() => {
+                const responses = [
+                    { model: 'Claude Sonnet 4', message: 'I\'ll analyze this thoughtfully. Based on your chat history, I know you prefer detailed explanations with practical examples.' },
+                    { model: 'GPT-4 Turbo', message: 'Routing to GPT-4 for this coding task - it excels at structured programming solutions.' },
+                    { model: 'Gemini Pro', message: 'Using Gemini for this creative task - its multimodal capabilities are perfect here.' },
+                    { model: 'Auto-routed to Claude', message: 'Your AI twin selected me for this reasoning task. Here\'s my analysis based on your conversation patterns...' }
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                typingIndicator.classList.remove('active');
+                addMessage('ai', response.model, response.message);
+                
+                updateCost();
+                updateStats();
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(type, sender, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const cost = 0.01;
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span>${sender}</span>
+                    ${type === 'ai' ? `<span class="model-tag">$${cost.toFixed(2)}</span>` : ''}
+                </div>
+                <div>${content}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function updateCost() {
+            sessionCost += 0.01;
+            document.getElementById('sessionCost').textContent = sessionCost.toFixed(2);
+        }
+
+        function updateStats() {
+            // Update live stats
+            const totalMessages = document.getElementById('totalMessages');
+            const currentCount = parseInt(totalMessages.textContent.replace('K', '000'));
+            totalMessages.textContent = ((currentCount + 1) / 1000).toFixed(0) + 'K';
+            
+            const savings = document.getElementById('costSavings');
+            const currentSavings = parseInt(savings.textContent.replace('$', '').replace('K', '000'));
+            savings.textContent = '$' + ((currentSavings + 2) / 1000).toFixed(0) + 'K';
+        }
+
+        // Model selection
+        document.querySelectorAll('.model-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.model-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                
+                const model = option.dataset.model;
+                const modelNames = {
+                    claude: 'Claude Sonnet 4',
+                    gpt4: 'GPT-4 Turbo',
+                    gemini: 'Gemini Pro',
+                    llama: 'Llama 3 70B'
+                };
+                
+                document.getElementById('currentModel').textContent = modelNames[model];
+                showToast(`Switched to ${modelNames[model]}`);
+            });
+        });
+
+        function showPricingDetails() {
+            showToast('💰 1¢ per message vs 3-5¢ elsewhere = 80% savings through smart routing');
+        }
+
+        // Toast notifications
+        function showToast(message) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #00ff88, #00cc6a);
+                color: #000;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 3000;
+                animation: slideInRight 0.5s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Auto-update stats every few seconds
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                const stats = ['totalMessages', 'costSavings', 'aiTwins'];
+                const randomStat = stats[Math.floor(Math.random() * stats.length)];
+                
+                if (randomStat === 'totalMessages') {
+                    const el = document.getElementById('totalMessages');
+                    const current = parseFloat(el.textContent);
+                    el.textContent = (current + 0.1).toFixed(1) + 'K';
+                } else if (randomStat === 'costSavings') {
+                    const el = document.getElementById('costSavings');
+                    const current = parseFloat(el.textContent.replace('$', '').replace('K', ''));
+                    el.textContent = '$' + (current + 0.1).toFixed(1) + 'K';
+                }
+            }
+        }, 4000);
+
+        // Initialize with welcome message
+        setTimeout(() => {
+            showToast('🚀 AI Orchestration Platform is LIVE! Drop your chat logs to get started.');
+        }, 1000);
+    </script>
+
+    <style>
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</body>
+</html>

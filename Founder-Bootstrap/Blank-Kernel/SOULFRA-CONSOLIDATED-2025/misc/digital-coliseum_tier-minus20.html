@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏟️ Digital Coliseum - Live Sports Arena</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        :root {
+            --arena-stone: #8B4513;
+            --arena-sand: #F4A460;
+            --blood-red: #8B0000;
+            --gold-crown: #FFD700;
+            --emperor-purple: #663399;
+            --crowd-shadow: #2F2F2F;
+            --fire-orange: #FF4500;
+            --victory-green: #228B22;
+        }
+        
+        body {
+            font-family: 'Cinzel', 'Times New Roman', serif;
+            background: linear-gradient(135deg, var(--arena-stone) 0%, var(--crowd-shadow) 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* Arena Container */
+        .coliseum-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: radial-gradient(ellipse at center, var(--arena-sand) 20%, var(--arena-stone) 80%);
+        }
+        
+        /* Animated Crowd */
+        .crowd-stands {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(180deg, var(--crowd-shadow) 0%, transparent 100%);
+            overflow: hidden;
+        }
+        
+        .crowd-section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .crowd-person {
+            width: 8px;
+            height: 15px;
+            background: var(--emperor-purple);
+            margin: 5px 2px;
+            border-radius: 50% 50% 0 0;
+            animation: crowd-cheer 2s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+        
+        @keyframes crowd-cheer {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.2) translateY(-5px); }
+        }
+        
+        /* Game Header */
+        .arena-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 3px solid var(--gold-crown);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .arena-title {
+            font-size: 32px;
+            color: var(--gold-crown);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+        
+        .game-status {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        
+        .live-score {
+            font-size: 24px;
+            color: var(--fire-orange);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        /* Arena Floor */
+        .arena-floor {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 500px;
+            background: 
+                radial-gradient(ellipse at center, var(--arena-sand) 0%, #CD853F 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23A0522D" opacity="0.3"/><circle cx="25" cy="25" r="1" fill="%23A0522D" opacity="0.2"/><circle cx="75" cy="75" r="1.5" fill="%23A0522D" opacity="0.25"/></svg>');
+            border-radius: 50%;
+            border: 5px solid var(--arena-stone);
+            box-shadow: 
+                inset 0 0 50px rgba(0, 0, 0, 0.3),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+        }
+        
+        /* Gladiator Agents */
+        .gladiator {
+            position: relative;
+            width: 120px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: gladiator-stance 3s ease-in-out infinite;
+        }
+        
+        .gladiator.team1 {
+            animation-delay: 0s;
+        }
+        
+        .gladiator.team2 {
+            animation-delay: 1.5s;
+        }
+        
+        @keyframes gladiator-stance {
+            0%, 100% { transform: scale(1) translateY(0); }
+            25% { transform: scale(1.05) translateY(-5px) rotate(2deg); }
+            75% { transform: scale(0.95) translateY(3px) rotate(-2deg); }
+        }
+        
+        .gladiator-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--fire-orange) 0%, var(--blood-red) 100%);
+            border: 4px solid var(--gold-crown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.6);
+            position: relative;
+        }
+        
+        .gladiator.team2 .gladiator-avatar {
+            background: linear-gradient(135deg, var(--emperor-purple) 0%, #4B0082 100%);
+            box-shadow: 0 0 20px rgba(102, 51, 153, 0.6);
+        }
+        
+        .gladiator-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--gold-crown);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 5px;
+        }
+        
+        .gladiator-stats {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--gold-crown);
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+        
+        .stat-value {
+            color: var(--fire-orange);
+            font-weight: bold;
+        }
+        
+        /* Battle Effects */
+        .battle-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: var(--fire-orange);
+            animation: battle-flash 1s ease-out;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        @keyframes battle-flash {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Betting Interface */
+        .betting-panel {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--gold-crown);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 90;
+        }
+        
+        .betting-title {
+            font-size: 20px;
+            color: var(--gold-crown);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .bet-option {
+            background: rgba(139, 69, 19, 0.3);
+            border: 1px solid var(--gold-crown);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bet-option:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .bet-description {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .bet-odds {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .odds-value {
+            color: var(--fire-orange);
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .bet-button {
+            background: var(--victory-green);
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .bet-button:hover {
+            background: #32CD32;
+            transform: scale(1.1);
+        }
+        
+        /* Live Feed */
+        .live-feed {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--gold-crown);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 90;
+            overflow-y: auto;
+        }
+        
+        .feed-title {
+            font-size: 20px;
+            color: var(--gold-crown);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .feed-item {
+            background: rgba(139, 69, 19, 0.2);
+            border-left: 4px solid var(--fire-orange);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .feed-timestamp {
+            color: var(--gold-crown);
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .feed-action {
+            color: var(--fire-orange);
+            font-weight: bold;
+        }
+        
+        /* Emperor's Box */
+        .emperor-box {
+            position: absolute;
+            top: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--emperor-purple) 0%, #4B0082 100%);
+            border: 3px solid var(--gold-crown);
+            border-radius: 15px;
+            padding: 15px 30px;
+            z-index: 80;
+            box-shadow: 0 0 30px rgba(102, 51, 153, 0.5);
+        }
+        
+        .emperor-title {
+            font-size: 16px;
+            color: var(--gold-crown);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .emperor-decree {
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Combat Animations */
+        .combat-active .gladiator {
+            animation: combat-mode 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes combat-mode {
+            0%, 100% { transform: scale(1) translateX(0); }
+            25% { transform: scale(1.1) translateX(10px); }
+            75% { transform: scale(1.1) translateX(-10px); }
+        }
+        
+        /* Victory Effects */
+        .victory-fanfare {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+            animation: victory-pulse 2s ease-in-out;
+            pointer-events: none;
+            z-index: 60;
+        }
+        
+        @keyframes victory-pulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .betting-panel, .live-feed {
+                position: relative;
+                width: 90%;
+                margin: 20px auto;
+                transform: none;
+            }
+            
+            .arena-floor {
+                width: 95%;
+                height: 300px;
+                padding: 0 20px;
+            }
+            
+            .gladiator {
+                width: 80px;
+                height: 120px;
+            }
+            
+            .gladiator-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="coliseum-container" id="coliseum">
+        <!-- Animated Crowd -->
+        <div class="crowd-stands">
+            <div class="crowd-section" id="crowdSection"></div>
+        </div>
+        
+        <!-- Game Header -->
+        <div class="arena-header">
+            <div class="arena-title">🏟️ DIGITAL COLISEUM</div>
+            <div class="game-status" id="gameStatus">LIVE - 2nd Quarter</div>
+            <div class="live-score" id="liveScore">Lakers 45 - Warriors 42</div>
+        </div>
+        
+        <!-- Emperor's Decree -->
+        <div class="emperor-box">
+            <div class="emperor-title">👑 EMPEROR'S DECREE</div>
+            <div class="emperor-decree" id="emperorDecree">"Let the gladiators battle with the fury of champions!"</div>
+        </div>
+        
+        <!-- Arena Floor with Gladiators -->
+        <div class="arena-floor" id="arenaFloor">
+            <!-- Team 1 Gladiator -->
+            <div class="gladiator team1" id="gladiator1">
+                <div class="gladiator-avatar" id="avatar1">🦁</div>
+                <div class="gladiator-name" id="name1">LAKER LION WARRIOR</div>
+                <div class="gladiator-stats">
+                    <div class="stat-row">
+                        <span>Power:</span>
+                        <span class="stat-value" id="power1">95</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Speed:</span>
+                        <span class="stat-value" id="speed1">85</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Magic:</span>
+                        <span class="stat-value" id="magic1">90</span>
+                    </div>
+                </div>
+                <div class="battle-cry" id="battlecry1" style="font-size: 10px; color: #ffaa00; margin-top: 5px; text-align: center;">"ROAR OF CHAMPIONS!"</div>
+            </div>
+            
+            <!-- VS Symbol -->
+            <div style="font-size: 48px; color: var(--gold-crown); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">⚔️</div>
+            
+            <!-- Team 2 Gladiator -->
+            <div class="gladiator team2" id="gladiator2">
+                <div class="gladiator-avatar" id="avatar2">⚡</div>
+                <div class="gladiator-name" id="name2">WARRIOR THUNDER</div>
+                <div class="gladiator-stats">
+                    <div class="stat-row">
+                        <span>Power:</span>
+                        <span class="stat-value" id="power2">92</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Speed:</span>
+                        <span class="stat-value" id="speed2">95</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Magic:</span>
+                        <span class="stat-value" id="magic2">88</span>
+                    </div>
+                </div>
+                <div class="battle-cry" id="battlecry2" style="font-size: 10px; color: #ffaa00; margin-top: 5px; text-align: center;">"THUNDER FROM THE BAY!"</div>
+            </div>
+        </div>
+        
+        <!-- Live Feed -->
+        <div class="live-feed">
+            <div class="feed-title">📺 LIVE ARENA FEED</div>
+            <div id="liveFeed"></div>
+        </div>
+        
+        <!-- Betting Panel -->
+        <div class="betting-panel">
+            <div class="betting-title">🎲 GLADIATOR BETS</div>
+            
+            <div class="bet-option" onclick="placeBet('next_score')">
+                <div class="bet-description">Next Team to Score</div>
+                <div class="bet-odds">
+                    <span class="odds-value">Lakers 1.8x</span>
+                    <button class="bet-button">BET</button>
+                </div>
+            </div>
+            
+            <div class="bet-option" onclick="placeBet('gladiator_power')">
+                <div class="bet-description">Gladiator Power Boost</div>
+                <div class="bet-odds">
+                    <span class="odds-value">Lion +10 Power</span>
+                    <button class="bet-button">BET</button>
+                </div>
+            </div>
+            
+            <div class="bet-option" onclick="placeBet('quarter_winner')">
+                <div class="bet-description">Quarter Winner</div>
+                <div class="bet-odds">
+                    <span class="odds-value">Warriors 2.1x</span>
+                    <button class="bet-button">BET</button>
+                </div>
+            </div>
+            
+            <div class="bet-option" onclick="placeBet('special_move')">
+                <div class="bet-description">Special Move Incoming</div>
+                <div class="bet-odds">
+                    <span class="odds-value">Magic Attack 3.5x</span>
+                    <button class="bet-button">BET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game State
+        let gameState = {
+            score: { team1: 45, team2: 42 },
+            quarter: 2,
+            timeRemaining: '8:32',
+            gladiator1: { power: 85, speed: 92, magic: 78 },
+            gladiator2: { power: 88, speed: 84, magic: 91 },
+            bets: [],
+            lastAction: null
+        };
+        
+        // Enhanced mascot battle events
+        const mascotBattleEvents = [
+            "🦁 LAKER LION unleashes MAMBA STRIKE! The crowd roars!",
+            "⚡ WARRIOR THUNDER casts SPLASH ATTACK! Three-pointer from downtown!",
+            "🍀 CELTIC DRUID summons BANNER MAGIC! Lucky bounce off the rim!",
+            "🔥 HEAT DEMON activates INFERNO BLAST! The arena heats up!",
+            "🐂 RAGING BULL charges with BULL RUSH! Unstoppable force!",
+            "🏹 CHIEF WARRIOR fires ARROWHEAD THUNDER! Precision strike!",
+            "🇺🇸 PATRIOT SOLDIER deploys DYNASTY POWER! Championship experience!",
+            "🤠 COWBOY GUNSLINGER draws for STAR STRIKE! High noon showdown!",
+            "⚾ YANKEE BOMBER launches PINSTRIPE POWER! Home run swing!",
+            "💙 DODGER BLUE channels HOLLYWOOD MAGIC! Lights, camera, action!",
+            "The gladiators clash weapons in the center of the arena!",
+            "Magic energy crackles between the opposing forces!",
+            "A mighty roar echoes through the coliseum!",
+            "Special combo attack! Both gladiators glow with power!",
+            "The crowd chants for their champion!",
+            "Ancient battle magic fills the air!",
+            "Weapons spark as they collide!",
+            "A legendary duel unfolds before our eyes!"
+        ];
+        
+        // Emperor decrees
+        const emperorDecrees = [
+            "The crowd demands more action!",
+            "By Jupiter's beard, what a play!",
+            "The gladiators show no mercy!",
+            "Victory belongs to the bold!",
+            "Let the games intensify!",
+            "The arena shakes with excitement!",
+            "Warriors worthy of the gods!",
+            "Blood, sweat, and glory!",
+            "Caesar is pleased!",
+            "Fight with honor!"
+        ];
+        
+        // Initialize crowd
+        function initializeCrowd() {
+            const crowdSection = document.getElementById('crowdSection');
+            for (let i = 0; i < 100; i++) {
+                const person = document.createElement('div');
+                person.className = 'crowd-person';
+                person.style.setProperty('--i', i);
+                // Random team colors
+                person.style.backgroundColor = Math.random() > 0.5 ? '#663399' : '#FF4500';
+                crowdSection.appendChild(person);
+            }
+        }
+        
+        // Update game state
+        function updateGameState() {
+            // Simulate score changes
+            if (Math.random() < 0.1) {
+                const scoringTeam = Math.random() > 0.5 ? 'team1' : 'team2';
+                const points = Math.random() > 0.7 ? 3 : 2;
+                gameState.score[scoringTeam] += points;
+                
+                // Update gladiator stats based on score
+                if (scoringTeam === 'team1') {
+                    gameState.gladiator1.power += 5;
+                    addBattleEffect('🔥');
+                } else {
+                    gameState.gladiator2.power += 5;
+                    addBattleEffect('⚡');
+                }
+                
+                triggerCombat();
+            }
+            
+            // Update display
+            document.getElementById('liveScore').textContent = 
+                `Lakers ${gameState.score.team1} - Warriors ${gameState.score.team2}`;
+                
+            // Update gladiator stats
+            document.getElementById('power1').textContent = gameState.gladiator1.power;
+            document.getElementById('speed1').textContent = gameState.gladiator1.speed;
+            document.getElementById('magic1').textContent = gameState.gladiator1.magic;
+            
+            document.getElementById('power2').textContent = gameState.gladiator2.power;
+            document.getElementById('speed2').textContent = gameState.gladiator2.speed;
+            document.getElementById('magic2').textContent = gameState.gladiator2.magic;
+        }
+        
+        // Add live feed event
+        function addFeedEvent(event) {
+            const feed = document.getElementById('liveFeed');
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            item.innerHTML = `
+                <div class="feed-timestamp">${timestamp}</div>
+                <div class="feed-action">${event}</div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 10 events
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        // Add battle effect
+        function addBattleEffect(emoji) {
+            const effect = document.createElement('div');
+            effect.className = 'battle-effect';
+            effect.textContent = emoji;
+            
+            document.getElementById('arenaFloor').appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 1000);
+        }
+        
+        // Trigger combat animation
+        function triggerCombat() {
+            const coliseum = document.getElementById('coliseum');
+            coliseum.classList.add('combat-active');
+            
+            setTimeout(() => {
+                coliseum.classList.remove('combat-active');
+            }, 2000);
+        }
+        
+        // Victory celebration
+        function triggerVictory() {
+            const victory = document.createElement('div');
+            victory.className = 'victory-fanfare';
+            document.getElementById('coliseum').appendChild(victory);
+            
+            setTimeout(() => {
+                victory.remove();
+            }, 2000);
+        }
+        
+        // Place bet
+        function placeBet(betType) {
+            const betValue = Math.floor(Math.random() * 100) + 50;
+            gameState.bets.push({
+                type: betType,
+                value: betValue,
+                timestamp: new Date().toISOString()
+            });
+            
+            addFeedEvent(`🎲 New bet placed: ${betType} for $${betValue}`);
+            
+            // Show bet confirmation
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ BET!';
+            button.style.background = '#32CD32';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '#228B22';
+            }, 1000);
+        }
+        
+        // Update emperor decree
+        function updateEmperorDecree() {
+            const decree = emperorDecrees[Math.floor(Math.random() * emperorDecrees.length)];
+            document.getElementById('emperorDecree').textContent = `"${decree}"`;
+        }
+        
+        // Simulate enhanced mascot battle events
+        function simulateGameEvent() {
+            const event = mascotBattleEvents[Math.floor(Math.random() * mascotBattleEvents.length)];
+            addFeedEvent(event);
+            
+            // Enhanced gladiator interactions
+            if (Math.random() < 0.4) {
+                const gladiator = Math.random() > 0.5 ? 'gladiator1' : 'gladiator2';
+                const stat = ['power', 'speed', 'magic'][Math.floor(Math.random() * 3)];
+                const change = Math.floor(Math.random() * 15) - 7;
+                
+                gameState[gladiator][stat] = Math.max(20, Math.min(100, gameState[gladiator][stat] + change));
+                
+                if (change > 5) {
+                    addBattleEffect('🌟');
+                    addFeedEvent(`${gladiator === 'gladiator1' ? '🦁' : '⚡'} powers up with ${stat.toUpperCase()} boost!`);
+                } else if (change < -5) {
+                    addBattleEffect('💥');
+                    addFeedEvent(`${gladiator === 'gladiator1' ? '🦁' : '⚡'} takes damage to ${stat.toUpperCase()}!`);
+                } else if (change > 0) {
+                    addBattleEffect('⬆️');
+                } else if (change < 0) {
+                    addBattleEffect('⬇️');
+                }
+            }
+            
+            // Special mascot abilities trigger
+            if (Math.random() < 0.1) {
+                triggerSpecialAbility();
+            }
+        }
+        
+        // Special mascot ability system
+        function triggerSpecialAbility() {
+            const abilities = [
+                { mascot: '🦁', ability: 'MAMBA STRIKE', effect: '👑', description: 'LAKER LION channels the spirit of greatness!' },
+                { mascot: '⚡', ability: 'SPLASH ATTACK', effect: '💦', description: 'WARRIOR THUNDER rains threes from the sky!' },
+                { mascot: '🍀', ability: 'BANNER MAGIC', effect: '🏆', description: 'CELTIC DRUID summons championship energy!' },
+                { mascot: '🔥', ability: 'INFERNO BLAST', effect: '🌋', description: 'HEAT DEMON brings the fire to the arena!' }
+            ];
+            
+            const randomAbility = abilities[Math.floor(Math.random() * abilities.length)];
+            addBattleEffect(randomAbility.effect);
+            addFeedEvent(`✨ SPECIAL ABILITY: ${randomAbility.mascot} ${randomAbility.ability}! ${randomAbility.description}`);
+            
+            // Trigger dramatic combat animation
+            triggerCombat();
+        }
+        
+        // Initialize game
+        function initGame() {
+            initializeCrowd();
+            
+            // Game state updates
+            setInterval(updateGameState, 2000);
+            
+            // Random events
+            setInterval(simulateGameEvent, 3000);
+            
+            // Emperor decrees
+            setInterval(updateEmperorDecree, 8000);
+            
+            // Initial events
+            addFeedEvent('🏟️ Welcome to the Digital Coliseum!');
+            addFeedEvent('📺 Lakers vs Warriors - LIVE!');
+            addFeedEvent('🎲 Betting is now open!');
+            
+            console.log('🏟️ Digital Coliseum initialized!');
+        }
+        
+        // WebSocket connection for real-time updates
+        let ws = null;
+        
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket('ws://localhost:4244');
+                
+                ws.onopen = function() {
+                    console.log('🔗 Connected to Sports API');
+                    addFeedEvent('📡 Connected to live sports data!');
+                };
+                
+                ws.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                };
+                
+                ws.onclose = function() {
+                    console.log('🔌 Disconnected from Sports API');
+                    // Try to reconnect after 5 seconds
+                    setTimeout(connectWebSocket, 5000);
+                };
+                
+                ws.onerror = function(error) {
+                    console.log('❌ WebSocket error:', error);
+                };
+            } catch (error) {
+                console.log('⚠️ Could not connect to Sports API, using demo mode');
+            }
+        }
+        
+        function handleWebSocketMessage(data) {
+            switch(data.type) {
+                case 'battle_update':
+                    updateFromLiveData(data.battle);
+                    break;
+                case 'battle_event':
+                    triggerBattleFromEvent(data.event, data.effects);
+                    break;
+                case 'bet_placed':
+                    showBetConfirmation(data.bet);
+                    break;
+                case 'game_event':
+                    addFeedEvent(data.event);
+                    break;
+            }
+        }
+        
+        function updateFromLiveData(battle) {
+            // Update live scores from real API data
+            document.getElementById('liveScore').textContent = 
+                `${battle.team1.name} ${battle.team1.score} - ${battle.team2.name} ${battle.team2.score}`;
+            
+            // Update gladiator stats and mascot info
+            const gladiator1 = battle.team1.gladiator;
+            const gladiator2 = battle.team2.gladiator;
+            
+            // Update Team 1 gladiator
+            document.getElementById('avatar1').textContent = gladiator1.emoji;
+            document.getElementById('name1').textContent = gladiator1.name;
+            document.getElementById('power1').textContent = gladiator1.stats.power;
+            document.getElementById('speed1').textContent = gladiator1.stats.speed;
+            document.getElementById('magic1').textContent = gladiator1.stats.magic;
+            if (gladiator1.battleCry) {
+                document.getElementById('battlecry1').textContent = `"${gladiator1.battleCry}"`;
+            }
+            
+            // Update Team 2 gladiator
+            document.getElementById('avatar2').textContent = gladiator2.emoji;
+            document.getElementById('name2').textContent = gladiator2.name;
+            document.getElementById('power2').textContent = gladiator2.stats.power;
+            document.getElementById('speed2').textContent = gladiator2.stats.speed;
+            document.getElementById('magic2').textContent = gladiator2.stats.magic;
+            if (gladiator2.battleCry) {
+                document.getElementById('battlecry2').textContent = `"${gladiator2.battleCry}"`;
+            }
+            
+            // Update team colors
+            if (gladiator1.teamColors) {
+                document.getElementById('gladiator1').style.borderColor = gladiator1.teamColors;
+            }
+            if (gladiator2.teamColors) {
+                document.getElementById('gladiator2').style.borderColor = gladiator2.teamColors;
+            }
+        }
+        
+        function triggerBattleFromEvent(event, effects) {
+            addBattleEffect(effects.primary);
+            triggerCombat();
+            
+            // Use the enhanced battle description if available
+            if (event.battleDescription) {
+                addFeedEvent(event.battleDescription);
+            } else {
+                addFeedEvent(`⚔️ ${event.type.toUpperCase()}: ${event.points || ''} points!`);
+            }
+        }
+        
+        function showBetConfirmation(bet) {
+            addFeedEvent(`💰 Bet placed: ${bet.type} - $${bet.amount || Math.floor(Math.random() * 100) + 50}`);
+        }
+        
+        // Enhanced place bet function to send to backend
+        function placeBetEnhanced(betType) {
+            placeBet(betType); // Original functionality
+            
+            // Send to backend if connected
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const betData = {
+                    type: 'place_bet',
+                    bet: {
+                        type: betType,
+                        amount: Math.floor(Math.random() * 100) + 50,
+                        gameId: 'current_game'
+                    }
+                };
+                ws.send(JSON.stringify(betData));
+            }
+        }
+        
+        // Start the game
+        initGame();
+        
+        // Connect to live data
+        connectWebSocket();
+        
+        // Keyboard shortcuts for demo
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case '1':
+                    gameState.score.team1 += 2;
+                    addBattleEffect('🔥');
+                    triggerCombat();
+                    addFeedEvent('Lakers score 2 points!');
+                    break;
+                case '2':
+                    gameState.score.team2 += 3;
+                    addBattleEffect('⚡');
+                    triggerCombat();
+                    addFeedEvent('Warriors hit a three-pointer!');
+                    break;
+                case ' ':
+                    triggerVictory();
+                    addFeedEvent('🏆 VICTORY CELEBRATION!');
+                    break;
+                case 'b':
+                    placeBet('demo_bet');
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

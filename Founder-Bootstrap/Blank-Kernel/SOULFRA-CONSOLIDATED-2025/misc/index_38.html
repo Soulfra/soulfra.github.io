@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soulfra - Actually Working</title>
+    <style>
+        body { 
+            font-family: -apple-system, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .drop-zone {
+            border: 3px dashed #ddd;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .drop-zone:hover { 
+            border-color: #4CAF50; 
+            background: #f0f8f0;
+        }
+        .drop-zone.active {
+            border-color: #2196F3;
+            background: #e3f2fd;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        .status { 
+            display: inline-block; 
+            padding: 5px 10px; 
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .status.running { background: #4CAF50; color: white; }
+        .status.stopped { background: #f44336; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Soulfra - Actually Working System</h1>
+    
+    <div class="card">
+        <h2>System Status</h2>
+        <div id="statusContainer">Loading...</div>
+    </div>
+    
+    <div class="card drop-zone" id="dropZone">
+        <h2>Drop Chat Logs Here</h2>
+        <p>Drag and drop any chat log file</p>
+        <input type="file" id="fileInput" style="display: none" multiple>
+    </div>
+    
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <button onclick="generateQR()">Generate QR Code</button>
+        <button onclick="testOAuth('google')">Login with Google</button>
+        <button onclick="refreshStatus()">Refresh Status</button>
+    </div>
+    
+    <div class="card" id="results"></div>
+    
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        
+        // Drag and drop
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('active');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(files) {
+            for (let file of files) {
+                uploadFile(file);
+            }
+        }
+        
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                showResult(`Uploaded ${file.name}: ${result.message}`);
+                refreshStatus();
+            } catch (error) {
+                showResult(`Error uploading ${file.name}: ${error}`, true);
+            }
+        }
+        
+        async function refreshStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                const statusHtml = Object.entries(data.services).map(([service, running]) => 
+                    `<span class="status ${running ? 'running' : 'stopped'}">${service}: ${running ? 'Running' : 'Stopped'}</span>`
+                ).join('');
+                
+                document.getElementById('statusContainer').innerHTML = statusHtml + 
+                    `<p>Files Processed: ${data.stats.files_processed} | Active Users: ${data.stats.active_users}</p>`;
+            } catch (error) {
+                document.getElementById('statusContainer').innerHTML = 'Error loading status';
+            }
+        }
+        
+        async function generateQR() {
+            try {
+                const response = await fetch('/api/mobile/qr');
+                const data = await response.json();
+                showResult(`<img src="${data.qr_image}" alt="QR Code"><br>QR ID: ${data.qr_id}`);
+            } catch (error) {
+                showResult('Error generating QR code', true);
+            }
+        }
+        
+        function testOAuth(provider) {
+            // In real system, would redirect to OAuth flow
+            fetch(`/auth/${provider}`, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => showResult(`OAuth simulation: User ${data.user_id} logged in`))
+                .catch(e => showResult('OAuth error', true));
+        }
+        
+        function showResult(message, isError = false) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div style="color: ${isError ? 'red' : 'green'}">${message}</div>` + results.innerHTML;
+        }
+        
+        // Auto-refresh status
+        refreshStatus();
+        setInterval(refreshStatus, 5000);
+    </script>
+</body>
+</html>

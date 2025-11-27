@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>make a fitness tracking social platform - Connect & Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/social.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>🌐 make a fitness tracking social platform</h1>
+            <div class="nav-links">
+                <a href="#feed">Feed</a>
+                <a href="#friends">Friends</a>
+                <a href="#messages">Messages</a>
+                <a href="#profile">Profile</a>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="create-post">
+            <textarea placeholder="What's on your mind?"></textarea>
+            <button onclick="createPost()">Share</button>
+        </div>
+        
+        <div class="feed" id="feed">
+            <!-- Posts will appear here -->
+        </div>
+    </main>
+    
+    <script src="/static/js/social.js"></script>
+    <script>
+        const PLATFORM_ID = 'f3a51adb-3599-497c-9765-f570adea219c';
+        const PLATFORM_NAME = 'make a fitness tracking social platform';
+    </script>
+</body>
+</html>

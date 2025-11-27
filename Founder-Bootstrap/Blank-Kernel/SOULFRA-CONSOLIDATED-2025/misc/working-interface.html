@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧠 Soulfra - What Actually Works</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            background: #000; 
+            color: #0f0; 
+            padding: 20px;
+            text-align: center;
+        }
+        .working { 
+            background: #111; 
+            border: 2px solid #0f0; 
+            padding: 20px; 
+            margin: 20px;
+            border-radius: 10px;
+        }
+        .broken { 
+            background: #111; 
+            border: 2px solid #f00; 
+            padding: 20px; 
+            margin: 20px;
+            border-radius: 10px;
+            opacity: 0.5;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .api-result {
+            background: #222;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 Soulfra Platform - REAL STATUS</h1>
+    <p><strong>END OF RECURSIVE HELL</strong> - Here's what actually works:</p>
+    
+    <div class="working">
+        <h2>✅ WORKING: Semantic API (Port 3666)</h2>
+        <p>The emotional memory engine is live and responding</p>
+        <button onclick="testAPI()">🧪 Test Emotional Memory</button>
+        <button onclick="getSystemHealth()">💚 System Health</button>
+        <button onclick="getAgentList()">🤖 Agent List</button>
+        <button onclick="getEmotionalTimeline()">📊 Emotional Timeline</button>
+        <div id="api-results"></div>
+    </div>
+    
+    <div class="broken">
+        <h2>❌ BROKEN SERVICES (Stop trying to fix)</h2>
+        <p>Cal Interface (4040) - Import errors, not listening</p>
+        <p>Main Dashboard (3000) - Process not running</p>
+        <p>Infinity Router (5050) - Module path issues</p>
+        <p>MirrorOS (3080) - Class conflicts</p>
+    </div>
+    
+    <div class="working">
+        <h2>🎯 BUILD FROM WHAT WORKS</h2>
+        <p>Since semantic API works, let's create the unified system from there:</p>
+        <button onclick="generateQR()">📱 Generate QR Access</button>
+        <button onclick="createMobileInterface()">📲 Mobile Interface</button>
+        <button onclick="testAllEndpoints()">🔍 Test All API Endpoints</button>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:3666';
+        
+        function log(message, data = null) {
+            const results = document.getElementById('api-results');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let output = `[${timestamp}] ${message}`;
+            if (data) {
+                output += `\n${JSON.stringify(data, null, 2)}`;
+            }
+            
+            results.innerHTML = `<div class="api-result">${output}</div>` + results.innerHTML;
+        }
+        
+        async function testAPI() {
+            log('🧪 Testing semantic API...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/system/health`);
+                const data = await response.json();
+                log('✅ Semantic API is working!', data);
+            } catch (error) {
+                log(`❌ API Error: ${error.message}`);
+            }
+        }
+        
+        async function getSystemHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/api/system/health`);
+                const data = await response.json();
+                log('🏥 System Health Check', data);
+            } catch (error) {
+                log(`❌ Health check failed: ${error.message}`);
+            }
+        }
+        
+        async function getAgentList() {
+            try {
+                const response = await fetch(`${API_BASE}/api/agents/list`);
+                const data = await response.json();
+                log('🤖 Agent List Retrieved', data);
+            } catch (error) {
+                log(`❌ Agent list failed: ${error.message}`);
+            }
+        }
+        
+        async function getEmotionalTimeline() {
+            try {
+                const response = await fetch(`${API_BASE}/api/emotions/timeline`);
+                const data = await response.json();
+                log('📊 Emotional Timeline Retrieved', data);
+            } catch (error) {
+                log(`❌ Timeline failed: ${error.message}`);
+            }
+        }
+        
+        async function testAllEndpoints() {
+            log('🔍 Testing all available endpoints...');
+            
+            const endpoints = [
+                '/api/system/health',
+                '/api/system/drift', 
+                '/api/system/integrity',
+                '/api/agents/list',
+                '/api/emotions/timeline',
+                '/api/emotions/patterns',
+                '/api/traces/echoes',
+                '/api/loops/active'
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE}${endpoint}`);
+                    const data = await response.json();
+                    log(`✅ ${endpoint}`, { status: response.status, data: data });
+                } catch (error) {
+                    log(`❌ ${endpoint}: ${error.message}`);
+                }
+                
+                // Small delay between requests
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+        }
+        
+        function generateQR() {
+            const qrData = `${API_BASE}/api/system/health`;
+            const qrSize = 200;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(qrData)}`;
+            
+            log('📱 Generated QR Code for mobile access');
+            document.getElementById('api-results').innerHTML = `
+                <div class="api-result">
+                    <strong>📱 MOBILE QR ACCESS:</strong><br>
+                    <img src="${qrUrl}" alt="QR Code" style="margin: 10px; background: white; padding: 10px;"><br>
+                    <strong>Scan to access:</strong> ${qrData}
+                </div>
+            ` + document.getElementById('api-results').innerHTML;
+        }
+        
+        function createMobileInterface() {
+            const mobileHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soulfra Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background: #000; color: #0f0; font-family: Arial; padding: 10px; }
+        button { background: #0f0; color: #000; padding: 10px; margin: 5px; border: none; width: 100%; }
+        .result { background: #111; padding: 10px; margin: 5px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h2>🧠 Soulfra Mobile</h2>
+    <button onclick="checkHealth()">Health Check</button>
+    <button onclick="getAgents()">Get Agents</button>
+    <div id="results"></div>
+    
+    <script>
+        async function checkHealth() {
+            try {
+                const response = await fetch('${API_BASE}/api/system/health');
+                const data = await response.json();
+                document.getElementById('results').innerHTML = 
+                    '<div class="result">✅ Health: ' + JSON.stringify(data, null, 2) + '</div>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    '<div class="result">❌ Error: ' + error.message + '</div>';
+            }
+        }
+        
+        async function getAgents() {
+            try {
+                const response = await fetch('${API_BASE}/api/agents/list');
+                const data = await response.json();
+                document.getElementById('results').innerHTML = 
+                    '<div class="result">🤖 Agents: ' + JSON.stringify(data, null, 2) + '</div>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    '<div class="result">❌ Error: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>
+            `;
+            
+            const blob = new Blob([mobileHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            
+            log('📲 Mobile interface created and opened');
+        }
+        
+        // Auto-test on load
+        setTimeout(() => {
+            log('🚀 Soulfra working interface loaded');
+            testAPI();
+        }, 500);
+    </script>
+</body>
+</html>

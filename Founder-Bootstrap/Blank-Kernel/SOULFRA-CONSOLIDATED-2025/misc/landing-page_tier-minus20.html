@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra - Your Data, Mathematically Unbreachable</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      overflow-x: hidden;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    
+    .hero p {
+      font-size: 1.4em;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 15px 40px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .btn-primary {
+      background: white;
+      color: #667eea;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: #667eea;
+    }
+    
+    /* Problem Section */
+    .problem {
+      padding: 80px 20px;
+      background: #f8f9fa;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 50px;
+      color: #333;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .stat-number {
+      font-size: 3em;
+      font-weight: bold;
+      color: #e74c3c;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 1.1em;
+      color: #666;
+      margin-top: 10px;
+    }
+    
+    /* Solution Section */
+    .solution {
+      padding: 80px 20px;
+      background: white;
+    }
+    
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+    
+    .solution-item {
+      text-align: center;
+    }
+    
+    .solution-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: #667eea;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+    }
+    
+    .solution-item h3 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .solution-item p {
+      color: #666;
+      line-height: 1.8;
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      padding: 80px 20px;
+      background: #f8f9fa;
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+    
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0 auto 20px;
+    }
+    
+    .step h3 {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+    
+    /* Pricing Preview */
+    .pricing-preview {
+      padding: 80px 20px;
+      background: white;
+      text-align: center;
+    }
+    
+    .pricing-cards {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+    
+    .pricing-card {
+      background: #f8f9fa;
+      padding: 40px 30px;
+      border-radius: 10px;
+      width: 300px;
+      position: relative;
+    }
+    
+    .pricing-card.featured {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .pricing-card h3 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+    
+    .price {
+      font-size: 3em;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    
+    .price sup {
+      font-size: 0.5em;
+    }
+    
+    /* Testimonial */
+    .testimonial {
+      padding: 80px 20px;
+      background: #667eea;
+      color: white;
+      text-align: center;
+    }
+    
+    .testimonial-quote {
+      font-size: 1.8em;
+      font-style: italic;
+      max-width: 800px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+    
+    .testimonial-author {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    /* CTA Section */
+    .final-cta {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      color: white;
+      text-align: center;
+    }
+    
+    .final-cta h2 {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+    
+    .final-cta p {
+      font-size: 1.3em;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+    
+    /* Footer */
+    footer {
+      background: #333;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.8;
+    }
+    
+    .footer-links a:hover {
+      opacity: 1;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5em; }
+      .hero p { font-size: 1.2em; }
+      .section-title { font-size: 2em; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Your Data.<br>Mathematically Unbreachable.</h1>
+      <p>Even if hackers breach Google, the government, or your bank - your data stays safe with quantum-resistant protection.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary" onclick="startFreeTrial()">Start Free Trial</a>
+        <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem">
+    <div class="container">
+      <h2 class="section-title">The Data Breach Crisis Is Real</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number">2,365</span>
+          <span class="stat-label">Data breaches in 2023</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">343M</span>
+          <span class="stat-label">People affected</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">$4.45M</span>
+          <span class="stat-label">Average breach cost</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">83%</span>
+          <span class="stat-label">Companies breached multiple times</span>
+        </div>
+      </div>
+      <p style="text-align: center; font-size: 1.2em; color: #666;">
+        Traditional encryption isn't enough anymore. Quantum computers will break it all.
+      </p>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="solution">
+    <div class="container">
+      <h2 class="section-title">A New Approach to Data Security</h2>
+      <div class="solution-grid">
+        <div class="solution-item">
+          <div class="solution-icon">🧩</div>
+          <h3>Fragment & Distribute</h3>
+          <p>Your data is split into mathematical fragments that are meaningless alone, then distributed across multiple locations.</p>
+        </div>
+        <div class="solution-item">
+          <div class="solution-icon">🔐</div>
+          <h3>Quantum-Resistant</h3>
+          <p>Using advanced cryptography that even quantum computers can't break, your data remains safe forever.</p>
+        </div>
+        <div class="solution-item">
+          <div class="solution-icon">👆</div>
+          <h3>Biometric Access</h3>
+          <p>Only you can reassemble your data using your unique biometric signature - no passwords to steal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">Setup in 5 Minutes</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Download App</h3>
+          <p>Available for all devices - iOS, Android, Windows, Mac, Linux</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Scan Your Face</h3>
+          <p>Set up biometric authentication in seconds</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>You're Protected</h3>
+          <p>All your data is now mathematically unbreachable</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Preview -->
+  <section class="pricing-preview">
+    <div class="container">
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <h3>Personal</h3>
+          <div class="price">Free</div>
+          <p>1 device, 1GB storage</p>
+          <a href="#" class="btn btn-primary" style="margin-top: 20px;">Start Free</a>
+        </div>
+        <div class="pricing-card featured">
+          <h3>Family</h3>
+          <div class="price">$9<sup>99</sup></div>
+          <p>5 devices, 100GB storage</p>
+          <a href="#" class="btn btn-primary" style="margin-top: 20px;">Start Trial</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Business</h3>
+          <div class="price">$49<sup>/user</sup></div>
+          <p>Unlimited everything</p>
+          <a href="#" class="btn btn-primary" style="margin-top: 20px;">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="testimonial">
+    <div class="container">
+      <p class="testimonial-quote">
+        "After our hospital was ransomwared, we switched to Soulfra. Now even if hackers get in, they get nothing. It's like having an unbreakable safe for all our patient data."
+      </p>
+      <p class="testimonial-author">
+        Dr. Sarah Chen, CTO at Regional Medical Center
+      </p>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Stop Hoping Hackers Don't Find You</h2>
+      <p>Make it so they can't hurt you even if they do.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary" onclick="startFreeTrial()">Start Your Free Trial</a>
+        <a href="#" class="btn btn-secondary" onclick="bookDemo()">Book a Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="/docs">Documentation</a>
+      <a href="/support">Support</a>
+      <a href="/about">About Us</a>
+    </div>
+    <p>&copy; 2024 Soulfra. Your data, your sovereignty.</p>
+  </footer>
+
+  <script>
+    function startFreeTrial() {
+      window.location.href = '/signup';
+    }
+    
+    function bookDemo() {
+      window.location.href = '/demo';
+    }
+    
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

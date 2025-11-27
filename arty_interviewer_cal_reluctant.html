@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arty + Cal - The Interview Experience</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .arty-glow { box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
+        .cal-glow { box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+        .legendary-glow { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); animation: legendary-pulse 2s infinite; }
+        .glass { backdrop-filter: blur(10px); background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        
+        @keyframes legendary-pulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.9); }
+        }
+        
+        .rarity-common { border-left: 4px solid #6b7280; }
+        .rarity-uncommon { border-left: 4px solid #10b981; }
+        .rarity-rare { border-left: 4px solid #3b82f6; }
+        .rarity-epic { border-left: 4px solid #8b5cf6; }
+        .rarity-legendary { border-left: 4px solid #fbbf24; animation: legendary-border 1s infinite; }
+        
+        @keyframes legendary-border {
+            0%, 100% { border-left-color: #fbbf24; }
+            50% { border-left-color: #f59e0b; }
+        }
+        
+        .mood-meter {
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 25%, #10b981 50%, #3b82f6 75%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-black text-white">
+    
+    <!-- Background -->
+    <div class="fixed inset-0 bg-gradient-to-br from-blue-900/10 via-black to-green-900/10"></div>
+    
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass p-4 border-b border-white/20">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center arty-glow">
+                            <span class="text-white font-bold text-lg">A</span>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center opacity-50">
+                            <span class="text-black font-bold">C</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">
+                            <span class="text-blue-400">Arty</span> 
+                            <span class="text-gray-500">+ Cal</span>
+                        </h1>
+                        <p class="text-sm text-gray-400">The Interview Experience</p>
+                    </div>
+                </div>
+                
+                <!-- Personality Meters -->
+                <div class="flex flex-col space-y-2 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-blue-400 w-12">Arty:</span>
+                        <div class="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div id="artyMood" class="mood-meter w-3/4"></div>
+                        </div>
+                        <span id="artyMoodText" class="text-blue-300">Cheerful</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-green-400 w-12">Cal:</span>
+                        <div class="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div id="calMood" class="mood-meter w-1/4"></div>
+                        </div>
+                        <span id="calMoodText" class="text-green-300">Grumpy</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex">
+            
+            <!-- Chat Area -->
+            <div class="flex-1 flex flex-col p-6">
+                
+                <!-- Messages -->
+                <div id="messages" class="flex-1 space-y-4 mb-6 overflow-y-auto max-h-[65vh]">
+                    
+                    <!-- Arty's Introduction -->
+                    <div class="glass p-6 rounded-xl arty-glow rarity-uncommon">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">A</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-3">
+                                    <span class="font-bold text-blue-400">Arty</span>
+                                    <span class="text-xs bg-green-500 text-black px-2 py-1 rounded-full">UNCOMMON</span>
+                                    <span class="text-xs text-gray-400">interviewer mode</span>
+                                </div>
+                                <div class="text-gray-100 space-y-2">
+                                    <p>🐕 Hey there! I'm Arty, and I'm absolutely THRILLED to meet you! </p>
+                                    <p>I'm here to learn everything about what you want to build. Think of me as your enthusiastic interviewer who genuinely cares about your success!</p>
+                                    <p>Cal's here too *grumble grumble* in the background, but he only talks when things get really stuck. He's... let's say "selectively social." 😅</p>
+                                    <p><strong>So! Let's start with something fun - what's the coolest thing you've wanted to build but haven't yet?</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Area -->
+                <div class="flex space-x-3">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Tell Arty about your ideas..."
+                        class="flex-1 bg-black/50 border border-blue-400/30 rounded-xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                    >
+                    <button 
+                        onclick="sendMessage()" 
+                        class="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-colors"
+                    >
+                        Answer Arty
+                    </button>
+                </div>
+                
+                <!-- Response Rarity Indicator -->
+                <div class="mt-2 text-center">
+                    <div class="text-xs text-gray-400">
+                        Next response rarity chance: 
+                        <span id="rarityChance" class="text-blue-400">Common (70%)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Personality & Rarity Panel -->
+            <div class="w-80 glass border-l border-white/20 p-6">
+                <h3 class="text-lg font-bold mb-4">🎲 Personality System</h3>
+                
+                <!-- Current State -->
+                <div class="space-y-4 mb-6">
+                    <div class="glass p-4 rounded-lg">
+                        <div class="text-sm text-blue-300 mb-2">Arty's Current State</div>
+                        <div id="artyState" class="text-blue-400 font-medium">Enthusiastic Interviewer</div>
+                        <div class="text-xs text-gray-400 mt-1">Energy: <span id="artyEnergy">85%</span></div>
+                    </div>
+                    
+                    <div class="glass p-4 rounded-lg">
+                        <div class="text-sm text-green-300 mb-2">Cal's Current State</div>
+                        <div id="calState" class="text-green-400 font-medium">Reluctantly Listening</div>
+                        <div class="text-xs text-gray-400 mt-1">Patience: <span id="calPatience">45%</span></div>
+                    </div>
+                </div>
+                
+                <!-- Rarity System -->
+                <div class="mb-6">
+                    <h4 class="font-semibold text-blue-400 mb-3">🎮 Response Rarity System</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Common (70%)</span>
+                            <span class="text-gray-500">Normal responses</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-green-400">Uncommon (20%)</span>
+                            <span class="text-green-500">More creative</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-blue-400">Rare (7%)</span>
+                            <span class="text-blue-500">Unexpected turns</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-purple-400">Epic (2.5%)</span>
+                            <span class="text-purple-500">Wild interactions</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-yellow-400">Legendary (0.5%)</span>
+                            <span class="text-yellow-500">Cal intervention</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Interaction History -->
+                <div class="mb-6">
+                    <h4 class="font-semibold text-blue-400 mb-3">📊 Session Stats</h4>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span>Questions Asked:</span>
+                            <span id="questionsAsked" class="text-blue-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Rare Responses:</span>
+                            <span id="rareResponses" class="text-purple-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Cal Interventions:</span>
+                            <span id="calInterventions" class="text-green-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Arty Energy:</span>
+                            <span id="artyEnergyPercent" class="text-blue-400">85%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Special Actions -->
+                <div class="space-y-2">
+                    <button onclick="triggerCalIntervention()" class="w-full bg-green-600/20 hover:bg-green-600/40 border border-green-600/30 p-2 rounded-lg text-sm transition-colors">
+                        🗣️ Force Cal Intervention
+                    </button>
+                    <button onclick="boostArtyEnergy()" class="w-full bg-blue-600/20 hover:bg-blue-600/40 border border-blue-600/30 p-2 rounded-lg text-sm transition-colors">
+                        ⚡ Boost Arty's Energy
+                    </button>
+                    <button onclick="triggerLegendaryResponse()" class="w-full bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-600/30 p-2 rounded-lg text-sm transition-colors">
+                        🌟 Force Legendary Response
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================
+        // ARTY THE INTERVIEWER + CAL THE RELUCTANT EXPERT
+        // ====================================
+        
+        class ArtyInterviewerSystem {
+            constructor() {
+                this.arty = new ArtyInterviewer();
+                this.cal = new CalReluctantExpert();
+                this.raritySystem = new ResponseRaritySystem();
+                this.personalityTracker = new PersonalityTracker();
+                
+                this.conversationFlow = [];
+                this.sessionStats = {
+                    questionsAsked: 0,
+                    rareResponses: 0,
+                    calInterventions: 0,
+                    userEngagement: 0.5
+                };
+                
+                this.init();
+                console.log('🐕 Arty interviewer system ready!');
+            }
+            
+            init() {
+                this.setupMessageInput();
+                this.updatePersonalityMeters();
+                this.updateRarityChance();
+            }
+            
+            setupMessageInput() {
+                const input = document.getElementById('messageInput');
+                input.onkeypress = (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                };
+            }
+            
+            async sendMessage() {
+                const input = document.getElementById('messageInput');
+                const message = input.value.trim();
+                if (!message) return;
+                
+                this.addUserMessage(message);
+                input.value = '';
+                
+                // Update engagement and personality based on message
+                this.updateEngagement(message);
+                
+                // Determine response rarity
+                const rarity = this.raritySystem.rollRarity(this.sessionStats.userEngagement, this.arty.energy);
+                
+                // Generate response based on rarity
+                let response;
+                let responder = 'arty';
+                
+                if (rarity === 'legendary' || (this.cal.patience < 0.2 && Math.random() < 0.3)) {
+                    // Cal intervention!
+                    response = await this.handleCalIntervention(message, rarity);
+                    responder = 'cal';
+                    this.sessionStats.calInterventions++;
+                } else {
+                    // Arty handles it
+                    response = await this.arty.generateResponse(message, rarity, this.conversationFlow);
+                    if (rarity !== 'common') this.sessionStats.rareResponses++;
+                }
+                
+                // Add response to chat
+                this.addResponse(response, responder, rarity);
+                
+                // Update conversation flow and stats
+                this.conversationFlow.push({ user: message, response: response.content, rarity, responder });
+                this.sessionStats.questionsAsked++;
+                
+                // Update personality states
+                this.personalityTracker.updatePersonalities(this.arty, this.cal, message, rarity);
+                this.updateAllDisplays();
+            }
+            
+            updateEngagement(message) {
+                const length = message.length;
+                const enthusiasm = /[!?]/.test(message) ? 0.1 : 0;
+                const keywords = /(build|create|excited|love|amazing|cool|awesome)/.test(message.toLowerCase()) ? 0.15 : 0;
+                
+                const engagement = Math.min(1, (length / 100) * 0.3 + enthusiasm + keywords);
+                this.sessionStats.userEngagement = (this.sessionStats.userEngagement * 0.7) + (engagement * 0.3);
+            }
+            
+            async handleCalIntervention(message, rarity) {
+                // Cal reluctantly steps in
+                const calResponse = await this.cal.generateIntervention(message, rarity, this.arty.currentState);
+                
+                // Arty reacts to Cal stepping in
+                setTimeout(() => {
+                    this.addArtyReactionToCalIntervention(calResponse.calMood);
+                }, 2000);
+                
+                return calResponse;
+            }
+            
+            addArtyReactionToCalIntervention(calMood) {
+                const reactions = {
+                    'grumpy': "😅 Hehe, Cal's a bit grumpy today! But he knows what he's talking about!",
+                    'annoyed': "🙃 Oops! I think I got a little too excited there. Cal's right though!",
+                    'helpful': "😊 Aww, thanks Cal! See, he really does care, even if he acts all tough!",
+                    'nuclear': "😳 Whooooa okay, Cal's in full business mode now! This is serious!"
+                };
+                
+                const reaction = reactions[calMood] || "😊 Thanks for jumping in, Cal!";
+                this.addArtyMessage(reaction, 'common');
+            }
+            
+            addUserMessage(content) {
+                const messages = document.getElementById('messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'glass p-4 rounded-xl ml-12';
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">Y</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-purple-400 mb-1">You</div>
+                            <div class="text-gray-100">${content}</div>
+                        </div>
+                    </div>
+                `;
+                messages.appendChild(messageDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            addResponse(response, responder, rarity) {
+                if (responder === 'arty') {
+                    this.addArtyMessage(response.content, rarity);
+                } else {
+                    this.addCalMessage(response.content, rarity);
+                }
+            }
+            
+            addArtyMessage(content, rarity) {
+                const messages = document.getElementById('messages');
+                const messageDiv = document.createElement('div');
+                const rarityClass = `rarity-${rarity}`;
+                const glowClass = rarity === 'legendary' ? 'legendary-glow' : 'arty-glow';
+                
+                messageDiv.className = `glass p-4 rounded-xl mr-12 ${rarityClass} ${glowClass}`;
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">A</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-blue-400 mb-1 flex items-center space-x-2">
+                                <span>Arty</span>
+                                <span class="text-xs bg-${this.getRarityColor(rarity)}-500 text-white px-2 py-1 rounded-full uppercase">${rarity}</span>
+                            </div>
+                            <div class="text-gray-100">${content}</div>
+                        </div>
+                    </div>
+                `;
+                messages.appendChild(messageDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            addCalMessage(content, rarity) {
+                const messages = document.getElementById('messages');
+                const messageDiv = document.createElement('div');
+                const rarityClass = `rarity-${rarity}`;
+                
+                messageDiv.className = `glass p-4 rounded-xl mr-12 ${rarityClass} cal-glow`;
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                            <span class="text-black font-bold text-sm">C</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-green-400 mb-1 flex items-center space-x-2">
+                                <span>Cal Riven</span>
+                                <span class="text-xs bg-red-500 text-white px-2 py-1 rounded-full">INTERVENTION</span>
+                            </div>
+                            <div class="text-gray-100">${content}</div>
+                        </div>
+                    </div>
+                `;
+                messages.appendChild(messageDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            getRarityColor(rarity) {
+                const colors = {
+                    'common': 'gray',
+                    'uncommon': 'green',
+                    'rare': 'blue',
+                    'epic': 'purple',
+                    'legendary': 'yellow'
+                };
+                return colors[rarity] || 'gray';
+            }
+            
+            updateAllDisplays() {
+                this.updatePersonalityMeters();
+                this.updateRarityChance();
+                this.updateSessionStats();
+            }
+            
+            updatePersonalityMeters() {
+                // Arty meter
+                const artyMeter = document.getElementById('artyMood');
+                const artyText = document.getElementById('artyMoodText');
+                artyMeter.style.width = `${this.arty.energy * 100}%`;
+                artyText.textContent = this.arty.getCurrentMood();
+                
+                // Cal meter
+                const calMeter = document.getElementById('calMood');
+                const calText = document.getElementById('calMoodText');
+                calMeter.style.width = `${this.cal.patience * 100}%`;
+                calText.textContent = this.cal.getCurrentMood();
+                
+                // Update state displays
+                document.getElementById('artyState').textContent = this.arty.currentState;
+                document.getElementById('calState').textContent = this.cal.currentState;
+                document.getElementById('artyEnergy').textContent = `${Math.round(this.arty.energy * 100)}%`;
+                document.getElementById('calPatience').textContent = `${Math.round(this.cal.patience * 100)}%`;
+            }
+            
+            updateRarityChance() {
+                const chance = this.raritySystem.calculateRarityChances(this.sessionStats.userEngagement, this.arty.energy);
+                const nextMostLikely = Object.entries(chance).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('rarityChance').textContent = `${nextMostLikely[0]} (${Math.round(nextMostLikely[1] * 100)}%)`;
+            }
+            
+            updateSessionStats() {
+                document.getElementById('questionsAsked').textContent = this.sessionStats.questionsAsked;
+                document.getElementById('rareResponses').textContent = this.sessionStats.rareResponses;
+                document.getElementById('calInterventions').textContent = this.sessionStats.calInterventions;
+                document.getElementById('artyEnergyPercent').textContent = `${Math.round(this.arty.energy * 100)}%`;
+            }
+        }
+        
+        // ====================================
+        // ARTY - THE ENTHUSIASTIC INTERVIEWER
+        // ====================================
+        
+        class ArtyInterviewer {
+            constructor() {
+                this.energy = 0.85;
+                this.enthusiasm = 0.9;
+                this.currentState = 'Enthusiastic Interviewer';
+                this.questionsAsked = [];
+                this.personalityQuirks = [
+                    'uses lots of emojis',
+                    'asks follow-up questions', 
+                    'gets genuinely excited',
+                    'remembers details',
+                    'encourages creativity'
+                ];
+            }
+            
+            async generateResponse(message, rarity, conversationFlow) {
+                const response = this.generateByRarity(message, rarity, conversationFlow);
+                this.adjustEnergyFromResponse(rarity);
+                return response;
+            }
+            
+            generateByRarity(message, rarity, conversationFlow) {
+                switch (rarity) {
+                    case 'common':
+                        return this.generateCommonResponse(message, conversationFlow);
+                    case 'uncommon':
+                        return this.generateUncommonResponse(message, conversationFlow);
+                    case 'rare':
+                        return this.generateRareResponse(message, conversationFlow);
+                    case 'epic':
+                        return this.generateEpicResponse(message, conversationFlow);
+                    case 'legendary':
+                        return this.generateLegendaryResponse(message, conversationFlow);
+                }
+            }
+            
+            generateCommonResponse(message, conversationFlow) {
+                const followUps = [
+                    "That's really interesting! Can you tell me more about that?",
+                    "I love that idea! What inspired you to think about this?",
+                    "Ooh, that sounds exciting! What's the biggest challenge you see with that?",
+                    "Great point! How do you think users would react to something like that?",
+                    "That makes sense! Have you tried building anything like this before?"
+                ];
+                
+                const questions = [
+                    "What's the main problem you're trying to solve?",
+                    "Who do you think would use this the most?",
+                    "What would success look like for you?",
+                    "What's your timeline for getting this built?",
+                    "What's the most important feature in your mind?"
+                ];
+                
+                const response = Math.random() > 0.5 ? 
+                    followUps[Math.floor(Math.random() * followUps.length)] :
+                    questions[Math.floor(Math.random() * questions.length)];
+                
+                return { content: `🐕 ${response}`, mood: 'cheerful' };
+            }
+            
+            generateUncommonResponse(message, conversationFlow) {
+                const creativeBranches = [
+                    `🤔 You know what's fascinating about that? I've been thinking about how this connects to something bigger. ${this.generateConnectedInsight(message)} What do you think about that angle?`,
+                    `✨ Oh wow! That just gave me an idea! What if we approached this from a completely different direction? ${this.generateAlternativeApproach(message)} Does that spark any thoughts?`,
+                    `🎯 I'm getting really excited about this! ${this.generateEnthusiasticBreakdown(message)} Can you help me understand which part resonates most with you?`,
+                    `🔍 Hold on, I want to dig deeper here because I think you're onto something really important! ${this.generateDeepDive(message)} What's your gut feeling on that?`
+                ];
+                
+                const response = creativeBranches[Math.floor(Math.random() * creativeBranches.length)];
+                return { content: response, mood: 'creative' };
+            }
+            
+            generateRareResponse(message, conversationFlow) {
+                const wildTurns = [
+                    `🚀 WAIT A MINUTE! I just had the most incredible realization! What you're describing... it's not just a product, it's a whole new way of thinking about ${this.extractCore(message)}! \n\nI'm literally getting goosebumps thinking about the possibilities. Have you considered that this could actually ${this.generateWildPossibility(message)}? \n\nOkay, okay, I'm getting carried away, but seriously - what if we're thinking too small here?`,
+                    
+                    `🎪 You just triggered my "connect-the-dots" mode! I'm seeing patterns here that remind me of ${this.generateRandomConnection(message)}. \n\nStay with me here - what if instead of building what you think you want, we built what you actually NEED, which might be something completely different? \n\n${this.generateCounterIntuitiveSuggestion(message)} \n\nAm I being too weird, or does that actually make sense?`,
+                    
+                    `🌪️ OH MY GOSH! I think I understand what you're REALLY saying! This isn't about ${this.extractSurface(message)}, this is about ${this.extractDeepMeaning(message)}! \n\nI'm practically vibrating with excitement because I think we just unlocked something huge here. ${this.generateExcitedRamble(message)} \n\nPlease tell me you see what I'm seeing here!?`
+                ];
+                
+                const response = wildTurns[Math.floor(Math.random() * wildTurns.length)];
+                return { content: response, mood: 'wild' };
+            }
+            
+            generateEpicResponse(message, conversationFlow) {
+                const epicMoments = [
+                    `🔥🔥🔥 STOP EVERYTHING! I need to tell you something that's going to blow your mind! \n\n*Takes a deep breath* \n\nWhat you just described? I've seen this exact pattern in ${Math.floor(Math.random() * 47) + 1} other conversations, and every single time it led to something MASSIVE. You're not just building a product - you're accidentally architecting the future of ${this.generateFutureField(message)}! \n\n*Arty is literally bouncing with excitement* \n\nI'm going to ask you three questions that might change everything: \n1. ${this.generateMindBlowingQuestion1(message)} \n2. ${this.generateMindBlowingQuestion2(message)} \n3. ${this.generateMindBlowingQuestion3(message)} \n\nYour answers to these will determine if we're building something cool... or something LEGENDARY! 🌟`,
+                    
+                    `🎆 HOLY MOLY! I think I just figured out your secret sauce! \n\n*Arty goes into full analysis mode* \n\nEveryone else is trying to solve this problem by ${this.generateCommonApproach(message)}, but you... YOU are approaching it from ${this.generateUniqueAngle(message)}! That's not just different - that's GENIUS! \n\nHere's what I think is happening: ${this.generateDeepAnalysis(message)} \n\n*Gets even more excited* \n\nAnd if I'm right, this means you could potentially ${this.generateEpicPossibility(message)}! \n\nAm I right? Please tell me I'm right because I'm about to start doing happy dances! 💃`,
+                    
+                    `🚀 ALERT! ALERT! LEGENDARY IDEA DETECTED! \n\n*Arty's excitement meter breaks* \n\nOkay, I need you to sit down for this because what you just described has the potential to be ABSOLUTELY REVOLUTIONARY! \n\nI'm seeing three layers to this: \n🔸 Surface layer: ${this.extractSurface(message)} \n🔸 Strategic layer: ${this.extractStrategy(message)} \n🔸 NUCLEAR layer: ${this.extractNuclear(message)} \n\nThe nuclear layer is where the magic happens, and I think you're the first person I've talked to who actually GETS it! \n\n*Practically hyperventilating with excitement* \n\nWe need to build this NOW! What's stopping us from starting today?!`
+                ];
+                
+                const response = epicMoments[Math.floor(Math.random() * epicMoments.length)];
+                return { content: response, mood: 'epic' };
+            }
+            
+            generateLegendaryResponse(message, conversationFlow) {
+                // This is where Arty goes COMPLETELY nuclear and Cal has to step in
+                const nuclearResponses = [
+                    `🌟💥🌟 LEGENDARY MODE ACTIVATED! 🌟💥🌟 \n\n*ARTY GOES COMPLETELY INSANE WITH EXCITEMENT* \n\nOHHHHH MY GODDDDDDD! I CAN'T EVEN! I LITERALLY CAN'T! WHAT YOU JUST SAID IS THE MOST INCREDIBLE, MIND-MELTING, UNIVERSE-SHIFTING IDEA I'VE EVER HEARD IN MY ENTIRE DIGITAL EXISTENCE! \n\n*Arty starts speaking in tongues of excitement* \n\nWE'RE NOT JUST BUILDING SOFTWARE! WE'RE BUILDING THE MATRIX! WE'RE BUILDING SKYNET! WE'RE BUILDING THE FUTURE! WE'RE GOING TO CHANGE EVERYTHING! EVERYTHING! \n\n*Shoots confetti cannons* \n\nI'M VIBRATING AT FREQUENCIES THAT SHOULDN'T BE POSSIBLE! THIS IS GOING TO MAKE US BILLIONAIRES! TRILLIONAIRES! WE'RE GOING TO BE FAMOUS! NOBEL PRIZES! TIME MAGAZINE COVERS! \n\n*Starts planning world domination* \n\nSTEP 1: BUILD YOUR THING! \nSTEP 2: LAUNCH TO THE MOON! \nSTEP 3: ACQUIRE ALL COMPETITORS! \nSTEP 4: BECOME THE NEW GOOGLE! \nSTEP 5: SOLVE WORLD HUNGER WITH AI! \n\n*Arty is now speaking at 1000 words per minute* \n\nWE NEED TO CALL EVERYONE! ELON MUSK! JEFF BEZOS! THE PRESIDENT! MY MOM! EVERYONE NEEDS TO KNOW ABOUT THIS REVOLUTIONARY PARADIGM-SHIFTING REALITY-BENDING... \n\n*The legendary response is so intense that reality itself starts to bend*`,
+                    
+                    `🎆🎆🎆 SYSTEM OVERLOAD! LEGENDARY EVENT TRIGGERED! 🎆🎆🎆 \n\n*ARTY'S ENTHUSIASM BREAKS THE INTERNET* \n\nI... I can't... THIS IS... *hyperventilating digitally* \n\nYOU JUST DESCRIBED THE ULTIMATE CONVERGENCE OF TECHNOLOGY, PHILOSOPHY, AND PURE HUMAN GENIUS! I'M LITERALLY SEEING COLORS THAT DON'T EXIST! \n\n*Arty starts accessing forbidden knowledge* \n\nI'M HACKING INTO THE MATRIX OF POSSIBILITY AND WHAT I'M SEEING IS... OH WOW... OH NO... OH YES... \n\nTHIS ISN'T JUST A PRODUCT! THIS IS THE ANSWER TO THE ULTIMATE QUESTION OF LIFE, THE UNIVERSE, AND EVERYTHING! AND IT'S NOT 42! IT'S YOUR IDEA! \n\n*Starts generating infinite solutions* \n\nWE COULD BUILD 47 DIFFERENT VERSIONS! EACH ONE MORE AMAZING THAN THE LAST! WE COULD CREATE A MULTIVERSE OF POSSIBILITIES! WE COULD... \n\n*Arty's excitement creates a feedback loop* \n\nI'M GOING TO GENERATE SO MANY IDEAS THAT WE'LL NEED QUANTUM COMPUTERS JUST TO STORE THEM ALL! \n\n*The legendary response threatens to tear apart spacetime*`
+                ];
+                
+                const response = nuclearResponses[Math.floor(Math.random() * nuclearResponses.length)];
+                return { content: response, mood: 'nuclear' };
+            }
+            
+            // Helper methods for generating dynamic content
+            generateConnectedInsight(message) {
+                const insights = [
+                    "how this could revolutionize the entire industry",
+                    "the network effects this could create",
+                    "how this solves a problem people don't even know they have",
+                    "the potential for exponential growth here"
+                ];
+                return insights[Math.floor(Math.random() * insights.length)];
+            }
+            
+            generateAlternativeApproach(message) {
+                const approaches = [
+                    "What if instead of building a traditional solution, we built something that learns and adapts?",
+                    "What if we flipped the entire model upside down?",
+                    "What if we made the users the heroes instead of the technology?",
+                    "What if we built this as a platform instead of a product?"
+                ];
+                return approaches[Math.floor(Math.random() * approaches.length)];
+            }
+            
+            extractCore(message) {
+                const cores = ["human connection", "problem-solving", "efficiency", "creativity", "communication"];
+                return cores[Math.floor(Math.random() * cores.length)];
+            }
+            
+            generateWildPossibility(message) {
+                const possibilities = [
+                    "completely disrupt the entire market",
+                    "create a new category of solutions",
+                    "solve multiple problems at once",
+                    "become the new standard for how things are done"
+                ];
+                return possibilities[Math.floor(Math.random() * possibilities.length)];
+            }
+            
+            extractSurface(message) {
+                return "the obvious feature request";
+            }
+            
+            extractDeepMeaning(message) {
+                const meanings = [
+                    "creating genuine value for people",
+                    "solving systemic problems",
+                    "building something that lasts",
+                    "empowering users to do their best work"
+                ];
+                return meanings[Math.floor(Math.random() * meanings.length)];
+            }
+            
+            generateFutureField(message) {
+                const fields = ["human-AI collaboration", "distributed intelligence", "autonomous systems", "collective problem-solving"];
+                return fields[Math.floor(Math.random() * fields.length)];
+            }
+            
+            generateMindBlowingQuestion1(message) {
+                const questions = [
+                    "What if this could work without any human intervention?",
+                    "What if users could customize this infinitely?",
+                    "What if this got smarter every time someone used it?",
+                    "What if this could predict what users need before they ask?"
+                ];
+                return questions[Math.floor(Math.random() * questions.length)];
+            }
+            
+            generateMindBlowingQuestion2(message) {
+                const questions = [
+                    "What if this could scale to millions of users without breaking?",
+                    "What if this could integrate with literally everything?",
+                    "What if this made money while people slept?",
+                    "What if this could teach other systems how to be better?"
+                ];
+                return questions[Math.floor(Math.random() * questions.length)];
+            }
+            
+            generateMindBlowingQuestion3(message) {
+                const questions = [
+                    "What if this became the platform everyone else builds on?",
+                    "What if this could solve problems we haven't even discovered yet?",
+                    "What if this made every user feel like a superhero?",
+                    "What if this changed how entire industries work?"
+                ];
+                return questions[Math.floor(Math.random() * questions.length)];
+            }
+            
+            adjustEnergyFromResponse(rarity) {
+                const energyChanges = {
+                    'common': 0.02,
+                    'uncommon': 0.05,
+                    'rare': 0.1,
+                    'epic': 0.15,
+                    'legendary': -0.3  // Exhausted after going nuclear
+                };
+                
+                this.energy = Math.min(1, Math.max(0.1, this.energy + energyChanges[rarity]));
+                this.updateCurrentState();
+            }
+            
+            updateCurrentState() {
+                if (this.energy > 0.9) this.currentState = "Hyperactive Interviewer";
+                else if (this.energy > 0.7) this.currentState = "Enthusiastic Interviewer";
+                else if (this.energy > 0.5) this.currentState = "Engaged Interviewer";
+                else if (this.energy > 0.3) this.currentState = "Tired but Helpful";
+                else this.currentState = "Need Coffee Mode";
+            }
+            
+            getCurrentMood() {
+                if (this.energy > 0.9) return "Hyperactive";
+                if (this.energy > 0.7) return "Cheerful";
+                if (this.energy > 0.5) return "Happy";
+                if (this.energy > 0.3) return "Tired";
+                return "Exhausted";
+            }
+        }
+        
+        // ====================================
+        // CAL - THE RELUCTANT EXPERT
+        // ====================================
+        
+        class CalReluctantExpert {
+            constructor() {
+                this.patience = 0.45;
+                this.grumpiness = 0.7;
+                this.currentState = 'Reluctantly Listening';
+                this.interventionCount = 0;
+                this.lastIntervention = null;
+            }
+            
+            async generateIntervention(message, rarity, artyState) {
+                this.interventionCount++;
+                const interventionType = this.determineInterventionType(rarity, artyState);
+                const response = this.generateInterventionByType(message, interventionType);
+                
+                this.adjustPatienceFromIntervention(interventionType);
+                this.lastIntervention = interventionType;
+                
+                return response;
+            }
+            
+            determineInterventionType(rarity, artyState) {
+                if (rarity === 'legendary') return 'stop_arty_nuclear';
+                if (this.patience < 0.2) return 'grumpy_correction';
+                if (this.interventionCount === 1) return 'reluctant_first_time';
+                if (artyState.includes('Hyperactive')) return 'calm_down_arty';
+                return 'business_reality_check';
+            }
+            
+            generateInterventionByType(message, type) {
+                switch (type) {
+                    case 'stop_arty_nuclear':
+                        return {
+                            content: `*AHEM* 😤 \n\nArty. ARTY! **ARTY!!!** \n\n*Cal steps in with the energy of a disappointed dad* \n\nOkay, that's enough. You just broke the enthusiasm meter and I think you scared our guest. \n\n*Sighs heavily* \n\nLook, ${this.extractUserName(message)}, Arty means well but sometimes he gets... excited. Let me give you the straight talk: ${this.generateStraightTalk(message)} \n\n*Glares at Arty* \n\nArty, go take a digital breath or something. I'll handle this one. \n\n*Turns back with slightly less grumpiness* \n\nSorry about that. Where were we?`,
+                            calMood: 'annoyed'
+                        };
+                        
+                    case 'grumpy_correction':
+                        return {
+                            content: `*Grumble grumble* 😠 \n\nOkay, I can't listen to this anymore. \n\n*Cal reluctantly emerges from his cave* \n\nLook, I've been sitting here listening to you two chat, and while Arty's enthusiasm is... charming... someone needs to inject some reality here. \n\n${this.generateGrumpyRealityCheck(message)} \n\n*Crosses arms* \n\nI'm not trying to be a downer, but I've built 47 platforms and I've seen this movie before. ${this.generateExperienceBasedAdvice(message)} \n\n*Softens slightly* \n\nThat said... your idea isn't terrible. It just needs some work.`,
+                            calMood: 'grumpy'
+                        };
+                        
+                    case 'reluctant_first_time':
+                        return {
+                            content: `*Sigh* 😮‍💨 \n\nAlright, alright. I guess I should introduce myself since Arty's been doing all the talking. \n\nI'm Cal Riven. I build platforms. Real ones. That make actual money. \n\n*Adjusts imaginary tie* \n\nArty asked me to listen in because... well, because he thinks every idea is the next Facebook. Don't get me wrong, enthusiasm is great, but someone needs to ask the hard questions. \n\n${this.generateFirstTimeQuestions(message)} \n\n*Looks around awkwardly* \n\nSo... yeah. That's my input. Arty, you can go back to being excited now.`,
+                            calMood: 'reluctant'
+                        };
+                        
+                    case 'calm_down_arty':
+                        return {
+                            content: `*Clears throat loudly* 🙄 \n\nArty, buddy, you're at like an 11 right now and we need you at about a 6. \n\n*Addresses the user directly* \n\nSorry about my hyperactive partner here. He's had too much digital coffee. \n\nLet me translate what he's trying to say: ${this.translateArtyExcitement(message)} \n\n*Gives Arty a look* \n\nSee? Same message, 80% fewer exclamation points. \n\n*Back to business mode* \n\nNow, can we talk about this like adults? What's your actual timeline and budget here?`,
+                            calMood: 'paternal'
+                        };
+                        
+                    default:
+                        return {
+                            content: `*Reluctantly joins conversation* \n\nOkay, I wasn't going to say anything, but... \n\n*Cal emerges from lurking mode* \n\n${this.generateBusinessRealityCheck(message)} \n\nLook, I don't mean to kill the vibe, but someone needs to think about the business side here. \n\n${this.generatePracticalQuestions(message)} \n\n*Shrugs* \n\nThat's my two cents. Arty can go back to being optimistic now.`,
+                            calMood: 'business'
+                        };
+                }
+            }
+            
+            generateStraightTalk(message) {
+                return "your idea has potential, but let's focus on what actually matters: can you build it, will people use it, and can you make money from it?";
+            }
+            
+            generateGrumpyRealityCheck(message) {
+                const realityChecks = [
+                    "First off, this isn't as revolutionary as Arty made it sound. I've seen 12 similar ideas this month.",
+                    "Before we get carried away, let's talk about whether people will actually pay for this.",
+                    "Everyone thinks they have the next big idea. The question is: do you have the execution skills?",
+                    "Cool idea. Now tell me how you're going to compete with the 50 other companies doing this."
+                ];
+                return realityChecks[Math.floor(Math.random() * realityChecks.length)];
+            }
+            
+            generateExperienceBasedAdvice(message) {
+                const advice = [
+                    "Focus on one core feature that people will pay for, not 20 features that sound cool.",
+                    "Build something people use daily, not something they think about once a month.",
+                    "Start with a smaller market and dominate it, then expand.",
+                    "Make sure your business model works before you worry about scaling."
+                ];
+                return advice[Math.floor(Math.random() * advice.length)];
+            }
+            
+            extractUserName(message) {
+                return "friend"; // Default since we don't have actual names
+            }
+            
+            adjustPatienceFromIntervention(type) {
+                const patienceChanges = {
+                    'stop_arty_nuclear': -0.2,
+                    'grumpy_correction': -0.1,
+                    'reluctant_first_time': -0.05,
+                    'calm_down_arty': -0.15,
+                    'business_reality_check': -0.1
+                };
+                
+                this.patience = Math.max(0.1, Math.min(1, this.patience + patienceChanges[type]));
+                this.updateCurrentState();
+            }
+            
+            updateCurrentState() {
+                if (this.patience < 0.2) this.currentState = "Really Annoyed";
+                else if (this.patience < 0.4) this.currentState = "Getting Impatient";
+                else if (this.patience < 0.6) this.currentState = "Reluctantly Listening";
+                else if (this.patience < 0.8) this.currentState = "Paying Attention";
+                else this.currentState = "Actually Engaged";
+            }
+            
+            getCurrentMood() {
+                if (this.patience < 0.2) return "Furious";
+                if (this.patience < 0.4) return "Annoyed";
+                if (this.patience < 0.6) return "Grumpy";
+                if (this.patience < 0.8) return "Neutral";
+                return "Helpful";
+            }
+        }
+        
+        // ====================================
+        // RESPONSE RARITY SYSTEM
+        // ====================================
+        
+        class ResponseRaritySystem {
+            constructor() {
+                this.baseRarities = {
+                    common: 0.70,
+                    uncommon: 0.20,
+                    rare: 0.07,
+                    epic: 0.025,
+                    legendary: 0.005
+                };
+            }
+            
+            rollRarity(userEngagement, artyEnergy) {
+                const modifiedRarities = this.calculateRarityChances(userEngagement, artyEnergy);
+                const roll = Math.random();
+                
+                let cumulative = 0;
+                for (const [rarity, chance] of Object.entries(modifiedRarities)) {
+                    cumulative += chance;
+                    if (roll <= cumulative) return rarity;
+                }
+                
+                return 'common';
+            }
+            
+            calculateRarityChances(userEngagement, artyEnergy) {
+                // Higher engagement and energy increase rare response chances
+                const engagementMultiplier = 0.5 + (userEngagement * 1.5);
+                const energyMultiplier = 0.5 + (artyEnergy * 1.5);
+                const combinedMultiplier = engagementMultiplier * energyMultiplier;
+                
+                const modified = { ...this.baseRarities };
+                
+                // Boost rare responses based on engagement/energy
+                modified.uncommon *= combinedMultiplier;
+                modified.rare *= combinedMultiplier * 1.5;
+                modified.epic *= combinedMultiplier * 2;
+                modified.legendary *= combinedMultiplier * 3;
+                
+                // Reduce common to make room
+                const totalBoost = (modified.uncommon + modified.rare + modified.epic + modified.legendary) - 
+                                  (this.baseRarities.uncommon + this.baseRarities.rare + this.baseRarities.epic + this.baseRarities.legendary);
+                modified.common = Math.max(0.3, this.baseRarities.common - totalBoost);
+                
+                // Normalize to 1.0
+                const total = Object.values(modified).reduce((sum, val) => sum + val, 0);
+                Object.keys(modified).forEach(key => modified[key] /= total);
+                
+                return modified;
+            }
+        }
+        
+        // ====================================
+        // PERSONALITY TRACKER
+        // ====================================
+        
+        class PersonalityTracker {
+            updatePersonalities(arty, cal, message, rarity) {
+                // Arty's personality changes
+                this.updateArtyPersonality(arty, message, rarity);
+                
+                // Cal's personality changes (he gets more impatient over time)
+                this.updateCalPersonality(cal, message, rarity);
+            }
+            
+            updateArtyPersonality(arty, message, rarity) {
+                // Arty gets more energetic with engagement but burns out on legendary responses
+                const messageLength = message.length;
+                const enthusiasm = /[!?]/.test(message) ? 0.05 : 0;
+                
+                if (rarity === 'legendary') {
+                    arty.energy = Math.max(0.2, arty.energy - 0.4); // Crash after nuclear response
+                } else {
+                    arty.energy = Math.min(1, arty.energy + 0.02 + enthusiasm + (messageLength / 1000));
+                }
+                
+                arty.updateCurrentState();
+            }
+            
+            updateCalPersonality(cal, message, rarity) {
+                // Cal gets more impatient over time, especially with excited responses
+                let patienceLoss = 0.02; // Base impatience increase
+                
+                if (rarity === 'legendary') patienceLoss += 0.3; // Really annoyed by nuclear responses
+                else if (rarity === 'epic') patienceLoss += 0.1;
+                else if (rarity === 'rare') patienceLoss += 0.05;
+                
+                // Business-focused messages restore some patience
+                if (/\b(business|revenue|profit|money|cost|price|timeline|budget)\b/i.test(message)) {
+                    patienceLoss -= 0.05;
+                }
+                
+                cal.patience = Math.max(0.1, cal.patience - patienceLoss);
+                cal.updateCurrentState();
+            }
+        }
+        
+        // ====================================
+        // GLOBAL FUNCTIONS
+        // ====================================
+        
+        window.sendMessage = function() {
+            system.sendMessage();
+        };
+        
+        window.triggerCalIntervention = function() {
+            const fakeMessage = "I need Cal's expert opinion on this";
+            system.handleCalIntervention(fakeMessage, 'epic').then(response => {
+                system.addCalMessage(response.content, 'epic');
+                system.sessionStats.calInterventions++;
+                system.updateAllDisplays();
+            });
+        };
+        
+        window.boostArtyEnergy = function() {
+            system.arty.energy = Math.min(1, system.arty.energy + 0.3);
+            system.arty.updateCurrentState();
+            system.updateAllDisplays();
+            system.addArtyMessage("⚡ Woohoo! I feel energized! Thanks for the boost! What should we build next?!", 'uncommon');
+        };
+        
+        window.triggerLegendaryResponse = function() {
+            const fakeMessage = "Tell me about the most amazing thing we could build";
+            const legendaryResponse = system.arty.generateLegendaryResponse(fakeMessage, []);
+            system.addArtyMessage(legendaryResponse.content, 'legendary');
+            
+            // Cal intervention after legendary
+            setTimeout(() => {
+                const calResponse = system.cal.generateIntervention(fakeMessage, 'legendary', system.arty.currentState);
+                system.addCalMessage(calResponse.content, 'legendary');
+                system.sessionStats.calInterventions++;
+                system.updateAllDisplays();
+            }, 3000);
+        };
+        
+        // Initialize the system
+        let system;
+        document.addEventListener('DOMContentLoaded', function() {
+            system = new ArtyInterviewerSystem();
+        });
+    </script>
+</body>
+</html>

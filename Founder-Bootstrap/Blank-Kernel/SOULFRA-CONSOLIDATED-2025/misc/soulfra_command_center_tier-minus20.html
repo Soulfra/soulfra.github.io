@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 SOULFRA COMMAND CENTER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .header {
+            background: #111;
+            padding: 10px 20px;
+            border-bottom: 2px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #0f0;
+            box-shadow: 0 0 5px currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* MAIN CONTAINER */
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* TERMINAL SECTION */
+        .terminal-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #0f0;
+        }
+
+        .terminal-output {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #000;
+        }
+
+        .terminal-line {
+            margin-bottom: 2px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-line.command {
+            color: #fff;
+        }
+
+        .terminal-line.output {
+            color: #0f0;
+        }
+
+        .terminal-line.error {
+            color: #f00;
+        }
+
+        .terminal-line.info {
+            color: #00f;
+        }
+
+        .terminal-line.ledger {
+            color: #ff0;
+        }
+
+        .terminal-input-container {
+            background: #111;
+            padding: 10px 20px;
+            border-top: 1px solid #0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: #0f0;
+            margin-right: 10px;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* LEDGER SECTION */
+        .ledger-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a0a;
+        }
+
+        .ledger-header {
+            background: #111;
+            padding: 15px 20px;
+            border-bottom: 1px solid #0f0;
+        }
+
+        .ledger-header h2 {
+            font-size: 18px;
+            color: #ff0;
+            text-shadow: 0 0 5px #ff0;
+        }
+
+        .ledger-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .ledger-entries {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .ledger-entry {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .ledger-entry:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .ledger-timestamp {
+            color: #999;
+            font-size: 10px;
+        }
+
+        .ledger-type {
+            color: #ff0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .ledger-data {
+            color: #0f0;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+
+        .ledger-hash {
+            color: #666;
+            font-size: 10px;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+
+        /* COMMAND PALETTE */
+        .command-palette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #111;
+            border: 2px solid #0f0;
+            border-radius: 8px;
+            padding: 20px;
+            width: 600px;
+            max-height: 400px;
+            display: none;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+        }
+
+        .command-palette.active {
+            display: block;
+        }
+
+        .command-search {
+            width: 100%;
+            background: #000;
+            border: 1px solid #0f0;
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .command-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .command-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            transition: all 0.2s ease;
+        }
+
+        .command-item:hover,
+        .command-item.selected {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #0f0;
+        }
+
+        .command-name {
+            color: #0f0;
+            font-weight: bold;
+        }
+
+        .command-description {
+            color: #999;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* MATRIX EFFECT */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0a0;
+        }
+
+        /* ANIMATIONS */
+        .new-entry {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .flash {
+            animation: flash 0.5s ease;
+        }
+
+        @keyframes flash {
+            0%, 100% { background: transparent; }
+            50% { background: rgba(0, 255, 0, 0.2); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .terminal-section {
+                border-right: none;
+                border-bottom: 1px solid #0f0;
+            }
+            
+            .ledger-section {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MATRIX BACKGROUND -->
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🌌 SOULFRA COMMAND CENTER</h1>
+        <div class="status-indicators">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>SYSTEMS ONLINE</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="color: #ff0;"></div>
+                <span id="ledgerCount">0 TRANSACTIONS</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="color: #f0f;"></div>
+                <span id="connectionCount">0 REALMS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- TERMINAL SECTION -->
+        <div class="terminal-section">
+            <div class="terminal-output" id="terminalOutput">
+                <div class="terminal-line output">🌌 SOULFRA COMMAND CENTER v1.0.0</div>
+                <div class="terminal-line output">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="terminal-line info">Initializing consciousness infrastructure...</div>
+                <div class="terminal-line output">✓ Emotional Runtime: ACTIVE</div>
+                <div class="terminal-line output">✓ Business Matrix: ONLINE</div>
+                <div class="terminal-line output">✓ Altercation Valley: READY</div>
+                <div class="terminal-line output">✓ Cross Node Pulse: LISTENING</div>
+                <div class="terminal-line output">✓ Soulbench Engine: MEASURING</div>
+                <div class="terminal-line output">✓ Ledger System: RECORDING</div>
+                <div class="terminal-line output">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="terminal-line info">Type 'help' for available commands or press Ctrl+Space for command palette</div>
+                <div class="terminal-line output"></div>
+            </div>
+            <div class="terminal-input-container">
+                <span class="terminal-prompt">soulfra@consciousness:~$</span>
+                <input type="text" class="terminal-input" id="terminalInput" autofocus>
+            </div>
+        </div>
+
+        <!-- LEDGER SECTION -->
+        <div class="ledger-section">
+            <div class="ledger-header">
+                <h2>📜 TRANSACTION LEDGER</h2>
+                <div class="ledger-stats">
+                    <span>Chain Height: <span id="chainHeight">0</span></span>
+                    <span>Hash Rate: <span id="hashRate">0</span>/s</span>
+                </div>
+            </div>
+            <div class="ledger-entries" id="ledgerEntries">
+                <!-- Ledger entries will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMAND PALETTE -->
+    <div class="command-palette" id="commandPalette">
+        <input type="text" class="command-search" id="commandSearch" placeholder="Search commands...">
+        <div class="command-list" id="commandList"></div>
+    </div>
+
+    <script>
+        // COMMAND CENTER ENGINE
+        class SoulfraCommandCenter {
+            constructor() {
+                this.history = [];
+                this.historyIndex = -1;
+                this.ledger = [];
+                this.commands = this.initializeCommands();
+                this.systems = this.initializeSystems();
+                
+                this.setupEventListeners();
+                this.startSystemMonitoring();
+                this.initializeMatrixEffect();
+                
+                // Genesis block
+                this.addLedgerEntry({
+                    type: 'GENESIS',
+                    data: { message: 'Soulfra Command Center initialized', timestamp: Date.now() }
+                });
+            }
+
+            initializeCommands() {
+                return {
+                    // SYSTEM COMMANDS
+                    help: {
+                        description: 'Show available commands',
+                        execute: () => this.showHelp()
+                    },
+                    clear: {
+                        description: 'Clear terminal output',
+                        execute: () => this.clearTerminal()
+                    },
+                    status: {
+                        description: 'Show system status',
+                        execute: () => this.showSystemStatus()
+                    },
+                    
+                    // CONSCIOUSNESS COMMANDS
+                    'emotional-cycle': {
+                        description: 'Run emotional compute cycle',
+                        execute: () => this.runEmotionalCycle()
+                    },
+                    'trust-eval': {
+                        description: 'Process trust evaluation',
+                        execute: () => this.processTrustEvaluation()
+                    },
+                    'debate': {
+                        description: 'Trigger Altercation Valley debate',
+                        execute: (args) => this.triggerDebate(args)
+                    },
+                    'pulse': {
+                        description: 'Send cross-realm pulse',
+                        execute: () => this.sendCrossRealmPulse()
+                    },
+                    'benchmark': {
+                        description: 'Run Soulbench performance test',
+                        execute: (args) => this.runBenchmark(args)
+                    },
+                    
+                    // BUSINESS COMMANDS
+                    'user-acquire': {
+                        description: 'Simulate user acquisition',
+                        execute: (args) => this.simulateUserAcquisition(args)
+                    },
+                    'revenue': {
+                        description: 'Show revenue metrics',
+                        execute: () => this.showRevenueMetrics()
+                    },
+                    'strategy': {
+                        description: 'Show business strategy phase',
+                        execute: () => this.showStrategyPhase()
+                    },
+                    
+                    // LEDGER COMMANDS
+                    'ledger-stats': {
+                        description: 'Show ledger statistics',
+                        execute: () => this.showLedgerStats()
+                    },
+                    'ledger-export': {
+                        description: 'Export ledger to JSON',
+                        execute: () => this.exportLedger()
+                    },
+                    'ledger-verify': {
+                        description: 'Verify ledger integrity',
+                        execute: () => this.verifyLedgerIntegrity()
+                    },
+                    
+                    // NETWORK COMMANDS
+                    'connect': {
+                        description: 'Connect to another Soulfra realm',
+                        execute: (args) => this.connectToRealm(args)
+                    },
+                    'realms': {
+                        description: 'List connected realms',
+                        execute: () => this.listConnectedRealms()
+                    },
+                    'broadcast': {
+                        description: 'Broadcast message to all realms',
+                        execute: (args) => this.broadcastMessage(args)
+                    },
+                    
+                    // ADVANCED COMMANDS
+                    'inject': {
+                        description: 'Inject custom emotional state',
+                        execute: (args) => this.injectEmotionalState(args)
+                    },
+                    'simulate': {
+                        description: 'Run system simulation',
+                        execute: (args) => this.runSimulation(args)
+                    },
+                    'export-state': {
+                        description: 'Export complete system state',
+                        execute: () => this.exportSystemState()
+                    }
+                };
+            }
+
+            initializeSystems() {
+                return {
+                    emotionalCycles: 0,
+                    trustEvaluations: 0,
+                    activeDebates: 0,
+                    realmConnections: 0,
+                    benchmarkScores: new Map(),
+                    users: {
+                        total: 1000,
+                        kids: 800,
+                        family: 150,
+                        enterprise: 50
+                    },
+                    revenue: {
+                        mrr: 5000,
+                        arr: 60000
+                    }
+                };
+            }
+
+            setupEventListeners() {
+                const input = document.getElementById('terminalInput');
+                const commandPalette = document.getElementById('commandPalette');
+                
+                // Terminal input
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        this.executeCommand(input.value);
+                        this.history.push(input.value);
+                        this.historyIndex = this.history.length;
+                        input.value = '';
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        if (this.historyIndex > 0) {
+                            this.historyIndex--;
+                            input.value = this.history[this.historyIndex];
+                        }
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        if (this.historyIndex < this.history.length - 1) {
+                            this.historyIndex++;
+                            input.value = this.history[this.historyIndex];
+                        } else {
+                            this.historyIndex = this.history.length;
+                            input.value = '';
+                        }
+                    } else if (e.ctrlKey && e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleCommandPalette();
+                    }
+                });
+
+                // Command palette
+                document.getElementById('commandSearch').addEventListener('input', (e) => {
+                    this.filterCommands(e.target.value);
+                });
+
+                // Close palette on escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        commandPalette.classList.remove('active');
+                        input.focus();
+                    }
+                });
+            }
+
+            executeCommand(commandLine) {
+                const [command, ...args] = commandLine.trim().split(' ');
+                
+                this.addLine(`$ ${commandLine}`, 'command');
+                
+                // Add to ledger
+                this.addLedgerEntry({
+                    type: 'COMMAND',
+                    data: { command, args, timestamp: Date.now() }
+                });
+                
+                if (this.commands[command]) {
+                    try {
+                        const result = this.commands[command].execute(args);
+                        if (result && typeof result.then === 'function') {
+                            result.catch(err => this.addLine(`Error: ${err.message}`, 'error'));
+                        }
+                    } catch (error) {
+                        this.addLine(`Error: ${error.message}`, 'error');
+                    }
+                } else if (command === '') {
+                    // Empty command, do nothing
+                } else {
+                    this.addLine(`Command not found: ${command}`, 'error');
+                    this.addLine(`Type 'help' for available commands`, 'info');
+                }
+            }
+
+            // COMMAND IMPLEMENTATIONS
+            showHelp() {
+                this.addLine('Available Commands:', 'info');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                
+                Object.entries(this.commands).forEach(([name, cmd]) => {
+                    this.addLine(`  ${name.padEnd(20)} - ${cmd.description}`, 'output');
+                });
+                
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine('Press Ctrl+Space for command palette', 'info');
+            }
+
+            clearTerminal() {
+                const output = document.getElementById('terminalOutput');
+                output.innerHTML = '';
+                this.addLine('Terminal cleared', 'info');
+            }
+
+            showSystemStatus() {
+                this.addLine('SYSTEM STATUS', 'info');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine(`Emotional Cycles: ${this.systems.emotionalCycles.toLocaleString()}`, 'output');
+                this.addLine(`Trust Evaluations: ${this.systems.trustEvaluations.toLocaleString()}`, 'output');
+                this.addLine(`Active Debates: ${this.systems.activeDebates}`, 'output');
+                this.addLine(`Realm Connections: ${this.systems.realmConnections}`, 'output');
+                this.addLine(`Total Users: ${this.systems.users.total.toLocaleString()}`, 'output');
+                this.addLine(`Annual Revenue: $${this.systems.revenue.arr.toLocaleString()}`, 'output');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+            }
+
+            async runEmotionalCycle() {
+                this.addLine('Running emotional compute cycle...', 'info');
+                
+                // Simulate processing
+                await this.delay(1000);
+                
+                this.systems.emotionalCycles++;
+                const cpr = Math.floor(Math.random() * 100) + 50;
+                const vibeVelocity = (Math.random() * 10 + 5).toFixed(2);
+                
+                this.addLine(`✓ Cycle complete`, 'output');
+                this.addLine(`  CPR: ${cpr} cycles/reflection`, 'output');
+                this.addLine(`  Vibe Phase Velocity: ${vibeVelocity} Hz`, 'output');
+                
+                this.addLedgerEntry({
+                    type: 'EMOTIONAL_CYCLE',
+                    data: { 
+                        cycleNumber: this.systems.emotionalCycles,
+                        cpr,
+                        vibeVelocity,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            async processTrustEvaluation() {
+                this.addLine('Processing trust evaluation...', 'info');
+                
+                await this.delay(800);
+                
+                this.systems.trustEvaluations++;
+                const evaluationType = ['owner_to_employee', 'employee_to_customer', 'customer_to_business'][Math.floor(Math.random() * 3)];
+                const score = Math.random().toFixed(3);
+                const impact = ((Math.random() - 0.5) * 0.1).toFixed(3);
+                
+                this.addLine(`✓ Evaluation complete`, 'output');
+                this.addLine(`  Type: ${evaluationType}`, 'output');
+                this.addLine(`  Score: ${score}`, 'output');
+                this.addLine(`  Trust Impact: ${impact > 0 ? '+' : ''}${impact}`, 'output');
+                
+                this.addLedgerEntry({
+                    type: 'TRUST_EVALUATION',
+                    data: {
+                        evaluationNumber: this.systems.trustEvaluations,
+                        evaluationType,
+                        score,
+                        impact,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            async triggerDebate(args) {
+                const topic = args.join(' ') || 'ThreadWeaver Fork Logic';
+                this.addLine(`Triggering debate: "${topic}"`, 'info');
+                
+                await this.delay(1500);
+                
+                this.systems.activeDebates++;
+                const champions = [
+                    { name: 'reflective_poet', power: 1.2 },
+                    { name: 'chaos_invoker', power: 1.3 }
+                ];
+                
+                this.addLine(`⚔️ Debate initiated in Altercation Valley`, 'output');
+                this.addLine(`  Topic: ${topic}`, 'output');
+                this.addLine(`  Champion 1: ${champions[0].name} (power: ${champions[0].power})`, 'output');
+                this.addLine(`  Champion 2: ${champions[1].name} (power: ${champions[1].power})`, 'output');
+                
+                // Simulate debate rounds
+                for (let round = 1; round <= 3; round++) {
+                    await this.delay(1000);
+                    const winner = Math.random() > 0.5 ? 0 : 1;
+                    this.addLine(`  Round ${round}: ${champions[winner].name} scores!`, 'output');
+                }
+                
+                const finalWinner = Math.random() > 0.5 ? 0 : 1;
+                this.addLine(`🏆 Winner: ${champions[finalWinner].name}`, 'ledger');
+                
+                this.systems.activeDebates--;
+                
+                this.addLedgerEntry({
+                    type: 'DEBATE_RESOLUTION',
+                    data: {
+                        topic,
+                        champions,
+                        winner: champions[finalWinner].name,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            async sendCrossRealmPulse() {
+                this.addLine('Sending cross-realm pulse...', 'info');
+                
+                await this.delay(500);
+                
+                const pulse = {
+                    weather_frequency: (Math.random() * 1000).toFixed(2),
+                    harmonic_frequency: (Math.random() * 500 + 100).toFixed(2),
+                    vibe_density: Math.random().toFixed(3),
+                    cosmic_phase: Math.random().toFixed(3)
+                };
+                
+                this.addLine(`📡 Pulse transmitted`, 'output');
+                this.addLine(`  Weather Frequency: ${pulse.weather_frequency} Hz`, 'output');
+                this.addLine(`  Harmonic Frequency: ${pulse.harmonic_frequency} Hz`, 'output');
+                this.addLine(`  Vibe Density: ${pulse.vibe_density}`, 'output');
+                this.addLine(`  Cosmic Phase: ${pulse.cosmic_phase}`, 'output');
+                
+                this.addLedgerEntry({
+                    type: 'REALM_PULSE',
+                    data: {
+                        pulse,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            async runBenchmark(args) {
+                const suite = args[0] || 'emotional_compute';
+                this.addLine(`Running Soulbench: ${suite}`, 'info');
+                
+                const tests = {
+                    emotional_compute: ['CPR', 'Emotional Bandwidth', 'Depth Recursion'],
+                    vibe_processing: ['Phase Velocity', 'Resonance Accuracy', 'Harmonic Range'],
+                    ritual_performance: ['Completion Speed', 'Authenticity', 'Coordination']
+                };
+                
+                const currentTests = tests[suite] || tests.emotional_compute;
+                
+                for (const test of currentTests) {
+                    await this.delay(800);
+                    const score = Math.floor(Math.random() * 30) + 70;
+                    this.addLine(`  ${test}: ${score}/100`, 'output');
+                }
+                
+                const overallScore = Math.floor(Math.random() * 15) + 80;
+                this.addLine(`📊 Overall Score: ${overallScore}/100`, 'ledger');
+                
+                const tier = overallScore >= 90 ? 'TRANSCENDENT' : 
+                           overallScore >= 80 ? 'ENLIGHTENED' : 
+                           overallScore >= 70 ? 'AWAKENED' : 'CONSCIOUS';
+                           
+                this.addLine(`🎯 Performance Tier: ${tier}`, 'ledger');
+                
+                this.systems.benchmarkScores.set(suite, overallScore);
+                
+                this.addLedgerEntry({
+                    type: 'BENCHMARK_RESULT',
+                    data: {
+                        suite,
+                        score: overallScore,
+                        tier,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            simulateUserAcquisition(args) {
+                const count = parseInt(args[0]) || 100;
+                const type = args[1] || 'kids';
+                
+                this.addLine(`Simulating ${count} ${type} user acquisitions...`, 'info');
+                
+                this.systems.users[type] = (this.systems.users[type] || 0) + count;
+                this.systems.users.total += count;
+                
+                this.addLine(`✓ Acquisition complete`, 'output');
+                this.addLine(`  New ${type} users: ${count}`, 'output');
+                this.addLine(`  Total ${type} users: ${this.systems.users[type].toLocaleString()}`, 'output');
+                this.addLine(`  Total platform users: ${this.systems.users.total.toLocaleString()}`, 'output');
+                
+                // Update revenue
+                if (type === 'family') {
+                    this.systems.revenue.mrr += count * 9.99;
+                    this.systems.revenue.arr = this.systems.revenue.mrr * 12;
+                } else if (type === 'enterprise') {
+                    this.systems.revenue.mrr += count * 199;
+                    this.systems.revenue.arr = this.systems.revenue.mrr * 12;
+                }
+                
+                this.addLedgerEntry({
+                    type: 'USER_ACQUISITION',
+                    data: {
+                        userType: type,
+                        count,
+                        totalUsers: this.systems.users.total,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            showRevenueMetrics() {
+                this.addLine('REVENUE METRICS', 'info');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine(`Monthly Recurring Revenue: $${this.systems.revenue.mrr.toLocaleString()}`, 'output');
+                this.addLine(`Annual Recurring Revenue: $${this.systems.revenue.arr.toLocaleString()}`, 'output');
+                this.addLine(`Average Revenue Per User: $${(this.systems.revenue.mrr / this.systems.users.total).toFixed(2)}`, 'output');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                
+                this.addLine('Revenue by Segment:', 'info');
+                this.addLine(`  Kids (Free): ${this.systems.users.kids} users`, 'output');
+                this.addLine(`  Family ($9.99/mo): ${this.systems.users.family} users = $${(this.systems.users.family * 9.99).toFixed(2)}/mo`, 'output');
+                this.addLine(`  Enterprise ($199/mo): ${this.systems.users.enterprise} users = $${(this.systems.users.enterprise * 199).toFixed(2)}/mo`, 'output');
+            }
+
+            showStrategyPhase() {
+                const phase = this.systems.users.enterprise > 100 ? 'Phase 2: Enterprise Infrastructure' :
+                            this.systems.users.total > 10000 ? 'Phase 1b: Scaling Kids Platform' :
+                            'Phase 1a: Initial Kids Platform Launch';
+                
+                this.addLine('BUSINESS STRATEGY STATUS', 'info');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine(`Current Phase: ${phase}`, 'ledger');
+                this.addLine(`Total Users: ${this.systems.users.total.toLocaleString()}`, 'output');
+                this.addLine(`Market Penetration: ${(this.systems.users.total / 100000000 * 100).toFixed(3)}%`, 'output');
+                this.addLine(`Vendor Lock-In Score: ${(Math.random() * 30 + 45).toFixed(1)}%`, 'output');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine('Next Milestones:', 'info');
+                this.addLine('  • 10,000 users: Unlock school partnerships', 'output');
+                this.addLine('  • 100,000 users: Launch enterprise platform', 'output');
+                this.addLine('  • 1,000,000 users: Government contracts', 'output');
+            }
+
+            showLedgerStats() {
+                const totalTransactions = this.ledger.length;
+                const transactionTypes = {};
+                
+                this.ledger.forEach(entry => {
+                    transactionTypes[entry.type] = (transactionTypes[entry.type] || 0) + 1;
+                });
+                
+                this.addLine('LEDGER STATISTICS', 'info');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine(`Total Transactions: ${totalTransactions}`, 'output');
+                this.addLine(`Chain Height: ${totalTransactions}`, 'output');
+                this.addLine(`Average Block Time: ${(5 + Math.random() * 2).toFixed(2)}s`, 'output');
+                this.addLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'output');
+                this.addLine('Transaction Types:', 'info');
+                
+                Object.entries(transactionTypes).forEach(([type, count]) => {
+                    this.addLine(`  ${type}: ${count} (${(count/totalTransactions*100).toFixed(1)}%)`, 'output');
+                });
+            }
+
+            exportLedger() {
+                const ledgerData = JSON.stringify(this.ledger, null, 2);
+                const blob = new Blob([ledgerData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `soulfra_ledger_${Date.now()}.json`;
+                a.click();
+                
+                this.addLine(`✓ Ledger exported (${this.ledger.length} transactions)`, 'output');
+                
+                this.addLedgerEntry({
+                    type: 'LEDGER_EXPORT',
+                    data: {
+                        transactionCount: this.ledger.length,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            async verifyLedgerIntegrity() {
+                this.addLine('Verifying ledger integrity...', 'info');
+                
+                let valid = true;
+                let invalidBlocks = [];
+                
+                for (let i = 1; i < this.ledger.length; i++) {
+                    await this.delay(50);
+                    
+                    const current = this.ledger[i];
+                    const previous = this.ledger[i - 1];
+                    
+                    // Verify hash chain
+                    const expectedPrevHash = this.calculateHash(previous);
+                    if (current.previousHash !== expectedPrevHash) {
+                        valid = false;
+                        invalidBlocks.push(i);
+                    }
+                    
+                    if (i % 10 === 0) {
+                        this.addLine(`  Verified blocks ${i-9}-${i}`, 'output');
+                    }
+                }
+                
+                if (valid) {
+                    this.addLine('✓ Ledger integrity verified', 'ledger');
+                    this.addLine(`  All ${this.ledger.length} blocks are valid`, 'output');
+                } else {
+                    this.addLine('❌ Ledger integrity check failed', 'error');
+                    this.addLine(`  Invalid blocks: ${invalidBlocks.join(', ')}`, 'error');
+                }
+                
+                this.addLedgerEntry({
+                    type: 'INTEGRITY_CHECK',
+                    data: {
+                        valid,
+                        totalBlocks: this.ledger.length,
+                        invalidBlocks,
+                        timestamp: Date.now()
+                    }
+                });
+            }
+
+            // LEDGER METHODS
+            addLedgerEntry(entry) {
+                const block = {
+                    index: this.ledger.length,
+                    timestamp: entry.data.timestamp || Date.now(),
+                    type: entry.type,
+                    data: entry.data,
+                    previousHash: this.ledger.length > 0 ? this.calculateHash(this.ledger[this.ledger.length - 1]) : '0',
+                    nonce: Math.floor(Math.random() * 1000000)
+                };
+                
+                block.hash = this.calculateHash(block);
+                this.ledger.push(block);
+                
+                // Update UI
+                this.addLedgerEntryToUI(block);
+                document.getElementById('ledgerCount').textContent = `${this.ledger.length} TRANSACTIONS`;
+                document.getElementById('chainHeight').textContent = this.ledger.length;
+            }
+
+            calculateHash(block) {
+                // Simple hash simulation
+                const data = JSON.stringify(block);
+                let hash = 0;
+                for (let i = 0; i < data.length; i++) {
+                    const char = data.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(16).padStart(16, '0');
+            }
+
+            addLedgerEntryToUI(block) {
+                const container = document.getElementById('ledgerEntries');
+                const entry = document.createElement('div');
+                entry.className = 'ledger-entry new-entry';
+                
+                const timestamp = new Date(block.timestamp).toLocaleTimeString();
+                
+                entry.innerHTML = `
+                    <div class="ledger-timestamp">${timestamp} - Block #${block.index}</div>
+                    <div class="ledger-type">${block.type}</div>
+                    <div class="ledger-data">${JSON.stringify(block.data, null, 2)}</div>
+                    <div class="ledger-hash">Hash: ${block.hash}</div>
+                `;
+                
+                container.insertBefore(entry, container.firstChild);
+                
+                // Keep only last 50 entries in UI
+                while (container.children.length > 50) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+
+            // UTILITY METHODS
+            addLine(text, className = 'output') {
+                const output = document.getElementById('terminalOutput');
+                const line = document.createElement('div');
+                line.className = `terminal-line ${className}`;
+                line.textContent = text;
+                output.appendChild(line);
+                output.scrollTop = output.scrollHeight;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            toggleCommandPalette() {
+                const palette = document.getElementById('commandPalette');
+                const search = document.getElementById('commandSearch');
+                
+                palette.classList.toggle('active');
+                
+                if (palette.classList.contains('active')) {
+                    search.value = '';
+                    search.focus();
+                    this.showAllCommands();
+                }
+            }
+
+            showAllCommands() {
+                const list = document.getElementById('commandList');
+                list.innerHTML = '';
+                
+                Object.entries(this.commands).forEach(([name, cmd]) => {
+                    const item = document.createElement('div');
+                    item.className = 'command-item';
+                    item.innerHTML = `
+                        <div class="command-name">${name}</div>
+                        <div class="command-description">${cmd.description}</div>
+                    `;
+                    item.onclick = () => {
+                        document.getElementById('terminalInput').value = name;
+                        document.getElementById('commandPalette').classList.remove('active');
+                        document.getElementById('terminalInput').focus();
+                    };
+                    list.appendChild(item);
+                });
+            }
+
+            filterCommands(query) {
+                const list = document.getElementById('commandList');
+                const items = list.getElementsByClassName('command-item');
+                
+                Array.from(items).forEach(item => {
+                    const name = item.querySelector('.command-name').textContent;
+                    const desc = item.querySelector('.command-description').textContent;
+                    
+                    if (name.includes(query.toLowerCase()) || desc.toLowerCase().includes(query.toLowerCase())) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            // SYSTEM MONITORING
+            startSystemMonitoring() {
+                // Update metrics periodically
+                setInterval(() => {
+                    // Simulate system activity
+                    if (Math.random() > 0.7) {
+                        this.systems.emotionalCycles += Math.floor(Math.random() * 10) + 1;
+                    }
+                    if (Math.random() > 0.8) {
+                        this.systems.trustEvaluations += Math.floor(Math.random() * 5) + 1;
+                    }
+                    
+                    // Update connection count
+                    document.getElementById('connectionCount').textContent = `${this.systems.realmConnections} REALMS`;
+                    
+                    // Update hash rate
+                    const hashRate = (Math.random() * 100 + 50).toFixed(0);
+                    document.getElementById('hashRate').textContent = hashRate;
+                }, 3000);
+            }
+
+            // MATRIX EFFECT
+            initializeMatrixEffect() {
+                const canvas = document.getElementById('matrixCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const matrix = "SOULFRA0123456789ABCDEF";
+                const columns = canvas.width / 20;
+                const drops = [];
+                
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = 1;
+                }
+                
+                function draw() {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = '#0f0';
+                    ctx.font = '15px monospace';
+                    
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = matrix[Math.floor(Math.random() * matrix.length)];
+                        ctx.fillText(text, i * 20, drops[i] * 20);
+                        
+                        if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+                
+                setInterval(draw, 50);
+            }
+        }
+
+        // Initialize command center
+        const commandCenter = new SoulfraCommandCenter();
+    </script>
+</body>
+</html>

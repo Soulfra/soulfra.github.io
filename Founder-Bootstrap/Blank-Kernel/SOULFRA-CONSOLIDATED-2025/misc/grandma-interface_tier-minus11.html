@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soulfra - Your Helpful Friend</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, serif;
+            background: linear-gradient(to bottom, #e3f2fd, #ffffff);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: normal;
+        }
+        
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .message {
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: #e3f2fd;
+            margin-left: 50px;
+            text-align: right;
+        }
+        
+        .ai-message {
+            background: white;
+            margin-right: 50px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .suggestions {
+            display: flex;
+            gap: 10px;
+            margin: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .suggestion {
+            background: white;
+            border: 2px solid #1976d2;
+            color: #1976d2;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .suggestion:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .input-container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .input-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px 60px 15px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-family: Georgia, serif;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1976d2;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #1565c0;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .savings-ticker {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Hi! I'm here to help you save money and live better 💙</h1>
+    </div>
+    
+    <div class="savings-ticker" id="savings" style="display: none;">
+        Saved: $0.00 today!
+    </div>
+    
+    <div class="chat-container" id="chat">
+        <div class="message ai-message">
+            Hello! I'm your helpful friend. I can help you:
+            <br><br>
+            • Save money on groceries 🛒<br>
+            • Find the best deals 💰<br>
+            • Plan healthy meals 🥗<br>
+            • Manage your bills 📱<br>
+            • And much more!<br><br>
+            What would you like help with today?
+        </div>
+    </div>
+    
+    <div class="suggestions">
+        <div class="suggestion" onclick="askQuestion('How can I save money on groceries?')">
+            Save on groceries
+        </div>
+        <div class="suggestion" onclick="askQuestion('What healthy meals can I make this week?')">
+            Meal planning
+        </div>
+        <div class="suggestion" onclick="askQuestion('Help me find deals near me')">
+            Find deals
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <div class="input-wrapper">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Just type what you need help with..."
+                onkeypress="if(event.key === 'Enter') sendMessage()"
+            >
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+    
+    <script>
+        let totalSaved = 0;
+        
+        function askQuestion(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            const chat = document.getElementById('chat');
+            chat.innerHTML += `<div class="message user-message">${message}</div>`;
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const response = getSmartResponse(message);
+                chat.innerHTML += `<div class="message ai-message">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                
+                // Update savings if mentioned
+                if (response.includes('save') && response.includes('$')) {
+                    const saved = Math.floor(Math.random() * 50) + 10;
+                    totalSaved += saved;
+                    document.getElementById('savings').style.display = 'block';
+                    document.getElementById('savings').textContent = `Saved: $${totalSaved.toFixed(2)} today!`;
+                }
+            }, 1000);
+            
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function getSmartResponse(message) {
+            const responses = {
+                grocery: `Great question! Based on your location, here's how you can save:
+
+📍 Walmart has chicken on sale for $2.99/lb (usually $5.99)
+📍 Target has buy-one-get-one on vegetables
+📍 Your local farmer's market has fresh produce 30% cheaper
+
+I've created a shopping list that will save you $47 this week! 
+Would you like me to organize it by store or by meal?`,
+
+                meal: `I'd love to help! Based on what's on sale near you, here are 5 healthy meals:
+
+🥗 Monday: Garden salad with grilled chicken ($4.50)
+🍝 Tuesday: Veggie pasta with homemade sauce ($3.25)
+🥙 Wednesday: Turkey wrap with veggies ($4.00)
+🍲 Thursday: Hearty vegetable soup ($2.75)
+🐟 Friday: Baked fish with roasted vegetables ($5.50)
+
+Total cost: $20 for 5 dinners! I can show you the recipes or create a shopping list.`,
+
+                deals: `I found 14 great deals near you right now!
+
+🏪 CVS: 50% off vitamins (today only!)
+☕ Starbucks: Happy hour 2-5pm (half price drinks)
+🍕 Pizza Hut: Large pizza for $7.99
+⛽ Shell: 10¢ off per gallon with app
+🏬 Target: Extra 20% off clearance items
+
+Would you like directions to any of these places?`
+            };
+            
+            if (message.toLowerCase().includes('grocer')) return responses.grocery;
+            if (message.toLowerCase().includes('meal')) return responses.meal;
+            if (message.toLowerCase().includes('deal')) return responses.deals;
+            
+            return `I understand you need help with "${message}". Let me find the best way to save you money on this! 
+
+One moment while I check current prices and deals...`;
+        }
+    </script>
+</body>
+</html>

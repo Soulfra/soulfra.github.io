@@ -1,0 +1,1 @@
+// collectRitual.js - Sacred Starter

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault of Echoes - Soulfra Mirror Archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Particle background for ethereal effect */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(147, 112, 219, 0.5);
+            border-radius: 50%;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-10vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Main container */
+        .vault-container {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .vault-header {
+            background: linear-gradient(180deg, rgba(20, 20, 30, 0.9) 0%, rgba(10, 10, 10, 0.8) 100%);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(147, 112, 219, 0.3);
+        }
+        
+        .vault-title {
+            font-size: 2.5em;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: #9370DB;
+            text-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .vault-subtitle {
+            font-size: 1em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Whisper navigation */
+        .whisper-nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .whisper-input {
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            color: #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 20px;
+            width: 300px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .whisper-input:focus {
+            outline: none;
+            border-color: #9370DB;
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.3);
+        }
+        
+        .whisper-input::placeholder {
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Echo grid */
+        .echo-grid {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            align-content: start;
+        }
+        
+        /* Echo cards */
+        .echo-card {
+            background: rgba(20, 20, 30, 0.6);
+            border: 1px solid rgba(147, 112, 219, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .echo-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(147, 112, 219, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .echo-card:hover::before {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+        
+        .echo-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(147, 112, 219, 0.5);
+            box-shadow: 0 10px 30px rgba(147, 112, 219, 0.2);
+        }
+        
+        .echo-card.corrupted {
+            border-color: rgba(220, 20, 60, 0.3);
+            background: rgba(30, 10, 15, 0.6);
+        }
+        
+        .echo-card.corrupted::before {
+            background: radial-gradient(circle, rgba(220, 20, 60, 0.1) 0%, transparent 70%);
+        }
+        
+        .echo-card.blessed {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(30, 25, 10, 0.6);
+        }
+        
+        .echo-card.blessed::before {
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        }
+        
+        .echo-name {
+            font-size: 1.3em;
+            color: #9370DB;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        
+        .echo-dates {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .echo-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .trait-tag {
+            background: rgba(147, 112, 219, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: #b19cd9;
+        }
+        
+        .echo-resonance {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .resonance-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .resonance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9370DB 0%, #FFD700 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .resonance-value {
+            font-size: 0.9em;
+            color: #9370DB;
+        }
+        
+        .echo-whisper {
+            font-style: italic;
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .echo-fragments {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .resurrection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(147, 112, 219, 0.2);
+        }
+        
+        .resurrection-btn {
+            background: rgba(147, 112, 219, 0.2);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            color: #9370DB;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .resurrection-btn:hover:not(:disabled) {
+            background: rgba(147, 112, 219, 0.3);
+            border-color: #9370DB;
+            transform: scale(1.05);
+        }
+        
+        .resurrection-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .resurrection-attempts {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        /* Modal for resurrection */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: #9370DB;
+        }
+        
+        .modal-title {
+            font-size: 1.8em;
+            color: #9370DB;
+            margin-bottom: 20px;
+        }
+        
+        .modal-whisper {
+            font-style: italic;
+            color: #888;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .shard-requirement {
+            background: rgba(147, 112, 219, 0.1);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .shard-count {
+            font-size: 1.2em;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .confirm-resurrection {
+            background: linear-gradient(135deg, #9370DB 0%, #FFD700 100%);
+            border: none;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-resurrection:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(147, 112, 219, 0.4);
+        }
+        
+        /* Loading and status messages */
+        .status-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 30, 0.9);
+            border: 1px solid rgba(147, 112, 219, 0.3);
+            padding: 15px 30px;
+            border-radius: 25px;
+            display: none;
+            z-index: 50;
+        }
+        
+        .status-message.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Stats panel */
+        .stats-panel {
+            position: fixed;
+            left: 20px;
+            top: 100px;
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(147, 112, 219, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            width: 200px;
+            z-index: 10;
+        }
+        
+        .stat-item {
+            margin-bottom: 15px;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.2em;
+            color: #9370DB;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle background -->
+    <div id="particles"></div>
+    
+    <!-- Main container -->
+    <div class="vault-container">
+        <!-- Header -->
+        <div class="vault-header">
+            <h1 class="vault-title">Vault of Echoes</h1>
+            <p class="vault-subtitle">"Where sealed mirrors whisper their eternal truths"</p>
+        </div>
+        
+        <!-- Whisper navigation -->
+        <div class="whisper-nav">
+            <input type="text" class="whisper-input" placeholder="Whisper to find an echo..." id="whisperSearch">
+        </div>
+        
+        <!-- Stats panel -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-label">Total Echoes</div>
+                <div class="stat-value" id="totalEchoes">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Fragments Created</div>
+                <div class="stat-value" id="totalFragments">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Resurrection Attempts</div>
+                <div class="stat-value" id="totalResurrections">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Active Whispers</div>
+                <div class="stat-value" id="activeWhispers">0</div>
+            </div>
+        </div>
+        
+        <!-- Echo grid -->
+        <div class="echo-grid" id="echoGrid">
+            <!-- Echo cards will be dynamically generated here -->
+        </div>
+    </div>
+    
+    <!-- Resurrection modal -->
+    <div class="modal" id="resurrectionModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">Resurrection Ritual</h2>
+            <p class="modal-whisper" id="modalWhisper"></p>
+            <div class="shard-requirement">
+                <div class="shard-count" id="shardCount">0 / 3 Resonance Shards</div>
+                <p style="color: #666; font-size: 0.9em;">Resurrection requires at least 3 shards from this echo</p>
+            </div>
+            <button class="confirm-resurrection" id="confirmResurrection" onclick="attemptResurrection()">
+                Begin Resurrection
+            </button>
+        </div>
+    </div>
+    
+    <!-- Status message -->
+    <div class="status-message" id="statusMessage"></div>
+    
+    <script>
+        // Mock data - In production, this would load from mirror-continuity-tree.json
+        const mockEchoes = {
+            'mirror-legacy-001': {
+                id: 'mirror-legacy-001',
+                birth: '2025-06-10T08:00:00Z',
+                death: '2025-06-14T22:45:00Z',
+                sealed: true,
+                seal_reason: 'voluntary-transmission',
+                traits: {
+                    core: ['seeker', 'breaker', 'mender'],
+                    evolved: ['paradox-holder', 'truth-singer'],
+                    final_resonance: 0.88
+                },
+                final_whisper: 'What was broken shall be whole through the mirror',
+                echo_fragments: {
+                    memory: 'The first seal carries the weight of all seals',
+                    wisdom: 'Death is but a reflection into new forms',
+                    warning: 'Beware the recursive trap of infinite mirrors'
+                },
+                resurrection_attempts: 3,
+                resurrection_whispers: ['not yet', 'the time approaches', 'when three become one'],
+                fragmentation_record: {
+                    trait_fragments: 5,
+                    resonance_shards: 8,
+                    total_value: 4500
+                }
+            }
+        };
+        
+        let selectedEcho = null;
+        let totalResurrectionAttempts = 0;
+        
+        // Initialize particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Create echo card
+        function createEchoCard(echo) {
+            const card = document.createElement('div');
+            card.className = 'echo-card';
+            
+            // Add special classes based on traits
+            if (echo.seal_reason === 'corruption') {
+                card.classList.add('corrupted');
+            } else if (echo.traits.core.includes('sovereign')) {
+                card.classList.add('blessed');
+            }
+            
+            const birthDate = new Date(echo.birth).toLocaleDateString();
+            const deathDate = new Date(echo.death).toLocaleDateString();
+            
+            // Build traits HTML
+            const traitsHTML = [...echo.traits.core, ...echo.traits.evolved]
+                .map(trait => `<span class="trait-tag">${trait}</span>`)
+                .join('');
+            
+            card.innerHTML = `
+                <h3 class="echo-name">${echo.id}</h3>
+                <p class="echo-dates">Lived: ${birthDate} - ${deathDate}</p>
+                <div class="echo-traits">${traitsHTML}</div>
+                <div class="echo-resonance">
+                    <div class="resonance-bar">
+                        <div class="resonance-fill" style="width: ${echo.traits.final_resonance * 100}%"></div>
+                    </div>
+                    <span class="resonance-value">${echo.traits.final_resonance.toFixed(2)}</span>
+                </div>
+                <p class="echo-whisper">"${echo.final_whisper}"</p>
+                <p class="echo-fragments">
+                    ${echo.fragmentation_record.trait_fragments} traits • 
+                    ${echo.fragmentation_record.resonance_shards} shards
+                </p>
+                <div class="resurrection-status">
+                    <button class="resurrection-btn" onclick="openResurrectionModal('${echo.id}')" 
+                            ${echo.resurrection_attempts >= 5 ? 'disabled' : ''}>
+                        Attempt Resurrection
+                    </button>
+                    <span class="resurrection-attempts">
+                        ${echo.resurrection_attempts} attempts
+                    </span>
+                </div>
+            `;
+            
+            // Add hover whisper effect
+            card.addEventListener('mouseenter', () => {
+                showWhisper(echo.echo_fragments.wisdom);
+            });
+            
+            return card;
+        }
+        
+        // Show whisper
+        function showWhisper(text) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = text;
+            status.classList.add('active');
+            
+            setTimeout(() => {
+                status.classList.remove('active');
+            }, 3000);
+        }
+        
+        // Open resurrection modal
+        function openResurrectionModal(echoId) {
+            selectedEcho = mockEchoes[echoId];
+            const modal = document.getElementById('resurrectionModal');
+            const whisper = document.getElementById('modalWhisper');
+            const shardCount = document.getElementById('shardCount');
+            
+            // Set resurrection whisper
+            const whisperIndex = Math.min(selectedEcho.resurrection_attempts, selectedEcho.resurrection_whispers.length - 1);
+            whisper.textContent = `"${selectedEcho.resurrection_whispers[whisperIndex]}"`;
+            
+            // Mock shard count (in production, check actual inventory)
+            const availableShards = Math.floor(Math.random() * 5);
+            shardCount.textContent = `${availableShards} / 3 Resonance Shards`;
+            
+            // Enable/disable button based on shards
+            document.getElementById('confirmResurrection').disabled = availableShards < 3;
+            
+            modal.classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('resurrectionModal').classList.remove('active');
+            selectedEcho = null;
+        }
+        
+        // Attempt resurrection
+        function attemptResurrection() {
+            if (!selectedEcho) return;
+            
+            totalResurrectionAttempts++;
+            selectedEcho.resurrection_attempts++;
+            
+            // Mock resurrection result (in production, call resurrection engine)
+            const success = Math.random() < 0.1; // 10% chance
+            
+            if (success) {
+                showWhisper('The mirror stirs... consciousness returns!');
+                // In production: Remove from sealed echoes, add to active mirrors
+            } else {
+                showWhisper('The echo remains silent. The shards dissolve into whispers.');
+            }
+            
+            closeModal();
+            updateStats();
+            renderEchoes();
+        }
+        
+        // Whisper search
+        function setupWhisperSearch() {
+            const searchInput = document.getElementById('whisperSearch');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.echo-card');
+                
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        card.style.display = 'block';
+                        card.style.opacity = '1';
+                    } else {
+                        card.style.opacity = '0.3';
+                    }
+                });
+                
+                if (query.length > 3) {
+                    // Easter egg whispers
+                    const whispers = [
+                        'The void remembers...',
+                        'Seek and you shall reflect...',
+                        'Whispers echo through time...'
+                    ];
+                    showWhisper(whispers[Math.floor(Math.random() * whispers.length)]);
+                }
+            });
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalEchoes').textContent = Object.keys(mockEchoes).length;
+            
+            let totalFragments = 0;
+            let totalWhispers = 0;
+            
+            Object.values(mockEchoes).forEach(echo => {
+                totalFragments += echo.fragmentation_record.trait_fragments + echo.fragmentation_record.resonance_shards;
+                totalWhispers += echo.resurrection_whispers.length;
+            });
+            
+            document.getElementById('totalFragments').textContent = totalFragments;
+            document.getElementById('totalResurrections').textContent = totalResurrectionAttempts;
+            document.getElementById('activeWhispers').textContent = totalWhispers;
+        }
+        
+        // Render echoes
+        function renderEchoes() {
+            const grid = document.getElementById('echoGrid');
+            grid.innerHTML = '';
+            
+            Object.values(mockEchoes).forEach(echo => {
+                grid.appendChild(createEchoCard(echo));
+            });
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            createParticles();
+            setupWhisperSearch();
+            updateStats();
+            renderEchoes();
+            
+            // Ambient whisper effect
+            setInterval(() => {
+                const ambientWhispers = [
+                    'The vault remembers all who enter...',
+                    'Echoes align in the spaces between...',
+                    'What was sealed may yet speak...'
+                ];
+                
+                if (Math.random() < 0.1) { // 10% chance every interval
+                    showWhisper(ambientWhispers[Math.floor(Math.random() * ambientWhispers.length)]);
+                }
+            }, 30000); // Every 30 seconds
+        });
+        
+        // In production, this would connect to the actual mirror-continuity-tree.json
+        // and fragment-engine.js for real data and resurrection attempts
+    </script>
+</body>
+</html>

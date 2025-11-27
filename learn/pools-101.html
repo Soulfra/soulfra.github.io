@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pools 101: Connection Pools Explained | Learn Loop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
+      border-bottom: 2px solid #ff0000;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #ff0000;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #999;
+      font-size: 1.1em;
+    }
+
+    .breadcrumb {
+      background: #1a1a1a;
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+    }
+
+    .breadcrumb a {
+      color: #ff6666;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    .breadcrumb a:hover {
+      color: #ff0000;
+    }
+
+    .breadcrumb span {
+      color: #666;
+      margin: 0 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    .lesson-nav a {
+      color: #ff6666;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .lesson-nav a:hover {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff0000;
+    }
+
+    .lesson-nav .disabled {
+      color: #555;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      color: #ff6666;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 2px solid rgba(255, 0, 0, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .section h3 {
+      color: #ff9999;
+      margin: 25px 0 15px 0;
+      font-size: 1.4em;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block code {
+      color: #ff9999;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .code-block .comment {
+      color: #666;
+    }
+
+    .code-block .keyword {
+      color: #ff6666;
+    }
+
+    .code-block .string {
+      color: #99ff99;
+    }
+
+    .code-block .number {
+      color: #9999ff;
+    }
+
+    .analogy {
+      background: rgba(0, 100, 200, 0.1);
+      border-left: 4px solid #0099ff;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .analogy h4 {
+      color: #0099ff;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .analogy p {
+      color: #ccc;
+    }
+
+    .warning {
+      background: rgba(255, 200, 0, 0.1);
+      border-left: 4px solid #ffcc00;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .warning h4 {
+      color: #ffcc00;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .tip {
+      background: rgba(0, 255, 100, 0.1);
+      border-left: 4px solid #00ff66;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .tip h4 {
+      color: #00ff66;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .comparison-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border: 1px solid #333;
+    }
+
+    .comparison-table th {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff6666;
+      font-weight: 600;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .comparison-table .bad {
+      color: #ff6666;
+    }
+
+    .comparison-table .good {
+      color: #66ff66;
+    }
+
+    .interactive-demo {
+      background: #1a1a1a;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .interactive-demo h3 {
+      color: #ff6666;
+      margin-bottom: 20px;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .demo-controls button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .demo-controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
+    }
+
+    .demo-output {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      color: #00ff00;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .demo-output .log-line {
+      margin-bottom: 5px;
+    }
+
+    .demo-output .log-error {
+      color: #ff6666;
+    }
+
+    .demo-output .log-success {
+      color: #66ff66;
+    }
+
+    .demo-output .log-info {
+      color: #6666ff;
+    }
+
+    .quiz {
+      background: rgba(100, 0, 200, 0.1);
+      border: 2px solid #6600cc;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .quiz h3 {
+      color: #9966ff;
+      margin-bottom: 20px;
+    }
+
+    .quiz-question {
+      margin-bottom: 30px;
+    }
+
+    .quiz-question p {
+      color: #ccc;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .quiz-options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .quiz-options li {
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-options li:hover {
+      background: rgba(100, 0, 200, 0.2);
+      border-color: #6600cc;
+    }
+
+    .quiz-options li.correct {
+      background: rgba(0, 255, 100, 0.2);
+      border-color: #00ff66;
+    }
+
+    .quiz-options li.incorrect {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: #ff0000;
+    }
+
+    .footer {
+      background: #1a1a1a;
+      border-top: 2px solid #ff0000;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .footer a {
+      color: #ff6666;
+      text-decoration: none;
+      margin: 0 15px;
+    }
+
+    .footer a:hover {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏊 Pools 101: Connection Pools Explained</h1>
+    <p>Learn why reusing connections is like having a swimming pool instead of filling a bathtub every time</p>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/learn">Learn</a>
+    <span>›</span>
+    <a href="/learn/pools">Pools Series</a>
+    <span>›</span>
+    <span style="color: #ff6666;">101: Connection Pools</span>
+  </div>
+
+  <div class="container">
+    <div class="lesson-nav">
+      <a href="#" class="disabled">← Previous: Introduction</a>
+      <a href="/learn/pools-102.html">Next: Thread Pools →</a>
+    </div>
+
+    <!-- Section 1: The Problem -->
+    <div class="section">
+      <h2>🤔 The Problem: Why Do We Need Pools?</h2>
+
+      <p>Imagine you're building a web app that talks to a database. Every time a user makes a request, you need to:</p>
+
+      <ol style="color: #ccc; margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>Open a connection</strong> to the database (expensive!)</li>
+        <li><strong>Send your query</strong> (e.g., "SELECT * FROM users")</li>
+        <li><strong>Get results</strong> back</li>
+        <li><strong>Close the connection</strong> (expensive!)</li>
+      </ol>
+
+      <div class="analogy">
+        <h4>💡 Real-World Analogy: The Bathtub Problem</h4>
+        <p>Opening/closing database connections is like filling a bathtub every time you want to take a bath:</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>Fill tub with water (2 minutes) ← Opening connection</li>
+          <li>Take bath (5 minutes) ← Running query</li>
+          <li>Drain tub (2 minutes) ← Closing connection</li>
+        </ul>
+        <p style="margin-top: 10px;"><strong>Total time: 9 minutes</strong> (4 minutes wasted on filling/draining)</p>
+      </div>
+
+      <h3>What If You Need 100 Baths a Day?</h3>
+      <p>Without connection pooling:</p>
+      <ul style="color: #ccc; margin-left: 20px;">
+        <li>100 requests × 4 minutes overhead = <strong class="bad">400 minutes wasted</strong></li>
+        <li>Your database server gets hammered with open/close requests</li>
+        <li>Users wait longer for responses</li>
+        <li>Your app crashes under load</li>
+      </ul>
+    </div>
+
+    <!-- Section 2: The Solution -->
+    <div class="section">
+      <h2>💡 The Solution: Connection Pools</h2>
+
+      <p>A <strong>connection pool</strong> is like having a <strong>swimming pool</strong> instead of a bathtub:</p>
+
+      <div class="analogy">
+        <h4>🏊 Swimming Pool Analogy</h4>
+        <ul style="margin-left: 20px; margin-top: 10px; color: #ccc;">
+          <li><strong>Pool is always filled</strong> ← Connections stay open</li>
+          <li><strong>Jump in when you need it</strong> ← Borrow a connection</li>
+          <li><strong>Get out when done</strong> ← Return connection to pool</li>
+          <li><strong>Next person uses same pool</strong> ← Connection gets reused</li>
+        </ul>
+        <p style="margin-top: 10px;"><strong>No filling/draining needed!</strong></p>
+      </div>
+
+      <h3>How Connection Pools Work</h3>
+
+      <div class="code-block">
+<code><span class="comment">// WITHOUT connection pool (BAD)</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">getUserBad</span>(userId) {
+  <span class="keyword">const</span> connection = <span class="keyword">await</span> mysql.createConnection({
+    host: <span class="string">'localhost'</span>,
+    user: <span class="string">'root'</span>,
+    database: <span class="string">'mydb'</span>
+  }); <span class="comment">// ← SLOW! Opens new connection every time</span>
+
+  <span class="keyword">const</span> [rows] = <span class="keyword">await</span> connection.execute(
+    <span class="string">'SELECT * FROM users WHERE id = ?'</span>,
+    [userId]
+  );
+
+  <span class="keyword">await</span> connection.end(); <span class="comment">// ← SLOW! Closes connection</span>
+  <span class="keyword">return</span> rows[<span class="number">0</span>];
+}
+
+<span class="comment">// WITH connection pool (GOOD)</span>
+<span class="keyword">const</span> pool = mysql.createPool({
+  host: <span class="string">'localhost'</span>,
+  user: <span class="string">'root'</span>,
+  database: <span class="string">'mydb'</span>,
+  connectionLimit: <span class="number">10</span> <span class="comment">// ← Keep 10 connections open</span>
+});
+
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">getUserGood</span>(userId) {
+  <span class="keyword">const</span> [rows] = <span class="keyword">await</span> pool.execute(
+    <span class="string">'SELECT * FROM users WHERE id = ?'</span>,
+    [userId]
+  ); <span class="comment">// ← FAST! Borrows connection from pool</span>
+
+  <span class="keyword">return</span> rows[<span class="number">0</span>];
+  <span class="comment">// Connection automatically returned to pool</span>
+}
+</code>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="bad">Without Pool</th>
+            <th class="good">With Pool</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Overhead per request</td>
+            <td class="bad">50-200ms (open/close)</td>
+            <td class="good">0-5ms (borrow/return)</td>
+          </tr>
+          <tr>
+            <td>100 requests</td>
+            <td class="bad">5-20 seconds wasted</td>
+            <td class="good">0.5 seconds total</td>
+          </tr>
+          <tr>
+            <td>Database load</td>
+            <td class="bad">200 open/close operations</td>
+            <td class="good">10 connections (stays constant)</td>
+          </tr>
+          <tr>
+            <td>Memory usage</td>
+            <td class="bad">Spikes on every request</td>
+            <td class="good">Constant (predictable)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 3: Real-World Examples -->
+    <div class="section">
+      <h2>🌍 Real-World Examples</h2>
+
+      <h3>Example 1: HTTP Connection Pool (urllib3)</h3>
+      <p>Python's <code>urllib3</code> library uses connection pools for HTTP requests:</p>
+
+      <div class="code-block">
+<code><span class="keyword">from</span> urllib3 <span class="keyword">import</span> PoolManager
+
+<span class="comment"># Create pool with 50 connection pools, 10 connections each</span>
+http = PoolManager(num_pools=<span class="number">50</span>, maxsize=<span class="number">10</span>)
+
+<span class="comment"># Make 100 requests to same domain</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):
+    response = http.request(<span class="string">'GET'</span>, <span class="string">'http://example.com/api/data'</span>)
+    <span class="comment"># ↑ Reuses connections from pool!</span>
+    <span class="comment"># No new TCP handshake, no SSL negotiation</span>
+    print(response.status)
+
+<span class="comment"># Connections stay alive for next batch of requests</span>
+</code>
+      </div>
+
+      <div class="tip">
+        <h4>💡 Pro Tip: Connection Reuse</h4>
+        <p>When you make 100 requests to the same server, connection pooling means:</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>First request: Open new connection (200ms)</li>
+          <li>Requests 2-100: Reuse existing connection (5ms each)</li>
+          <li><strong>Total time saved: ~19 seconds</strong></li>
+        </ul>
+      </div>
+
+      <h3>Example 2: Database Connection Pool (PostgreSQL)</h3>
+
+      <div class="code-block">
+<code><span class="keyword">const</span> { Pool } = require(<span class="string">'pg'</span>);
+
+<span class="comment">// Create pool (10 connections kept alive)</span>
+<span class="keyword">const</span> pool = <span class="keyword">new</span> Pool({
+  host: <span class="string">'localhost'</span>,
+  port: <span class="number">5432</span>,
+  database: <span class="string">'mydb'</span>,
+  user: <span class="string">'postgres'</span>,
+  password: <span class="string">'secret'</span>,
+  max: <span class="number">10</span>,      <span class="comment">// Max 10 connections in pool</span>
+  min: <span class="number">2</span>,       <span class="comment">// Keep at least 2 alive</span>
+  idleTimeoutMillis: <span class="number">30000</span> <span class="comment">// Close idle connections after 30s</span>
+});
+
+<span class="comment">// Query using pool</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="function">getUsers</span>() {
+  <span class="keyword">const</span> client = <span class="keyword">await</span> pool.connect(); <span class="comment">// Borrow connection</span>
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> result = <span class="keyword">await</span> client.query(<span class="string">'SELECT * FROM users'</span>);
+    <span class="keyword">return</span> result.rows;
+  } <span class="keyword">finally</span> {
+    client.release(); <span class="comment">// Return connection to pool</span>
+  }
+}
+</code>
+      </div>
+
+      <h3>Example 3: Redis Connection Pool</h3>
+
+      <div class="code-block">
+<code><span class="keyword">const</span> redis = require(<span class="string">'redis'</span>);
+
+<span class="comment">// Redis client acts as connection pool</span>
+<span class="keyword">const</span> client = redis.createClient({
+  socket: {
+    host: <span class="string">'localhost'</span>,
+    port: <span class="number">6379</span>
+  },
+  <span class="comment">// Connection pooling built-in!</span>
+});
+
+<span class="keyword">await</span> client.connect();
+
+<span class="comment">// All commands reuse same connection</span>
+<span class="keyword">await</span> client.set(<span class="string">'key1'</span>, <span class="string">'value1'</span>);
+<span class="keyword">await</span> client.set(<span class="string">'key2'</span>, <span class="string">'value2'</span>);
+<span class="keyword">const</span> value = <span class="keyword">await</span> client.get(<span class="string">'key1'</span>);
+</code>
+      </div>
+    </div>
+
+    <!-- Section 4: Pool Configuration -->
+    <div class="section">
+      <h2>⚙️ Pool Configuration: Min, Max, Timeouts</h2>
+
+      <h3>Key Pool Settings</h3>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Setting</th>
+            <th>What It Does</th>
+            <th>Recommended Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>max</code></td>
+            <td>Maximum connections in pool</td>
+            <td>10-50 (depends on traffic)</td>
+          </tr>
+          <tr>
+            <td><code>min</code></td>
+            <td>Minimum connections to keep alive</td>
+            <td>2-5 (always ready)</td>
+          </tr>
+          <tr>
+            <td><code>idleTimeoutMillis</code></td>
+            <td>Close idle connections after X ms</td>
+            <td>30000 (30 seconds)</td>
+          </tr>
+          <tr>
+            <td><code>connectionTimeoutMillis</code></td>
+            <td>Wait X ms for available connection</td>
+            <td>5000 (5 seconds)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="warning">
+        <h4>⚠️ Common Pitfall: Pool Exhaustion</h4>
+        <p>If your pool has <code>max: 10</code> and you have 15 concurrent requests, 5 requests will wait or timeout!</p>
+        <p><strong>Solution:</strong> Monitor pool usage and increase <code>max</code> if needed. But don't set it too high - databases have connection limits too!</p>
+      </div>
+
+      <h3>How to Choose Pool Size</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Formula for pool size</span>
+<span class="comment">// connections = ((core_count × 2) + effective_spindle_count)</span>
+
+<span class="comment">// Example: 4 CPU cores, 1 disk (SSD = 1 spindle)</span>
+<span class="keyword">const</span> poolSize = (<span class="number">4</span> × <span class="number">2</span>) + <span class="number">1</span> = <span class="number">9</span>;
+
+<span class="comment">// Start with this, then adjust based on monitoring:</span>
+<span class="comment">// - If pool always at max → increase max</span>
+<span class="comment">// - If connections mostly idle → decrease min</span>
+<span class="comment">// - If timeouts common → increase connectionTimeout</span>
+</code>
+      </div>
+    </div>
+
+    <!-- Section 5: Interactive Demo -->
+    <div class="interactive-demo">
+      <h3>🎮 Interactive Demo: With vs Without Pool</h3>
+      <p>Simulate 50 database requests and see the difference!</p>
+
+      <div class="demo-controls">
+        <button onclick="runWithoutPool()">Run Without Pool (Slow)</button>
+        <button onclick="runWithPool()">Run With Pool (Fast)</button>
+        <button onclick="clearDemo()">Clear Output</button>
+      </div>
+
+      <div class="demo-output" id="demoOutput">
+        <div class="log-line log-info">Click a button to start simulation...</div>
+      </div>
+    </div>
+
+    <!-- Section 6: Quiz -->
+    <div class="quiz">
+      <h3>📝 Quiz: Test Your Understanding</h3>
+
+      <div class="quiz-question">
+        <p><strong>Question 1:</strong> Why are connection pools faster than opening/closing connections?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) They use faster network protocols</li>
+          <li onclick="checkAnswer(this, true)">B) They reuse existing connections instead of creating new ones</li>
+          <li onclick="checkAnswer(this, false)">C) They compress data before sending</li>
+          <li onclick="checkAnswer(this, false)">D) They cache query results</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 2:</strong> What happens if your pool has <code>max: 10</code> and 15 requests arrive at once?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) All 15 requests run immediately</li>
+          <li onclick="checkAnswer(this, true)">B) 10 requests run, 5 wait or timeout</li>
+          <li onclick="checkAnswer(this, false)">C) The pool automatically grows to 15</li>
+          <li onclick="checkAnswer(this, false)">D) The oldest connections are killed</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 3:</strong> Which setting keeps a minimum number of connections always ready?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) <code>max</code></li>
+          <li onclick="checkAnswer(this, true)">B) <code>min</code></li>
+          <li onclick="checkAnswer(this, false)">C) <code>idleTimeoutMillis</code></li>
+          <li onclick="checkAnswer(this, false)">D) <code>connectionTimeoutMillis</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="lesson-nav">
+      <a href="#" class="disabled">← Previous: Introduction</a>
+      <a href="/learn/pools-102.html">Next: Thread Pools →</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Learn Loop | <a href="/learn">All Courses</a> | <a href="/learn/pools">Pools Series</a></p>
+  </div>
+
+  <script>
+    // Interactive Demo
+    function log(message, type = 'info') {
+      const output = document.getElementById('demoOutput');
+      const line = document.createElement('div');
+      line.className = `log-line log-${type}`;
+      line.textContent = message;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function clearDemo() {
+      const output = document.getElementById('demoOutput');
+      output.innerHTML = '<div class="log-line log-info">Output cleared. Ready for next simulation...</div>';
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function runWithoutPool() {
+      clearDemo();
+      log('🔴 Running 50 requests WITHOUT connection pool...', 'error');
+      log('', 'info');
+
+      const startTime = Date.now();
+
+      for (let i = 1; i <= 50; i++) {
+        log(`[${i}/50] Opening connection... (200ms)`, 'info');
+        await sleep(200); // Simulate connection open
+
+        log(`[${i}/50] Running query... (50ms)`, 'success');
+        await sleep(50); // Simulate query
+
+        log(`[${i}/50] Closing connection... (100ms)`, 'info');
+        await sleep(100); // Simulate connection close
+
+        if (i % 10 === 0) {
+          log('', 'info');
+        }
+      }
+
+      const endTime = Date.now();
+      const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+      log('', 'info');
+      log(`⏱️  Total time: ${duration}s`, 'error');
+      log(`💰 Overhead: ${(200 + 100) * 50}ms = ${(200 + 100) * 50 / 1000}s wasted on open/close`, 'error');
+    }
+
+    async function runWithPool() {
+      clearDemo();
+      log('🟢 Running 50 requests WITH connection pool...', 'success');
+      log('', 'info');
+
+      const startTime = Date.now();
+
+      log('📦 Creating pool with 10 connections... (500ms one-time cost)', 'info');
+      await sleep(500);
+      log('', 'info');
+
+      for (let i = 1; i <= 50; i++) {
+        log(`[${i}/50] Borrowing connection from pool... (5ms)`, 'success');
+        await sleep(5); // Simulate borrow
+
+        log(`[${i}/50] Running query... (50ms)`, 'success');
+        await sleep(50); // Simulate query
+
+        log(`[${i}/50] Returning connection to pool... (0ms)`, 'success');
+        // No sleep - returning is instant
+
+        if (i % 10 === 0) {
+          log('', 'info');
+        }
+      }
+
+      const endTime = Date.now();
+      const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+      log('', 'info');
+      log(`⏱️  Total time: ${duration}s`, 'success');
+      log(`💰 Overhead: 500ms pool creation + ${5 * 50}ms borrow = ${(500 + 5 * 50) / 1000}s`, 'success');
+      log(`🚀 Speed improvement: ~${(15000 / (endTime - startTime)).toFixed(1)}x faster!`, 'success');
+    }
+
+    // Quiz tracking
+    let correctAnswers = 0;
+    const totalQuestions = 3;
+
+    function checkAnswer(element, isCorrect) {
+      const allOptions = element.parentElement.querySelectorAll('li');
+      allOptions.forEach(option => {
+        option.style.pointerEvents = 'none';
+      });
+
+      if (isCorrect) {
+        element.classList.add('correct');
+        correctAnswers++;
+
+        // Check if quiz is complete
+        if (correctAnswers === totalQuestions) {
+          setTimeout(() => {
+            completeLesson();
+          }, 500);
+        }
+      } else {
+        element.classList.add('incorrect');
+        allOptions.forEach(option => {
+          if (option !== element && option.onclick.toString().includes('true')) {
+            option.classList.add('correct');
+          }
+        });
+      }
+    }
+
+    function completeLesson() {
+      // Load academy progress
+      const progress = JSON.parse(localStorage.getItem('academy_progress') || '{}');
+
+      // Initialize if needed
+      if (!progress.completed) progress.completed = [];
+      if (!progress.xp) progress.xp = 0;
+
+      // Mark lesson 1 as complete (if not already)
+      if (!progress.completed.includes(1)) {
+        progress.completed.push(1);
+        progress.xp += 100; // Award 100 XP for lesson 1
+        localStorage.setItem('academy_progress', JSON.stringify(progress));
+
+        // Show completion message
+        if (confirm('🎉 Lesson Complete!\n\n+100 XP earned!\n\nReturn to Academy to see your progress?')) {
+          window.location.href = '../public/academy/index.html';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

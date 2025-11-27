@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billion Dollar Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+    
+    /* Login Screen */
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+    }
+    
+    .login-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    
+    .login-container h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .login-container p {
+      color: #888;
+      margin-bottom: 30px;
+    }
+    
+    .qr-input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    
+    .qr-input:focus {
+      outline: none;
+      border-color: #00ff88;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+    }
+    
+    .valid-codes {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 255, 136, 0.1);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    
+    /* Game Screen */
+    .game-screen {
+      display: none;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 250px 1fr 300px;
+      grid-template-rows: 60px 1fr;
+      grid-template-areas:
+        "header header header"
+        "sidebar main stats";
+    }
+    
+    /* Header */
+    .header {
+      grid-area: header;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .net-worth {
+      font-size: 28px;
+      font-weight: bold;
+      color: #00ff88;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background: rgba(255, 255, 255, 0.02);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #00aaff;
+    }
+    
+    .action-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+      background: rgba(0, 255, 136, 0.2);
+      border-color: #00ff88;
+    }
+    
+    /* Main Content */
+    .main-content {
+      grid-area: main;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #00ff88;
+    }
+    
+    /* Companies */
+    .company-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    
+    .company-card:hover {
+      transform: translateX(5px);
+      border-color: #00ff88;
+    }
+    
+    .company-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .company-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #888;
+    }
+    
+    .stat-value {
+      color: white;
+      font-weight: bold;
+    }
+    
+    /* Market */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    
+    .resource-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+    
+    .resource-name {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    
+    .resource-price {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .trend-up {
+      color: #00ff88;
+    }
+    
+    .trend-down {
+      color: #ff4444;
+    }
+    
+    .trend-stable {
+      color: #ffaa00;
+    }
+    
+    /* Stats Panel */
+    .stats-panel {
+      grid-area: stats;
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .leaderboard {
+      margin-top: 20px;
+    }
+    
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .leaderboard-item.self {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+    }
+    
+    .rank {
+      font-size: 20px;
+      font-weight: bold;
+      width: 30px;
+    }
+    
+    .player-info {
+      flex: 1;
+      margin-left: 10px;
+    }
+    
+    .player-name {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    .player-type {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .player-worth {
+      font-size: 16px;
+      font-weight: bold;
+      color: #00ff88;
+    }
+    
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1a1a2e;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+    }
+    
+    .modal h3 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #00ff88;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #888;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .modal-btn.primary {
+      background: linear-gradient(45deg, #00ff88, #00aaff);
+      color: #000;
+    }
+    
+    .modal-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    /* Notifications */
+    .notification {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: rgba(0, 255, 136, 0.9);
+      color: #000;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      animation: slideIn 0.3s ease-out;
+      z-index: 2000;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #00ff88;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .game-screen {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px 1fr auto;
+        grid-template-areas:
+          "header"
+          "main"
+          "stats";
+      }
+      
+      .sidebar {
+        display: none;
+      }
+      
+      .stats-panel {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-container">
+      <h1>Billion Dollar Game</h1>
+      <p>Build your empire. Reach $1 billion.</p>
+      
+      <input type="text" 
+             class="qr-input" 
+             id="qrInput" 
+             placeholder="Enter QR code"
+             value="qr-founder-0000">
+      
+      <button class="login-btn" onclick="login()">Enter Game</button>
+      
+      <div class="valid-codes">
+        <strong>Valid QR Codes:</strong><br>
+        qr-founder-0000<br>
+        qr-riven-001<br>
+        qr-user-0821
+      </div>
+    </div>
+  </div>
+  
+  <!-- Game Screen -->
+  <div class="game-screen" id="gameScreen">
+    <!-- Header -->
+    <div class="header">
+      <h1>Billion Dollar Game</h1>
+      <div>
+        <span>Net Worth: </span>
+        <span class="net-worth" id="netWorth">$0</span>
+      </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Actions</h2>
+      <button class="action-btn" onclick="showCreateCompanyModal()">
+        Create Company
+      </button>
+      <button class="action-btn" onclick="showBuyResourcesModal()">
+        Buy Resources
+      </button>
+      <button class="action-btn" onclick="showHireEmployeesModal()">
+        Hire Employees
+      </button>
+      <button class="action-btn" onclick="refreshGameState()">
+        Refresh State
+      </button>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Companies Section -->
+      <div class="section">
+        <h3>My Companies</h3>
+        <div id="companiesList"></div>
+      </div>
+      
+      <!-- Market Section -->
+      <div class="section">
+        <h3>Market Prices</h3>
+        <div class="resource-grid" id="marketPrices"></div>
+      </div>
+    </div>
+    
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <h2>Game Stats</h2>
+      <div class="stat">
+        <span>Players:</span>
+        <span class="stat-value" id="totalPlayers">0</span>
+      </div>
+      <div class="stat">
+        <span>Companies:</span>
+        <span class="stat-value" id="totalCompanies">0</span>
+      </div>
+      <div class="stat">
+        <span>Game Time:</span>
+        <span class="stat-value" id="gameTime">0h</span>
+      </div>
+      
+      <div class="leaderboard">
+        <h3>Leaderboard</h3>
+        <div id="leaderboardList"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Create Company Modal -->
+  <div class="modal" id="createCompanyModal">
+    <div class="modal-content">
+      <h3>Create New Company</h3>
+      
+      <div class="form-group">
+        <label>Company Name</label>
+        <input type="text" id="companyName" placeholder="Enter company name">
+      </div>
+      
+      <div class="form-group">
+        <label>Industry</label>
+        <select id="companyIndustry">
+          <option value="Technology">Technology</option>
+          <option value="Finance">Finance</option>
+          <option value="Manufacturing">Manufacturing</option>
+          <option value="Retail">Retail</option>
+          <option value="Energy">Energy</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Real Estate">Real Estate</option>
+          <option value="Media">Media</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Initial Capital ($)</label>
+        <input type="number" id="initialCapital" value="30000" min="10000">
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-btn primary" onclick="createCompany()">Create</button>
+        <button class="modal-btn secondary" onclick="closeModal('createCompanyModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Buy Resources Modal -->
+  <div class="modal" id="buyResourcesModal">
+    <div class="modal-content">
+      <h3>Buy Resources</h3>
+      
+      <div class="form-group">
+        <label>Resource Type</label>
+        <select id="resourceType">
+          <option value="Materials">Materials</option>
+          <option value="Technology">Technology</option>
+          <option value="Energy">Energy</option>
+          <option value="Data">Data</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" id="resourceAmount" value="100" min="1">
+      </div>
+      
+      <div class="form-group">
+        <label>For Company (Optional)</label>
+        <select id="forCompany">
+          <option value="">Personal Resources</option>
+        </select>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-btn primary" onclick="buyResources()">Buy</button>
+        <button class="modal-btn secondary" onclick="closeModal('buyResourcesModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hire Employees Modal -->
+  <div class="modal" id="hireEmployeesModal">
+    <div class="modal-content">
+      <h3>Hire Employees</h3>
+      
+      <div class="form-group">
+        <label>Select Company</label>
+        <select id="hireForCompany"></select>
+      </div>
+      
+      <div class="form-group">
+        <label>Number of Employees</label>
+        <input type="number" id="employeeCount" value="5" min="1">
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-btn primary" onclick="hireEmployees()">Hire</button>
+        <button class="modal-btn secondary" onclick="closeModal('hireEmployeesModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Game state
+    let authToken = null;
+    let playerId = null;
+    let gameState = null;
+    let ws = null;
+    
+    // API base URL
+    const API_BASE = '/api/v1';
+    
+    // Login function
+    async function login() {
+      const qrCode = document.getElementById('qrInput').value;
+      
+      if (!qrCode) {
+        showNotification('Please enter a QR code', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/auth/qr`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ qrCode })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          authToken = result.data.token;
+          playerId = result.data.playerId;
+          
+          // Switch to game screen
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('gameScreen').style.display = 'grid';
+          
+          // Connect WebSocket
+          connectWebSocket();
+          
+          // Load initial state
+          await refreshGameState();
+          
+          showNotification('Welcome to the Billion Dollar Game!');
+        } else {
+          showNotification(result.error || 'Login failed', 'error');
+        }
+      } catch (error) {
+        showNotification('Connection error', 'error');
+        console.error(error);
+      }
+    }
+    
+    // Connect WebSocket
+    function connectWebSocket() {
+      const wsUrl = `ws://${window.location.host}`;
+      ws = new WebSocket(wsUrl);
+      
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        // Authenticate
+        ws.send(JSON.stringify({
+          type: 'auth',
+          data: { token: authToken }
+        }));
+      };
+      
+      ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        handleWebSocketMessage(message);
+      };
+      
+      ws.onclose = () => {
+        console.log('WebSocket disconnected');
+        setTimeout(connectWebSocket, 5000); // Reconnect
+      };
+      
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    }
+    
+    // Handle WebSocket messages
+    function handleWebSocketMessage(message) {
+      switch (message.type) {
+        case 'auth_success':
+          console.log('WebSocket authenticated');
+          break;
+          
+        case 'game_state':
+          updateGameState(message.data);
+          break;
+          
+        case 'game_tick':
+          updateGameTime(message.data.gameTime);
+          break;
+          
+        case 'market_event':
+          showNotification(`Market Event: ${message.data.description}`);
+          refreshMarketPrices();
+          break;
+          
+        case 'game_won':
+          if (message.data.winner.id === playerId) {
+            showNotification('Congratulations! You reached $1 billion!', 'success');
+          } else {
+            showNotification(`${message.data.winner.id} reached $1 billion!`);
+          }
+          break;
+      }
+    }
+    
+    // Refresh game state
+    async function refreshGameState() {
+      try {
+        const response = await fetch(`${API_BASE}/game/state`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          updateGameState(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to refresh state:', error);
+      }
+    }
+    
+    // Update game state UI
+    function updateGameState(state) {
+      if (!state) return;
+      
+      gameState = state;
+      
+      // Update net worth
+      const netWorth = state.player.netWorth || 0;
+      document.getElementById('netWorth').textContent = formatMoney(netWorth);
+      
+      // Update companies
+      updateCompaniesDisplay(state.companies);
+      
+      // Update market
+      updateMarketDisplay(state.market);
+      
+      // Update leaderboard
+      updateLeaderboard(state.leaderboard);
+      
+      // Update dropdowns
+      updateCompanyDropdowns(state.companies);
+    }
+    
+    // Update companies display
+    function updateCompaniesDisplay(companies) {
+      const container = document.getElementById('companiesList');
+      
+      if (companies.length === 0) {
+        container.innerHTML = '<p style="color: #888;">No companies yet. Create your first company!</p>';
+        return;
+      }
+      
+      container.innerHTML = companies.map(company => `
+        <div class="company-card">
+          <div class="company-name">${company.name}</div>
+          <div style="color: #888; margin-bottom: 10px;">${company.industry}</div>
+          <div class="company-stats">
+            <div class="stat">
+              <span>Valuation:</span>
+              <span class="stat-value">${formatMoney(company.valuation)}</span>
+            </div>
+            <div class="stat">
+              <span>Employees:</span>
+              <span class="stat-value">${company.employees}</span>
+            </div>
+            <div class="stat">
+              <span>Capital:</span>
+              <span class="stat-value">${formatMoney(company.capital)}</span>
+            </div>
+            <div class="stat">
+              <span>Products:</span>
+              <span class="stat-value">${company.products.length}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Update market display
+    function updateMarketDisplay(market) {
+      const container = document.getElementById('marketPrices');
+      
+      container.innerHTML = Object.entries(market.resources).map(([resource, data]) => `
+        <div class="resource-card">
+          <div class="resource-name">${resource}</div>
+          <div class="resource-price ${getTrendClass(data.trend)}">
+            ${formatMoney(data.price)}
+          </div>
+          <div class="${getTrendClass(data.trend)}">
+            ${getTrendIcon(data.trend)} ${data.trend}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Update leaderboard
+    function updateLeaderboard(leaderboard) {
+      const container = document.getElementById('leaderboardList');
+      
+      container.innerHTML = leaderboard.map((player, index) => `
+        <div class="leaderboard-item ${player.id === playerId ? 'self' : ''}">
+          <div class="rank">#${index + 1}</div>
+          <div class="player-info">
+            <div class="player-name">${player.id}</div>
+            <div class="player-type">${player.type}</div>
+          </div>
+          <div class="player-worth">${formatMoney(player.netWorth)}</div>
+        </div>
+      `).join('');
+    }
+    
+    // Update company dropdowns
+    function updateCompanyDropdowns(companies) {
+      const forCompanySelect = document.getElementById('forCompany');
+      const hireForCompanySelect = document.getElementById('hireForCompany');
+      
+      const options = companies.map(c => 
+        `<option value="${c.id}">${c.name}</option>`
+      ).join('');
+      
+      forCompanySelect.innerHTML = '<option value="">Personal Resources</option>' + options;
+      hireForCompanySelect.innerHTML = options;
+    }
+    
+    // Update game time
+    function updateGameTime(gameTime) {
+      document.getElementById('gameTime').textContent = `${gameTime}h`;
+    }
+    
+    // Show modal
+    function showModal(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+    }
+    
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // Show create company modal
+    function showCreateCompanyModal() {
+      showModal('createCompanyModal');
+    }
+    
+    // Create company
+    async function createCompany() {
+      const name = document.getElementById('companyName').value;
+      const industry = document.getElementById('companyIndustry').value;
+      const initialCapital = parseInt(document.getElementById('initialCapital').value);
+      
+      if (!name) {
+        showNotification('Please enter a company name', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/company/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            name,
+            industry,
+            initialCapital
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showNotification(`Company "${name}" created successfully!`);
+          closeModal('createCompanyModal');
+          refreshGameState();
+        } else {
+          showNotification(result.error || 'Failed to create company', 'error');
+        }
+      } catch (error) {
+        showNotification('Failed to create company', 'error');
+        console.error(error);
+      }
+    }
+    
+    // Show buy resources modal
+    function showBuyResourcesModal() {
+      showModal('buyResourcesModal');
+    }
+    
+    // Buy resources
+    async function buyResources() {
+      const resource = document.getElementById('resourceType').value;
+      const amount = parseInt(document.getElementById('resourceAmount').value);
+      const forCompany = document.getElementById('forCompany').value;
+      
+      try {
+        const response = await fetch(`${API_BASE}/game/action`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            type: 'BUY_RESOURCES',
+            data: {
+              resource,
+              amount,
+              forCompany: forCompany || undefined
+            }
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showNotification(`Bought ${amount} ${resource}`);
+          closeModal('buyResourcesModal');
+          refreshGameState();
+        } else {
+          showNotification(result.error || 'Failed to buy resources', 'error');
+        }
+      } catch (error) {
+        showNotification('Failed to buy resources', 'error');
+        console.error(error);
+      }
+    }
+    
+    // Show hire employees modal
+    function showHireEmployeesModal() {
+      if (!gameState || gameState.companies.length === 0) {
+        showNotification('Create a company first', 'error');
+        return;
+      }
+      showModal('hireEmployeesModal');
+    }
+    
+    // Hire employees
+    async function hireEmployees() {
+      const companyId = document.getElementById('hireForCompany').value;
+      const count = parseInt(document.getElementById('employeeCount').value);
+      
+      try {
+        const response = await fetch(`${API_BASE}/game/action`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            type: 'HIRE_EMPLOYEES',
+            data: {
+              companyId,
+              count
+            }
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showNotification(`Hired ${count} employees`);
+          closeModal('hireEmployeesModal');
+          refreshGameState();
+        } else {
+          showNotification(result.error || 'Failed to hire employees', 'error');
+        }
+      } catch (error) {
+        showNotification('Failed to hire employees', 'error');
+        console.error(error);
+      }
+    }
+    
+    // Refresh market prices
+    async function refreshMarketPrices() {
+      try {
+        const response = await fetch(`${API_BASE}/market/prices`);
+        const result = await response.json();
+        
+        if (result.success) {
+          updateMarketDisplay({ resources: result.data });
+        }
+      } catch (error) {
+        console.error('Failed to refresh market:', error);
+      }
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      
+      if (type === 'error') {
+        notification.style.background = 'rgba(255, 68, 68, 0.9)';
+      }
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+    
+    // Format money
+    function formatMoney(amount) {
+      if (amount >= 1e9) return `$${(amount / 1e9).toFixed(2)}B`;
+      if (amount >= 1e6) return `$${(amount / 1e6).toFixed(2)}M`;
+      if (amount >= 1e3) return `$${(amount / 1e3).toFixed(2)}K`;
+      return `$${amount.toFixed(0)}`;
+    }
+    
+    // Get trend class
+    function getTrendClass(trend) {
+      return `trend-${trend}`;
+    }
+    
+    // Get trend icon
+    function getTrendIcon(trend) {
+      if (trend === 'up') return '↑';
+      if (trend === 'down') return '↓';
+      return '→';
+    }
+    
+    // Auto-refresh market every 10 seconds
+    setInterval(refreshMarketPrices, 10000);
+  </script>
+</body>
+</html>

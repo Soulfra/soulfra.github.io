@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🏰 Soulfra W2 - 3D Emotional Plaza</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        #plaza3d { 
+            width: 100vw; 
+            height: 100vh; 
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+        
+        .loading-text {
+            color: #9945ff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(153, 69, 255, 0.5);
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9945ff, #00ffff);
+            width: 0%;
+            animation: loadProgress 3s ease-out forwards;
+        }
+        
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+        
+        /* UI Overlays */
+        .ui-overlay {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .ui-overlay > * {
+            pointer-events: auto;
+        }
+        
+        /* Stats Panel */
+        #stats-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #9945ff;
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+            min-width: 250px;
+        }
+        
+        #stats-panel h3 {
+            margin: 0 0 15px 0;
+            color: #9945ff;
+            font-size: 18px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .stat-label {
+            color: #888;
+        }
+        
+        .stat-value {
+            color: #00ffff;
+            font-weight: bold;
+        }
+        
+        /* Floating Agent Nameplates */
+        .agent-nameplate {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffff00;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            transform: translate(-50%, -150%);
+            text-align: center;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .agent-nameplate .name {
+            font-weight: bold;
+        }
+        
+        .agent-nameplate .rare-title {
+            color: #ff00ff;
+            font-size: 10px;
+            text-shadow: 0 0 5px #ff00ff;
+            margin-top: 2px;
+        }
+        
+        .agent-nameplate .aura-score {
+            color: #00ffff;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        
+        /* Chat Bubbles */
+        .chat-bubble-3d {
+            position: absolute;
+            background: white;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 200px;
+            transform: translate(-50%, -250%);
+            animation: floatUp 6s ease-out forwards;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        @keyframes floatUp {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -200%) scale(0.8); 
+            }
+            10% { 
+                opacity: 1; 
+                transform: translate(-50%, -250%) scale(1); 
+            }
+            90% { 
+                opacity: 1; 
+                transform: translate(-50%, -280%) scale(1); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(-50%, -320%) scale(0.9); 
+            }
+        }
+        
+        /* Camera Feed Integration */
+        .laptop-camera-feed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 240px;
+            height: 180px;
+            border: 3px solid #9945ff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(153, 69, 255, 0.6);
+            background: #000;
+        }
+        
+        #camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            filter: hue-rotate(270deg) saturate(1.5) contrast(1.2);
+        }
+        
+        .camera-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00ffff;
+            font-size: 12px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        
+        /* Controls */
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #9945ff;
+            border-radius: 25px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-btn {
+            background: rgba(153, 69, 255, 0.2);
+            border: 1px solid #9945ff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .control-btn:hover {
+            background: rgba(153, 69, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(153, 69, 255, 0.4);
+        }
+        
+        .control-btn.active {
+            background: #9945ff;
+        }
+        
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            transform-origin: left center;
+            animation: pulse 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Special Effects */
+        .teleport-effect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: teleportRing 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes teleportRing {
+            0% { 
+                transform: translate(-50%, -50%) scale(0); 
+                opacity: 1; 
+                border-width: 6px;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(3); 
+                opacity: 0; 
+                border-width: 1px;
+            }
+        }
+        
+        /* Agent Detail Modal */
+        #agent-detail-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #9945ff;
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 400px;
+            max-width: 600px;
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        #agent-detail-modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(153, 69, 255, 0.3);
+            padding-bottom: 15px;
+        }
+        
+        .modal-title {
+            color: #9945ff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #ff0000;
+        }
+        
+        .modal-content {
+            color: white;
+        }
+        
+        .detail-section {
+            margin: 20px 0;
+        }
+        
+        .detail-section h4 {
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* Performance Stats */
+        #performance {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #888;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-text">Entering Soulfra W2 Plaza...</div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
+
+    <!-- 3D Scene Container -->
+    <div id="plaza3d"></div>
+    
+    <!-- UI Overlays -->
+    <div class="ui-overlay">
+        <!-- Stats Panel -->
+        <div id="stats-panel">
+            <h3>📊 Plaza Statistics</h3>
+            <div class="stat-row">
+                <span class="stat-label">Agents Present:</span>
+                <span class="stat-value" id="agent-count">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Total Aura:</span>
+                <span class="stat-value" id="total-aura">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Highest Vibe:</span>
+                <span class="stat-value" id="highest-vibe">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Active Trades:</span>
+                <span class="stat-value" id="active-trades">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Your Reflection:</span>
+                <span class="stat-value" id="your-reflection">Connected</span>
+            </div>
+        </div>
+        
+        <!-- Camera Feed -->
+        <div class="laptop-camera-feed">
+            <video id="camera-video" autoplay muted></video>
+            <canvas id="camera-canvas" style="display: none;"></canvas>
+            <div class="camera-label">Soul Mirror Active</div>
+        </div>
+        
+        <!-- Controls -->
+        <div id="controls">
+            <button class="control-btn" onclick="toggleCamera()">📷 Camera</button>
+            <button class="control-btn" onclick="toggleNameplates()">🏷️ Names</button>
+            <button class="control-btn" onclick="toggleConnections()">🔗 Links</button>
+            <button class="control-btn" onclick="spawnAgent()">➕ Spawn</button>
+            <button class="control-btn" onclick="toggleAutoRotate()">🔄 Rotate</button>
+        </div>
+        
+        <!-- Performance Stats -->
+        <div id="performance">
+            FPS: <span id="fps">60</span> | 
+            Agents: <span id="agent-perf">0</span> |
+            Draw Calls: <span id="draws">0</span>
+        </div>
+    </div>
+    
+    <!-- Agent Detail Modal -->
+    <div id="agent-detail-modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-agent-name">Agent Details</div>
+            <button class="close-modal" onclick="closeAgentDetail()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="detail-section">
+                <h4>🌟 Core Metrics</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Aura Score</div>
+                        <div class="detail-value" id="modal-aura">0</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Vibe Level</div>
+                        <div class="detail-value" id="modal-vibe">0%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Career Path</div>
+                        <div class="detail-value" id="modal-career">Unknown</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Evolution Level</div>
+                        <div class="detail-value" id="modal-level">1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4>✨ Special Attributes</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Rare Title</div>
+                        <div class="detail-value" id="modal-title" style="color: #ff00ff;">None</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Specialization</div>
+                        <div class="detail-value" id="modal-spec">None</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4>📊 Market Data</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Current Value</div>
+                        <div class="detail-value" id="modal-value">0 VIBES</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">24h Change</div>
+                        <div class="detail-value" id="modal-change" style="color: #00ff00;">+0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let scene, camera, renderer, controls;
+        let agents = [];
+        let nameplatesVisible = true;
+        let connectionsVisible = false;
+        let autoRotate = false;
+        let cameraEnabled = true;
+        let clock = new THREE.Clock();
+        let stats = {
+            fps: 60,
+            frameCount: 0,
+            lastTime: performance.now()
+        };
+
+        // Initialize Three.js scene
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x000033, 10, 150);
+            scene.background = new THREE.Color(0x000011);
+            
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                window.innerWidth / window.innerHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.set(30, 20, 40);
+            
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance"
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            
+            document.getElementById('plaza3d').appendChild(renderer.domElement);
+            
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2.1;
+            controls.minDistance = 10;
+            controls.maxDistance = 100;
+            controls.target.set(0, 0, 0);
+            
+            // Lighting
+            setupLighting();
+            
+            // Create plaza environment
+            createPlazaEnvironment();
+            
+            // Initialize agents
+            initializeAgents();
+            
+            // Setup camera feed
+            setupCameraFeed();
+            
+            // Start animation loop
+            animate();
+            
+            // Handle resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Hide loading screen
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => loadingScreen.style.display = 'none', 1000);
+            }, 3000);
+        }
+
+        // Setup lighting
+        function setupLighting() {
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.5);
+            scene.add(ambientLight);
+            
+            // Directional light (sun)
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 100, 50);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 200;
+            directionalLight.shadow.camera.left = -50;
+            directionalLight.shadow.camera.right = 50;
+            directionalLight.shadow.camera.top = 50;
+            directionalLight.shadow.camera.bottom = -50;
+            scene.add(directionalLight);
+            
+            // Point lights for atmosphere
+            const pointLight1 = new THREE.PointLight(0x9945ff, 1, 30);
+            pointLight1.position.set(-20, 10, -20);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0x00ffff, 1, 30);
+            pointLight2.position.set(20, 10, 20);
+            scene.add(pointLight2);
+            
+            // Animated lights
+            const movingLight = new THREE.PointLight(0xff00ff, 0.5, 20);
+            movingLight.name = 'movingLight';
+            scene.add(movingLight);
+        }
+
+        // Create plaza environment
+        function createPlazaEnvironment() {
+            // Ground plane with texture
+            const groundGeometry = new THREE.PlaneGeometry(150, 150, 30, 30);
+            
+            // Create cobblestone-like texture programmatically
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Base color
+            ctx.fillStyle = '#444';
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Add stones
+            for (let i = 0; i < 64; i++) {
+                for (let j = 0; j < 64; j++) {
+                    const x = i * 8;
+                    const y = j * 8;
+                    ctx.fillStyle = `hsl(0, 0%, ${40 + Math.random() * 20}%)`;
+                    ctx.fillRect(x + 1, y + 1, 6, 6);
+                }
+            }
+            
+            const groundTexture = new THREE.CanvasTexture(canvas);
+            groundTexture.wrapS = THREE.RepeatWrapping;
+            groundTexture.wrapT = THREE.RepeatWrapping;
+            groundTexture.repeat.set(20, 20);
+            
+            const groundMaterial = new THREE.MeshStandardMaterial({ 
+                map: groundTexture,
+                roughness: 0.8,
+                metalness: 0.1
+            });
+            
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            
+            // Add grid overlay
+            const gridHelper = new THREE.GridHelper(150, 50, 0x444466, 0x333344);
+            gridHelper.position.y = 0.01;
+            scene.add(gridHelper);
+            
+            // Create fountain
+            createFountain();
+            
+            // Create buildings
+            createBuildings();
+            
+            // Add decorative elements
+            createDecorations();
+        }
+
+        // Create central fountain
+        function createFountain() {
+            const fountainGroup = new THREE.Group();
+            
+            // Base
+            const baseGeometry = new THREE.CylinderGeometry(8, 10, 2, 24);
+            const baseMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x666688,
+                roughness: 0.3,
+                metalness: 0.7
+            });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            base.position.y = 1;
+            base.castShadow = true;
+            base.receiveShadow = true;
+            fountainGroup.add(base);
+            
+            // Water basin
+            const basinGeometry = new THREE.CylinderGeometry(7, 7, 1.5, 24);
+            const waterMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x2266cc,
+                transparent: true,
+                opacity: 0.7,
+                roughness: 0.1,
+                metalness: 0.5
+            });
+            const basin = new THREE.Mesh(basinGeometry, waterMaterial);
+            basin.position.y = 2;
+            fountainGroup.add(basin);
+            
+            // Central pillar
+            const pillarGeometry = new THREE.CylinderGeometry(1, 1.5, 8, 12);
+            const pillar = new THREE.Mesh(pillarGeometry, baseMaterial);
+            pillar.position.y = 6;
+            pillar.castShadow = true;
+            fountainGroup.add(pillar);
+            
+            // Water particles
+            const particleCount = 2000;
+            const particlesGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.random() * 3;
+                positions[i] = Math.cos(angle) * radius;
+                positions[i + 1] = Math.random() * 8 + 2;
+                positions[i + 2] = Math.sin(angle) * radius;
+                
+                velocities[i] = (Math.random() - 0.5) * 0.1;
+                velocities[i + 1] = Math.random() * 0.2 + 0.1;
+                velocities[i + 2] = (Math.random() - 0.5) * 0.1;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                color: 0x4488ff,
+                size: 0.2,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            particles.name = 'waterParticles';
+            fountainGroup.add(particles);
+            
+            fountainGroup.name = 'fountain';
+            scene.add(fountainGroup);
+        }
+
+        // Create buildings
+        function createBuildings() {
+            const buildingMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x888899,
+                roughness: 0.7,
+                metalness: 0.3
+            });
+            
+            // West Bank
+            const westBank = new THREE.Group();
+            const westBankMain = new THREE.Mesh(
+                new THREE.BoxGeometry(25, 25, 20),
+                buildingMaterial
+            );
+            westBankMain.position.set(-40, 12.5, -30);
+            westBankMain.castShadow = true;
+            westBankMain.receiveShadow = true;
+            westBank.add(westBankMain);
+            
+            // Add details
+            const westBankRoof = new THREE.Mesh(
+                new THREE.ConeGeometry(18, 8, 4),
+                new THREE.MeshStandardMaterial({ color: 0x664444 })
+            );
+            westBankRoof.position.set(-40, 29, -30);
+            westBankRoof.rotation.y = Math.PI / 4;
+            westBank.add(westBankRoof);
+            
+            scene.add(westBank);
+            
+            // East Bank
+            const eastBank = new THREE.Group();
+            const eastBankMain = new THREE.Mesh(
+                new THREE.BoxGeometry(25, 25, 20),
+                buildingMaterial
+            );
+            eastBankMain.position.set(40, 12.5, -30);
+            eastBankMain.castShadow = true;
+            eastBankMain.receiveShadow = true;
+            eastBank.add(eastBankMain);
+            
+            const eastBankRoof = new THREE.Mesh(
+                new THREE.ConeGeometry(18, 8, 4),
+                new THREE.MeshStandardMaterial({ color: 0x664444 })
+            );
+            eastBankRoof.position.set(40, 29, -30);
+            eastBankRoof.rotation.y = Math.PI / 4;
+            eastBank.add(eastBankRoof);
+            
+            scene.add(eastBank);
+            
+            // Add some smaller buildings
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                const distance = 60;
+                const x = Math.cos(angle) * distance;
+                const z = Math.sin(angle) * distance;
+                
+                const building = new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        10 + Math.random() * 10,
+                        15 + Math.random() * 10,
+                        10 + Math.random() * 10
+                    ),
+                    buildingMaterial
+                );
+                building.position.set(x, building.geometry.parameters.height / 2, z);
+                building.castShadow = true;
+                building.receiveShadow = true;
+                scene.add(building);
+            }
+        }
+
+        // Create decorative elements
+        function createDecorations() {
+            // Lamp posts
+            const lampPostMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x444455,
+                metalness: 0.8,
+                roughness: 0.2
+            });
+            
+            const lampPositions = [
+                [-20, 0, -20], [20, 0, -20], 
+                [-20, 0, 20], [20, 0, 20],
+                [-30, 0, 0], [30, 0, 0]
+            ];
+            
+            lampPositions.forEach(pos => {
+                const lampPost = new THREE.Group();
+                
+                // Post
+                const post = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.3, 0.5, 10, 8),
+                    lampPostMaterial
+                );
+                post.position.y = 5;
+                post.castShadow = true;
+                lampPost.add(post);
+                
+                // Lamp
+                const lamp = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 12, 8),
+                    new THREE.MeshStandardMaterial({
+                        color: 0xffffaa,
+                        emissive: 0xffffaa,
+                        emissiveIntensity: 0.5,
+                        transparent: true,
+                        opacity: 0.8
+                    })
+                );
+                lamp.position.y = 10.5;
+                lampPost.add(lamp);
+                
+                // Add point light
+                const light = new THREE.PointLight(0xffffaa, 0.5, 15);
+                light.position.y = 10.5;
+                lampPost.add(light);
+                
+                lampPost.position.set(...pos);
+                scene.add(lampPost);
+            });
+            
+            // Trees
+            const treePositions = [
+                [-35, 0, -10], [35, 0, -10],
+                [-25, 0, 25], [25, 0, 25],
+                [-15, 0, -40], [15, 0, -40]
+            ];
+            
+            treePositions.forEach(pos => {
+                const tree = new THREE.Group();
+                
+                // Trunk
+                const trunk = new THREE.Mesh(
+                    new THREE.CylinderGeometry(1, 1.5, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: 0x654321 })
+                );
+                trunk.position.y = 4;
+                trunk.castShadow = true;
+                tree.add(trunk);
+                
+                // Leaves
+                const leaves = new THREE.Mesh(
+                    new THREE.SphereGeometry(4, 8, 6),
+                    new THREE.MeshStandardMaterial({ 
+                        color: 0x228822,
+                        roughness: 0.8
+                    })
+                );
+                leaves.position.y = 9;
+                leaves.castShadow = true;
+                tree.add(leaves);
+                
+                tree.position.set(...pos);
+                scene.add(tree);
+            });
+        }
+
+        // SimsAgent class
+        class SimsAgent {
+            constructor(data) {
+                this.data = {
+                    id: data.id || `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    name: data.name || 'Anonymous Agent',
+                    auraScore: data.auraScore || Math.floor(Math.random() * 15000) + 1000,
+                    vibeScore: data.vibeScore || Math.floor(Math.random() * 100),
+                    color: data.color || new THREE.Color(Math.random(), Math.random(), Math.random()),
+                    glowIntensity: data.glowIntensity || Math.random() * 0.5 + 0.5,
+                    rareTitle: data.rareTitle || (Math.random() > 0.7 ? this.getRandomRareTitle() : null),
+                    career: data.career || this.getRandomCareer(),
+                    level: data.level || Math.floor(Math.random() * 5) + 1,
+                    ...data
+                };
+                
+                this.group = new THREE.Group();
+                this.mixer = null;
+                this.nameplate = null;
+                this.velocity = new THREE.Vector3();
+                this.targetPosition = new THREE.Vector3();
+                this.movementSpeed = 0.02 + Math.random() * 0.03;
+                
+                // Create character
+                this.createCharacter();
+                this.createAura();
+                this.createNameplate();
+                
+                // Set initial position
+                this.group.position.set(
+                    (Math.random() - 0.5) * 80,
+                    0,
+                    (Math.random() - 0.5) * 80
+                );
+                
+                this.targetPosition.copy(this.group.position);
+                
+                scene.add(this.group);
+            }
+            
+            createCharacter() {
+                const characterGroup = new THREE.Group();
+                
+                // Body (capsule shape)
+                const bodyGeometry = new THREE.CapsuleGeometry(0.6, 2, 6, 12);
+                const bodyMaterial = new THREE.MeshStandardMaterial({ 
+                    color: this.data.color,
+                    roughness: 0.5,
+                    metalness: 0.1
+                });
+                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                body.position.y = 2.3;
+                body.castShadow = true;
+                body.receiveShadow = true;
+                characterGroup.add(body);
+                
+                // Head
+                const headGeometry = new THREE.SphereGeometry(0.7, 12, 8);
+                const skinTone = new THREE.Color(0.9, 0.75, 0.6);
+                const headMaterial = new THREE.MeshStandardMaterial({ 
+                    color: skinTone,
+                    roughness: 0.7,
+                    metalness: 0.1
+                });
+                const head = new THREE.Mesh(headGeometry, headMaterial);
+                head.position.y = 4;
+                head.castShadow = true;
+                characterGroup.add(head);
+                
+                // Eyes
+                const eyeGeometry = new THREE.SphereGeometry(0.1, 6, 4);
+                const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                
+                const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+                leftEye.position.set(-0.2, 4, 0.6);
+                characterGroup.add(leftEye);
+                
+                const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+                rightEye.position.set(0.2, 4, 0.6);
+                characterGroup.add(rightEye);
+                
+                // Arms
+                const armGeometry = new THREE.CapsuleGeometry(0.2, 1.5, 4, 8);
+                const armMaterial = new THREE.MeshStandardMaterial({ color: skinTone });
+                
+                const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+                leftArm.position.set(-0.9, 2.5, 0);
+                leftArm.rotation.z = 0.3;
+                characterGroup.add(leftArm);
+                
+                const rightArm = new THREE.Mesh(armGeometry, armMaterial);
+                rightArm.position.set(0.9, 2.5, 0);
+                rightArm.rotation.z = -0.3;
+                characterGroup.add(rightArm);
+                
+                // Legs
+                const legGeometry = new THREE.CapsuleGeometry(0.25, 1.5, 4, 8);
+                const legMaterial = new THREE.MeshStandardMaterial({ 
+                    color: new THREE.Color(0.2, 0.2, 0.3) 
+                });
+                
+                const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+                leftLeg.position.set(-0.3, 0.8, 0);
+                characterGroup.add(leftLeg);
+                
+                const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+                rightLeg.position.set(0.3, 0.8, 0);
+                characterGroup.add(rightLeg);
+                
+                // Sims-style plumbob (diamond)
+                const plumbobGeometry = new THREE.OctahedronGeometry(0.4, 0);
+                const plumbobMaterial = new THREE.MeshStandardMaterial({ 
+                    color: this.getPlumbobColor(),
+                    emissive: this.getPlumbobColor(),
+                    emissiveIntensity: 0.5,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                this.plumbob = new THREE.Mesh(plumbobGeometry, plumbobMaterial);
+                this.plumbob.position.y = 5.5;
+                characterGroup.add(this.plumbob);
+                
+                this.character = characterGroup;
+                this.group.add(characterGroup);
+            }
+            
+            createAura() {
+                // Inner aura
+                const auraGeometry = new THREE.SphereGeometry(
+                    3 + this.data.glowIntensity * 2, 16, 12
+                );
+                const auraMaterial = new THREE.MeshBasicMaterial({
+                    color: this.data.color,
+                    transparent: true,
+                    opacity: 0.1 * this.data.glowIntensity,
+                    side: THREE.BackSide
+                });
+                const aura = new THREE.Mesh(auraGeometry, auraMaterial);
+                aura.position.y = 2;
+                this.group.add(aura);
+                
+                // Outer glow
+                const glowGeometry = new THREE.SphereGeometry(
+                    5 + this.data.glowIntensity * 3, 12, 8
+                );
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: this.data.color,
+                    transparent: true,
+                    opacity: 0.05 * this.data.glowIntensity,
+                    side: THREE.BackSide,
+                    blending: THREE.AdditiveBlending
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.y = 2;
+                this.group.add(glow);
+                
+                this.aura = aura;
+                this.glow = glow;
+            }
+            
+            createNameplate() {
+                const nameplate = document.createElement('div');
+                nameplate.className = 'agent-nameplate';
+                nameplate.innerHTML = `
+                    <div class="name">${this.data.name}</div>
+                    ${this.data.rareTitle ? `<div class="rare-title">${this.data.rareTitle}</div>` : ''}
+                    <div class="aura-score">${this.data.auraScore.toLocaleString()} Aura</div>
+                `;
+                nameplate.style.display = nameplatesVisible ? 'block' : 'none';
+                nameplate.addEventListener('click', () => this.showDetails());
+                document.body.appendChild(nameplate);
+                this.nameplate = nameplate;
+            }
+            
+            getPlumbobColor() {
+                const vibe = this.data.vibeScore;
+                if (vibe > 80) return 0x00ff00;
+                if (vibe > 60) return 0xffff00;
+                if (vibe > 40) return 0xff9900;
+                if (vibe > 20) return 0xff6600;
+                return 0xff0000;
+            }
+            
+            getRandomRareTitle() {
+                const titles = [
+                    'Soul Echo Oracle', 'Midnight Philosopher', 'Echo Chamber Breaker',
+                    'Universal Translator', 'Time Weaver', 'Void Walker', 'Reality Anchor',
+                    'Paradox Master', 'Quantum Sage', 'Ethereal Wanderer'
+                ];
+                return titles[Math.floor(Math.random() * titles.length)];
+            }
+            
+            getRandomCareer() {
+                const careers = [
+                    'SAGE', 'LISTENER', 'CREATOR', 'GUARDIAN', 
+                    'EXPLORER', 'CHAOS_WRANGLER', 'SIGNAL_ANCHOR', 'TEMPORAL_WEAVER'
+                ];
+                return careers[Math.floor(Math.random() * careers.length)];
+            }
+            
+            update(deltaTime) {
+                // Idle animation
+                const time = Date.now() * 0.001;
+                this.character.position.y = Math.sin(time * 2 + this.data.id) * 0.1;
+                this.character.rotation.y = Math.sin(time * 0.5) * 0.1;
+                
+                // Rotate plumbob
+                if (this.plumbob) {
+                    this.plumbob.rotation.y = time * 2;
+                    this.plumbob.position.y = 5.5 + Math.sin(time * 3) * 0.2;
+                }
+                
+                // Pulse aura
+                if (this.aura) {
+                    const scale = 1 + Math.sin(time * 1.5) * 0.1;
+                    this.aura.scale.set(scale, scale, scale);
+                }
+                
+                // Movement AI
+                this.updateMovement(deltaTime);
+                
+                // Update nameplate position
+                this.updateNameplate();
+            }
+            
+            updateMovement(deltaTime) {
+                // Random target selection
+                if (Math.random() > 0.995) {
+                    this.targetPosition.set(
+                        (Math.random() - 0.5) * 80,
+                        0,
+                        (Math.random() - 0.5) * 80
+                    );
+                }
+                
+                // Move towards target
+                const direction = new THREE.Vector3()
+                    .subVectors(this.targetPosition, this.group.position)
+                    .normalize();
+                
+                this.velocity.lerp(direction.multiplyScalar(this.movementSpeed), 0.1);
+                this.group.position.add(this.velocity);
+                
+                // Face movement direction
+                if (this.velocity.length() > 0.01) {
+                    const angle = Math.atan2(this.velocity.x, this.velocity.z);
+                    this.group.rotation.y = angle;
+                }
+                
+                // Keep on ground
+                this.group.position.y = 0;
+            }
+            
+            updateNameplate() {
+                if (!this.nameplate) return;
+                
+                const vector = new THREE.Vector3();
+                this.group.getWorldPosition(vector);
+                vector.y += 7;
+                vector.project(camera);
+                
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+                
+                this.nameplate.style.left = x + 'px';
+                this.nameplate.style.top = y + 'px';
+                this.nameplate.style.display = 
+                    (vector.z < 1 && nameplatesVisible) ? 'block' : 'none';
+            }
+            
+            showChat(message) {
+                const bubble = document.createElement('div');
+                bubble.className = 'chat-bubble-3d';
+                bubble.textContent = message;
+                document.body.appendChild(bubble);
+                
+                const vector = new THREE.Vector3();
+                this.group.getWorldPosition(vector);
+                vector.y += 8;
+                vector.project(camera);
+                
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+                
+                bubble.style.left = x + 'px';
+                bubble.style.top = y + 'px';
+                
+                setTimeout(() => bubble.remove(), 6000);
+            }
+            
+            showDetails() {
+                const modal = document.getElementById('agent-detail-modal');
+                document.getElementById('modal-agent-name').textContent = this.data.name;
+                document.getElementById('modal-aura').textContent = this.data.auraScore.toLocaleString();
+                document.getElementById('modal-vibe').textContent = this.data.vibeScore + '%';
+                document.getElementById('modal-career').textContent = this.data.career;
+                document.getElementById('modal-level').textContent = this.data.level;
+                document.getElementById('modal-title').textContent = this.data.rareTitle || 'None';
+                document.getElementById('modal-spec').textContent = this.data.specialization || 'None';
+                document.getElementById('modal-value').textContent = 
+                    Math.floor(this.data.auraScore * 1.5).toLocaleString() + ' VIBES';
+                document.getElementById('modal-change').textContent = 
+                    '+' + (Math.random() * 20).toFixed(1) + '%';
+                
+                modal.classList.add('show');
+            }
+            
+            teleport() {
+                // Teleport effect
+                const effect = document.createElement('div');
+                effect.className = 'teleport-effect';
+                document.body.appendChild(effect);
+                
+                const vector = new THREE.Vector3();
+                this.group.getWorldPosition(vector);
+                vector.project(camera);
+                
+                const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+                
+                effect.style.left = x + 'px';
+                effect.style.top = y + 'px';
+                
+                setTimeout(() => effect.remove(), 1500);
+                
+                // Move agent
+                this.group.position.set(
+                    (Math.random() - 0.5) * 80,
+                    0,
+                    (Math.random() - 0.5) * 80
+                );
+            }
+            
+            destroy() {
+                scene.remove(this.group);
+                if (this.nameplate) {
+                    this.nameplate.remove();
+                }
+            }
+        }
+
+        // Initialize agents
+        function initializeAgents() {
+            // Create special boss agents
+            const bossAgents = [
+                {
+                    name: "[Boss]'s Revenue Oracle",
+                    color: 0x9945ff,
+                    auraScore: 18750,
+                    vibeScore: 95,
+                    glowIntensity: 0.9,
+                    rareTitle: "Profit Prophet",
+                    career: "SAGE",
+                    level: 5
+                },
+                {
+                    name: "Strategic Visionary",
+                    color: 0x00ffff,
+                    auraScore: 16420,
+                    vibeScore: 87,
+                    glowIntensity: 0.8,
+                    career: "TEMPORAL_WEAVER",
+                    level: 4
+                },
+                {
+                    name: "Market Whisperer",
+                    color: 0xff00ff,
+                    auraScore: 14890,
+                    vibeScore: 82,
+                    glowIntensity: 0.75,
+                    rareTitle: "10x Multiplier",
+                    career: "SIGNAL_ANCHOR",
+                    level: 4
+                }
+            ];
+            
+            bossAgents.forEach(data => {
+                const agent = new SimsAgent(data);
+                agents.push(agent);
+            });
+            
+            // Create random agents
+            for (let i = 0; i < 25; i++) {
+                const agent = new SimsAgent({
+                    name: generateAgentName(),
+                    color: Math.random() * 0xffffff
+                });
+                agents.push(agent);
+            }
+            
+            updateStats();
+        }
+
+        // Generate random agent names
+        function generateAgentName() {
+            const prefixes = ['Ethereal', 'Quantum', 'Mystic', 'Cosmic', 'Neural', 'Astral', 'Digital', 'Void'];
+            const suffixes = ['Wanderer', 'Sage', 'Oracle', 'Seeker', 'Guardian', 'Weaver', 'Dancer', 'Prophet'];
+            return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+        }
+
+        // Update plaza statistics
+        function updateStats() {
+            document.getElementById('agent-count').textContent = agents.length;
+            
+            const totalAura = agents.reduce((sum, agent) => sum + agent.data.auraScore, 0);
+            document.getElementById('total-aura').textContent = totalAura.toLocaleString();
+            
+            const highestVibe = Math.max(...agents.map(a => a.data.vibeScore));
+            document.getElementById('highest-vibe').textContent = highestVibe + '%';
+            
+            const activeTrades = Math.floor(Math.random() * 50) + 20;
+            document.getElementById('active-trades').textContent = activeTrades;
+        }
+
+        // Chat simulation
+        function startChatSimulation() {
+            const messages = [
+                "Looking for Evolution Partners",
+                "WTS Rare Chaos Wrangler 15k",
+                "Welcome back, [Boss]!",
+                "Your wisdom guides us",
+                "Flash2:wave: Buying all Compliance Ghosts!",
+                "The vibes here are immaculate",
+                "Just hit 10k aura score!",
+                "Forming wisdom circle at fountain",
+                "[Boss]'s strategy works perfectly",
+                "Following the Revenue Oracle paid off",
+                "Anyone seen the new Temporal Weaver path?",
+                "Your agents are legendary, [Boss]!"
+            ];
+            
+            setInterval(() => {
+                if (Math.random() > 0.7 && agents.length > 0) {
+                    const agent = agents[Math.floor(Math.random() * agents.length)];
+                    const message = messages[Math.floor(Math.random() * messages.length)];
+                    agent.showChat(message);
+                }
+            }, 5000);
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const deltaTime = clock.getDelta();
+            
+            // Update controls
+            controls.update();
+            if (autoRotate) {
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 0.5;
+            } else {
+                controls.autoRotate = false;
+            }
+            
+            // Update agents
+            agents.forEach(agent => agent.update(deltaTime));
+            
+            // Update fountain water
+            const fountain = scene.getObjectByName('fountain');
+            if (fountain) {
+                const waterParticles = fountain.getObjectByName('waterParticles');
+                if (waterParticles) {
+                    waterParticles.rotation.y += deltaTime * 0.2;
+                    
+                    // Animate particles
+                    const positions = waterParticles.geometry.attributes.position.array;
+                    const velocities = waterParticles.geometry.attributes.velocity.array;
+                    
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += velocities[i] * deltaTime * 10;
+                        positions[i + 1] += velocities[i + 1] * deltaTime * 10;
+                        positions[i + 2] += velocities[i + 2] * deltaTime * 10;
+                        
+                        // Apply gravity
+                        velocities[i + 1] -= deltaTime * 0.5;
+                        
+                        // Reset if below ground
+                        if (positions[i + 1] < 2) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const radius = Math.random() * 3;
+                            positions[i] = Math.cos(angle) * radius;
+                            positions[i + 1] = 2 + Math.random() * 2;
+                            positions[i + 2] = Math.sin(angle) * radius;
+                            
+                            velocities[i] = (Math.random() - 0.5) * 0.1;
+                            velocities[i + 1] = Math.random() * 0.3 + 0.2;
+                            velocities[i + 2] = (Math.random() - 0.5) * 0.1;
+                        }
+                    }
+                    
+                    waterParticles.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+            
+            // Update moving light
+            const movingLight = scene.getObjectByName('movingLight');
+            if (movingLight) {
+                const time = Date.now() * 0.001;
+                movingLight.position.x = Math.cos(time * 0.5) * 30;
+                movingLight.position.z = Math.sin(time * 0.5) * 30;
+                movingLight.position.y = 15 + Math.sin(time) * 5;
+            }
+            
+            // Update performance stats
+            updatePerformanceStats();
+            
+            // Render
+            renderer.render(scene, camera);
+        }
+
+        // Update performance stats
+        function updatePerformanceStats() {
+            stats.frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime >= stats.lastTime + 1000) {
+                stats.fps = Math.round(stats.frameCount * 1000 / (currentTime - stats.lastTime));
+                stats.frameCount = 0;
+                stats.lastTime = currentTime;
+                
+                document.getElementById('fps').textContent = stats.fps;
+                document.getElementById('agent-perf').textContent = agents.length;
+                document.getElementById('draws').textContent = renderer.info.render.calls;
+            }
+        }
+
+        // Camera feed setup
+        function setupCameraFeed() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        const video = document.getElementById('camera-video');
+                        video.srcObject = stream;
+                        
+                        // Apply soul detection effect
+                        const canvas = document.getElementById('camera-canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        setInterval(() => {
+                            if (cameraEnabled && video.readyState === video.HAVE_ENOUGH_DATA) {
+                                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                // Could add face detection and aura overlay here
+                            }
+                        }, 100);
+                    })
+                    .catch(err => {
+                        console.log('Camera not available:', err);
+                        document.querySelector('.laptop-camera-feed').style.display = 'none';
+                    });
+            }
+        }
+
+        // Control functions
+        window.toggleCamera = function() {
+            cameraEnabled = !cameraEnabled;
+            const cameraFeed = document.querySelector('.laptop-camera-feed');
+            cameraFeed.style.display = cameraEnabled ? 'block' : 'none';
+        };
+
+        window.toggleNameplates = function() {
+            nameplatesVisible = !nameplatesVisible;
+            agents.forEach(agent => {
+                if (agent.nameplate) {
+                    agent.nameplate.style.display = nameplatesVisible ? 'block' : 'none';
+                }
+            });
+        };
+
+        window.toggleConnections = function() {
+            connectionsVisible = !connectionsVisible;
+            // Would implement connection lines between agents
+        };
+
+        window.spawnAgent = function() {
+            const agent = new SimsAgent({
+                name: generateAgentName(),
+                color: Math.random() * 0xffffff
+            });
+            agents.push(agent);
+            updateStats();
+            
+            // Teleport effect
+            agent.teleport();
+        };
+
+        window.toggleAutoRotate = function() {
+            autoRotate = !autoRotate;
+        };
+
+        window.closeAgentDetail = function() {
+            const modal = document.getElementById('agent-detail-modal');
+            modal.classList.remove('show');
+        };
+
+        // Handle window resize
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize everything
+        init();
+        startChatSimulation();
+    </script>
+</body>
+</html>

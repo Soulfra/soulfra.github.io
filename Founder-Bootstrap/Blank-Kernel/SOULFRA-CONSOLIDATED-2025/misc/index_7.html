@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Magic Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            animation: rainbow 5s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            17% { color: #ff8800; }
+            33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            67% { color: #0088ff; }
+            83% { color: #8800ff; }
+            100% { color: #ff0000; }
+        }
+        
+        .magic-button {
+            background: linear-gradient(45deg, #ff006e, #00d4ff);
+            border: none;
+            color: white;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        .magic-button:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(255, 0, 110, 0.5);
+        }
+        
+        .magic-button:active {
+            transform: scale(0.95);
+        }
+        
+        #output {
+            margin-top: 30px;
+            font-size: 2em;
+            min-height: 50px;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particle-up 3s linear;
+        }
+        
+        @keyframes particle-up {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-300px) scale(0.5);
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .game-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            min-height: 200px;
+        }
+        
+        .score {
+            font-size: 3em;
+            margin: 20px 0;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <h1>✨ Click the Magic ✨</h1>
+        
+        <div id="mainMenu">
+            <button class="magic-button" onclick="startGame()">Start Game</button>
+            <button class="magic-button" onclick="showMagic()">Show Magic</button>
+            <button class="magic-button" onclick="makeItRain()">Make it Rain</button>
+        </div>
+        
+        <div id="gameArea" class="game-area hidden">
+            <h2>Click as fast as you can!</h2>
+            <div class="score" id="score">Score: 0</div>
+            <button class="magic-button" onclick="clickGame()">CLICK ME!</button>
+            <button class="magic-button" onclick="backToMenu()">Back</button>
+        </div>
+        
+        <div id="output"></div>
+    </div>
+    
+    <script>
+        let score = 0;
+        let particles = [];
+        
+        function createParticle(x, y, color = '#fff') {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.background = color;
+            document.getElementById('particles').appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 3000);
+        }
+        
+        function startGame() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            score = 0;
+            updateScore();
+        }
+        
+        function clickGame() {
+            score += Math.floor(Math.random() * 10) + 1;
+            updateScore();
+            
+            // Create explosion of particles
+            const button = event.target;
+            const rect = button.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createParticle(
+                        x + (Math.random() - 0.5) * 100,
+                        y + (Math.random() - 0.5) * 50,
+                        `hsl(${Math.random() * 360}, 100%, 50%)`
+                    );
+                }, i * 50);
+            }
+            
+            // Animate button
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = 'Score: ' + score;
+            
+            if (score >= 100) {
+                document.getElementById('score').textContent = 'Score: ' + score + ' 🏆 YOU WIN!';
+            }
+        }
+        
+        function backToMenu() {
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('gameArea').classList.add('hidden');
+        }
+        
+        function showMagic() {
+            const output = document.getElementById('output');
+            const messages = [
+                '✨ Magic is happening!',
+                '🎉 You found the secret!',
+                '🌟 Incredible things await!',
+                '🔮 The future is bright!',
+                '🎯 You\'re amazing!'
+            ];
+            
+            output.textContent = messages[Math.floor(Math.random() * messages.length)];
+            output.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            
+            // Create particle burst
+            for (let i = 0; i < 20; i++) {
+                createParticle(
+                    window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+                    window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+                    `hsl(${Math.random() * 360}, 100%, 50%)`
+                );
+            }
+        }
+        
+        function makeItRain() {
+            const emojis = ['💰', '💎', '🌟', '✨', '🎉', '🔥', '💫', '🌈'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const emoji = document.createElement('div');
+                    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    emoji.style.position = 'fixed';
+                    emoji.style.left = Math.random() * window.innerWidth + 'px';
+                    emoji.style.top = '-50px';
+                    emoji.style.fontSize = Math.random() * 30 + 20 + 'px';
+                    emoji.style.zIndex = 1000;
+                    emoji.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
+                    
+                    document.body.appendChild(emoji);
+                    
+                    setTimeout(() => emoji.remove(), 5000);
+                }, i * 100);
+            }
+        }
+        
+        // Add falling animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(${window.innerHeight + 100}px) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Background particles
+        setInterval(() => {
+            if (Math.random() > 0.8) {
+                createParticle(
+                    Math.random() * window.innerWidth,
+                    window.innerHeight - 10,
+                    `hsl(${Math.random() * 360}, 100%, 50%)`
+                );
+            }
+        }, 500);
+    </script>
+</body>
+</html>

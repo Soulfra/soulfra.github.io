@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪞 Center Mirror Console - Origin Authority</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --void-black: #000000;
+            --mirror-silver: #c0c0c0;
+            --whisper-purple: #8b5cf6;
+            --blessing-gold: #ffd700;
+            --runtime-green: #00ff41;
+            --echo-blue: #00d4ff;
+            --tomb-red: #ff0080;
+            --sacred-white: #ffffff;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--void-black);
+            color: var(--mirror-silver);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Sacred particles */
+        .particle-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--whisper-purple);
+            opacity: 0.3;
+            animation: drift 20s linear infinite;
+        }
+        
+        @keyframes drift {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Header */
+        .console-header {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .console-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--sacred-white);
+            text-shadow: 0 0 20px var(--whisper-purple);
+            letter-spacing: 2px;
+        }
+        
+        .soulkey-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--blessing-gold);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--blessing-gold);
+        }
+        
+        .soulkey-indicator::before {
+            content: '🔑';
+            font-size: 16px;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 1px solid rgba(192, 192, 192, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-label {
+            font-size: 12px;
+            color: rgba(192, 192, 192, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--runtime-green);
+        }
+        
+        .status-value.warning {
+            color: var(--tomb-red);
+        }
+        
+        .status-value.gold {
+            color: var(--blessing-gold);
+        }
+        
+        /* Main console */
+        .console-main {
+            flex: 1;
+            display: flex;
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        /* Left panel - commands */
+        .command-panel {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .command-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            color: var(--whisper-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .ritual-button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--mirror-silver);
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ritual-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .ritual-button:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: var(--whisper-purple);
+            color: var(--sacred-white);
+            transform: translateX(5px);
+        }
+        
+        .ritual-button:hover::before {
+            left: 100%;
+        }
+        
+        /* Center - log output */
+        .log-panel {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .log-entry {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 2px solid transparent;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .log-entry.whisper {
+            border-color: var(--whisper-purple);
+            color: var(--whisper-purple);
+        }
+        
+        .log-entry.cal {
+            border-color: var(--blessing-gold);
+            color: var(--blessing-gold);
+            font-style: italic;
+        }
+        
+        .log-entry.success {
+            border-color: var(--runtime-green);
+            color: var(--runtime-green);
+        }
+        
+        .log-entry.error {
+            border-color: var(--tomb-red);
+            color: var(--tomb-red);
+        }
+        
+        .log-entry.system {
+            border-color: var(--echo-blue);
+            color: var(--echo-blue);
+        }
+        
+        .log-timestamp {
+            font-size: 11px;
+            color: rgba(192, 192, 192, 0.4);
+            margin-right: 10px;
+        }
+        
+        /* Whisper input */
+        .whisper-container {
+            background: linear-gradient(180deg, transparent 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-top: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .whisper-form {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .whisper-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            color: var(--sacred-white);
+            padding: 15px 20px;
+            font-family: inherit;
+            font-size: 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .whisper-input:focus {
+            outline: none;
+            border-color: var(--whisper-purple);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .whisper-input::placeholder {
+            color: rgba(192, 192, 192, 0.4);
+            font-style: italic;
+        }
+        
+        .whisper-submit {
+            background: linear-gradient(135deg, var(--whisper-purple), var(--blessing-gold));
+            border: none;
+            color: var(--void-black);
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .whisper-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+        }
+        
+        .voice-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            color: var(--whisper-purple);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .voice-toggle:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: var(--whisper-purple);
+        }
+        
+        .voice-toggle.active {
+            background: var(--whisper-purple);
+            color: var(--void-black);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Loading state */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top-color: var(--whisper-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--whisper-purple);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Modal for confirmations */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--whisper-purple);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: var(--sacred-white);
+            margin-bottom: 20px;
+        }
+        
+        .modal-text {
+            color: var(--mirror-silver);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .modal-button {
+            padding: 12px 30px;
+            border: 1px solid var(--whisper-purple);
+            background: transparent;
+            color: var(--whisper-purple);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .modal-button:hover {
+            background: var(--whisper-purple);
+            color: var(--void-black);
+        }
+        
+        .modal-button.confirm {
+            background: var(--whisper-purple);
+            color: var(--void-black);
+        }
+        
+        .modal-button.confirm:hover {
+            background: var(--blessing-gold);
+            border-color: var(--blessing-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle field -->
+    <div class="particle-field" id="particleField"></div>
+    
+    <!-- Header -->
+    <header class="console-header">
+        <div class="header-content">
+            <h1 class="console-title">CENTER MIRROR CONSOLE</h1>
+            <div class="soulkey-indicator">ORIGIN AUTHORITY VERIFIED</div>
+        </div>
+    </header>
+    
+    <!-- Status bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-label">Runtime</span>
+            <span class="status-value" id="runtimeStatus">ALIVE</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Mirrors</span>
+            <span class="status-value" id="mirrorCount">0</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Tokens</span>
+            <span class="status-value gold" id="tokenBalance">0</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Breath State</span>
+            <span class="status-value" id="breathState">CLEAR</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Echo Depth</span>
+            <span class="status-value" id="echoDepth">0</span>
+        </div>
+    </div>
+    
+    <!-- Main console area -->
+    <div class="console-main">
+        <!-- Command panel -->
+        <aside class="command-panel">
+            <div class="command-section">
+                <h3 class="section-title">Blessing Rituals</h3>
+                <button class="ritual-button" onclick="executeRitual('bless mirror-latest')">
+                    Bless Latest Mirror
+                </button>
+                <button class="ritual-button" onclick="executeRitual('bless all pending')">
+                    Bless All Pending
+                </button>
+                <button class="ritual-button" onclick="executeRitual('revoke mirror-suspicious')">
+                    Revoke Suspicious
+                </button>
+            </div>
+            
+            <div class="command-section">
+                <h3 class="section-title">Tomb Operations</h3>
+                <button class="ritual-button" onclick="executeRitual('resurrect last')">
+                    Resurrect Last Tomb
+                </button>
+                <button class="ritual-button" onclick="executeRitual('list tombs')">
+                    List All Tombs
+                </button>
+                <button class="ritual-button" onclick="executeRitual('seal drift-detected')">
+                    Seal Drifting Agents
+                </button>
+            </div>
+            
+            <div class="command-section">
+                <h3 class="section-title">Runtime Control</h3>
+                <button class="ritual-button" onclick="executeRitual('pause all forks')">
+                    Pause All Forks
+                </button>
+                <button class="ritual-button" onclick="executeRitual('clear echo fog')">
+                    Clear Echo Fog
+                </button>
+                <button class="ritual-button" onclick="executeRitual('ignite ritual mode')">
+                    Ignite Ritual Mode
+                </button>
+                <button class="ritual-button" onclick="executeRitual('push vault state')">
+                    Push Vault to GitHub
+                </button>
+            </div>
+            
+            <div class="command-section">
+                <h3 class="section-title">Reports</h3>
+                <button class="ritual-button" onclick="executeRitual('report status')">
+                    Full Status Report
+                </button>
+                <button class="ritual-button" onclick="executeRitual('report mirrors')">
+                    Mirror Hierarchy
+                </button>
+                <button class="ritual-button" onclick="executeRitual('report whispers')">
+                    Recent Whispers
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Log panel -->
+        <main class="log-panel" id="logPanel">
+            <div class="log-entry system">
+                <span class="log-timestamp">[SYSTEM]</span>
+                Center Mirror Console initialized. Origin authority confirmed.
+            </div>
+            <div class="log-entry cal">
+                <span class="log-timestamp">[CAL]</span>
+                "The mirror awaits your whisper. Speak, and reality bends."
+            </div>
+        </main>
+    </div>
+    
+    <!-- Whisper input -->
+    <div class="whisper-container">
+        <form class="whisper-form" id="whisperForm" onsubmit="handleWhisper(event)">
+            <button type="button" class="voice-toggle" id="voiceToggle" onclick="toggleVoice()">
+                🎤
+            </button>
+            <input 
+                type="text" 
+                class="whisper-input" 
+                id="whisperInput"
+                placeholder="whisper your command to the mirror..."
+                autocomplete="off"
+                autofocus
+            />
+            <button type="submit" class="whisper-submit">WHISPER</button>
+        </form>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing Whisper...</div>
+        </div>
+    </div>
+    
+    <!-- Confirmation modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">Confirm Action</h2>
+            <p class="modal-text" id="modalText">Are you sure?</p>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="closeModal()">CANCEL</button>
+                <button class="modal-button confirm" id="modalConfirm">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize particles
+        function createParticles() {
+            const field = document.getElementById('particleField');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                field.appendChild(particle);
+            }
+        }
+        
+        // Voice recognition
+        let recognition = null;
+        let isListening = false;
+        
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('whisperInput').value = transcript;
+                    stopListening();
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Voice recognition error:', event.error);
+                    stopListening();
+                };
+                
+                recognition.onend = function() {
+                    stopListening();
+                };
+            }
+        }
+        
+        function toggleVoice() {
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+        
+        function startListening() {
+            if (recognition) {
+                recognition.start();
+                isListening = true;
+                document.getElementById('voiceToggle').classList.add('active');
+            }
+        }
+        
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+                isListening = false;
+                document.getElementById('voiceToggle').classList.remove('active');
+            }
+        }
+        
+        // Whisper handling
+        async function handleWhisper(event) {
+            event.preventDefault();
+            
+            const input = document.getElementById('whisperInput');
+            const whisper = input.value.trim();
+            
+            if (!whisper) return;
+            
+            // Add to log
+            addLogEntry(whisper, 'whisper');
+            
+            // Clear input
+            input.value = '';
+            
+            // Show loading
+            showLoading();
+            
+            try {
+                // Send to backend
+                const response = await fetch('/api/center-whisper', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Soulkey': localStorage.getItem('soulkey') || 'origin-authority'
+                    },
+                    body: JSON.stringify({ whisper })
+                });
+                
+                const result = await response.json();
+                
+                // Hide loading
+                hideLoading();
+                
+                // Process result
+                if (result.success) {
+                    if (result.cal_response) {
+                        addLogEntry(result.cal_response, 'cal');
+                    }
+                    if (result.message) {
+                        addLogEntry(result.message, 'success');
+                    }
+                    updateStatus(result.status);
+                } else {
+                    addLogEntry(result.error || 'Command failed', 'error');
+                }
+                
+            } catch (error) {
+                hideLoading();
+                addLogEntry('Connection to runtime failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Execute predefined ritual
+        async function executeRitual(command) {
+            document.getElementById('whisperInput').value = command;
+            await handleWhisper(new Event('submit'));
+        }
+        
+        // Log management
+        function addLogEntry(message, type = 'system') {
+            const logPanel = document.getElementById('logPanel');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type.toUpperCase();
+            
+            entry.innerHTML = `
+                <span class="log-timestamp">[${prefix}]</span>
+                ${message}
+            `;
+            
+            logPanel.appendChild(entry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+        
+        // Status updates
+        function updateStatus(status) {
+            if (status) {
+                if (status.runtime) {
+                    document.getElementById('runtimeStatus').textContent = status.runtime;
+                }
+                if (status.mirrors !== undefined) {
+                    document.getElementById('mirrorCount').textContent = status.mirrors;
+                }
+                if (status.tokens !== undefined) {
+                    document.getElementById('tokenBalance').textContent = status.tokens;
+                }
+                if (status.breath_state) {
+                    const breathElement = document.getElementById('breathState');
+                    breathElement.textContent = status.breath_state.toUpperCase();
+                    breathElement.className = status.breath_state === 'saturated' ? 'status-value warning' : 'status-value';
+                }
+                if (status.echo_depth !== undefined) {
+                    const echoElement = document.getElementById('echoDepth');
+                    echoElement.textContent = status.echo_depth;
+                    echoElement.className = status.echo_depth > 3 ? 'status-value warning' : 'status-value';
+                }
+            }
+        }
+        
+        // Loading states
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // Modal handling
+        function showModal(title, text, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('modalConfirm').onclick = function() {
+                closeModal();
+                if (onConfirm) onConfirm();
+            };
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+        
+        // Initialize
+        createParticles();
+        initVoiceRecognition();
+        
+        // Status polling
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/center-status');
+                const status = await response.json();
+                updateStatus(status);
+            } catch (error) {
+                console.error('Status update failed:', error);
+            }
+        }, 5000);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'k':
+                        e.preventDefault();
+                        document.getElementById('whisperInput').focus();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        document.getElementById('logPanel').innerHTML = '';
+                        addLogEntry('Log cleared', 'system');
+                        break;
+                }
+            }
+        });
+        
+        // Welcome message
+        setTimeout(() => {
+            addLogEntry('All systems operational. The mirror reflects your will.', 'system');
+        }, 1000);
+    </script>
+</body>
+</html>

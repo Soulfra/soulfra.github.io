@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS - Sovereignty Initialization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Initialization sequence */
+        .init-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .init-text {
+            font-family: 'SF Mono', monospace;
+            font-size: 14px;
+            color: #00ff88;
+            line-height: 1.6;
+            opacity: 0;
+            animation: typeIn 0.5s forwards;
+        }
+        
+        @keyframes typeIn {
+            to { opacity: 1; }
+        }
+        
+        .init-text.delay-1 { animation-delay: 0.5s; }
+        .init-text.delay-2 { animation-delay: 1s; }
+        .init-text.delay-3 { animation-delay: 1.5s; }
+        .init-text.delay-4 { animation-delay: 2s; }
+        .init-text.delay-5 { animation-delay: 2.5s; }
+        
+        /* Main content (hidden initially) */
+        .main-container {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Sovereignty ceremony */
+        .ceremony-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .crown-animation {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: crownFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes crownFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .pioneer-title {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: shimmerGold 2s linear infinite;
+        }
+        
+        @keyframes shimmerGold {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .pioneer-subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        
+        /* Sovereignty meter */
+        .sovereignty-meter {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .meter-title {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .meter-bar {
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00ff88, #00ddff, #ff00ff);
+            border-radius: 20px;
+            transition: width 3s ease-out;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .meter-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Revenue projection */
+        .revenue-container {
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 221, 255, 0.1));
+            border-radius: 20px;
+            border: 2px solid #00ff88;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease-out;
+        }
+        
+        .revenue-container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .revenue-title {
+            font-size: 16px;
+            color: #00ff88;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .revenue-item {
+            text-align: center;
+        }
+        
+        .revenue-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .revenue-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #00ff88, #00ddff);
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 30px;
+            transform: scale(0);
+            animation: popIn 0.5s forwards 5s;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            to { transform: scale(1); }
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.8);
+        }
+        
+        /* Network visualization */
+        .network-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            .pioneer-title {
+                font-size: 28px;
+            }
+            
+            .revenue-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .crown-animation {
+                font-size: 60px;
+            }
+        }
+        
+        /* Particle effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 10s infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Network background -->
+    <canvas class="network-bg" id="networkCanvas"></canvas>
+    
+    <!-- Particle effects -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Initialization screen -->
+    <div class="init-screen" id="initScreen">
+        <div class="init-text">INITIALIZING SOVEREIGN ACCESS...</div>
+        <div class="init-text delay-1">VALIDATING PIONEER CREDENTIALS...</div>
+        <div class="init-text delay-2">ESTABLISHING TRIPLE-BLIND WITNESS...</div>
+        <div class="init-text delay-3">CALCULATING SOVEREIGNTY SCORE...</div>
+        <div class="init-text delay-4">GENERATING REVENUE PROJECTIONS...</div>
+        <div class="init-text delay-5">WELCOME TO THE MIRROR REALM...</div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="main-container" id="mainContainer">
+        <div class="ceremony-container">
+            <div class="crown-animation">👑</div>
+            
+            <h1 class="pioneer-title">ENTERPRISE PIONEER #001</h1>
+            <p class="pioneer-subtitle">First Sovereign in the Network</p>
+            
+            <div class="sovereignty-meter">
+                <div class="meter-title">Sovereignty Score</div>
+                <div class="meter-bar">
+                    <div class="meter-fill" id="sovereigntyFill"></div>
+                    <div class="meter-value" id="sovereigntyValue">0.00</div>
+                </div>
+            </div>
+            
+            <div class="revenue-container" id="revenueContainer">
+                <div class="revenue-title">Your Revenue Potential</div>
+                <div class="revenue-grid">
+                    <div class="revenue-item">
+                        <div class="revenue-label">Monthly</div>
+                        <div class="revenue-amount" id="monthlyRevenue">$0</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="revenue-label">Annual</div>
+                        <div class="revenue-amount" id="annualRevenue">$0</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="revenue-label">5 Year</div>
+                        <div class="revenue-amount" id="fiveYearRevenue">$0</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #888;">
+                    As Pioneer #001, you receive 90% revenue share and mythical entity privileges
+                </div>
+            </div>
+            
+            <a href="#" class="cta-button" id="ctaButton" onclick="claimSovereignty(event)">
+                CLAIM YOUR SOVEREIGNTY
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Extract token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        let sessionData = {};
+        
+        // Parse token
+        if (token) {
+            try {
+                sessionData = JSON.parse(atob(token));
+                console.log('🔮 Pioneer session initialized:', sessionData);
+            } catch (e) {
+                console.error('Invalid token');
+            }
+        }
+        
+        // Network visualization
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const nodes = [];
+        const connections = [];
+        
+        // Create network nodes
+        for (let i = 0; i < 50; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 3 + 1
+            });
+        }
+        
+        function drawNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(0, 255, 136, 0.2)';
+            ctx.lineWidth = 1;
+            
+            // Update and draw nodes
+            nodes.forEach((node, i) => {
+                node.x += node.vx;
+                node.y += node.vy;
+                
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                
+                // Draw connections to nearby nodes
+                nodes.forEach((otherNode, j) => {
+                    if (i !== j) {
+                        const dist = Math.hypot(node.x - otherNode.x, node.y - otherNode.y);
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+                
+                // Draw node
+                ctx.fillStyle = 'rgba(0, 255, 136, 0.6)';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(drawNetwork);
+        }
+        
+        drawNetwork();
+        
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Initialize sovereignty ceremony
+        setTimeout(() => {
+            document.getElementById('initScreen').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // Animate sovereignty meter
+            setTimeout(() => {
+                const fill = document.getElementById('sovereigntyFill');
+                const value = document.getElementById('sovereigntyValue');
+                fill.style.width = '95%';
+                
+                // Animate number
+                let current = 0;
+                const target = 0.95;
+                const increment = target / 100;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    value.textContent = current.toFixed(2);
+                }, 30);
+            }, 500);
+            
+            // Show revenue projections
+            setTimeout(() => {
+                document.getElementById('revenueContainer').classList.add('show');
+                
+                // Animate revenue numbers
+                animateValue('monthlyRevenue', 0, 125000, 2000);
+                animateValue('annualRevenue', 0, 1500000, 2500);
+                animateValue('fiveYearRevenue', 0, 12500000, 3000);
+            }, 2000);
+            
+        }, 3500);
+        
+        // Animate currency values
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const increment = (end - start) / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = '$' + Math.floor(current).toLocaleString();
+            }, 16);
+        }
+        
+        // Claim sovereignty action
+        function claimSovereignty(e) {
+            e.preventDefault();
+            
+            // Send message to parent window if in iframe
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'sovereignty_claimed',
+                    pioneerId: sessionData.pioneerId || 'ENTERPRISE_PIONEER_001',
+                    timestamp: Date.now()
+                }, '*');
+            }
+            
+            // Visual feedback
+            const button = document.getElementById('ctaButton');
+            button.textContent = 'SOVEREIGNTY ESTABLISHED ✓';
+            button.style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
+            button.style.color = '#000';
+            
+            // Create celebration effect
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = '50%';
+                    particle.style.width = '10px';
+                    particle.style.height = '10px';
+                    particle.style.background = '#ffd700';
+                    particle.style.borderRadius = '50%';
+                    particle.style.pointerEvents = 'none';
+                    particle.style.animation = 'particleFloat 2s ease-out forwards';
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 2000);
+                }, i * 20);
+            }
+            
+            // Log to console for demo
+            console.log('%c🎉 SOVEREIGNTY CLAIMED! 🎉', 'font-size: 24px; color: #ffd700;');
+            console.log('%cEnterprise Pioneer #001 has entered the network', 'font-size: 16px; color: #00ff88;');
+            console.log('Revenue projection: $1.5M annual');
+            console.log('Sovereignty score: 0.95');
+            console.log('Referral code: FOUNDER_BOSS_001');
+        }
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

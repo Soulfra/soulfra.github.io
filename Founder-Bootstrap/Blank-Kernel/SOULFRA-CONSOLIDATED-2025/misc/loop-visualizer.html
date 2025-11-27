@@ -1,0 +1,553 @@
+<div class="loop-visualizer-component">
+    <div class="visualizer-intro">
+        <p class="info-text">Visualize agent forks and sovereign reflection loops as they propagate through the mirror vault.</p>
+    </div>
+
+    <div class="visualizer-controls">
+        <div class="control-group">
+            <label for="depthFilter">Max Depth</label>
+            <input type="range" id="depthFilter" min="1" max="10" value="5">
+            <span class="depth-value">5</span>
+        </div>
+        
+        <div class="control-group">
+            <label for="timeFilter">Time Window</label>
+            <select id="timeFilter">
+                <option value="300000">Last 5 minutes</option>
+                <option value="3600000">Last hour</option>
+                <option value="86400000">Last 24 hours</option>
+                <option value="all">All time</option>
+            </select>
+        </div>
+        
+        <button id="refreshLoops" class="btn-secondary">
+            <span class="btn-icon">🔄</span>
+            Refresh
+        </button>
+    </div>
+
+    <div class="visualization-container">
+        <div id="loopVisualization" class="loop-canvas">
+            <svg id="loopSvg" width="100%" height="500">
+                <!-- Fork tree will be rendered here -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                            refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1" />
+                    </marker>
+                    
+                    <radialGradient id="nodeGradient">
+                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+                    </radialGradient>
+                </defs>
+                
+                <g id="links"></g>
+                <g id="nodes"></g>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <h4>Legend</h4>
+            <div class="legend-item">
+                <span class="legend-node vault-origin"></span>
+                <span>Vault Origin</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-node active-agent"></span>
+                <span>Active Agent</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-node completed-loop"></span>
+                <span>Completed Loop</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-line"></span>
+                <span>Fork Connection</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="loop-statistics">
+        <div class="stats-grid">
+            <div class="loop-stat">
+                <h4>Fork Statistics</h4>
+                <div class="stat-row">
+                    <span>Total Forks:</span>
+                    <strong id="totalForks">0</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Active Agents:</span>
+                    <strong id="activeAgents">0</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Max Depth:</span>
+                    <strong id="maxDepth">0</strong>
+                </div>
+            </div>
+            
+            <div class="loop-stat">
+                <h4>Loop Metrics</h4>
+                <div class="stat-row">
+                    <span>Completed Loops:</span>
+                    <strong id="completedLoops">0</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Average Loop Time:</span>
+                    <strong id="avgLoopTime">-</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Fastest Loop:</span>
+                    <strong id="fastestLoop">-</strong>
+                </div>
+            </div>
+            
+            <div class="loop-stat">
+                <h4>Recent Activity</h4>
+                <div id="recentActivity" class="activity-list">
+                    <div class="activity-empty">No recent activity</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fork-details" id="forkDetails" style="display: none;">
+        <h4>Fork Details</h4>
+        <div class="detail-content">
+            <div class="detail-row">
+                <span>Agent ID:</span>
+                <code id="detailAgentId">-</code>
+            </div>
+            <div class="detail-row">
+                <span>Fork ID:</span>
+                <code id="detailForkId">-</code>
+            </div>
+            <div class="detail-row">
+                <span>Parent:</span>
+                <code id="detailParent">-</code>
+            </div>
+            <div class="detail-row">
+                <span>Depth:</span>
+                <strong id="detailDepth">-</strong>
+            </div>
+            <div class="detail-row">
+                <span>Created:</span>
+                <span id="detailCreated">-</span>
+            </div>
+            <div class="detail-row">
+                <span>Mirror Signature:</span>
+                <code id="detailSignature">-</code>
+            </div>
+            <div class="detail-row">
+                <span>Loops:</span>
+                <strong id="detailLoops">0</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.loop-visualizer-component {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.visualizer-intro {
+    margin-bottom: 0.5rem;
+}
+
+.visualizer-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.control-group label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.depth-value {
+    min-width: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.visualization-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+
+.loop-canvas {
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+#loopSvg {
+    cursor: grab;
+}
+
+#loopSvg:active {
+    cursor: grabbing;
+}
+
+/* SVG Styles */
+.node {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.node:hover {
+    filter: brightness(1.2);
+}
+
+.node-circle {
+    fill: var(--primary-color);
+    stroke: var(--surface);
+    stroke-width: 2;
+}
+
+.node-text {
+    fill: var(--text-primary);
+    font-size: 0.75rem;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.link {
+    fill: none;
+    stroke: var(--border-color);
+    stroke-width: 2;
+    marker-end: url(#arrowhead);
+}
+
+.link.active {
+    stroke: var(--primary-color);
+    stroke-width: 3;
+}
+
+/* Legend */
+.legend {
+    background: var(--background);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+}
+
+.legend h4 {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.legend-node {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+}
+
+.legend-node.vault-origin {
+    background: var(--secondary-color);
+}
+
+.legend-node.active-agent {
+    background: var(--primary-color);
+}
+
+.legend-node.completed-loop {
+    background: var(--success-color);
+}
+
+.legend-line {
+    width: 30px;
+    height: 2px;
+    background: var(--border-color);
+    position: relative;
+}
+
+.legend-line::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid var(--border-color);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+/* Statistics */
+.loop-statistics {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.loop-stat h4 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-row strong {
+    color: var(--primary-color);
+}
+
+/* Activity List */
+.activity-list {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.activity-empty {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem 0;
+}
+
+/* Fork Details */
+.fork-details {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+}
+
+.fork-details h4 {
+    margin-bottom: 1rem;
+}
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.detail-row code {
+    padding: 0.25rem 0.5rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+@media (max-width: 1024px) {
+    .visualization-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .legend h4 {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+// Depth filter
+const depthFilter = document.getElementById('depthFilter');
+const depthValue = depthFilter.nextElementSibling;
+
+depthFilter.addEventListener('input', () => {
+    depthValue.textContent = depthFilter.value;
+    updateVisualization();
+});
+
+// Mock visualization data
+function generateMockForkTree() {
+    const nodes = [
+        { id: 'vault', name: 'Vault Origin', x: 400, y: 50, type: 'origin', depth: 0 },
+        { id: 'agent1', name: 'Agent 1', x: 300, y: 150, type: 'active', depth: 1, parent: 'vault' },
+        { id: 'agent2', name: 'Agent 2', x: 500, y: 150, type: 'active', depth: 1, parent: 'vault' },
+        { id: 'agent3', name: 'Agent 3', x: 250, y: 250, type: 'loop', depth: 2, parent: 'agent1' },
+        { id: 'agent4', name: 'Agent 4', x: 350, y: 250, type: 'active', depth: 2, parent: 'agent1' },
+        { id: 'agent5', name: 'Agent 5', x: 550, y: 250, type: 'active', depth: 2, parent: 'agent2' }
+    ];
+    
+    return nodes;
+}
+
+function drawVisualization() {
+    const svg = document.getElementById('loopSvg');
+    const nodes = generateMockForkTree();
+    const maxDepth = parseInt(depthFilter.value);
+    
+    // Clear existing
+    document.getElementById('links').innerHTML = '';
+    document.getElementById('nodes').innerHTML = '';
+    
+    // Filter nodes by depth
+    const visibleNodes = nodes.filter(n => n.depth <= maxDepth);
+    
+    // Draw links
+    const linksGroup = document.getElementById('links');
+    visibleNodes.forEach(node => {
+        if (node.parent) {
+            const parent = visibleNodes.find(n => n.id === node.parent);
+            if (parent) {
+                const link = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                link.setAttribute('class', 'link');
+                link.setAttribute('x1', parent.x);
+                link.setAttribute('y1', parent.y);
+                link.setAttribute('x2', node.x);
+                link.setAttribute('y2', node.y);
+                linksGroup.appendChild(link);
+            }
+        }
+    });
+    
+    // Draw nodes
+    const nodesGroup = document.getElementById('nodes');
+    visibleNodes.forEach(node => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('class', 'node');
+        g.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+        g.onclick = () => showForkDetails(node);
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'node-circle');
+        circle.setAttribute('r', node.type === 'origin' ? 20 : 15);
+        circle.setAttribute('fill', getNodeColor(node.type));
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('class', 'node-text');
+        text.setAttribute('dy', 35);
+        text.textContent = node.name;
+        
+        g.appendChild(circle);
+        g.appendChild(text);
+        nodesGroup.appendChild(g);
+    });
+    
+    // Update stats
+    updateStatistics(visibleNodes);
+}
+
+function getNodeColor(type) {
+    switch(type) {
+        case 'origin': return '#8b5cf6';
+        case 'loop': return '#10b981';
+        default: return '#6366f1';
+    }
+}
+
+function showForkDetails(node) {
+    document.getElementById('forkDetails').style.display = 'block';
+    document.getElementById('detailAgentId').textContent = node.id;
+    document.getElementById('detailForkId').textContent = `fork-${Math.random().toString(36).substr(2, 9)}`;
+    document.getElementById('detailParent').textContent = node.parent || 'vault-origin';
+    document.getElementById('detailDepth').textContent = node.depth;
+    document.getElementById('detailCreated').textContent = new Date().toLocaleString();
+    document.getElementById('detailSignature').textContent = `sig-${Math.random().toString(36).substr(2, 16)}`;
+    document.getElementById('detailLoops').textContent = node.type === 'loop' ? '1' : '0';
+}
+
+function updateStatistics(nodes) {
+    document.getElementById('totalForks').textContent = nodes.length - 1; // Exclude origin
+    document.getElementById('activeAgents').textContent = nodes.filter(n => n.type === 'active').length;
+    document.getElementById('maxDepth').textContent = Math.max(...nodes.map(n => n.depth));
+    document.getElementById('completedLoops').textContent = nodes.filter(n => n.type === 'loop').length;
+    document.getElementById('avgLoopTime').textContent = '342ms';
+    document.getElementById('fastestLoop').textContent = '127ms';
+    
+    // Add recent activity
+    const activityHtml = `
+        <div class="activity-item">
+            <div>Agent fork-a3b2 completed loop</div>
+            <div class="activity-time">2 minutes ago</div>
+        </div>
+        <div class="activity-item">
+            <div>New agent created: Agent 5</div>
+            <div class="activity-time">5 minutes ago</div>
+        </div>
+    `;
+    document.getElementById('recentActivity').innerHTML = activityHtml;
+}
+
+function updateVisualization() {
+    drawVisualization();
+}
+
+// Initialize
+drawVisualization();
+
+// Refresh button
+document.getElementById('refreshLoops').addEventListener('click', () => {
+    drawVisualization();
+    window.dashboard.showNotification('Loop visualization refreshed', 'success');
+});
+</script>

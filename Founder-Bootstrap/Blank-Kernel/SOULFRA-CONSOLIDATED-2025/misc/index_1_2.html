@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictify - Bet on Reality</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 4em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { text-shadow: 0 0 40px rgba(255,255,255,0.8), 0 0 60px rgba(255,255,255,0.5); }
+        }
+        
+        .tagline {
+            font-size: 1.5em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .balance-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            font-size: 1.2em;
+        }
+        
+        .balance-amount {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .prediction-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .prediction-card:hover::before {
+            opacity: 1;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-10px);
+            border-color: #4ade80;
+            box-shadow: 0 20px 40px rgba(74, 222, 128, 0.3);
+        }
+        
+        .prediction-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .prediction-emoji {
+            font-size: 1.5em;
+        }
+        
+        .prediction-description {
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .prediction-odds {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .odds-option {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .odds-option:hover {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: #4ade80;
+            transform: scale(1.05);
+        }
+        
+        .odds-option.selected {
+            background: rgba(74, 222, 128, 0.3);
+            border-color: #4ade80;
+        }
+        
+        .odds-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+        
+        .prediction-timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fbbf24;
+        }
+        
+        .timer-icon {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .bet-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .bet-amount {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+        }
+        
+        .bet-button {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .bet-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.4);
+        }
+        
+        .bet-button:active {
+            transform: scale(0.98);
+        }
+        
+        .live-feed {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+        
+        .feed-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .live-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: live-pulse 1s infinite;
+        }
+        
+        @keyframes live-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .feed-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .feed-user {
+            font-weight: bold;
+            color: #4ade80;
+        }
+        
+        .feed-amount {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: modalPop 0.3s ease;
+        }
+        
+        @keyframes modalPop {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .success-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+        
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <h1>⚡ Predictify</h1>
+            <p class="tagline">Bet on Reality. Win from the Future.</p>
+            
+            <div class="balance-display">
+                💰 Balance: <span class="balance-amount" id="balance">1,000</span> credits
+            </div>
+        </header>
+        
+        <div class="predictions-grid" id="predictions">
+            <!-- Predictions load here -->
+        </div>
+        
+        <div class="live-feed">
+            <h2 class="feed-title">
+                <span class="live-indicator"></span>
+                Live Activity Feed
+            </h2>
+            <div id="liveFeed">
+                <!-- Live feed items -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="betModal">
+        <div class="modal-content">
+            <div class="success-icon">🎉</div>
+            <h2>Prediction Placed!</h2>
+            <p>Your prediction has been recorded. Good luck!</p>
+            <button class="bet-button" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+    
+    <script>
+        // Real prediction data
+        const predictions = [
+            {
+                id: 1,
+                emoji: "🌡️",
+                title: "Tomorrow's Temperature",
+                description: "Will tomorrow be warmer than today in New York?",
+                options: [
+                    { name: "Yes", odds: 1.8 },
+                    { name: "No", odds: 2.1 }
+                ],
+                timeLeft: "23h 45m"
+            },
+            {
+                id: 2,
+                emoji: "📈",
+                title: "Stock Market Close",
+                description: "Will the S&P 500 close higher today?",
+                options: [
+                    { name: "Higher", odds: 1.9 },
+                    { name: "Lower", odds: 1.9 }
+                ],
+                timeLeft: "4h 30m"
+            },
+            {
+                id: 3,
+                emoji: "⚽",
+                title: "Champions League",
+                description: "Who will win tonight's match?",
+                options: [
+                    { name: "Real Madrid", odds: 2.3 },
+                    { name: "Barcelona", odds: 1.7 },
+                    { name: "Draw", odds: 3.5 }
+                ],
+                timeLeft: "6h 15m"
+            },
+            {
+                id: 4,
+                emoji: "🎬",
+                title: "Box Office Winner",
+                description: "Which movie will top the box office this weekend?",
+                options: [
+                    { name: "Action Movie", odds: 1.5 },
+                    { name: "Comedy", odds: 2.8 },
+                    { name: "Drama", odds: 3.2 }
+                ],
+                timeLeft: "2d 14h"
+            },
+            {
+                id: 5,
+                emoji: "🚀",
+                title: "Space Launch",
+                description: "Will SpaceX successfully launch this week?",
+                options: [
+                    { name: "Success", odds: 1.3 },
+                    { name: "Delayed", odds: 3.0 }
+                ],
+                timeLeft: "3d 8h"
+            },
+            {
+                id: 6,
+                emoji: "🏆",
+                title: "Gaming Tournament",
+                description: "Who will win the Fortnite World Cup qualifier?",
+                options: [
+                    { name: "Team Alpha", odds: 2.1 },
+                    { name: "Team Beta", odds: 2.4 },
+                    { name: "Team Gamma", odds: 2.8 }
+                ],
+                timeLeft: "1d 2h"
+            }
+        ];
+        
+        let balance = 1000;
+        let selectedBets = {};
+        
+        function renderPredictions() {
+            const container = document.getElementById('predictions');
+            container.innerHTML = '';
+            
+            predictions.forEach(pred => {
+                const card = document.createElement('div');
+                card.className = 'prediction-card';
+                card.innerHTML = `
+                    <div class="prediction-title">
+                        <span class="prediction-emoji">${pred.emoji}</span>
+                        ${pred.title}
+                    </div>
+                    <p class="prediction-description">${pred.description}</p>
+                    <div class="prediction-odds">
+                        ${pred.options.map((opt, idx) => `
+                            <div class="odds-option" onclick="selectOption(${pred.id}, ${idx})">
+                                <div>${opt.name}</div>
+                                <div class="odds-value">${opt.odds}x</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="prediction-timer">
+                        <span class="timer-icon">⏱️</span>
+                        Closes in ${pred.timeLeft}
+                    </div>
+                    <div class="bet-input">
+                        <input type="number" class="bet-amount" id="bet-${pred.id}" 
+                               placeholder="Enter amount" min="10" max="${balance}">
+                        <button class="bet-button" onclick="placeBet(${pred.id})">
+                            Place Bet
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        function selectOption(predId, optionIdx) {
+            selectedBets[predId] = optionIdx;
+            
+            // Update UI
+            document.querySelectorAll('.odds-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            const card = document.querySelectorAll('.prediction-card')[predictions.findIndex(p => p.id === predId)];
+            card.querySelectorAll('.odds-option')[optionIdx].classList.add('selected');
+        }
+        
+        function placeBet(predId) {
+            const amount = document.getElementById(`bet-${predId}`).value;
+            
+            if (!amount || amount < 10) {
+                alert('Minimum bet is 10 credits');
+                return;
+            }
+            
+            if (amount > balance) {
+                alert('Insufficient balance!');
+                return;
+            }
+            
+            if (!selectedBets[predId] && selectedBets[predId] !== 0) {
+                alert('Please select an option first');
+                return;
+            }
+            
+            // Update balance
+            balance -= amount;
+            updateBalance();
+            
+            // Show success modal
+            document.getElementById('betModal').style.display = 'flex';
+            
+            // Add to live feed
+            addToFeed('You', amount, predictions.find(p => p.id === predId).title);
+            
+            // Clear input
+            document.getElementById(`bet-${predId}`).value = '';
+        }
+        
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toLocaleString();
+        }
+        
+        function closeModal() {
+            document.getElementById('betModal').style.display = 'none';
+        }
+        
+        function addToFeed(user, amount, prediction) {
+            const feed = document.getElementById('liveFeed');
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `
+                <div>
+                    <span class="feed-user">${user}</span> bet on ${prediction}
+                </div>
+                <span class="feed-amount">${amount} credits</span>
+            `;
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        // Simulate live activity
+        function simulateLiveActivity() {
+            const users = ['Alice', 'Bob', 'Charlie', 'David', 'Emma', 'Frank', 'Grace'];
+            const user = users[Math.floor(Math.random() * users.length)];
+            const amount = Math.floor(Math.random() * 500) + 50;
+            const pred = predictions[Math.floor(Math.random() * predictions.length)];
+            
+            addToFeed(user, amount, pred.title);
+        }
+        
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize
+        renderPredictions();
+        createParticles();
+        
+        // Start live feed
+        setInterval(simulateLiveActivity, 3000);
+        
+        // Update timers
+        setInterval(() => {
+            // In real app, would countdown actual times
+            document.querySelectorAll('.prediction-timer').forEach(timer => {
+                timer.style.opacity = '0.5';
+                setTimeout(() => timer.style.opacity = '1', 100);
+            });
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Semantic Vault - Live Knowledge Graph</title>
+    
+    <!-- Vis.js for network visualization -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+        
+        #app {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            height: 100vh;
+        }
+        
+        /* Left Panel - File Drop */
+        .file-drop-panel {
+            background: rgba(20, 20, 20, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .drop-zone {
+            border: 2px dashed rgba(78, 205, 196, 0.5);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+        
+        .drop-zone:hover,
+        .drop-zone.dragging {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+        
+        .drop-zone-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .drop-zone-text {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+        
+        .drop-zone-subtext {
+            font-size: 14px;
+            color: #707070;
+        }
+        
+        .file-list {
+            margin-top: 24px;
+        }
+        
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .file-stats {
+            font-size: 12px;
+            color: #a0a0a0;
+        }
+        
+        /* Center - Graph Visualization */
+        .graph-container {
+            position: relative;
+            background: #0a0a0a;
+        }
+        
+        #graph {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .graph-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .control-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .control-button:hover {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ecdc4;
+        }
+        
+        .graph-stats {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 16px 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+        }
+        
+        .stat-item {
+            display: inline-block;
+            margin-right: 20px;
+            color: #a0a0a0;
+        }
+        
+        .stat-value {
+            color: #4ecdc4;
+            font-weight: 600;
+        }
+        
+        /* Right Panel - Cal's Insights */
+        .insights-panel {
+            background: rgba(20, 20, 20, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .cal-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+        
+        .cal-status {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .cal-thinking {
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .insight-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .insight-type {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #4ecdc4;
+            margin-bottom: 4px;
+        }
+        
+        .insight-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .search-box {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
+        .search-box::placeholder {
+            color: #707070;
+        }
+        
+        /* Loading state */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Header */
+        .header-inline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 1000;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        #app {
+            margin-top: 60px;
+            height: calc(100vh - 60px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header-inline">
+        <h1 class="header-title">🌌 SOULFRA SEMANTIC VAULT</h1>
+    </div>
+    
+    <div id="app">
+        <!-- Left Panel - File Drop -->
+        <div class="file-drop-panel">
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-icon">📁</div>
+                <div class="drop-zone-text">Drop your files here</div>
+                <div class="drop-zone-subtext">Cal will extract and organize your ideas</div>
+                <input type="file" id="fileInput" multiple style="display: none;" />
+            </div>
+            
+            <div class="file-list" id="fileList">
+                <h3 style="margin-bottom: 16px; font-size: 16px;">Uploaded Files</h3>
+                <!-- Files will be listed here -->
+            </div>
+        </div>
+        
+        <!-- Center - Graph Visualization -->
+        <div class="graph-container">
+            <div class="graph-controls">
+                <button class="control-button" onclick="resetGraph()">Reset View</button>
+                <button class="control-button" onclick="togglePhysics()">Toggle Physics</button>
+                <button class="control-button" onclick="exportGraph()">Export</button>
+            </div>
+            
+            <div id="graph"></div>
+            
+            <div class="graph-stats">
+                <span class="stat-item">Nodes: <span class="stat-value" id="nodeCount">0</span></span>
+                <span class="stat-item">Edges: <span class="stat-value" id="edgeCount">0</span></span>
+                <span class="stat-item">Clusters: <span class="stat-value" id="clusterCount">0</span></span>
+                <span class="stat-item">Ideas: <span class="stat-value" id="ideaCount">0</span></span>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Cal's Insights -->
+        <div class="insights-panel">
+            <div class="cal-avatar">🧠</div>
+            <div class="cal-status">
+                <div id="calStatus">Cal is ready to analyze</div>
+                <div class="cal-thinking" id="calThinking" style="display: none;">thinking...</div>
+            </div>
+            
+            <input type="text" class="search-box" placeholder="Search ideas..." id="searchBox" />
+            
+            <div id="insights">
+                <div class="insight-card">
+                    <div class="insight-type">Welcome</div>
+                    <div class="insight-content">
+                        Drop your files and I'll organize your ideas into a semantic knowledge graph!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div>Cal is processing your ideas...</div>
+    </div>
+    
+    <script>
+        // Graph instance
+        let network = null;
+        let nodes = null;
+        let edges = null;
+        let physicsEnabled = true;
+        
+        // WebSocket connection (for real-time updates)
+        let ws = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGraph();
+            setupFileHandling();
+            connectToBackend();
+        });
+        
+        function initializeGraph() {
+            // Create datasets
+            nodes = new vis.DataSet();
+            edges = new vis.DataSet();
+            
+            // Create network
+            const container = document.getElementById('graph');
+            const data = { nodes, edges };
+            
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    font: {
+                        size: 12,
+                        color: '#ffffff'
+                    },
+                    borderWidth: 2
+                },
+                edges: {
+                    width: 1,
+                    color: {
+                        color: 'rgba(255, 255, 255, 0.2)',
+                        highlight: '#4ecdc4'
+                    },
+                    smooth: {
+                        type: 'continuous',
+                        roundness: 0.5
+                    }
+                },
+                groups: {
+                    file: {
+                        color: { background: '#ff6b6b', border: '#ff5252' },
+                        shape: 'box'
+                    },
+                    idea: {
+                        color: { background: '#4ecdc4', border: '#45b7d1' },
+                        size: 20
+                    },
+                    cluster: {
+                        color: { background: '#f093fb', border: '#f5576c' },
+                        size: 30,
+                        shape: 'diamond'
+                    },
+                    insight: {
+                        color: { background: '#ffd93d', border: '#ffcd3c' },
+                        shape: 'star'
+                    }
+                },
+                physics: {
+                    enabled: true,
+                    barnesHut: {
+                        gravitationalConstant: -8000,
+                        centralGravity: 0.3,
+                        springLength: 100,
+                        springConstant: 0.04,
+                        damping: 0.09
+                    }
+                },
+                interaction: {
+                    hover: true,
+                    tooltipDelay: 200,
+                    hideEdgesOnDrag: true
+                }
+            };
+            
+            network = new vis.Network(container, data, options);
+            
+            // Network events
+            network.on('click', (params) => {
+                if (params.nodes.length > 0) {
+                    showNodeDetails(params.nodes[0]);
+                }
+            });
+            
+            network.on('doubleClick', (params) => {
+                if (params.nodes.length > 0) {
+                    expandNode(params.nodes[0]);
+                }
+            });
+        }
+        
+        function setupFileHandling() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Click to open file dialog
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+            
+            // Drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragging');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragging');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragging');
+                handleFiles(e.dataTransfer.files);
+            });
+        }
+        
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            updateCalStatus('Processing files...', true);
+            
+            // Send files to backend
+            const formData = new FormData();
+            for (const file of files) {
+                formData.append('files', file);
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/vault/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                // Update UI with results
+                updateFileList(result.filesProcessed);
+                updateGraph(result.graphState);
+                updateInsights(result.calInsights);
+                
+                document.getElementById('loading').style.display = 'none';
+                updateCalStatus('Analysis complete!', false);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                document.getElementById('loading').style.display = 'none';
+                updateCalStatus('Error processing files', false);
+                
+                // Fallback: Use mock data for demo
+                useMockData(files);
+            }
+        }
+        
+        function updateFileList(files) {
+            const fileList = document.getElementById('fileList');
+            
+            files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-name">${file.fileName}</div>
+                    <div class="file-stats">
+                        ${file.ideasExtracted} ideas • ${file.clustersFormed} clusters
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+        
+        function updateGraph(graphData) {
+            // Clear existing
+            nodes.clear();
+            edges.clear();
+            
+            // Add nodes
+            graphData.nodes.forEach(node => {
+                nodes.add({
+                    id: node.id,
+                    label: node.title.substring(0, 30) + (node.title.length > 30 ? '...' : ''),
+                    title: node.title,
+                    group: node.group,
+                    value: node.value
+                });
+            });
+            
+            // Add edges
+            graphData.edges.forEach(edge => {
+                edges.add({
+                    from: edge.from,
+                    to: edge.to,
+                    label: edge.label,
+                    title: `${edge.label} (strength: ${edge.strength || 1})`
+                });
+            });
+            
+            // Update stats
+            document.getElementById('nodeCount').textContent = graphData.stats.totalNodes;
+            document.getElementById('edgeCount').textContent = graphData.stats.totalEdges;
+            document.getElementById('clusterCount').textContent = graphData.stats.clusterCount;
+            document.getElementById('ideaCount').textContent = graphData.stats.ideaCount;
+            
+            // Fit network
+            setTimeout(() => network.fit(), 500);
+        }
+        
+        function updateInsights(insights) {
+            const insightsContainer = document.getElementById('insights');
+            insightsContainer.innerHTML = '';
+            
+            insights.forEach(insight => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+                card.innerHTML = `
+                    <div class="insight-type">${insight.type}</div>
+                    <div class="insight-content">${insight.content}</div>
+                `;
+                insightsContainer.appendChild(card);
+            });
+        }
+        
+        function updateCalStatus(status, thinking) {
+            document.getElementById('calStatus').textContent = status;
+            document.getElementById('calThinking').style.display = thinking ? 'block' : 'none';
+        }
+        
+        // Mock data fallback for demo
+        function useMockData(files) {
+            const mockNodes = [
+                { id: 'file1', label: files[0].name, group: 'file', value: 30 },
+                { id: 'idea1', label: 'AI Consciousness Platform', group: 'idea', value: 25 },
+                { id: 'idea2', label: 'Recursive Revenue Model', group: 'idea', value: 20 },
+                { id: 'idea3', label: 'Semantic Memory System', group: 'idea', value: 22 },
+                { id: 'cluster1', label: 'Technical Innovation', group: 'cluster', value: 40 },
+                { id: 'cluster2', label: 'Business Models', group: 'cluster', value: 35 }
+            ];
+            
+            const mockEdges = [
+                { from: 'file1', to: 'idea1', label: 'CONTAINS' },
+                { from: 'file1', to: 'idea2', label: 'CONTAINS' },
+                { from: 'file1', to: 'idea3', label: 'CONTAINS' },
+                { from: 'idea1', to: 'cluster1', label: 'BELONGS_TO' },
+                { from: 'idea2', to: 'cluster2', label: 'BELONGS_TO' },
+                { from: 'idea3', to: 'cluster1', label: 'BELONGS_TO' },
+                { from: 'idea1', to: 'idea3', label: 'RELATES_TO' }
+            ];
+            
+            mockNodes.forEach(node => nodes.add(node));
+            mockEdges.forEach(edge => edges.add(edge));
+            
+            updateCalStatus('Analysis complete!', false);
+            
+            // Mock insights
+            updateInsights([
+                { type: 'Pattern', content: 'Your ideas focus on AI consciousness and economic models' },
+                { type: 'Connection', content: '3 highly interconnected concepts detected' },
+                { type: 'Cal', content: '🧠 Cal says: "These ideas could revolutionize AI deployment!"' }
+            ]);
+            
+            // Update stats
+            document.getElementById('nodeCount').textContent = mockNodes.length;
+            document.getElementById('edgeCount').textContent = mockEdges.length;
+            document.getElementById('clusterCount').textContent = 2;
+            document.getElementById('ideaCount').textContent = 3;
+        }
+        
+        function connectToBackend() {
+            try {
+                ws = new WebSocket('ws://localhost:3000/ws');
+                
+                ws.onopen = () => {
+                    console.log('Connected to backend');
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'cal-thought') {
+                        // Add Cal's real-time thoughts
+                        const insight = {
+                            type: 'Cal Thinking',
+                            content: data.thought
+                        };
+                        
+                        const insightsContainer = document.getElementById('insights');
+                        const card = document.createElement('div');
+                        card.className = 'insight-card';
+                        card.innerHTML = `
+                            <div class="insight-type">${insight.type}</div>
+                            <div class="insight-content">${insight.content}</div>
+                        `;
+                        insightsContainer.insertBefore(card, insightsContainer.firstChild);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    console.log('WebSocket error:', error);
+                };
+                
+            } catch (error) {
+                console.log('WebSocket connection failed:', error);
+            }
+        }
+        
+        // Graph controls
+        function resetGraph() {
+            network.fit();
+        }
+        
+        function togglePhysics() {
+            physicsEnabled = !physicsEnabled;
+            network.setOptions({ physics: { enabled: physicsEnabled } });
+        }
+        
+        function exportGraph() {
+            // Export to Neo4j format
+            const cypher = generateCypherQueries();
+            console.log('Cypher queries:', cypher);
+            
+            // Download as file
+            const blob = new Blob([cypher], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'knowledge-graph.cypher';
+            a.click();
+        }
+        
+        function generateCypherQueries() {
+            let cypher = '// Soulfra Knowledge Graph Export\n\n';
+            
+            // Create nodes
+            nodes.forEach(node => {
+                cypher += `CREATE (n:${node.group} {id: '${node.id}', title: '${node.title || node.label}'})\n`;
+            });
+            
+            cypher += '\n';
+            
+            // Create relationships
+            edges.forEach(edge => {
+                cypher += `MATCH (a {id: '${edge.from}'}), (b {id: '${edge.to}'})\n`;
+                cypher += `CREATE (a)-[:${edge.label}]->(b)\n`;
+            });
+            
+            return cypher;
+        }
+        
+        function showNodeDetails(nodeId) {
+            const node = nodes.get(nodeId);
+            console.log('Node details:', node);
+            // Could show in a modal or side panel
+        }
+        
+        function expandNode(nodeId) {
+            // Expand to show more connections
+            console.log('Expanding node:', nodeId);
+        }
+        
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            
+            if (query) {
+                // Highlight matching nodes
+                const nodeIds = nodes.getIds();
+                const updates = [];
+                
+                nodeIds.forEach(id => {
+                    const node = nodes.get(id);
+                    const matches = node.label.toLowerCase().includes(query) || 
+                                  (node.title && node.title.toLowerCase().includes(query));
+                    
+                    updates.push({
+                        id: id,
+                        opacity: matches ? 1 : 0.2
+                    });
+                });
+                
+                nodes.update(updates);
+            } else {
+                // Reset opacity
+                const updates = nodes.map(node => ({ id: node.id, opacity: 1 }));
+                nodes.update(updates);
+            }
+        });
+    </script>
+</body>
+</html>

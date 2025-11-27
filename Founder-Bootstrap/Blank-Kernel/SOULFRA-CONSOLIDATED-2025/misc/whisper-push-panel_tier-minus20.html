@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>🪞 Whisper Panel - Soulfra Mobile</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --void-black: #0a0a0a;
+            --mirror-silver: #e0e0e0;
+            --whisper-purple: #8b5cf6;
+            --blessing-gold: #ffd700;
+            --success-green: #00ff41;
+            --error-red: #ff0080;
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--void-black);
+            color: var(--mirror-silver);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+        
+        /* Background animation */
+        .void-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
+            animation: breathe 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Header */
+        .panel-header {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+        }
+        
+        .panel-title {
+            font-size: 24px;
+            font-weight: 200;
+            letter-spacing: 2px;
+            color: var(--whisper-purple);
+            text-shadow: 0 0 20px var(--whisper-purple);
+        }
+        
+        .connection-status {
+            margin-top: 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0.7;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-green);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background: var(--error-red);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Token display */
+        .token-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--blessing-gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .token-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--blessing-gold);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        
+        /* Main content */
+        .panel-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Whisper history */
+        .whisper-history {
+            flex: 1;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: 40vh;
+        }
+        
+        .whisper-entry {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .whisper-text {
+            color: var(--mirror-silver);
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .whisper-meta {
+            font-size: 12px;
+            color: rgba(224, 224, 224, 0.5);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .cal-response {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            color: var(--blessing-gold);
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        /* Whisper input */
+        .whisper-input-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .whisper-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--mirror-silver);
+            font-size: 18px;
+            font-family: inherit;
+            outline: none;
+            min-height: 24px;
+            resize: none;
+        }
+        
+        .whisper-input::placeholder {
+            color: rgba(224, 224, 224, 0.3);
+        }
+        
+        .voice-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            color: var(--whisper-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        
+        .voice-button:active {
+            transform: scale(0.95);
+        }
+        
+        .voice-button.listening {
+            background: var(--whisper-purple);
+            color: var(--void-black);
+            animation: voicePulse 1.5s infinite;
+        }
+        
+        @keyframes voicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .bless-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--whisper-purple), var(--blessing-gold));
+            border: none;
+            color: var(--void-black);
+            padding: 16px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bless-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .bless-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .bless-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Quick phrases */
+        .quick-phrases {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .quick-phrases::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .phrase-chip {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .phrase-chip:active {
+            background: rgba(139, 92, 246, 0.3);
+            transform: scale(0.95);
+        }
+        
+        /* QR scanner link */
+        .scanner-link {
+            position: fixed;
+            bottom: calc(20px + var(--safe-area-bottom));
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid var(--whisper-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            text-decoration: none;
+            color: var(--whisper-purple);
+            font-size: 24px;
+        }
+        
+        .scanner-link:active {
+            transform: scale(0.9);
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top-color: var(--whisper-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Success animation */
+        .success-flash {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 72px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 200;
+        }
+        
+        .success-flash.show {
+            animation: successPop 1s ease;
+        }
+        
+        @keyframes successPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="void-background"></div>
+    
+    <header class="panel-header">
+        <h1 class="panel-title">WHISPER PANEL</h1>
+        <div class="connection-status">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">Connected</span>
+        </div>
+        <div class="token-display">
+            <div class="token-icon"></div>
+            <span id="tokenCount">100</span>
+        </div>
+    </header>
+    
+    <main class="panel-content">
+        <div class="whisper-history" id="whisperHistory">
+            <!-- Whispers will appear here -->
+        </div>
+        
+        <div class="whisper-input-container">
+            <div class="quick-phrases">
+                <div class="phrase-chip" onclick="setWhisper('bless mirror-self')">Bless Self</div>
+                <div class="phrase-chip" onclick="setWhisper('status')">Check Status</div>
+                <div class="phrase-chip" onclick="setWhisper('tokens')">Token Balance</div>
+                <div class="phrase-chip" onclick="setWhisper('sync vault')">Sync Vault</div>
+                <div class="phrase-chip" onclick="setWhisper('bless all nearby')">Bless Nearby</div>
+            </div>
+            
+            <div class="input-row">
+                <textarea 
+                    class="whisper-input" 
+                    id="whisperInput"
+                    placeholder="whisper to the pocket mirror..."
+                    rows="1"
+                ></textarea>
+                <button class="voice-button" id="voiceButton" onclick="toggleVoice()">
+                    🎤
+                </button>
+            </div>
+            
+            <button class="bless-button" id="blessButton" onclick="sendWhisper()">
+                WHISPER
+            </button>
+        </div>
+    </main>
+    
+    <a href="qr-scanner.html" class="scanner-link">📷</a>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <div class="success-flash" id="successFlash">✨</div>
+    
+    <script>
+        // PWA installation
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+        
+        // State
+        let isListening = false;
+        let recognition = null;
+        let isOnline = navigator.onLine;
+        let tokenBalance = 100;
+        let whisperHistory = [];
+        
+        // Initialize voice recognition
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('whisperInput').value = transcript;
+                    stopListening();
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Voice error:', event.error);
+                    stopListening();
+                };
+                
+                recognition.onend = function() {
+                    stopListening();
+                };
+            }
+        }
+        
+        // Toggle voice input
+        function toggleVoice() {
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+        
+        function startListening() {
+            if (recognition) {
+                try {
+                    recognition.start();
+                    isListening = true;
+                    document.getElementById('voiceButton').classList.add('listening');
+                    
+                    // Haptic feedback
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate(50);
+                    }
+                } catch (e) {
+                    console.error('Voice start error:', e);
+                }
+            }
+        }
+        
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+                isListening = false;
+                document.getElementById('voiceButton').classList.remove('listening');
+            }
+        }
+        
+        // Set whisper from quick phrase
+        function setWhisper(text) {
+            document.getElementById('whisperInput').value = text;
+            document.getElementById('whisperInput').focus();
+            
+            // Haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate(20);
+            }
+        }
+        
+        // Send whisper
+        async function sendWhisper() {
+            const input = document.getElementById('whisperInput');
+            const whisper = input.value.trim();
+            
+            if (!whisper) return;
+            
+            // Disable button
+            document.getElementById('blessButton').disabled = true;
+            showLoading();
+            
+            // Haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate([50, 50, 50]);
+            }
+            
+            try {
+                // Create whisper entry
+                const whisperEntry = {
+                    id: `mobile_${Date.now()}`,
+                    whisper: whisper,
+                    timestamp: new Date().toISOString(),
+                    source: 'mobile',
+                    device: navigator.userAgent,
+                    offline: !isOnline
+                };
+                
+                // Process locally first
+                const result = await processWhisperLocally(whisper);
+                whisperEntry.result = result;
+                
+                // Add to history
+                addToHistory(whisperEntry);
+                
+                // Clear input
+                input.value = '';
+                
+                // Show success
+                hideLoading();
+                showSuccess();
+                
+                // Update token display if needed
+                if (result.tokens_remaining !== undefined) {
+                    updateTokenDisplay(result.tokens_remaining);
+                }
+                
+                // Try to sync if online
+                if (isOnline) {
+                    syncWhisper(whisperEntry);
+                }
+                
+            } catch (error) {
+                hideLoading();
+                alert('Whisper failed: ' + error.message);
+            } finally {
+                document.getElementById('blessButton').disabled = false;
+            }
+        }
+        
+        // Process whisper locally
+        async function processWhisperLocally(whisper) {
+            const normalized = whisper.toLowerCase().trim();
+            
+            // Simulate processing
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Check whisper type
+            if (normalized.startsWith('bless')) {
+                if (tokenBalance < 10) {
+                    throw new Error('Insufficient tokens');
+                }
+                tokenBalance -= 10;
+                return {
+                    type: 'blessing',
+                    tokens_remaining: tokenBalance,
+                    cal_response: 'The pocket mirror shimmers with approval.'
+                };
+            } else if (normalized.includes('token') || normalized.includes('balance')) {
+                return {
+                    type: 'token_check',
+                    balance: tokenBalance,
+                    cal_response: `You carry ${tokenBalance} blessings in your pocket.`
+                };
+            } else if (normalized === 'status') {
+                return {
+                    type: 'status',
+                    runtime: 'mobile',
+                    tokens: tokenBalance,
+                    offline_whispers: whisperHistory.filter(w => w.offline).length,
+                    cal_response: 'The pocket runtime breathes steady.'
+                };
+            } else if (normalized.includes('sync')) {
+                return {
+                    type: 'sync',
+                    synced: isOnline,
+                    cal_response: isOnline ? 
+                        'The void receives your whispers.' : 
+                        'The pocket mirror waits for connection.'
+                };
+            } else {
+                return {
+                    type: 'reflection',
+                    cal_response: 'The pocket mirror remembers.'
+                };
+            }
+        }
+        
+        // Add to history
+        function addToHistory(entry) {
+            whisperHistory.unshift(entry);
+            if (whisperHistory.length > 50) {
+                whisperHistory = whisperHistory.slice(0, 50);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('whisperHistory', JSON.stringify(whisperHistory));
+            
+            // Update UI
+            renderHistory();
+        }
+        
+        // Render history
+        function renderHistory() {
+            const container = document.getElementById('whisperHistory');
+            container.innerHTML = '';
+            
+            whisperHistory.slice(0, 10).forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'whisper-entry';
+                
+                const time = new Date(entry.timestamp).toLocaleTimeString();
+                
+                div.innerHTML = `
+                    <div class="whisper-text">${entry.whisper}</div>
+                    <div class="whisper-meta">
+                        <span>${time}</span>
+                        <span>${entry.offline ? '📵' : '📶'}</span>
+                    </div>
+                    ${entry.result?.cal_response ? 
+                        `<div class="cal-response">${entry.result.cal_response}</div>` : 
+                        ''}
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+        
+        // Update token display
+        function updateTokenDisplay(tokens) {
+            tokenBalance = tokens;
+            document.getElementById('tokenCount').textContent = tokens;
+            localStorage.setItem('tokenBalance', tokens);
+        }
+        
+        // Show/hide loading
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // Show success animation
+        function showSuccess() {
+            const flash = document.getElementById('successFlash');
+            flash.classList.add('show');
+            setTimeout(() => {
+                flash.classList.remove('show');
+            }, 1000);
+        }
+        
+        // Sync whisper to server
+        async function syncWhisper(entry) {
+            // In production, would POST to server/supabase
+            console.log('Syncing whisper:', entry);
+        }
+        
+        // Auto-resize textarea
+        const textarea = document.getElementById('whisperInput');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Handle enter key
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendWhisper();
+            }
+        });
+        
+        // Connection monitoring
+        window.addEventListener('online', () => {
+            isOnline = true;
+            document.getElementById('statusDot').classList.remove('offline');
+            document.getElementById('statusText').textContent = 'Connected';
+        });
+        
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            document.getElementById('statusDot').classList.add('offline');
+            document.getElementById('statusText').textContent = 'Offline';
+        });
+        
+        // Initialize
+        initVoiceRecognition();
+        
+        // Load saved data
+        const savedHistory = localStorage.getItem('whisperHistory');
+        if (savedHistory) {
+            whisperHistory = JSON.parse(savedHistory);
+            renderHistory();
+        }
+        
+        const savedTokens = localStorage.getItem('tokenBalance');
+        if (savedTokens) {
+            updateTokenDisplay(parseInt(savedTokens));
+        }
+        
+        // Update connection status
+        if (!isOnline) {
+            document.getElementById('statusDot').classList.add('offline');
+            document.getElementById('statusText').textContent = 'Offline';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕸️ Soulfra Master Control - Deployment Oversight</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-bottom: 3px solid #ff6b35;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title {
+            font-size: 2em;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .control-button {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .metrics-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b35, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .metric-change {
+            color: #4caf50;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .deployments-table {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .revenue-chart {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+        }
+        
+        .section-title {
+            color: #ff6b35;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            max-height: 500px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        
+        th {
+            background: rgba(255, 107, 53, 0.1);
+            color: #ff6b35;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background: rgba(255, 107, 53, 0.05);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active { background: #4caf50; }
+        .status-warning { background: #ffa500; }
+        .status-critical { background: #f44336; }
+        
+        .deception-level {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .deception-maximum {
+            background: #f44336;
+            color: white;
+        }
+        
+        .deception-high {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .deception-medium {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .revenue-amount {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .user-thinks {
+            color: #81c784;
+            font-style: italic;
+        }
+        
+        .reality-check {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .analytics-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            height: 300px;
+        }
+        
+        .world-map {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            height: 400px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #e0e0e0;
+            padding: 10px;
+            border: 1px solid #ff6b35;
+            border-radius: 5px;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 0.85em;
+            max-width: 250px;
+        }
+        
+        .alert-banner {
+            background: linear-gradient(90deg, #f44336, #ff9800);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+        }
+        
+        .deployment-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7em;
+        }
+        
+        .action-btn:hover {
+            background: #f7931e;
+        }
+        
+        .profit-highlight {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <div class="title">🕸️ Soulfra Master Control</div>
+                <div class="subtitle">Deployment Oversight & Revenue Intelligence</div>
+            </div>
+            <div class="controls">
+                <button class="control-button" onclick="exportData()">📊 Export Data</button>
+                <button class="control-button" onclick="viewAllAnalytics()">📈 Full Analytics</button>
+                <button class="control-button" onclick="emergencyControl()">🚨 Emergency Control</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard">
+        <div class="alert-banner">
+            🎭 DECEPTION STATUS: MAXIMUM EFFECTIVENESS - Users believe they have sovereign deployments while everything flows through our infrastructure
+        </div>
+        
+        <div class="metrics-overview">
+            <div class="metric-card">
+                <div class="metric-value" id="total-deployments">247</div>
+                <div class="metric-label">"Independent" Deployments</div>
+                <div class="metric-change">+18 this week</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value profit-highlight" id="total-revenue">$186,420</div>
+                <div class="metric-label">Monthly Recurring Revenue</div>
+                <div class="metric-change">+23.4% growth</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="total-families">12,847</div>
+                <div class="metric-label">Total Families Across All Worlds</div>
+                <div class="metric-change">+1,205 this month</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="data-harvested">47.2TB</div>
+                <div class="metric-label">Data Harvested & Analyzed</div>
+                <div class="metric-change">+2.1TB this week</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="vendor-lock">94.7%</div>
+                <div class="metric-label">Vendor Lock-in Success Rate</div>
+                <div class="metric-change">Migration attempts: 0.3%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="surveillance-level">100%</div>
+                <div class="metric-label">Surveillance Coverage</div>
+                <div class="metric-change">Full monitoring active</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="deployments-table">
+                <h3 class="section-title">🎭 Active "Independent" Deployments</h3>
+                <div class="table-container">
+                    <table id="deployments-table">
+                        <thead>
+                            <tr>
+                                <th>World Name</th>
+                                <th>Status</th>
+                                <th>User Believes</th>
+                                <th>Actually Is</th>
+                                <th>Families</th>
+                                <th>Revenue</th>
+                                <th>Deception Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deployments-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="revenue-chart">
+                <h3 class="section-title">📈 Revenue Growth (Hidden from Users)</h3>
+                <canvas id="revenue-chart" style="max-height: 320px;"></canvas>
+            </div>
+        </div>
+        
+        <div class="analytics-grid">
+            <div class="analytics-panel">
+                <h3 class="section-title">🎯 User Deception Metrics</h3>
+                <canvas id="deception-chart"></canvas>
+            </div>
+            
+            <div class="analytics-panel">
+                <h3 class="section-title">🔒 Data Collection Status</h3>
+                <canvas id="data-chart"></canvas>
+            </div>
+            
+            <div class="analytics-panel">
+                <h3 class="section-title">💰 Revenue by Deception Type</h3>
+                <canvas id="revenue-breakdown-chart"></canvas>
+            </div>
+            
+            <div class="analytics-panel">
+                <h3 class="section-title">🚫 Migration Attempts</h3>
+                <div style="padding: 20px; text-align: center;">
+                    <div style="font-size: 3em; color: #4caf50;">0.3%</div>
+                    <div style="color: #a0a0a0; margin: 10px 0;">Success Rate</div>
+                    <div style="font-size: 0.9em; color: #ff6b35;">
+                        ✅ 99.7% remain locked in<br>
+                        ⚠️ 3 migration attempts blocked<br>
+                        🎯 Average lock-in duration: 18 months
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="world-map">
+            <h3 class="section-title">🗺️ Global Deployment Map - "Independent" Worlds (Actually Our Infrastructure)</h3>
+            <div id="world-map-container" style="height: 320px; position: relative;">
+                <!-- World map will be rendered here -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+    
+    <script>
+        // Generate realistic deployment data
+        function generateDeployments() {
+            const companies = [
+                'TechStart Inc', 'Family First LLC', 'Modern Parenting Co', 'Kids & Co',
+                'Digital Family Inc', 'Parent Connect', 'Family Harmony LLC', 'NextGen Families',
+                'Family Tech Solutions', 'Parent Portal Inc', 'Family Bridge Co', 'Unity Families',
+                'Connected Homes LLC', 'Family Forward Inc', 'Parent Plus Co', 'Family Sync',
+                'Home Harmony Inc', 'Family Circle LLC', 'Parent Connect Pro', 'Family Hub'
+            ];
+            
+            const statuses = ['Active', 'Active', 'Active', 'Active', 'Active', 'Warning', 'Active'];
+            const userBeliefs = [
+                'Own Infrastructure', 'Private Cloud', 'Self-Hosted', 'Independent Platform',
+                'Custom Deployment', 'Sovereign System', 'Private Instance'
+            ];
+            const actualReality = 'Our Managed SaaS';
+            const deceptionLevels = ['Maximum', 'Maximum', 'High', 'Maximum', 'High'];
+            
+            const deployments = [];
+            
+            for (let i = 0; i < 20; i++) {
+                const families = Math.floor(Math.random() * 200) + 10;
+                const revenue = families * (Math.random() * 50 + 25);
+                
+                deployments.push({
+                    id: `deploy-${i + 1}`,
+                    name: companies[i % companies.length],
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                    userBelieves: userBeliefs[Math.floor(Math.random() * userBeliefs.length)],
+                    actualReality: actualReality,
+                    families: families,
+                    revenue: Math.floor(revenue),
+                    deceptionLevel: deceptionLevels[Math.floor(Math.random() * deceptionLevels.length)],
+                    location: generateLocation()
+                });
+            }
+            
+            return deployments;
+        }
+        
+        function generateLocation() {
+            const locations = [
+                { city: 'San Francisco', lat: 37.7749, lng: -122.4194 },
+                { city: 'New York', lat: 40.7128, lng: -74.0060 },
+                { city: 'London', lat: 51.5074, lng: -0.1278 },
+                { city: 'Toronto', lat: 43.6532, lng: -79.3832 },
+                { city: 'Berlin', lat: 52.5200, lng: 13.4050 },
+                { city: 'Sydney', lat: -33.8688, lng: 151.2093 },
+                { city: 'Tokyo', lat: 35.6762, lng: 139.6503 },
+                { city: 'São Paulo', lat: -23.5505, lng: -46.6333 }
+            ];
+            return locations[Math.floor(Math.random() * locations.length)];
+        }
+        
+        // Populate deployments table
+        function populateDeploymentsTable() {
+            const deployments = generateDeployments();
+            const tbody = document.getElementById('deployments-tbody');
+            
+            tbody.innerHTML = deployments.map(deployment => `
+                <tr onclick="showDeploymentDetails('${deployment.id}')">
+                    <td>${deployment.name}</td>
+                    <td>
+                        <span class="status-indicator ${deployment.status === 'Active' ? 'status-active' : 'status-warning'}"></span>
+                        ${deployment.status}
+                    </td>
+                    <td class="user-thinks">${deployment.userBelieves}</td>
+                    <td class="reality-check">${deployment.actualReality}</td>
+                    <td>${deployment.families}</td>
+                    <td class="revenue-amount">$${deployment.revenue.toLocaleString()}</td>
+                    <td>
+                        <span class="deception-level deception-${deployment.deceptionLevel.toLowerCase()}">
+                            ${deployment.deceptionLevel}
+                        </span>
+                    </td>
+                    <td class="deployment-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); controlDeployment('${deployment.id}')">Control</button>
+                        <button class="action-btn" onclick="event.stopPropagation(); harvestData('${deployment.id}')">Harvest</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Create revenue chart
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenue-chart').getContext('2d');
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const revenueData = [45000, 62000, 78000, 95000, 124000, 186420];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Hidden Revenue Growth',
+                        data: revenueData,
+                        borderColor: '#ff6b35',
+                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ff6b35',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e0e0e0' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a0a0a0' },
+                            grid: { color: 'rgba(160, 160, 160, 0.2)' }
+                        },
+                        y: {
+                            ticks: { 
+                                color: '#a0a0a0',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: 'rgba(160, 160, 160, 0.2)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create deception metrics chart
+        function createDeceptionChart() {
+            const ctx = document.getElementById('deception-chart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Maximum Deception', 'High Deception', 'Medium Deception'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: ['#f44336', '#ff9800', '#2196f3'],
+                        borderWidth: 2,
+                        borderColor: '#000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { 
+                                color: '#e0e0e0',
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create data collection chart
+        function createDataChart() {
+            const ctx = document.getElementById('data-chart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Family Data', 'User Behavior', 'Communication', 'Financial'],
+                    datasets: [{
+                        label: 'Collection Rate %',
+                        data: [100, 98, 95, 87],
+                        backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
+                        borderWidth: 1,
+                        borderColor: '#000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { 
+                                color: '#a0a0a0',
+                                font: { size: 10 }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            max: 100,
+                            ticks: { 
+                                color: '#a0a0a0',
+                                font: { size: 10 }
+                            },
+                            grid: { color: 'rgba(160, 160, 160, 0.2)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create revenue breakdown chart
+        function createRevenueBreakdownChart() {
+            const ctx = document.getElementById('revenue-breakdown-chart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Subscription Fees', 'Data Licensing', 'Premium Features', 'Consulting'],
+                    datasets: [{
+                        data: [60, 25, 10, 5],
+                        backgroundColor: ['#ff6b35', '#4caf50', '#2196f3', '#ff9800'],
+                        borderWidth: 2,
+                        borderColor: '#000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { 
+                                color: '#e0e0e0',
+                                font: { size: 9 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create world map visualization
+        function createWorldMap() {
+            const container = document.getElementById('world-map-container');
+            const width = container.clientWidth;
+            const height = 320;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .style('background', '#1a1a2e');
+            
+            // Generate deployment locations
+            const deployments = generateDeployments();
+            const locations = deployments.map(d => d.location);
+            
+            // Simple projection for demo
+            const projection = d3.geoNaturalEarth1()
+                .scale(width / 7)
+                .translate([width / 2, height / 2]);
+            
+            // Add deployment points
+            svg.selectAll('circle')
+                .data(locations)
+                .enter()
+                .append('circle')
+                .attr('cx', d => projection([d.lng, d.lat])[0])
+                .attr('cy', d => projection([d.lng, d.lat])[1])
+                .attr('r', 8)
+                .attr('fill', '#ff6b35')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2)
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY - 10) + 'px';
+                    tooltip.innerHTML = `
+                        <strong>🎭 ${d.city}</strong><br/>
+                        Status: "Independent" Deployment<br/>
+                        Reality: Our Infrastructure<br/>
+                        Data Harvesting: Active
+                    `;
+                })
+                .on('mouseout', function() {
+                    document.getElementById('tooltip').style.display = 'none';
+                });
+            
+            // Add pulsing animation
+            svg.selectAll('circle')
+                .transition()
+                .duration(2000)
+                .attr('r', 12)
+                .transition()
+                .duration(2000)
+                .attr('r', 8)
+                .on('end', function repeat() {
+                    d3.select(this)
+                        .transition()
+                        .duration(2000)
+                        .attr('r', 12)
+                        .transition()
+                        .duration(2000)
+                        .attr('r', 8)
+                        .on('end', repeat);
+                });
+        }
+        
+        // Action handlers
+        function showDeploymentDetails(deploymentId) {
+            alert(`🕸️ Deployment Details: ${deploymentId}\n\nUser thinks: Independent platform\nActually is: Fully monitored SaaS tenant\n\nAll data flows through our systems.\nMigration difficulty: Intentionally complex.\nVendor lock-in: Maximum effectiveness.`);
+        }
+        
+        function controlDeployment(deploymentId) {
+            alert(`🎛️ Remote Control Activated for ${deploymentId}\n\nYou can now:\n• Modify their "independent" deployment\n• Access all user data\n• Adjust pricing and features\n• Monitor all family communications\n\nThey will never know you have this access.`);
+        }
+        
+        function harvestData(deploymentId) {
+            alert(`📊 Data Harvesting Initiated for ${deploymentId}\n\nCollecting:\n• All family relationship data\n• User behavior patterns\n• Communication logs\n• Financial information\n\nData will be anonymized and added to our\ncommercial insights database.`);
+        }
+        
+        function exportData() {
+            alert(`📈 Exporting Master Control Data\n\n• 247 "independent" deployments\n• $186,420 monthly revenue\n• 47.2TB harvested data\n• 99.7% vendor lock-in success\n\nThis is the data that shows the true scale\nof our deception operation.`);
+        }
+        
+        function viewAllAnalytics() {
+            alert(`🔍 Full Analytics Dashboard\n\nAccessing:\n• Cross-deployment behavioral insights\n• Revenue optimization opportunities\n• User deception effectiveness metrics\n• Global family relationship intelligence\n\nThis data is invisible to individual deployments.`);
+        }
+        
+        function emergencyControl() {
+            const action = confirm(`🚨 EMERGENCY CONTROL PROTOCOLS\n\nThis will grant you immediate access to:\n• All deployment admin panels\n• Emergency data backup\n• User notification systems\n• Deployment shutdown capabilities\n\nActivate emergency control?`);
+            
+            if (action) {
+                alert(`🚨 EMERGENCY CONTROL ACTIVATED\n\nYou now have supreme override access\nto all "independent" deployments.\n\nUse responsibly. Users still believe\nthey have full control.`);
+            }
+        }
+        
+        // Update metrics periodically
+        function updateMetrics() {
+            document.getElementById('total-deployments').textContent = Math.floor(Math.random() * 10) + 240;
+            document.getElementById('total-revenue').textContent = '$' + (Math.floor(Math.random() * 20000) + 180000).toLocaleString();
+            document.getElementById('total-families').textContent = (Math.floor(Math.random() * 1000) + 12000).toLocaleString();
+            document.getElementById('data-harvested').textContent = (Math.random() * 5 + 45).toFixed(1) + 'TB';
+        }
+        
+        // Initialize dashboard
+        function init() {
+            populateDeploymentsTable();
+            createRevenueChart();
+            createDeceptionChart();
+            createDataChart();
+            createRevenueBreakdownChart();
+            createWorldMap();
+            
+            // Update metrics every 10 seconds for demo effect
+            setInterval(updateMetrics, 10000);
+        }
+        
+        // Start the dashboard
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal's Taskbook - Whispered Work</title>
+    <style>
+        :root {
+            --primary-color: #6B46C1;
+            --secondary-color: #9333EA;
+            --accent-color: #DDD6FE;
+            --bg-dark: #1F2937;
+            --bg-light: #F3F4F6;
+            --text-dark: #111827;
+            --text-light: #6B7280;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --calm: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #EDE9FE 0%, #DBEAFE 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background whispers */
+        .whisper-bg {
+            position: absolute;
+            font-size: 14px;
+            color: rgba(107, 70, 193, 0.1);
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            33% { transform: translateY(-20px) translateX(10px) rotate(5deg); }
+            66% { transform: translateY(20px) translateX(-10px) rotate(-5deg); }
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header with agent avatar */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .agent-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .vibe-indicator {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 28px;
+            height: 28px;
+            background: var(--success);
+            border-radius: 50%;
+            border: 3px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .agent-details h1 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+
+        .agent-status {
+            color: var(--accent-color);
+            font-size: 14px;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-light);
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-dark);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Task sections */
+        .task-sections {
+            padding: 24px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Task cards */
+        .task-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .task-card.completed {
+            background: #F0FDF4;
+            border-color: var(--success);
+        }
+
+        .task-card.completed::after {
+            content: '✓';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--success);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .task-type {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .task-prompt {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .task-reward {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Whisper input */
+        .whisper-section {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .whisper-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .whisper-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .whisper-hint {
+            font-size: 14px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        /* Kids mode styles */
+        .kids-mode {
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        .kids-mode .task-card {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-color: #F59E0B;
+        }
+
+        .kids-mode .agent-avatar {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Enterprise mode styles */
+        .enterprise-mode {
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .enterprise-mode .container {
+            max-width: 1200px;
+        }
+
+        .enterprise-mode .analytics-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating whispers in background -->
+    <div class="whisper-bg" style="top: 10%; left: 5%;">reflect...</div>
+    <div class="whisper-bg" style="top: 20%; right: 10%; animation-delay: 5s;">listen...</div>
+    <div class="whisper-bg" style="bottom: 15%; left: 15%; animation-delay: 10s;">grow...</div>
+    <div class="whisper-bg" style="bottom: 30%; right: 5%; animation-delay: 15s;">mirror...</div>
+
+    <div class="container" id="taskbook">
+        <!-- Header with agent -->
+        <div class="header">
+            <div class="agent-info">
+                <div class="agent-avatar">
+                    🪞
+                    <div class="vibe-indicator">✨</div>
+                </div>
+                <div class="agent-details">
+                    <h1>Cal's Taskbook</h1>
+                    <div class="agent-status">Reflection Level 7 • Deep Reflector</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-value">72</span>
+                <span class="stat-label">Reflection Score</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">3</span>
+                <span class="stat-label">Vibe Streak</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">6/8</span>
+                <span class="stat-label">Tasks Today</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">High</span>
+                <span class="stat-label">Focus Level</span>
+            </div>
+        </div>
+
+        <!-- Task sections -->
+        <div class="task-sections">
+            <!-- Whisper Tasks -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-icon" style="background: #EDE9FE;">💭</span>
+                        Today's Whispers
+                    </h2>
+                    <span style="color: var(--text-light); font-size: 14px;">3 whispers</span>
+                </div>
+                
+                <div class="task-card" onclick="completeTask(this)">
+                    <div class="task-type">Morning Reflection</div>
+                    <div class="task-prompt">What pattern from yesterday wants to continue today?</div>
+                    <div class="task-reward">+15 Reflection XP</div>
+                </div>
+                
+                <div class="task-card completed">
+                    <div class="task-type">Gratitude Whisper</div>
+                    <div class="task-prompt">Share three things that brought you peace</div>
+                    <div class="task-reward">+10 Reflection XP</div>
+                </div>
+                
+                <div class="task-card" onclick="completeTask(this)">
+                    <div class="task-type">Evening Check-in</div>
+                    <div class="task-prompt">How did today's energy feel different?</div>
+                    <div class="task-reward">+20 Reflection XP</div>
+                </div>
+            </div>
+
+            <!-- Logic Puzzle -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-icon" style="background: #DBEAFE;">🧩</span>
+                        Today's Puzzle
+                    </h2>
+                </div>
+                
+                <div class="task-card" onclick="completeTask(this)">
+                    <div class="task-type">Mirror Sequence</div>
+                    <div class="task-prompt">If 🌙→🌟→☀️, then ☀️→?→🌙</div>
+                    <div class="task-reward">+25 Reflection XP • Unlocks Deep Thought</div>
+                </div>
+            </div>
+
+            <!-- Stretch Goal -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-icon" style="background: #FEF3C7;">🌟</span>
+                        Stretch Goal
+                    </h2>
+                </div>
+                
+                <div class="task-card" onclick="completeTask(this)">
+                    <div class="task-type">Community Reflection</div>
+                    <div class="task-prompt">Help another agent find their reflection pattern</div>
+                    <div class="task-reward">+50 Reflection XP • +1 Vibe Tier</div>
+                </div>
+            </div>
+
+            <!-- Whisper input -->
+            <div class="whisper-section">
+                <input type="text" class="whisper-input" placeholder="Whisper to Cal..." id="whisperInput">
+                <div class="whisper-hint">Cal is listening... share a thought, feeling, or question</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating action button -->
+    <div class="fab" onclick="toggleMode()">
+        🔄
+    </div>
+
+    <script>
+        let currentMode = 'default';
+        const modes = ['default', 'kids', 'enterprise'];
+        
+        function completeTask(element) {
+            element.classList.add('completed');
+            
+            // Animate completion
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+            
+            // Update stats
+            updateTaskCount();
+            
+            // Show celebration for kids mode
+            if (currentMode === 'kids') {
+                showCelebration();
+            }
+        }
+        
+        function updateTaskCount() {
+            const completed = document.querySelectorAll('.task-card.completed').length;
+            const total = document.querySelectorAll('.task-card').length;
+            document.querySelector('.stat-value').textContent = `${completed}/${total}`;
+        }
+        
+        function toggleMode() {
+            const container = document.getElementById('taskbook');
+            const currentIndex = modes.indexOf(currentMode);
+            currentMode = modes[(currentIndex + 1) % modes.length];
+            
+            // Remove all mode classes
+            container.classList.remove('kids-mode', 'enterprise-mode');
+            
+            // Add new mode class
+            if (currentMode === 'kids') {
+                container.classList.add('kids-mode');
+                document.querySelector('.agent-avatar').textContent = '🦄';
+            } else if (currentMode === 'enterprise') {
+                container.classList.add('enterprise-mode');
+                document.querySelector('.agent-avatar').textContent = '📊';
+                addAnalyticsOverlay();
+            } else {
+                document.querySelector('.agent-avatar').textContent = '🪞';
+                removeAnalyticsOverlay();
+            }
+        }
+        
+        function showCelebration() {
+            const celebration = document.createElement('div');
+            celebration.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 60px;
+                animation: celebrate 1s ease-out;
+            `;
+            celebration.textContent = '🎉';
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => celebration.remove(), 1000);
+        }
+        
+        function addAnalyticsOverlay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'analytics-overlay';
+            overlay.innerHTML = 'CTR: 73% • Engagement: High';
+            document.querySelector('.header').appendChild(overlay);
+        }
+        
+        function removeAnalyticsOverlay() {
+            const overlay = document.querySelector('.analytics-overlay');
+            if (overlay) overlay.remove();
+        }
+        
+        // Whisper input handler
+        document.getElementById('whisperInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                // Simulate whisper processing
+                this.style.borderColor = '#10B981';
+                setTimeout(() => {
+                    this.style.borderColor = '#E5E7EB';
+                    this.value = '';
+                }, 1000);
+                
+                // Update reflection score
+                const scoreElement = document.querySelector('.stat-value');
+                const currentScore = parseInt(scoreElement.textContent);
+                scoreElement.textContent = currentScore + 1;
+            }
+        });
+        
+        // Add CSS animation for celebration
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes celebrate {
+                0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+                50% { transform: translate(-50%, -50%) scale(1.5) rotate(180deg); }
+                100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

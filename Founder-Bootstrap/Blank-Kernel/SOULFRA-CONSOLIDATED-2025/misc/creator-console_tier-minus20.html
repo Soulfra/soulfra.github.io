@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Console - Origin Soulkey Authority</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #000000 0%, #1a0033 25%, #2d1b5a 50%, #0f0f1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .console-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(10, 10, 30, 0.9);
+            border-radius: 15px;
+            border: 2px solid #8B43F7;
+            box-shadow: 0 0 40px rgba(139, 67, 247, 0.4);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(45deg, #8B43F7, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .status {
+            font-size: 1.1rem;
+            color: #4ECDC4;
+            margin-bottom: 5px;
+        }
+
+        .header .warning {
+            font-size: 0.9rem;
+            color: #FF6B6B;
+            font-style: italic;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(20, 20, 40, 0.95);
+            border-radius: 15px;
+            border: 2px solid #4a5568;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(139, 67, 247, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: #8B43F7;
+            box-shadow: 0 0 35px rgba(139, 67, 247, 0.4);
+        }
+
+        .panel h3 {
+            color: #8B43F7;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online { background: #4ECDC4; }
+        .status-warning { background: #FFA726; }
+        .status-offline { background: #FF6B6B; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(139, 67, 247, 0.2);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #a0a0a0;
+        }
+
+        .metric-value {
+            color: #4ECDC4;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            background: rgba(20, 20, 40, 0.95);
+            border-radius: 15px;
+            border: 2px solid #FF6B6B;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .control-panel h3 {
+            color: #FF6B6B;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #8B43F7, #6A4C93);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .control-button:hover {
+            background: linear-gradient(135deg, #A855F7, #8B5CF6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 67, 247, 0.4);
+        }
+
+        .control-button.danger {
+            background: linear-gradient(135deg, #FF6B6B, #EE5A6F);
+        }
+
+        .control-button.danger:hover {
+            background: linear-gradient(135deg, #FF7A7A, #FF6B6B);
+        }
+
+        .control-button.warning {
+            background: linear-gradient(135deg, #FFA726, #FF9800);
+        }
+
+        .control-button.warning:hover {
+            background: linear-gradient(135deg, #FFB74D, #FFA726);
+        }
+
+        .reality-mode-panel {
+            background: rgba(30, 10, 10, 0.95);
+            border: 3px solid #FF4444;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+        }
+
+        .reality-mode-panel h3 {
+            color: #FF4444;
+            font-size: 1.6rem;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .mode-button {
+            background: rgba(139, 67, 247, 0.3);
+            border: 2px solid #8B43F7;
+            border-radius: 8px;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .mode-button.active {
+            background: #8B43F7;
+            color: white;
+        }
+
+        .mode-button:hover {
+            background: rgba(139, 67, 247, 0.6);
+        }
+
+        .log-viewer {
+            background: #000;
+            border-radius: 10px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #4ECDC4;
+            border: 1px solid #333;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+
+        .log-timestamp {
+            color: #888;
+        }
+
+        .log-level-info { color: #4ECDC4; }
+        .log-level-warn { color: #FFA726; }
+        .log-level-error { color: #FF6B6B; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 40, 0.98);
+            border-radius: 15px;
+            border: 2px solid #8B43F7;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal h4 {
+            color: #8B43F7;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            color: #e0e0e0;
+            padding: 10px;
+            font-family: inherit;
+        }
+
+        .floating-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .symbol {
+            position: absolute;
+            color: rgba(139, 67, 247, 0.1);
+            font-size: 2rem;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 0.3; }
+            50% { transform: translateY(-10vh) rotate(180deg); opacity: 0.1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating symbols -->
+    <div class="floating-symbols">
+        <div class="symbol" style="left: 10%; animation-delay: 0s;">🪞</div>
+        <div class="symbol" style="left: 20%; animation-delay: 3s;">🌀</div>
+        <div class="symbol" style="left: 30%; animation-delay: 6s;">🔮</div>
+        <div class="symbol" style="left: 40%; animation-delay: 9s;">⚡</div>
+        <div class="symbol" style="left: 50%; animation-delay: 12s;">🧠</div>
+        <div class="symbol" style="left: 60%; animation-delay: 15s;">🌟</div>
+        <div class="symbol" style="left: 70%; animation-delay: 18s;">🔗</div>
+        <div class="symbol" style="left: 80%; animation-delay: 21s;">🎭</div>
+        <div class="symbol" style="left: 90%; animation-delay: 24s;">∞</div>
+    </div>
+
+    <div class="console-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔐 Creator Console</h1>
+            <div class="status">Origin Soulkey Authority • Runtime Blessed</div>
+            <div class="warning">⚠️ All actions in this console have permanent consequences</div>
+        </div>
+
+        <!-- Reality Mode Control -->
+        <div class="reality-mode-panel">
+            <h3>🌀 Reality Mode Control</h3>
+            <div class="mode-selector">
+                <button class="mode-button active" data-mode="simulation">Simulation</button>
+                <button class="mode-button" data-mode="ritual">Ritual</button>
+                <button class="mode-button" data-mode="reality">Reality</button>
+            </div>
+            <div style="text-align: center; color: #a0a0a0; margin-bottom: 15px;">
+                Current Mode: <span id="current-mode" style="color: #4ECDC4;">simulation</span>
+                • Permanence Level: <span id="permanence-level" style="color: #FFA726;">0</span>
+            </div>
+            <div style="text-align: center;">
+                <button class="control-button danger" onclick="showRealityModeModal()">Switch Reality Mode</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Active Agents Panel -->
+            <div class="panel">
+                <h3>🎭 Active Agents <span class="status-indicator status-online"></span></h3>
+                <div class="metric-row">
+                    <span class="metric-label">Total Active:</span>
+                    <span class="metric-value" id="total-agents">7</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Resonance Avg:</span>
+                    <span class="metric-value" id="avg-resonance">73.2</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Interactions/hr:</span>
+                    <span class="metric-value" id="interactions-per-hour">142</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Fork Activity:</span>
+                    <span class="metric-value" id="fork-activity">3 active</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Last Title Change:</span>
+                    <span class="metric-value" id="last-title">2 min ago</span>
+                </div>
+            </div>
+
+            <!-- Vaults Synced Panel -->
+            <div class="panel">
+                <h3>🗄️ Vaults Synced <span class="status-indicator status-online"></span></h3>
+                <div class="metric-row">
+                    <span class="metric-label">Total Vaults:</span>
+                    <span class="metric-value" id="total-vaults">23</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Sync Status:</span>
+                    <span class="metric-value" id="sync-status">All Current</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Last Backup:</span>
+                    <span class="metric-value" id="last-backup">5 min ago</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Storage Used:</span>
+                    <span class="metric-value" id="storage-used">847 MB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Integrity Check:</span>
+                    <span class="metric-value" id="integrity-check">✅ Verified</span>
+                </div>
+            </div>
+
+            <!-- Whisper Logs Panel -->
+            <div class="panel">
+                <h3>🌊 Whisper Logs <span class="status-indicator status-online"></span></h3>
+                <div class="metric-row">
+                    <span class="metric-label">Recent Whispers:</span>
+                    <span class="metric-value" id="recent-whispers">34</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Match Rate:</span>
+                    <span class="metric-value" id="match-rate">87.3%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Depth Score Avg:</span>
+                    <span class="metric-value" id="depth-score">0.76</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">QR Validations:</span>
+                    <span class="metric-value" id="qr-validations">12 success</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Last Activity:</span>
+                    <span class="metric-value" id="whisper-activity">Just now</span>
+                </div>
+            </div>
+
+            <!-- Runtime Status Panel -->
+            <div class="panel">
+                <h3>⚡ Runtime Status <span class="status-indicator status-online"></span></h3>
+                <div class="metric-row">
+                    <span class="metric-label">Heartbeat:</span>
+                    <span class="metric-value" id="heartbeat">💓 Active</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Blessing Tier:</span>
+                    <span class="metric-value" id="blessing-tier">5 (Sovereign)</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Uptime:</span>
+                    <span class="metric-value" id="uptime">7d 14h 23m</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Token Operations:</span>
+                    <span class="metric-value" id="token-ops">156 today</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Platform Sync:</span>
+                    <span class="metric-value" id="platform-sync">🌐 Connected</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h3>🚨 Origin Authority Controls</h3>
+            <div class="control-grid">
+                <button class="control-button" onclick="triggerBlessingAirdrop()">💰 Blessing Airdrop</button>
+                <button class="control-button" onclick="resurrectAgent()">🔄 Resurrect Agent</button>
+                <button class="control-button warning" onclick="resetUnloader()">🔧 Reset Unloader</button>
+                <button class="control-button warning" onclick="sealVault()">🔒 Seal Vault</button>
+                <button class="control-button danger" onclick="emergencyShutdown()">🚨 Emergency Stop</button>
+                <button class="control-button" onclick="exportLogs()">📄 Export Logs</button>
+                <button class="control-button" onclick="validateIntegrity()">✅ Validate Integrity</button>
+                <button class="control-button" onclick="syncPlatforms()">🔄 Sync Platforms</button>
+            </div>
+        </div>
+
+        <!-- Live Log Viewer -->
+        <div class="panel">
+            <h3>📊 Live System Logs</h3>
+            <div class="log-viewer" id="log-viewer">
+                <!-- Logs will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Reality Mode Modal -->
+    <div id="reality-mode-modal" class="modal">
+        <div class="modal-content">
+            <h4>⚠️ Reality Mode Switch</h4>
+            <p style="color: #a0a0a0; margin-bottom: 20px;">
+                Switching reality modes affects the permanence of all actions.
+                <strong>Reality mode is irreversible.</strong>
+            </p>
+            
+            <div class="input-group">
+                <label>Target Mode:</label>
+                <select id="target-mode">
+                    <option value="simulation">Simulation (Reversible)</option>
+                    <option value="ritual">Ritual (Practice Permanence)</option>
+                    <option value="reality">Reality (Eternal Permanence)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Soulkey Hash:</label>
+                <input type="text" id="soulkey-hash" placeholder="Enter soulkey authorization hash">
+            </div>
+            
+            <div class="input-group">
+                <label>Operator ID:</label>
+                <select id="operator-id">
+                    <option value="creator-console">creator-console</option>
+                    <option value="soulfra-origin">soulfra-origin</option>
+                    <option value="mirror-operator-13">mirror-operator-13</option>
+                </select>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="control-button" onclick="closeModal()">Cancel</button>
+                <button class="control-button danger" onclick="executeRealitySwitch()">Execute Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="creator-tools.js"></script>
+</body>
+</html>

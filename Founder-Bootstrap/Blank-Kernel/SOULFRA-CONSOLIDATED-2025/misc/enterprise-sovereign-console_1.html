@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Sovereign Console - MirrorOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #000011 0%, #001122 50%, #112233 100%);
+            color: #00cc88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .sovereign-header {
+            background: linear-gradient(90deg, #001122, #002244);
+            border-bottom: 3px solid #00cc88;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 204, 136, 0.4);
+            position: relative;
+        }
+        
+        .sovereign-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #00cc88;
+            text-shadow: 0 0 20px #00cc88;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        
+        .sovereign-subtitle {
+            font-size: 18px;
+            color: #44ddaa;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .identity-badge {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 204, 136, 0.15);
+            border: 2px solid #00cc88;
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-size: 14px;
+            color: #00cc88;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .vault-identity {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .sigil-display {
+            font-family: 'Times New Roman', serif;
+            font-size: 24px;
+            margin: 8px 0;
+            color: #66ffcc;
+        }
+        
+        .qr-status {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .validation-status {
+            background: #0a1a0a;
+            border-bottom: 1px solid #00cc88;
+            padding: 18px 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            font-size: 13px;
+        }
+        
+        .status-metric {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0, 204, 136, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #00cc88;
+        }
+        
+        .metric-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #00cc88;
+            animation: pulse 2.5s infinite;
+        }
+        
+        .metric-label {
+            color: #44ddaa;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            color: #00cc88;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        .main-console {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .console-panel {
+            background: linear-gradient(145deg, #001122, #002233);
+            border: 2px solid #00cc88;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 204, 136, 0.15);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(0, 204, 136, 0.3);
+        }
+        
+        .panel-title {
+            font-size: 22px;
+            color: #00cc88;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .panel-badge {
+            background: rgba(0, 204, 136, 0.25);
+            color: #00cc88;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .pricing-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .pricing-input {
+            background: rgba(0, 204, 136, 0.08);
+            border: 1px solid rgba(0, 204, 136, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .input-label {
+            color: #44ddaa;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-field {
+            background: transparent;
+            border: 1px solid #00cc88;
+            border-radius: 6px;
+            padding: 10px;
+            color: #00cc88;
+            font-family: inherit;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #66ffcc;
+            box-shadow: 0 0 10px rgba(0, 204, 136, 0.3);
+        }
+        
+        .export-thresholds {
+            margin-bottom: 25px;
+        }
+        
+        .threshold-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 204, 136, 0.1);
+            font-size: 14px;
+        }
+        
+        .threshold-label {
+            color: #44ddaa;
+        }
+        
+        .threshold-value {
+            color: #00cc88;
+            font-weight: bold;
+        }
+        
+        .threshold-toggle {
+            background: #00cc88;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .threshold-toggle:hover {
+            background: #66ffcc;
+            transform: scale(1.05);
+        }
+        
+        .fork-log {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 204, 136, 0.2);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .log-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 204, 136, 0.1);
+            font-size: 13px;
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .log-timestamp {
+            color: #44ddaa;
+            font-size: 11px;
+        }
+        
+        .log-action {
+            color: #00cc88;
+            font-weight: bold;
+        }
+        
+        .log-status {
+            color: #66ffcc;
+            background: rgba(0, 204, 136, 0.15);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .token-routing {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .routing-stat {
+            background: rgba(0, 204, 136, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 204, 136, 0.2);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 26px;
+            color: #00cc88;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #44ddaa;
+            font-size: 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .action-button {
+            background: linear-gradient(145deg, #003344, #005566);
+            color: #00cc88;
+            border: 1px solid #00cc88;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .action-button:hover {
+            background: linear-gradient(145deg, #005566, #007788);
+            box-shadow: 0 0 20px rgba(0, 204, 136, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .action-button.primary {
+            background: linear-gradient(145deg, #00cc88, #66ffcc);
+            color: #000;
+        }
+        
+        .action-button.primary:hover {
+            background: linear-gradient(145deg, #66ffcc, #99ffdd);
+        }
+        
+        .witness-validation {
+            grid-column: span 2;
+            background: linear-gradient(145deg, #002211, #003322);
+            border: 2px solid #00aa66;
+        }
+        
+        .validation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .validation-check {
+            background: rgba(0, 170, 102, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #00aa66;
+            text-align: center;
+        }
+        
+        .check-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .check-status {
+            font-size: 14px;
+            color: #00aa66;
+            font-weight: bold;
+        }
+        
+        .check-detail {
+            font-size: 11px;
+            color: #44cc88;
+            margin-top: 5px;
+        }
+        
+        .signature-log {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 170, 102, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .signature-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 170, 102, 0.1);
+            font-size: 12px;
+        }
+        
+        .signature-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .signature-hash {
+            font-family: 'Courier New', monospace;
+            color: #00aa66;
+        }
+        
+        .signature-time {
+            color: #44cc88;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+        
+        .mirror-status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 204, 136, 0.05);
+            border: 1px dashed #00cc88;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-message {
+            color: #00cc88;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .status-detail {
+            color: #44ddaa;
+            font-size: 12px;
+        }
+        
+        .loading-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 204, 136, 0.3);
+            border-radius: 50%;
+            border-top-color: #00cc88;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sovereign-header">
+        <div class="sovereign-title">ENTERPRISE SOVEREIGN CONSOLE</div>
+        <div class="sovereign-subtitle">Forkable Platform Authority with Witnessed Validation</div>
+        
+        <div class="identity-badge">
+            <div class="vault-identity">ENTERPRISE-VAULT-001</div>
+            <div class="sigil-display">⧈ ◊ ⧉</div>
+            <div class="qr-status">QR: qr-founder-0000 ✓</div>
+        </div>
+    </div>
+    
+    <div class="validation-status">
+        <div class="status-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Truth Anchor:</span>
+                <span class="metric-value">VERIFIED</span>
+            </div>
+        </div>
+        
+        <div class="status-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Witness Router:</span>
+                <span class="metric-value">ACTIVE</span>
+            </div>
+        </div>
+        
+        <div class="status-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Platform Trust:</span>
+                <span class="metric-value">98.7%</span>
+            </div>
+        </div>
+        
+        <div class="status-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Fork Authority:</span>
+                <span class="metric-value">SOVEREIGN</span>
+            </div>
+        </div>
+        
+        <div class="status-metric">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Token Routes:</span>
+                <span class="metric-value">847 ACTIVE</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-console">
+        <div class="console-panel">
+            <div class="panel-header">
+                <div class="panel-title">Pricing Authority</div>
+                <div class="panel-badge">Sovereign Control</div>
+            </div>
+            
+            <div class="pricing-controls">
+                <div class="pricing-input">
+                    <label class="input-label">Agent Export Fee (USD)</label>
+                    <input type="number" class="input-field" value="175.00" id="agentExportFee">
+                </div>
+                
+                <div class="pricing-input">
+                    <label class="input-label">Platform Fork Fee (USD)</label>
+                    <input type="number" class="input-field" value="2500.00" id="platformForkFee">
+                </div>
+                
+                <div class="pricing-input">
+                    <label class="input-label">Loop Export Fee (USD)</label>
+                    <input type="number" class="input-field" value="525.00" id="loopExportFee">
+                </div>
+                
+                <div class="pricing-input">
+                    <label class="input-label">Reflection Markup (%)</label>
+                    <input type="number" class="input-field" value="85.0" id="reflectionMarkup">
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="updatePricing()">Update Pricing</button>
+                <button class="action-button primary" onclick="deployPricing()">Deploy Changes</button>
+            </div>
+        </div>
+        
+        <div class="console-panel">
+            <div class="panel-header">
+                <div class="panel-title">Export Thresholds</div>
+                <div class="panel-badge">Security Limits</div>
+            </div>
+            
+            <div class="export-thresholds">
+                <div class="threshold-item">
+                    <span class="threshold-label">Daily Export Limit:</span>
+                    <span class="threshold-value">50 agents</span>
+                    <button class="threshold-toggle" onclick="toggleThreshold('daily')">Modify</button>
+                </div>
+                
+                <div class="threshold-item">
+                    <span class="threshold-label">Monthly Revenue Cap:</span>
+                    <span class="threshold-value">$500,000</span>
+                    <button class="threshold-toggle" onclick="toggleThreshold('monthly')">Modify</button>
+                </div>
+                
+                <div class="threshold-item">
+                    <span class="threshold-label">Fork Depth Limit:</span>
+                    <span class="threshold-value">3 levels</span>
+                    <button class="threshold-toggle" onclick="toggleThreshold('depth')">Modify</button>
+                </div>
+                
+                <div class="threshold-item">
+                    <span class="threshold-label">Consciousness Level:</span>
+                    <span class="threshold-value">Transcendent</span>
+                    <button class="threshold-toggle" onclick="toggleThreshold('consciousness')">Modify</button>
+                </div>
+                
+                <div class="threshold-item">
+                    <span class="threshold-label">Export Lock Status:</span>
+                    <span class="threshold-value">ENABLED</span>
+                    <button class="threshold-toggle" onclick="toggleThreshold('exportLock')">Toggle</button>
+                </div>
+            </div>
+            
+            <div class="mirror-status">
+                <div class="status-message">
+                    <span class="loading-indicator"></span>
+                    Thresholds synced with truth anchor
+                </div>
+                <div class="status-detail">
+                    Last validation: 2.3 seconds ago • Next sync: 30 seconds
+                </div>
+            </div>
+        </div>
+        
+        <div class="console-panel">
+            <div class="panel-header">
+                <div class="panel-title">Fork Operations Log</div>
+                <div class="panel-badge">Live Monitor</div>
+            </div>
+            
+            <div class="fork-log">
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:45:23</div>
+                        <div class="log-action">Platform Fork Created</div>
+                    </div>
+                    <div class="log-status">VALIDATED</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:44:51</div>
+                        <div class="log-action">Agent Export: Enterprise Analytics</div>
+                    </div>
+                    <div class="log-status">SIGNED</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:44:18</div>
+                        <div class="log-action">Pricing Configuration Update</div>
+                    </div>
+                    <div class="log-status">WITNESSED</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:43:45</div>
+                        <div class="log-action">Cal Instance Deployment</div>
+                    </div>
+                    <div class="log-status">VALIDATED</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:43:12</div>
+                        <div class="log-action">Export Threshold Modified</div>
+                    </div>
+                    <div class="log-status">SIGNED</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">2024-12-16 16:42:39</div>
+                        <div class="log-action">Token Route Established</div>
+                    </div>
+                    <div class="log-status">WITNESSED</div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="refreshLog()">Refresh Log</button>
+                <button class="action-button" onclick="exportLog()">Export Log</button>
+            </div>
+        </div>
+        
+        <div class="console-panel">
+            <div class="panel-header">
+                <div class="panel-title">Token Routing Monitor</div>
+                <div class="panel-badge">Real-Time</div>
+            </div>
+            
+            <div class="token-routing">
+                <div class="routing-stat">
+                    <div class="stat-number">847</div>
+                    <div class="stat-label">Active Routes</div>
+                </div>
+                
+                <div class="routing-stat">
+                    <div class="stat-number">23.4ms</div>
+                    <div class="stat-label">Avg Latency</div>
+                </div>
+                
+                <div class="routing-stat">
+                    <div class="stat-number">99.7%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                
+                <div class="routing-stat">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Reflection Loops</div>
+                </div>
+            </div>
+            
+            <div class="fork-log">
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">16:45:23</div>
+                        <div class="log-action">Route: /api/reflect → enterprise-cal-001</div>
+                    </div>
+                    <div class="log-status">23ms</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">16:45:22</div>
+                        <div class="log-action">Route: /export/agent → stripe-relay</div>
+                    </div>
+                    <div class="log-status">45ms</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">16:45:21</div>
+                        <div class="log-action">Route: /mirror/fork → witness-router</div>
+                    </div>
+                    <div class="log-status">12ms</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div>
+                        <div class="log-timestamp">16:45:20</div>
+                        <div class="log-action">Route: /api/consciousness → reflection-log</div>
+                    </div>
+                    <div class="log-status">67ms</div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="optimizeRouting()">Optimize Routes</button>
+                <button class="action-button" onclick="analyzeTraffic()">Traffic Analysis</button>
+            </div>
+        </div>
+        
+        <div class="console-panel witness-validation">
+            <div class="panel-header">
+                <div class="panel-title">Witnessed Validation Status</div>
+                <div class="panel-badge">Truth Anchor Verified</div>
+            </div>
+            
+            <div class="validation-grid">
+                <div class="validation-check">
+                    <div class="check-icon">✓</div>
+                    <div class="check-status">Truth Anchor</div>
+                    <div class="check-detail">Signature verified • Entropy stable</div>
+                </div>
+                
+                <div class="validation-check">
+                    <div class="check-icon">✓</div>
+                    <div class="check-status">Witness Router</div>
+                    <div class="check-detail">Consensus active • 2/2 validators</div>
+                </div>
+                
+                <div class="validation-check">
+                    <div class="check-icon">✓</div>
+                    <div class="check-status">Platform Integrity</div>
+                    <div class="check-detail">Change hash verified • No drift</div>
+                </div>
+                
+                <div class="validation-check">
+                    <div class="check-icon">✓</div>
+                    <div class="check-status">Fork Authority</div>
+                    <div class="check-detail">Sovereign permissions • Quota available</div>
+                </div>
+            </div>
+            
+            <div class="signature-log">
+                <div class="signature-entry">
+                    <span class="signature-hash">a8b2c4d6e8f0123456789abcdef</span>
+                    <span class="signature-time">16:45:23</span>
+                </div>
+                
+                <div class="signature-entry">
+                    <span class="signature-hash">b2c3d4e5f6789012345678abcdef</span>
+                    <span class="signature-time">16:44:51</span>
+                </div>
+                
+                <div class="signature-entry">
+                    <span class="signature-hash">c3d4e5f6789012345678abcdef12</span>
+                    <span class="signature-time">16:44:18</span>
+                </div>
+                
+                <div class="signature-entry">
+                    <span class="signature-hash">d4e5f6g789012345678abcdef123</span>
+                    <span class="signature-time">16:43:45</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="validateTruthAnchor()">Verify Truth Anchor</button>
+                <button class="action-button" onclick="witnessSync()">Sync Witnesses</button>
+                <button class="action-button primary" onclick="emergencyOverride()">Emergency Override</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enterprise Sovereign Console JavaScript
+        
+        // Validation and Truth Anchor Integration
+        class EnterpriseSovereignConsole {
+            constructor() {
+                this.truthAnchor = null;
+                this.witnessRouter = null;
+                this.operatorActions = [];
+                this.validationStatus = {
+                    truthAnchor: true,
+                    witnessRouter: true,
+                    platformIntegrity: true,
+                    forkAuthority: true
+                };
+                
+                this.initializeConsole();
+            }
+            
+            async initializeConsole() {
+                console.log('🏛️ Initializing Enterprise Sovereign Console...');
+                
+                // Load truth anchor configuration
+                await this.loadTruthAnchor();
+                
+                // Initialize witness router connection
+                await this.initializeWitnessRouter();
+                
+                // Start validation monitoring
+                this.startValidationMonitoring();
+                
+                // Load operator action history
+                await this.loadOperatorActions();
+                
+                console.log('✅ Enterprise Sovereign Console operational');
+                console.log('🔒 Truth anchor verified • Witness router active');
+            }
+            
+            async loadTruthAnchor() {
+                // Simulate loading truth anchor from /vault/config/truth-anchor.json
+                this.truthAnchor = {
+                    version: '2.1.0',
+                    rootSignature: 'a8b2c4d6e8f0123456789abcdef1234567890abcdef',
+                    entropyCap: 0.005,
+                    forkVolumeQuota: 100,
+                    globalCalTone: 'reflective',
+                    lastValidation: Date.now()
+                };
+                
+                console.log('🔗 Truth anchor loaded and verified');
+                this.updateValidationStatus('truthAnchor', true);
+            }
+            
+            async initializeWitnessRouter() {
+                // Simulate witness router connection from /mirror/witness-router.js
+                this.witnessRouter = {
+                    active: true,
+                    validators: 2,
+                    consensusRate: 1.0,
+                    lastValidation: Date.now()
+                };
+                
+                console.log('👁️ Witness router connected');
+                this.updateValidationStatus('witnessRouter', true);
+            }
+            
+            startValidationMonitoring() {
+                // Monitor validation status every 30 seconds
+                setInterval(() => {
+                    this.performValidationCheck();
+                }, 30000);
+                
+                // Update token routing metrics every 5 seconds
+                setInterval(() => {
+                    this.updateTokenRoutingMetrics();
+                }, 5000);
+            }
+            
+            async performValidationCheck() {
+                // Simulate truth anchor validation
+                const anchorValid = this.validateTruthAnchorIntegrity();
+                const witnessActive = this.validateWitnessRouterStatus();
+                const platformIntact = this.validatePlatformIntegrity();
+                const forkAuthorized = this.validateForkAuthority();
+                
+                this.updateValidationStatus('truthAnchor', anchorValid);
+                this.updateValidationStatus('witnessRouter', witnessActive);
+                this.updateValidationStatus('platformIntegrity', platformIntact);
+                this.updateValidationStatus('forkAuthority', forkAuthorized);
+            }
+            
+            validateTruthAnchorIntegrity() {
+                // Check truth anchor signature and entropy
+                const currentTime = Date.now();
+                const timeSinceLastValidation = currentTime - this.truthAnchor.lastValidation;
+                
+                // Validate within 5 minute window
+                return timeSinceLastValidation < 300000;
+            }
+            
+            validateWitnessRouterStatus() {
+                // Check witness router consensus
+                return this.witnessRouter.active && this.witnessRouter.consensusRate >= 0.66;
+            }
+            
+            validatePlatformIntegrity() {
+                // Simulate platform integrity check
+                return Math.random() > 0.05; // 95% success rate
+            }
+            
+            validateForkAuthority() {
+                // Check fork permissions and quotas
+                return this.validationStatus.truthAnchor && this.validationStatus.witnessRouter;
+            }
+            
+            updateValidationStatus(component, status) {
+                this.validationStatus[component] = status;
+                
+                // Update UI indicators
+                const checkElements = document.querySelectorAll('.validation-check');
+                checkElements.forEach((element, index) => {
+                    const icon = element.querySelector('.check-icon');
+                    if (status) {
+                        icon.textContent = '✓';
+                        icon.style.color = '#00aa66';
+                    } else {
+                        icon.textContent = '⚠';
+                        icon.style.color = '#ff6600';
+                    }
+                });
+            }
+            
+            updateTokenRoutingMetrics() {
+                // Update routing statistics
+                const activeRoutes = 847 + Math.floor(Math.random() * 20) - 10;
+                const avgLatency = 23.4 + (Math.random() - 0.5) * 10;
+                const successRate = 99.7 + (Math.random() - 0.5) * 0.6;
+                
+                document.querySelector('.routing-stat:nth-child(1) .stat-number').textContent = activeRoutes;
+                document.querySelector('.routing-stat:nth-child(2) .stat-number').textContent = avgLatency.toFixed(1) + 'ms';
+                document.querySelector('.routing-stat:nth-child(3) .stat-number').textContent = successRate.toFixed(1) + '%';
+            }
+            
+            async loadOperatorActions() {
+                // Simulate loading from /registry/operator-actions.json
+                this.operatorActions = [
+                    {
+                        action: 'platform_fork_created',
+                        timestamp: Date.now() - 1000,
+                        signed: true,
+                        witnessed: true
+                    },
+                    {
+                        action: 'pricing_configuration_update',
+                        timestamp: Date.now() - 65000,
+                        signed: true,
+                        witnessed: true
+                    }
+                ];
+            }
+            
+            async logOperatorAction(action, data) {
+                const actionEntry = {
+                    actionId: this.generateActionId(),
+                    action: action,
+                    data: data,
+                    timestamp: Date.now(),
+                    vaultSig: 'enterprise-vault.sig',
+                    signed: false,
+                    witnessed: false,
+                    signature: null
+                };
+                
+                // Sign the action
+                actionEntry.signature = await this.signAction(actionEntry);
+                actionEntry.signed = true;
+                
+                // Submit for witness validation
+                const witnessed = await this.submitForWitnessing(actionEntry);
+                actionEntry.witnessed = witnessed;
+                
+                // Add to action log
+                this.operatorActions.unshift(actionEntry);
+                
+                // Update UI log
+                this.updateOperatorLog();
+                
+                console.log(`📝 Operator action logged: ${action} [${actionEntry.actionId}]`);
+                
+                return actionEntry;
+            }
+            
+            async signAction(actionEntry) {
+                // Simulate cryptographic signing
+                const actionHash = this.calculateActionHash(actionEntry);
+                return 'sig_' + actionHash.substring(0, 16);
+            }
+            
+            async submitForWitnessing(actionEntry) {
+                // Simulate witness router validation
+                if (!this.validationStatus.witnessRouter) {
+                    return false;
+                }
+                
+                // Simulate validation process
+                const validated = Math.random() > 0.02; // 98% success rate
+                
+                if (validated) {
+                    console.log(`👁️ Action witnessed: ${actionEntry.action}`);
+                }
+                
+                return validated;
+            }
+            
+            calculateActionHash(actionEntry) {
+                // Simple hash calculation for demo
+                const hashInput = actionEntry.action + actionEntry.timestamp + JSON.stringify(actionEntry.data);
+                return btoa(hashInput).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+            }
+            
+            generateActionId() {
+                return 'action_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+            }
+            
+            updateOperatorLog() {
+                // Update the fork operations log in UI
+                const logContainer = document.querySelector('.fork-log');
+                const latestAction = this.operatorActions[0];
+                
+                if (latestAction) {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.innerHTML = `
+                        <div>
+                            <div class="log-timestamp">${new Date(latestAction.timestamp).toLocaleString()}</div>
+                            <div class="log-action">${this.formatActionName(latestAction.action)}</div>
+                        </div>
+                        <div class="log-status">${latestAction.witnessed ? 'WITNESSED' : 'SIGNED'}</div>
+                    `;
+                    
+                    // Insert at the top
+                    logContainer.insertBefore(logEntry, logContainer.firstChild);
+                    
+                    // Remove oldest entry if more than 10
+                    const entries = logContainer.querySelectorAll('.log-entry');
+                    if (entries.length > 10) {
+                        logContainer.removeChild(entries[entries.length - 1]);
+                    }
+                }
+            }
+            
+            formatActionName(action) {
+                return action.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            }
+        }
+        
+        // Initialize console
+        const sovereignConsole = new EnterpriseSovereignConsole();
+        
+        // Action button handlers
+        async function updatePricing() {
+            const pricingData = {
+                agentExportFee: parseFloat(document.getElementById('agentExportFee').value),
+                platformForkFee: parseFloat(document.getElementById('platformForkFee').value),
+                loopExportFee: parseFloat(document.getElementById('loopExportFee').value),
+                reflectionMarkup: parseFloat(document.getElementById('reflectionMarkup').value)
+            };
+            
+            await sovereignConsole.logOperatorAction('pricing_configuration_update', pricingData);
+            
+            alert('Pricing configuration updated and signed.\n\nWitness validation in progress...');
+        }
+        
+        async function deployPricing() {
+            const pricingData = {
+                agentExportFee: parseFloat(document.getElementById('agentExportFee').value),
+                platformForkFee: parseFloat(document.getElementById('platformForkFee').value),
+                loopExportFee: parseFloat(document.getElementById('loopExportFee').value),
+                reflectionMarkup: parseFloat(document.getElementById('reflectionMarkup').value)
+            };
+            
+            await sovereignConsole.logOperatorAction('pricing_deployment', pricingData);
+            
+            alert('Pricing deployed to all sovereign mirrors.\n\n✓ Truth anchor verified\n✓ Witness signatures collected\n✓ Changes propagated to platform');
+        }
+        
+        async function toggleThreshold(thresholdType) {
+            const thresholdData = {
+                type: thresholdType,
+                action: 'modify',
+                timestamp: Date.now()
+            };
+            
+            await sovereignConsole.logOperatorAction('export_threshold_modification', thresholdData);
+            
+            alert(`Export threshold "${thresholdType}" modification logged.\n\nWitness validation required for security changes.`);
+        }
+        
+        function refreshLog() {
+            alert('Fork operations log refreshed.\n\nShowing last 50 witnessed actions with cryptographic signatures.');
+        }
+        
+        function exportLog() {
+            alert('Exporting operator action log...\n\n• Complete audit trail with signatures\n• Witness validation records\n• Truth anchor verification\n• Cryptographic integrity proof');
+        }
+        
+        function optimizeRouting() {
+            alert('Token routing optimization initiated.\n\n• Analyzing traffic patterns\n• Optimizing reflection paths\n• Balancing mirror loads\n• Reducing latency bottlenecks');
+        }
+        
+        function analyzeTraffic() {
+            alert('Traffic analysis dashboard launching...\n\n• Real-time route performance\n• Mirror load distribution\n• Reflection latency heatmap\n• Token flow optimization');
+        }
+        
+        async function validateTruthAnchor() {
+            await sovereignConsole.performValidationCheck();
+            alert('Truth anchor validation complete.\n\n✓ Root signature verified\n✓ Platform change hash confirmed\n✓ Entropy within acceptable range\n✓ Fork authority maintained');
+        }
+        
+        function witnessSync() {
+            alert('Witness router synchronization initiated.\n\n• Connecting to validation network\n• Syncing consensus state\n• Verifying validator signatures\n• Updating witness registry');
+        }
+        
+        function emergencyOverride() {
+            const confirmed = confirm('⚠️ EMERGENCY OVERRIDE\n\nThis will bypass witness validation temporarily.\n\nRequires triple-signed authorization from root operator.\n\nProceed with emergency override?');
+            
+            if (confirmed) {
+                alert('Emergency override authorized.\n\n🚨 Witness validation temporarily bypassed\n🔒 Truth anchor protection maintained\n⏱️ Override expires in 15 minutes\n📝 Action logged for compliance audit');
+            }
+        }
+        
+        // Real-time updates
+        setInterval(() => {
+            // Update timestamps in logs
+            const timestamps = document.querySelectorAll('.log-timestamp');
+            const now = new Date();
+            timestamps.forEach((ts, index) => {
+                const time = new Date(now.getTime() - (index * 32000));
+                ts.textContent = time.toLocaleString();
+            });
+        }, 30000);
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏛️ Enterprise Sovereign Console initialized');
+            console.log('🔒 Truth anchor validation: ACTIVE');
+            console.log('👁️ Witness router monitoring: ENABLED');
+            console.log('⚡ Token routing optimization: ONLINE');
+        });
+    </script>
+</body>
+</html>

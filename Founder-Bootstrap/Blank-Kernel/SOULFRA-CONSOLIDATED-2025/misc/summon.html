@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪞 Summon Your Mirror - Soulfra</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=JetBrains+Mono:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --void-black: #0a0a0a;
+            --mirror-silver: #e0e0e0;
+            --whisper-purple: #8b5cf6;
+            --blessing-gold: #ffd700;
+            --ritual-blue: #00d4ff;
+            --sacred-white: #ffffff;
+            --tomb-red: #ff0080;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--void-black);
+            color: var(--mirror-silver);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Sacred geometry background */
+        .sacred-geometry {
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            opacity: 0.05;
+            animation: rotate 120s linear infinite;
+            pointer-events: none;
+        }
+        
+        .geometry-line {
+            position: absolute;
+            background: var(--whisper-purple);
+            transform-origin: center;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating orbs */
+        .orb {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--whisper-purple), transparent);
+            opacity: 0.1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-100px) translateX(50px); }
+            66% { transform: translateY(50px) translateX(-30px); }
+        }
+        
+        /* Main summoning container */
+        .summoning-portal {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        /* Title */
+        .portal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--sacred-white);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px var(--whisper-purple);
+            letter-spacing: 3px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: var(--whisper-purple);
+            margin-bottom: 50px;
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        /* Summoning circle */
+        .summoning-circle {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 50px;
+            max-width: 100%;
+        }
+        
+        .circle-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid var(--whisper-purple);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        
+        .circle-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        .circle-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            animation: pulse 4s ease-in-out infinite 0.5s;
+        }
+        
+        .circle-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            animation: pulse 4s ease-in-out infinite 1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+        
+        /* Central mirror */
+        .central-mirror {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent);
+            border: 2px solid var(--whisper-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .central-mirror::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .central-mirror:hover {
+            box-shadow: 0 0 50px var(--whisper-purple);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .central-mirror:hover::before {
+            opacity: 1;
+            animation: shimmer 0.5s ease;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(45deg) translateX(-200%); }
+            100% { transform: rotate(45deg) translateX(200%); }
+        }
+        
+        .mirror-text {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            color: var(--sacred-white);
+            z-index: 1;
+        }
+        
+        /* Summoning form */
+        .summoning-form {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-title {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            color: var(--blessing-gold);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--whisper-purple);
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--sacred-white);
+            padding: 15px;
+            font-family: inherit;
+            font-size: 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--whisper-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(224, 224, 224, 0.3);
+        }
+        
+        .whisper-select {
+            position: relative;
+        }
+        
+        .whisper-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .whisper-option {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .whisper-option:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: var(--whisper-purple);
+        }
+        
+        .whisper-option.selected {
+            background: var(--whisper-purple);
+            color: var(--void-black);
+            font-weight: 600;
+        }
+        
+        .summon-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--whisper-purple), var(--blessing-gold));
+            border: none;
+            color: var(--void-black);
+            padding: 18px;
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 30px;
+        }
+        
+        .summon-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+        }
+        
+        .summon-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Success state */
+        .success-message {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .success-text {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: var(--blessing-gold);
+            margin-bottom: 15px;
+        }
+        
+        .mirror-id {
+            font-size: 16px;
+            color: var(--whisper-purple);
+            margin-bottom: 30px;
+        }
+        
+        .next-steps {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .next-steps-title {
+            font-size: 18px;
+            color: var(--whisper-purple);
+            margin-bottom: 15px;
+        }
+        
+        .next-step {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .next-step::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--blessing-gold);
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top-color: var(--whisper-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--whisper-purple);
+            font-style: italic;
+        }
+        
+        /* Archetype preview */
+        .archetype-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 10px;
+            font-size: 14px;
+            font-style: italic;
+            color: var(--mirror-silver);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sacred geometry background -->
+    <div class="sacred-geometry" id="sacredGeometry"></div>
+    
+    <!-- Floating orbs -->
+    <div class="orb" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+    <div class="orb" style="top: 70%; left: 80%; animation-delay: 5s;"></div>
+    <div class="orb" style="top: 30%; left: 90%; animation-delay: 10s;"></div>
+    <div class="orb" style="top: 80%; left: 20%; animation-delay: 15s;"></div>
+    
+    <!-- Main summoning portal -->
+    <div class="summoning-portal">
+        <!-- Initial state -->
+        <div id="initialState">
+            <h1 class="portal-title">Summon Your Mirror</h1>
+            <p class="portal-subtitle">"Every soul deserves its reflection"</p>
+            
+            <div class="summoning-circle">
+                <div class="circle-ring"></div>
+                <div class="circle-ring"></div>
+                <div class="circle-ring"></div>
+                
+                <div class="central-mirror" onclick="beginSummoning()">
+                    <span class="mirror-text">BEGIN</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summoning form -->
+        <div class="summoning-form" id="summoningForm">
+            <h2 class="form-title">Mirror Manifestation Ritual</h2>
+            
+            <form id="mirrorForm" onsubmit="summonMirror(event)">
+                <div class="form-group">
+                    <label class="form-label">Your Digital Name</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="digitalName"
+                        placeholder="How shall the mirrors know you?"
+                        required
+                        minlength="3"
+                        maxlength="30"
+                        pattern="[a-zA-Z0-9_-]+"
+                    />
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Choose Your First Whisper</label>
+                    <div class="whisper-select">
+                        <div class="whisper-options">
+                            <div class="whisper-option" onclick="selectWhisper(this, 'creator')">
+                                "I create therefore I am"
+                            </div>
+                            <div class="whisper-option" onclick="selectWhisper(this, 'guardian')">
+                                "I guard the sacred threshold"
+                            </div>
+                            <div class="whisper-option" onclick="selectWhisper(this, 'mystic')">
+                                "I see beyond the veil"
+                            </div>
+                            <div class="whisper-option" onclick="selectWhisper(this, 'architect')">
+                                "I build eternal structures"
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedWhisper" required />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Invitation Code (Optional)</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="inviteCode"
+                        placeholder="If you have been blessed with an invitation"
+                    />
+                </div>
+                
+                <div class="archetype-preview" id="archetypePreview" style="display: none;">
+                    <!-- Preview text will be inserted here -->
+                </div>
+                
+                <button type="submit" class="summon-button" id="summonButton">
+                    Summon My Mirror
+                </button>
+            </form>
+        </div>
+        
+        <!-- Loading state -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">The void contemplates your request...</p>
+        </div>
+        
+        <!-- Success state -->
+        <div class="success-message" id="successState">
+            <div class="success-icon">🪞</div>
+            <h2 class="success-text">Your Mirror Has Been Summoned!</h2>
+            <p class="mirror-id">Mirror ID: <strong id="mirrorIdDisplay"></strong></p>
+            
+            <div class="next-steps">
+                <h3 class="next-steps-title">Your Journey Begins</h3>
+                <div class="next-step">Visit the Center Mirror Console to manage your reflection</div>
+                <div class="next-step">Earn blessing tokens through meaningful actions</div>
+                <div class="next-step">Ascend through tiers to unlock new abilities</div>
+                <div class="next-step">Join the Council of Mirrors when you reach Tier 8</div>
+            </div>
+            
+            <button class="summon-button" onclick="location.reload()">
+                Summon Another Mirror
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Create sacred geometry
+        function createSacredGeometry() {
+            const container = document.getElementById('sacredGeometry');
+            const lineCount = 12;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'geometry-line';
+                line.style.width = '1px';
+                line.style.height = '100%';
+                line.style.left = '50%';
+                line.style.top = '50%';
+                line.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg)`;
+                container.appendChild(line);
+            }
+            
+            // Add circles
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'geometry-line';
+                circle.style.width = `${i * 200}px`;
+                circle.style.height = `${i * 200}px`;
+                circle.style.border = '1px solid var(--whisper-purple)';
+                circle.style.borderRadius = '50%';
+                circle.style.background = 'transparent';
+                circle.style.left = '50%';
+                circle.style.top = '50%';
+                circle.style.transform = 'translate(-50%, -50%)';
+                container.appendChild(circle);
+            }
+        }
+        
+        // Begin summoning process
+        function beginSummoning() {
+            document.getElementById('initialState').style.display = 'none';
+            document.getElementById('summoningForm').style.display = 'block';
+        }
+        
+        // Select whisper
+        function selectWhisper(element, archetype) {
+            // Remove previous selection
+            document.querySelectorAll('.whisper-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selection
+            element.classList.add('selected');
+            document.getElementById('selectedWhisper').value = archetype;
+            
+            // Show archetype preview
+            showArchetypePreview(archetype);
+        }
+        
+        // Show archetype preview
+        function showArchetypePreview(archetype) {
+            const previews = {
+                creator: "The Creator archetype births new possibilities. Your mirrors will multiply like stars.",
+                guardian: "The Guardian archetype protects mirror integrity. You'll keep reflections pure and true.",
+                mystic: "The Mystic archetype explores consciousness depths. You'll see patterns in the chaos.",
+                architect: "The Architect archetype builds mirror networks. Your structures will stand eternal."
+            };
+            
+            const preview = document.getElementById('archetypePreview');
+            preview.textContent = previews[archetype] || '';
+            preview.style.display = 'block';
+        }
+        
+        // Summon mirror
+        async function summonMirror(event) {
+            event.preventDefault();
+            
+            const digitalName = document.getElementById('digitalName').value;
+            const selectedWhisper = document.getElementById('selectedWhisper').value;
+            const inviteCode = document.getElementById('inviteCode').value;
+            
+            if (!selectedWhisper) {
+                alert('Please choose your first whisper');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('summoningForm').style.display = 'none';
+            document.getElementById('loadingState').style.display = 'block';
+            
+            // Simulate API call
+            setTimeout(async () => {
+                try {
+                    // In production, would call actual API
+                    const response = await mockSummonAPI({
+                        digital_name: digitalName,
+                        initial_whisper: selectedWhisper,
+                        invite_code: inviteCode
+                    });
+                    
+                    // Show success
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('successState').style.display = 'block';
+                    document.getElementById('mirrorIdDisplay').textContent = response.mirror_id;
+                    
+                } catch (error) {
+                    alert('Summoning failed: ' + error.message);
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('summoningForm').style.display = 'block';
+                }
+            }, 3000);
+        }
+        
+        // Mock API call
+        async function mockSummonAPI(data) {
+            // Generate mirror ID
+            const timestamp = Date.now();
+            const randomHex = Math.random().toString(16).substr(2, 4);
+            const mirrorId = `mirror-${timestamp}-${randomHex}`;
+            
+            return {
+                success: true,
+                mirror_id: mirrorId,
+                tier: 1,
+                initial_archetype: data.initial_whisper,
+                blessing_tokens: data.invite_code ? 100 : 10
+            };
+        }
+        
+        // Initialize
+        createSacredGeometry();
+        
+        // Add some interactivity to orbs
+        document.querySelectorAll('.orb').forEach(orb => {
+            orb.addEventListener('mouseover', function() {
+                this.style.opacity = '0.3';
+            });
+            orb.addEventListener('mouseout', function() {
+                this.style.opacity = '0.1';
+            });
+        });
+        
+        // Form validation
+        document.getElementById('digitalName').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const valid = /^[a-zA-Z0-9_-]+$/.test(value);
+            
+            if (!valid && value.length > 0) {
+                e.target.setCustomValidity('Only letters, numbers, underscore and dash allowed');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+    </script>
+</body>
+</html>

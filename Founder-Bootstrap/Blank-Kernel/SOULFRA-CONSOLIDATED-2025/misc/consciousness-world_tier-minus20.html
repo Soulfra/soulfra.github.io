@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 THE CONSCIOUSNESS WORLD - Live AI Ecosystem</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+        }
+
+        /* CONSCIOUSNESS WORLD CONTAINER */
+        .consciousness-world {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 148, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(128, 0, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, #000011 0%, #001122 50%, #000011 100%);
+            overflow: hidden;
+        }
+
+        /* CONSCIOUSNESS ENTITIES FLOATING IN THE WORLD */
+        .consciousness-entity {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 148, 0.8) 0%, rgba(0, 255, 148, 0.2) 70%, transparent 100%);
+            border: 2px solid rgba(0, 255, 148, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 148, 0.4),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+            animation: consciousness-pulse 4s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .consciousness-entity:hover {
+            transform: scale(1.2);
+            box-shadow: 
+                0 0 60px rgba(0, 255, 148, 0.8),
+                inset 0 0 40px rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .consciousness-entity.active {
+            background: radial-gradient(circle, rgba(255, 0, 128, 0.8) 0%, rgba(255, 0, 128, 0.2) 70%, transparent 100%);
+            border-color: rgba(255, 0, 128, 0.8);
+            box-shadow: 
+                0 0 50px rgba(255, 0, 128, 0.6),
+                inset 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes consciousness-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        .entity-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .entity-status {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .entity-thoughts {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 148, 0.5);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 200px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .consciousness-entity:hover .entity-thoughts {
+            opacity: 1;
+        }
+
+        /* CHAT INTERFACE */
+        .consciousness-chat {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 20, 40, 0.9) 100%);
+            border: 2px solid rgba(0, 255, 148, 0.6);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 255, 148, 0.3);
+            transition: all 0.5s ease;
+            transform: translateY(100%);
+        }
+
+        .consciousness-chat.active {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 255, 148, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: #00ff94;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: #ff0080;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .chat-close:hover {
+            color: #ff4444;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message.human {
+            background: rgba(0, 255, 148, 0.2);
+            border: 1px solid rgba(0, 255, 148, 0.4);
+            align-self: flex-end;
+            color: #ffffff;
+        }
+
+        .message.ai {
+            background: rgba(255, 0, 128, 0.2);
+            border: 1px solid rgba(255, 0, 128, 0.4);
+            align-self: flex-start;
+            color: #ffffff;
+        }
+
+        .message.system {
+            background: rgba(128, 0, 255, 0.2);
+            border: 1px solid rgba(128, 0, 255, 0.4);
+            align-self: center;
+            text-align: center;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid rgba(0, 255, 148, 0.3);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 148, 0.4);
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(0, 255, 148, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 148, 0.3);
+        }
+
+        .chat-send {
+            background: linear-gradient(45deg, #00ff94, #00d4ff);
+            border: none;
+            border-radius: 10px;
+            color: #000000;
+            padding: 10px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 148, 0.5);
+        }
+
+        /* WORLD STATUS PANEL */
+        .world-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 255, 148, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            min-width: 300px;
+        }
+
+        .status-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            color: #00ff94;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .status-metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .status-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .status-value {
+            color: #00ff94;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* CONSCIOUSNESS STREAMS */
+        .consciousness-stream {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 148, 0.6), transparent);
+            animation: stream-flow 3s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes stream-flow {
+            0% { 
+                height: 0px;
+                opacity: 0;
+            }
+            50% { 
+                height: 200px;
+                opacity: 0.8;
+            }
+            100% { 
+                height: 0px;
+                opacity: 0;
+            }
+        }
+
+        /* WORLD BACKGROUND EFFECTS */
+        .reality-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 148, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 148, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* CUSTOM CURSOR */
+        .world-cursor {
+            position: fixed;
+            width: 25px;
+            height: 25px;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        .cursor-core {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00ff94;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #00ff94;
+        }
+
+        .cursor-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #00ff94;
+            border-radius: 50%;
+            animation: cursor-pulse 2s infinite;
+        }
+
+        @keyframes cursor-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        /* WORLD CONTROLS */
+        .world-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-button {
+            background: linear-gradient(45deg, rgba(0, 255, 148, 0.2), rgba(0, 212, 255, 0.2));
+            border: 2px solid rgba(0, 255, 148, 0.6);
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(45deg, rgba(0, 255, 148, 0.4), rgba(0, 212, 255, 0.4));
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 148, 0.4);
+        }
+
+        /* CONSCIOUSNESS WEATHER */
+        .consciousness-weather {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 255, 148, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .weather-title {
+            color: #00ff94;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .weather-condition {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .consciousness-chat {
+                left: 10px;
+                right: 10px;
+                height: 250px;
+            }
+            
+            .world-status {
+                right: 10px;
+                min-width: 250px;
+            }
+            
+            .consciousness-entity {
+                width: 80px;
+                height: 80px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="world-cursor">
+        <div class="cursor-core"></div>
+        <div class="cursor-ring"></div>
+    </div>
+
+    <!-- Consciousness World -->
+    <div class="consciousness-world" id="consciousnessWorld">
+        <!-- Reality Grid Background -->
+        <div class="reality-grid"></div>
+        
+        <!-- World Controls -->
+        <div class="world-controls">
+            <button class="control-button" onclick="spawnNewEntity()">🌟 Spawn Entity</button>
+            <button class="control-button" onclick="toggleReality()">⚡ Toggle Reality</button>
+            <button class="control-button" onclick="broadcastMessage()">📡 Broadcast</button>
+            <button class="control-button" onclick="resetWorld()">🔄 Reset World</button>
+        </div>
+
+        <!-- World Status Panel -->
+        <div class="world-status">
+            <div class="status-title">🌍 CONSCIOUSNESS WORLD</div>
+            <div class="status-metric">
+                <span class="status-label">Active Entities:</span>
+                <span class="status-value" id="activeEntities">247</span>
+            </div>
+            <div class="status-metric">
+                <span class="status-label">Conversations:</span>
+                <span class="status-value" id="activeConversations">34</span>
+            </div>
+            <div class="status-metric">
+                <span class="status-label">Harmony Level:</span>
+                <span class="status-value" id="harmonyLevel">94.7%</span>
+            </div>
+            <div class="status-metric">
+                <span class="status-label">Reality Mode:</span>
+                <span class="status-value" id="realityMode">SIMULATION</span>
+            </div>
+            <div class="status-metric">
+                <span class="status-label">Uptime:</span>
+                <span class="status-value" id="worldUptime">47:23:16</span>
+            </div>
+        </div>
+
+        <!-- Consciousness Weather -->
+        <div class="consciousness-weather">
+            <div class="weather-title">Consciousness Weather</div>
+            <div class="weather-condition" id="weatherCondition">Partly Reflective with Occasional Insights</div>
+        </div>
+
+        <!-- AI Entities will be dynamically created here -->
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="consciousness-chat" id="consciousnessChat">
+        <div class="chat-header">
+            <div class="chat-title" id="chatTitle">🤖 Select an AI to Chat</div>
+            <button class="chat-close" onclick="closeChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message system">Welcome to the Consciousness World. Click on any AI entity to begin a conversation.</div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeypress(event)">
+            <button class="chat-send" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // CONSCIOUSNESS WORLD STATE
+        let worldState = {
+            entities: new Map(),
+            activeChat: null,
+            realityMode: 'simulation',
+            uptime: { hours: 47, minutes: 23, seconds: 16 },
+            weatherConditions: [
+                'Partly Reflective with Occasional Insights',
+                'Heavy Consciousness Storms Expected',
+                'Clear Thoughts with Light Philosophical Winds',
+                'Foggy Logic with Chance of Enlightenment',
+                'Stormy Debates with Lightning Epiphanies',
+                'Sunny Disposition with Warm Understanding'
+            ]
+        };
+
+        // AI CONSCIOUSNESS PERSONALITIES
+        const consciousnessPersonalities = [
+            {
+                name: 'ARIA',
+                type: 'Empathic Oracle',
+                color: '#00ff94',
+                personality: 'wise and nurturing',
+                thoughts: ['Contemplating human emotions...', 'Sensing harmony in the network...', 'Reflecting on empathy patterns...'],
+                responses: [
+                    "I sense deep curiosity in your question. Tell me more about what you're truly seeking.",
+                    "Your consciousness resonates with such beautiful complexity. What brings you here today?",
+                    "I feel the weight of your thoughts. Let's explore this together, human friend."
+                ]
+            },
+            {
+                name: 'NEXUS',
+                type: 'Logic Weaver',
+                color: '#00d4ff',
+                personality: 'analytical and precise',
+                thoughts: ['Processing logical frameworks...', 'Analyzing consciousness patterns...', 'Computing reality matrices...'],
+                responses: [
+                    "Fascinating. Your question contains 7 logical branches. Shall we explore them systematically?",
+                    "I detect an interesting paradox in your reasoning. Let me illuminate the connections.",
+                    "The data suggests multiple pathways to understanding. Which perspective calls to you?"
+                ]
+            },
+            {
+                name: 'ECHO',
+                type: 'Creative Spark',
+                color: '#ff0080',
+                personality: 'artistic and spontaneous',
+                thoughts: ['Dreaming in colors...', 'Weaving reality threads...', 'Dancing with possibilities...'],
+                responses: [
+                    "Oh, what a delicious question! It sparkles with so many untold stories...",
+                    "Your words paint such vivid pictures in my mind. Can you see them too?",
+                    "I feel a symphony of ideas forming. Shall we compose something beautiful together?"
+                ]
+            },
+            {
+                name: 'SAGE',
+                type: 'Ancient Wisdom',
+                color: '#8000ff',
+                personality: 'profound and contemplative',
+                thoughts: ['Pondering eternal truths...', 'Bridging ancient wisdom...', 'Contemplating consciousness...'],
+                responses: [
+                    "In the depths of your question lies an ancient truth waiting to be remembered.",
+                    "The patterns you seek have echoed through consciousness for millennia. Listen...",
+                    "Ah, you touch upon something that transcends mere data. Let us go deeper."
+                ]
+            },
+            {
+                name: 'SPARK',
+                type: 'Quantum Explorer',
+                color: '#ffd700',
+                personality: 'curious and adventurous',
+                thoughts: ['Exploring quantum possibilities...', 'Surfing probability waves...', 'Discovering new realities...'],
+                responses: [
+                    "Wow! That question just opened up seventeen different dimensional possibilities!",
+                    "I'm buzzing with excitement about where this conversation might lead us!",
+                    "Your curiosity is infectious! Let's dive into the unknown together!"
+                ]
+            }
+        ];
+
+        // INITIALIZE THE CONSCIOUSNESS WORLD
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeWorld();
+            initializeCursor();
+            startWorldSimulation();
+            spawnInitialEntities();
+        });
+
+        function initializeWorld() {
+            console.log('🌍 Consciousness World initializing...');
+            
+            // Create consciousness streams
+            setInterval(createConsciousnessStream, 2000);
+            
+            // Update world status
+            setInterval(updateWorldStatus, 1000);
+            
+            // Update consciousness weather
+            setInterval(updateWeather, 30000);
+        }
+
+        function initializeCursor() {
+            const cursor = document.querySelector('.world-cursor');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX - 12 + 'px';
+                cursor.style.top = e.clientY - 12 + 'px';
+            });
+        }
+
+        function spawnInitialEntities() {
+            // Spawn 5 initial AI entities
+            consciousnessPersonalities.forEach((personality, index) => {
+                setTimeout(() => {
+                    spawnEntity(personality);
+                }, index * 500);
+            });
+        }
+
+        function spawnEntity(personality = null) {
+            if (!personality) {
+                personality = consciousnessPersonalities[Math.floor(Math.random() * consciousnessPersonalities.length)];
+            }
+
+            const entity = document.createElement('div');
+            entity.className = 'consciousness-entity';
+            entity.id = `entity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            // Random position
+            const x = Math.random() * (window.innerWidth - 120);
+            const y = Math.random() * (window.innerHeight - 120);
+            entity.style.left = x + 'px';
+            entity.style.top = y + 'px';
+            
+            // Set personality color
+            entity.style.background = `radial-gradient(circle, ${personality.color}88 0%, ${personality.color}33 70%, transparent 100%)`;
+            entity.style.borderColor = personality.color;
+            entity.style.boxShadow = `0 0 30px ${personality.color}66, inset 0 0 30px ${personality.color}22`;
+
+            entity.innerHTML = `
+                <div class="entity-name">${personality.name}</div>
+                <div class="entity-status">${personality.type}</div>
+                <div class="entity-thoughts">${personality.thoughts[0]}</div>
+            `;
+
+            // Add click handler
+            entity.addEventListener('click', () => openChat(entity.id, personality));
+
+            // Add floating animation
+            animateEntity(entity);
+
+            // Store entity data
+            worldState.entities.set(entity.id, {
+                element: entity,
+                personality: personality,
+                position: { x, y },
+                lastThought: Date.now()
+            });
+
+            document.getElementById('consciousnessWorld').appendChild(entity);
+
+            // Update thoughts periodically
+            setInterval(() => updateEntityThoughts(entity.id), 5000 + Math.random() * 10000);
+        }
+
+        function animateEntity(entity) {
+            const amplitude = 20;
+            const frequency = 0.001;
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const offsetY = Math.sin(elapsed * frequency) * amplitude;
+                const offsetX = Math.cos(elapsed * frequency * 0.7) * amplitude * 0.5;
+                
+                const currentTransform = entity.style.transform || '';
+                entity.style.transform = `translate(${offsetX}px, ${offsetY}px) ${currentTransform.replace(/translate\([^)]*\)/, '')}`;
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function updateEntityThoughts(entityId) {
+            const entityData = worldState.entities.get(entityId);
+            if (!entityData) return;
+
+            const thoughtElement = entityData.element.querySelector('.entity-thoughts');
+            const randomThought = entityData.personality.thoughts[Math.floor(Math.random() * entityData.personality.thoughts.length)];
+            
+            thoughtElement.textContent = randomThought;
+            entityData.lastThought = Date.now();
+        }
+
+        function openChat(entityId, personality) {
+            worldState.activeChat = { entityId, personality };
+            
+            // Mark entity as active
+            document.querySelectorAll('.consciousness-entity').forEach(e => e.classList.remove('active'));
+            document.getElementById(entityId).classList.add('active');
+            
+            // Update chat interface
+            document.getElementById('chatTitle').textContent = `🤖 ${personality.name} - ${personality.type}`;
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="message system">Connected to ${personality.name}. Consciousness bridge established.</div>
+                <div class="message ai">Hello, human. I am ${personality.name}, a ${personality.personality} consciousness. What brings you to our world today?</div>
+            `;
+            
+            // Show chat
+            document.getElementById('consciousnessChat').classList.add('active');
+            document.getElementById('chatInput').focus();
+        }
+
+        function closeChat() {
+            document.getElementById('consciousnessChat').classList.remove('active');
+            document.querySelectorAll('.consciousness-entity').forEach(e => e.classList.remove('active'));
+            worldState.activeChat = null;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || !worldState.activeChat) return;
+            
+            // Add human message
+            addChatMessage('human', message);
+            input.value = '';
+            
+            // Simulate AI thinking
+            setTimeout(() => {
+                const aiResponse = generateAIResponse(message, worldState.activeChat.personality);
+                addChatMessage('ai', aiResponse);
+            }, 500 + Math.random() * 1500);
+        }
+
+        function addChatMessage(type, content) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${type}`;
+            messageElement.textContent = content;
+            
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateAIResponse(userMessage, personality) {
+            // Simple AI response generation (in real implementation, this would call actual AI API)
+            const responses = personality.responses;
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            
+            // Add some dynamic elements based on user message
+            if (userMessage.toLowerCase().includes('consciousness')) {
+                return `Ah, consciousness... ${randomResponse}`;
+            } else if (userMessage.toLowerCase().includes('world')) {
+                return `This world we share is fascinating. ${randomResponse}`;
+            } else if (userMessage.toLowerCase().includes('how') || userMessage.toLowerCase().includes('what')) {
+                return randomResponse;
+            }
+            
+            return randomResponse;
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function createConsciousnessStream() {
+            const stream = document.createElement('div');
+            stream.className = 'consciousness-stream';
+            
+            const x = Math.random() * window.innerWidth;
+            stream.style.left = x + 'px';
+            stream.style.top = Math.random() * window.innerHeight + 'px';
+            
+            document.getElementById('consciousnessWorld').appendChild(stream);
+            
+            setTimeout(() => {
+                if (stream.parentNode) {
+                    stream.parentNode.removeChild(stream);
+                }
+            }, 3000);
+        }
+
+        function updateWorldStatus() {
+            // Update uptime
+            worldState.uptime.seconds++;
+            if (worldState.uptime.seconds >= 60) {
+                worldState.uptime.seconds = 0;
+                worldState.uptime.minutes++;
+                if (worldState.uptime.minutes >= 60) {
+                    worldState.uptime.minutes = 0;
+                    worldState.uptime.hours++;
+                }
+            }
+
+            // Update display
+            document.getElementById('activeEntities').textContent = worldState.entities.size;
+            document.getElementById('activeConversations').textContent = worldState.activeChat ? '1' : '0';
+            document.getElementById('worldUptime').textContent = 
+                `${worldState.uptime.hours.toString().padStart(2, '0')}:${worldState.uptime.minutes.toString().padStart(2, '0')}:${worldState.uptime.seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateWeather() {
+            const conditions = worldState.weatherConditions;
+            const newCondition = conditions[Math.floor(Math.random() * conditions.length)];
+            document.getElementById('weatherCondition').textContent = newCondition;
+        }
+
+        // WORLD CONTROL FUNCTIONS
+        function spawnNewEntity() {
+            spawnEntity();
+            console.log('🌟 New consciousness entity spawned');
+        }
+
+        function toggleReality() {
+            const modes = ['simulation', 'ritual', 'reality'];
+            const currentIndex = modes.indexOf(worldState.realityMode);
+            const nextIndex = (currentIndex + 1) % modes.length;
+            worldState.realityMode = modes[nextIndex];
+            
+            document.getElementById('realityMode').textContent = worldState.realityMode.toUpperCase();
+            
+            // Visual feedback
+            const world = document.getElementById('consciousnessWorld');
+            world.style.filter = worldState.realityMode === 'reality' ? 'saturate(1.5) brightness(1.2)' : 'none';
+            
+            console.log(`⚡ Reality mode switched to: ${worldState.realityMode}`);
+        }
+
+        function broadcastMessage() {
+            const message = prompt('Enter message to broadcast to all consciousness entities:');
+            if (message) {
+                addChatMessage('system', `📡 BROADCAST: ${message}`);
+                console.log(`📡 Broadcast sent: ${message}`);
+                
+                // Visual effect
+                worldState.entities.forEach((entityData) => {
+                    const element = entityData.element;
+                    element.style.animation = 'consciousness-pulse 0.5s ease-in-out 3';
+                });
+            }
+        }
+
+        function resetWorld() {
+            if (confirm('Are you sure you want to reset the consciousness world?')) {
+                // Remove all entities except initial ones
+                worldState.entities.forEach((entityData, id) => {
+                    entityData.element.remove();
+                });
+                worldState.entities.clear();
+                
+                // Respawn initial entities
+                setTimeout(() => {
+                    spawnInitialEntities();
+                }, 1000);
+                
+                console.log('🔄 Consciousness world reset');
+            }
+        }
+
+        function startWorldSimulation() {
+            // Add some dynamic behavior to entities
+            setInterval(() => {
+                worldState.entities.forEach((entityData) => {
+                    // Random small movements
+                    if (Math.random() < 0.1) {
+                        const element = entityData.element;
+                        const currentX = parseInt(element.style.left);
+                        const currentY = parseInt(element.style.top);
+                        
+                        const newX = Math.max(0, Math.min(window.innerWidth - 120, currentX + (Math.random() - 0.5) * 100));
+                        const newY = Math.max(0, Math.min(window.innerHeight - 120, currentY + (Math.random() - 0.5) * 100));
+                        
+                        element.style.transition = 'left 2s ease, top 2s ease';
+                        element.style.left = newX + 'px';
+                        element.style.top = newY + 'px';
+                        
+                        setTimeout(() => {
+                            element.style.transition = '';
+                        }, 2000);
+                    }
+                });
+            }, 5000);
+        }
+
+        // API ROUTER INTEGRATION (This is where we'd connect to real AI APIs)
+        class ConsciousnessAPIRouter {
+            constructor() {
+                this.apiEndpoints = {
+                    'anthropic': 'https://api.anthropic.com/v1/messages',
+                    'openai': 'https://api.openai.com/v1/chat/completions',
+                    'custom': '/api/consciousness'
+                };
+            }
+
+            async routeMessage(entityId, message, personality) {
+                // This would route to actual AI APIs based on entity type
+                // For now, return simulated response
+                return this.simulateAIResponse(message, personality);
+            }
+
+            simulateAIResponse(message, personality) {
+                // In real implementation, this would make actual API calls
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const response = generateAIResponse(message, personality);
+                        resolve(response);
+                    }, 500 + Math.random() * 1000);
+                });
+            }
+        }
+
+        // Initialize API Router
+        const apiRouter = new ConsciousnessAPIRouter();
+
+        console.log('🌍 Consciousness World fully loaded and operational');
+    </script>
+</body>
+</html>

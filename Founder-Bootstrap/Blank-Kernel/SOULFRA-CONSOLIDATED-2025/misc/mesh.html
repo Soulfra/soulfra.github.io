@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoopMesh Live Dashboard | Soulfra</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff88;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-areas: 
+                "header header header"
+                "graph activity narrator"
+                "controls stream decisions";
+            grid-template-rows: 60px 1fr 200px;
+            grid-template-columns: 2fr 1fr 1fr;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .header {
+            grid-area: header;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .status-indicator {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .pulse.active { background: #00ff88; }
+        .pulse.warning { background: #ffaa00; }
+        .pulse.error { background: #ff4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .graph-container {
+            grid-area: graph;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-feed {
+            grid-area: activity;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .stream-narrator {
+            grid-area: narrator;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .controls-panel {
+            grid-area: controls;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .stream-display {
+            grid-area: stream;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .decision-overlay {
+            grid-area: decisions;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .section-title {
+            color: #00ffff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #00ff88;
+            padding-bottom: 5px;
+        }
+
+        .activity-item {
+            background: rgba(0, 255, 136, 0.1);
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #00ff88;
+            font-size: 12px;
+        }
+
+        .activity-item.claude {
+            border-left-color: #ff6b6b;
+        }
+
+        .activity-item.agent {
+            border-left-color: #4ecdc4;
+        }
+
+        .activity-item.loop {
+            border-left-color: #45b7d1;
+        }
+
+        .narration-text {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+            border-left: 2px solid #00ffff;
+            font-style: italic;
+        }
+
+        .control-button {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            background: rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+
+        .decision-item {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid #ffaa00;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .decision-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .bless-btn {
+            background: rgba(0, 255, 136, 0.3);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 4px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .deny-btn {
+            background: rgba(255, 68, 68, 0.3);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 4px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .graph-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff88;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .node:hover {
+            stroke-width: 3px;
+        }
+
+        .link {
+            stroke: #00ff88;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .agent-mask {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+            background: rgba(0, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #00ff88;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 255, 136, 0.1);
+            border-left: 4px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 10px;
+        }
+
+        .node-label {
+            fill: #00ff88;
+            font-size: 10px;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔁 LoopMesh Live Dashboard</h1>
+            <div class="status-indicator">
+                <div>
+                    <div class="pulse active" id="system-pulse"></div>
+                    <span>System</span>
+                </div>
+                <div>
+                    <div class="pulse active" id="claude-pulse"></div>
+                    <span>Claude</span>
+                </div>
+                <div>
+                    <div class="pulse active" id="mesh-pulse"></div>
+                    <span>Mesh</span>
+                </div>
+                <div id="timestamp" class="timestamp"></div>
+            </div>
+        </div>
+
+        <!-- Graph Visualization -->
+        <div class="graph-container">
+            <div id="graph-loading" class="loading">
+                <div class="spinner"></div>
+                <span>Loading LoopMesh...</span>
+            </div>
+            <svg id="mesh-graph"></svg>
+            <div id="graph-tooltip" class="graph-tooltip" style="display: none;"></div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-feed">
+            <div class="section-title">🧠 Claude Activity Feed</div>
+            <div id="activity-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading activities...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stream Narrator -->
+        <div class="stream-narrator">
+            <div class="section-title">📜 Live Narration</div>
+            <div id="narration-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Connecting to stream...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <div class="section-title">🛠 Controls</div>
+            <button class="control-button" onclick="refreshMesh()">🔄 Refresh Mesh</button>
+            <button class="control-button" onclick="toggleAutoRefresh()">⏯ Auto Refresh</button>
+            <button class="control-button" onclick="exportMeshData()">📥 Export Data</button>
+            <button class="control-button" onclick="resetMesh()">🔄 Reset View</button>
+        </div>
+
+        <!-- Stream Display -->
+        <div class="stream-display">
+            <div class="section-title">📻 Stream Content</div>
+            <div id="stream-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading stream...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decision Overlay -->
+        <div class="decision-overlay">
+            <div class="section-title">⚖️ Blessing Decisions</div>
+            <div id="decision-queue">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading decisions...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let meshData = { nodes: [], links: [] };
+        let autoRefresh = true;
+        let simulation;
+        let svg, g;
+        
+        const API_BASE = 'http://localhost:7777';
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGraph();
+            loadMeshData();
+            loadActivityFeed();
+            loadNarration();
+            loadStreamContent();
+            loadDecisionQueue();
+            updateTimestamp();
+            
+            // Start auto-refresh if enabled
+            if (autoRefresh) {
+                setInterval(refreshData, 5000); // Refresh every 5 seconds
+            }
+            
+            setInterval(updateTimestamp, 1000); // Update timestamp every second
+        });
+
+        function initializeGraph() {
+            const container = document.querySelector('.graph-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            svg = d3.select("#mesh-graph")
+                .attr("width", width)
+                .attr("height", height);
+                
+            g = svg.append("g");
+            
+            // Add zoom behavior
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 3])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                });
+                
+            svg.call(zoom);
+            
+            // Initialize simulation
+            simulation = d3.forceSimulation()
+                .force("link", d3.forceLink().id(d => d.id).distance(100))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(40));
+        }
+
+        async function loadMeshData() {
+            try {
+                // Load loops data
+                const loopsResponse = await fetch(`${API_BASE}/api/loops/recent`);
+                const loops = await loopsResponse.json();
+                
+                // Load runtime table data for relationships
+                const runtimeResponse = await fetch(`${API_BASE}/api/runtime-table/recent/20`);
+                const runtime = await runtimeResponse.json();
+                
+                // Load agent states
+                const agentResponse = await fetch(`${API_BASE}/api/enterprise/agents`);
+                const agents = await agentResponse.json();
+                
+                // Transform data into graph format
+                meshData = transformToGraphData(loops, runtime.entries || [], agents);
+                
+                updateGraph();
+                document.getElementById('graph-loading').style.display = 'none';
+                
+                updateSystemPulse('active');
+            } catch (error) {
+                console.error('Failed to load mesh data:', error);
+                updateSystemPulse('error');
+            }
+        }
+
+        function transformToGraphData(loops, runtimeEntries, agents) {
+            const nodes = [];
+            const links = [];
+            
+            // Add loop nodes
+            loops.forEach(loop => {
+                nodes.push({
+                    id: loop.loop_id,
+                    type: 'loop',
+                    label: loop.loop_id,
+                    tone: loop.emotional_tone,
+                    blessed: loop.blessed,
+                    created_at: loop.created_at,
+                    status: loop.blessed ? 'blessed' : 'pending'
+                });
+            });
+            
+            // Add agent nodes from enterprise data
+            if (agents.agents) {
+                agents.agents.forEach(([agentId, agentData]) => {
+                    nodes.push({
+                        id: agentId,
+                        type: 'agent',
+                        label: agentData.name || agentId,
+                        role: agentData.role,
+                        status: agentData.status,
+                        capabilities: agentData.capabilities
+                    });
+                });
+            }
+            
+            // Add whisper nodes and links from runtime data
+            runtimeEntries.forEach(entry => {
+                if (entry.type === 'whisper') {
+                    const whisperId = `whisper_${entry.timestamp}`;
+                    nodes.push({
+                        id: whisperId,
+                        type: 'whisper',
+                        label: 'Whisper',
+                        tone: entry.tone,
+                        agent: entry.agent,
+                        timestamp: entry.timestamp
+                    });
+                    
+                    // Link whisper to agent if exists
+                    if (entry.agent && nodes.find(n => n.id === entry.agent)) {
+                        links.push({
+                            source: whisperId,
+                            target: entry.agent,
+                            type: 'whisper_to_agent'
+                        });
+                    }
+                }
+                
+                // Link agents to loops they've spawned
+                if (entry.type === 'loop' && entry.agent) {
+                    const loopExists = nodes.find(n => n.id === entry.file);
+                    const agentExists = nodes.find(n => n.id === entry.agent);
+                    
+                    if (loopExists && agentExists) {
+                        links.push({
+                            source: entry.agent,
+                            target: entry.file,
+                            type: 'agent_to_loop'
+                        });
+                    }
+                }
+            });
+            
+            return { nodes, links };
+        }
+
+        function updateGraph() {
+            // Clear existing elements
+            g.selectAll("*").remove();
+            
+            // Add links
+            const link = g.append("g")
+                .selectAll("line")
+                .data(meshData.links)
+                .join("line")
+                .attr("class", "link")
+                .style("stroke-dasharray", d => d.type === 'whisper_to_agent' ? "5,5" : "none");
+            
+            // Add nodes
+            const node = g.append("g")
+                .selectAll("circle")
+                .data(meshData.nodes)
+                .join("circle")
+                .attr("class", "node")
+                .attr("r", d => d.type === 'loop' ? 20 : d.type === 'agent' ? 15 : 10)
+                .attr("fill", d => getNodeColor(d))
+                .attr("stroke", d => getNodeStroke(d))
+                .attr("stroke-width", 2)
+                .on("mouseover", showTooltip)
+                .on("mouseout", hideTooltip)
+                .on("click", nodeClick)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+            
+            // Add labels
+            const labels = g.append("g")
+                .selectAll("text")
+                .data(meshData.nodes)
+                .join("text")
+                .attr("class", "node-label")
+                .text(d => d.label.length > 10 ? d.label.substring(0, 10) + "..." : d.label);
+            
+            // Update simulation
+            simulation.nodes(meshData.nodes);
+            simulation.force("link").links(meshData.links);
+            simulation.alpha(1).restart();
+            
+            // Update positions on tick
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+                
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+                
+                labels
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y + 25);
+            });
+        }
+
+        function getNodeColor(d) {
+            switch (d.type) {
+                case 'loop':
+                    return d.blessed ? '#00ff88' : '#ffaa00';
+                case 'agent':
+                    return d.status === 'active' ? '#4ecdc4' : '#ff6b6b';
+                case 'whisper':
+                    return '#45b7d1';
+                default:
+                    return '#666';
+            }
+        }
+
+        function getNodeStroke(d) {
+            switch (d.type) {
+                case 'loop':
+                    return d.blessed ? '#00ff88' : '#ffaa00';
+                case 'agent':
+                    return '#00ffff';
+                case 'whisper':
+                    return '#45b7d1';
+                default:
+                    return '#666';
+            }
+        }
+
+        function showTooltip(event, d) {
+            const tooltip = document.getElementById('graph-tooltip');
+            let content = `<strong>${d.label}</strong><br>`;
+            content += `Type: ${d.type}<br>`;
+            
+            if (d.type === 'loop') {
+                content += `Tone: ${d.tone}<br>`;
+                content += `Status: ${d.blessed ? 'Blessed' : 'Pending'}<br>`;
+                content += `Created: ${new Date(d.created_at).toLocaleString()}`;
+            } else if (d.type === 'agent') {
+                content += `Role: ${d.role}<br>`;
+                content += `Status: ${d.status}<br>`;
+                if (d.capabilities) {
+                    content += `Capabilities: ${d.capabilities.join(', ')}`;
+                }
+            } else if (d.type === 'whisper') {
+                content += `Tone: ${d.tone}<br>`;
+                content += `Agent: ${d.agent}<br>`;
+                content += `Time: ${new Date(d.timestamp).toLocaleString()}`;
+            }
+            
+            tooltip.innerHTML = content;
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.style.display = 'block';
+        }
+
+        function hideTooltip() {
+            document.getElementById('graph-tooltip').style.display = 'none';
+        }
+
+        function nodeClick(event, d) {
+            console.log('Node clicked:', d);
+            // Could open detailed view or trigger actions
+        }
+
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        async function loadActivityFeed() {
+            try {
+                const response = await fetch(`${API_BASE}/api/claude/runner/status`);
+                const claudeStatus = await response.json();
+                
+                const runtimeResponse = await fetch(`${API_BASE}/api/runtime-table/recent/10`);
+                const runtime = await runtimeResponse.json();
+                
+                const activities = transformToActivities(claudeStatus, runtime.entries || []);
+                
+                const activityList = document.getElementById('activity-list');
+                activityList.innerHTML = activities.map(activity => `
+                    <div class="activity-item ${activity.type}">
+                        <div>${activity.message}</div>
+                        <div class="timestamp">${activity.timestamp}</div>
+                    </div>
+                `).join('');
+                
+                updateSystemPulse('active', 'claude-pulse');
+            } catch (error) {
+                console.error('Failed to load activity feed:', error);
+                updateSystemPulse('error', 'claude-pulse');
+            }
+        }
+
+        function transformToActivities(claudeStatus, runtimeEntries) {
+            const activities = [];
+            
+            // Add Claude runner status
+            if (claudeStatus.status) {
+                activities.push({
+                    type: 'claude',
+                    message: `Claude Runner: ${claudeStatus.status}`,
+                    timestamp: new Date().toLocaleString()
+                });
+            }
+            
+            // Add recent runtime activities
+            runtimeEntries.slice(0, 5).forEach(entry => {
+                activities.push({
+                    type: entry.type,
+                    message: `${entry.type}: ${entry.agent} (${entry.status})`,
+                    timestamp: new Date(entry.timestamp).toLocaleString()
+                });
+            });
+            
+            return activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+
+        async function loadNarration() {
+            try {
+                // Try API endpoint first
+                const narrationResponse = await fetch(`${API_BASE}/api/stream/narration`);
+                if (narrationResponse.ok) {
+                    const narration = await narrationResponse.json();
+                    const narrationContent = document.getElementById('narration-content');
+                    narrationContent.innerHTML = `
+                        <div class="narration-text">
+                            <strong>${narration.agent}:</strong> ${narration.text}
+                            <div class="timestamp">${new Date(narration.timestamp).toLocaleString()}</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Fallback to stream.txt
+                const response = await fetch('/radio/stream.txt');
+                const streamText = await response.text();
+                
+                const narrationContent = document.getElementById('narration-content');
+                narrationContent.innerHTML = `
+                    <div class="narration-text">${streamText || 'Stream is quiet...'}</div>
+                `;
+            } catch (error) {
+                console.error('Failed to load narration:', error);
+                document.getElementById('narration-content').innerHTML = `
+                    <div class="narration-text">Stream unavailable</div>
+                `;
+            }
+        }
+
+        async function loadStreamContent() {
+            try {
+                const response = await fetch(`${API_BASE}/api/system/status`);
+                const systemStatus = await response.json();
+                
+                const streamContent = document.getElementById('stream-content');
+                streamContent.innerHTML = `
+                    <div><strong>System Components:</strong></div>
+                    ${Object.entries(systemStatus.components).map(([key, comp]) => `
+                        <div>🔹 ${comp.name}: ${comp.status || 'active'}</div>
+                    `).join('')}
+                    <div class="timestamp">Updated: ${new Date(systemStatus.timestamp).toLocaleString()}</div>
+                `;
+            } catch (error) {
+                console.error('Failed to load stream content:', error);
+            }
+        }
+
+        async function loadDecisionQueue() {
+            // For now, create mock decision queue
+            // In real implementation, this would fetch pending decisions
+            const decisionQueue = document.getElementById('decision-queue');
+            decisionQueue.innerHTML = `
+                <div class="decision-item">
+                    <div>Loop_002 requesting blessing</div>
+                    <div>Spawned by: Cal (hopeful tone)</div>
+                    <div class="decision-buttons">
+                        <button class="bless-btn" onclick="blessLoop('Loop_002')">✅ Bless</button>
+                        <button class="deny-btn" onclick="denyLoop('Loop_002')">❌ Deny</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateSystemPulse(status, elementId = 'system-pulse') {
+            const pulse = document.getElementById(elementId);
+            pulse.className = `pulse ${status}`;
+        }
+
+        function updateTimestamp() {
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        }
+
+        // Control functions
+        function refreshMesh() {
+            loadMeshData();
+            updateSystemPulse('active', 'mesh-pulse');
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            if (autoRefresh) {
+                setInterval(refreshData, 5000);
+            }
+        }
+
+        function exportMeshData() {
+            const dataStr = JSON.stringify(meshData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `loopmesh_${Date.now()}.json`;
+            link.click();
+        }
+
+        function resetMesh() {
+            const transform = d3.zoomIdentity;
+            d3.select("#mesh-graph").transition().call(
+                d3.zoom().transform, transform
+            );
+        }
+
+        function refreshData() {
+            if (autoRefresh) {
+                loadMeshData();
+                loadActivityFeed();
+                loadNarration();
+                loadStreamContent();
+                loadDecisionQueue();
+            }
+        }
+
+        // Decision functions
+        async function blessLoop(loopId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/runtime-table/update/loop/${loopId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'blessed' })
+                });
+                
+                if (response.ok) {
+                    console.log(`Loop ${loopId} blessed`);
+                    refreshMesh();
+                }
+            } catch (error) {
+                console.error('Failed to bless loop:', error);
+            }
+        }
+
+        async function denyLoop(loopId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/runtime-table/update/loop/${loopId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'denied' })
+                });
+                
+                if (response.ok) {
+                    console.log(`Loop ${loopId} denied`);
+                    refreshMesh();
+                }
+            } catch (error) {
+                console.error('Failed to deny loop:', error);
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const container = document.querySelector('.graph-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            d3.select("#mesh-graph")
+                .attr("width", width)
+                .attr("height", height);
+                
+            simulation.force("center", d3.forceCenter(width / 2, height / 2));
+            simulation.alpha(1).restart();
+        });
+    </script>
+</body>
+</html>

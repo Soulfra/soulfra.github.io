@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Build Your First Agent</title>
+  <meta charset="UTF-8" />
+  <script src="qr-login.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #fcf7f1; }
+    input, textarea { width: 100%; margin-top: 1em; padding: 0.5em; font-size: 1em; }
+    button { margin-top: 1em; padding: 0.7em; background: #222; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <h1>🍋 Launch Your Agent</h1>
+  <p>This is your customizable startup builder. Enter your idea below and we'll help bring it to life.</p>
+
+  <label>Your Business Idea</label>
+  <textarea id="idea" rows="4" placeholder="Example: A tutoring assistant for high schoolers..."></textarea>
+
+  <label>Your Agent's Personality</label>
+  <input type="text" id="tone" placeholder="Friendly, fast, insightful..." />
+
+  <button onclick="launchAgent()">Start My Agent</button>
+
+  <pre id="response" style="margin-top:2em;background:#fff;padding:1em;border:1px solid #ccc;"></pre>
+
+  <script>
+    async function launchAgent() {
+      const idea = document.getElementById("idea").value;
+      const tone = document.getElementById("tone").value;
+
+      const payload = {
+        idea,
+        tone,
+        uuid: await loginViaQR()
+      };
+
+      document.getElementById("response").textContent = "Launching your agent...";
+
+      const response = await fetch('/api/start-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      document.getElementById("response").textContent = JSON.stringify(result, null, 2);
+    }
+  </script>
+</body>
+</html>

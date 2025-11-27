@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS - Unified Demo Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23667eea" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .header .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(68, 255, 68, 0.1);
+            border: 1px solid #44ff44;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #44ff44;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #44ff44;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .module-card {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .module-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .module-description {
+            color: #888;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .module-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .module-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .overview-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+
+        .overview-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .overview-card {
+            background: #0a0a0a;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .overview-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .overview-label {
+            color: #888;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .integration-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        .integration-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .integration-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .flow-node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .flow-node::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 20px;
+        }
+
+        .flow-node:last-child::after {
+            display: none;
+        }
+
+        .vault-status {
+            background: #0a0a0a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .vault-logs {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #000;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .log-timestamp {
+            color: #888;
+        }
+
+        .log-module {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .log-action {
+            color: #44ff44;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .quick-action {
+            background: #333;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .quick-action:hover {
+            background: #444;
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .quick-action-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .quick-action-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .quick-action-desc {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .demo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .flow-node::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>MirrorOS</h1>
+            <p class="subtitle">Unified Multi-Demo System</p>
+            <div class="status">
+                <div class="status-indicator"></div>
+                All Systems Operational
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Overview Section -->
+        <div class="overview-section">
+            <h2 class="overview-title">System Overview</h2>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-value" id="total-agents">0</div>
+                    <div class="overview-label">Total Agents</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-value" id="total-conversations">0</div>
+                    <div class="overview-label">Conversations</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-value" id="total-reviews">0</div>
+                    <div class="overview-label">Reviews</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-value" id="total-checkins">0</div>
+                    <div class="overview-label">Check-ins</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-value" id="total-exports">0</div>
+                    <div class="overview-label">Exports</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-value" id="promoted-agents">0</div>
+                    <div class="overview-label">Promoted Agents</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules Grid -->
+        <div class="modules-grid">
+            <!-- Module 1: Cal Chat -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">💬</div>
+                    <div class="module-title">Cal Local Chat</div>
+                </div>
+                <div class="module-description">
+                    Real-time chat interface with Cal, featuring WebSocket connections, conversation history, and intelligent responses.
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="cal-active-sessions">0</div>
+                        <div class="stat-label">Active Sessions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="cal-total-messages">0</div>
+                        <div class="stat-label">Messages Today</div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="../modules/cal-chat/cal-chat-client.html" class="btn btn-primary" target="_blank">Open Chat</a>
+                    <button class="btn btn-secondary" onclick="dashboard.testModule('cal-chat')">Test</button>
+                </div>
+            </div>
+
+            <!-- Module 2: Agent Monetization -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">💰</div>
+                    <div class="module-title">Agent Monetization</div>
+                </div>
+                <div class="module-description">
+                    Create, export, and monetize AI agents with multiple export formats and pricing tiers.
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="monetization-agents">0</div>
+                        <div class="stat-label">Created Agents</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="monetization-exports">0</div>
+                        <div class="stat-label">Exports</div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="../modules/agent-monetization/monetization-client.html" class="btn btn-primary" target="_blank">Open Studio</a>
+                    <button class="btn btn-secondary" onclick="dashboard.testModule('agent-monetization')">Test</button>
+                </div>
+            </div>
+
+            <!-- Module 3: VibeGraph -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">🎵</div>
+                    <div class="module-title">VibeGraph Reviews</div>
+                </div>
+                <div class="module-description">
+                    Voice and emotion-based review system with sentiment analysis and vibe visualization.
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="vibegraph-reviews">0</div>
+                        <div class="stat-label">Total Reviews</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="vibegraph-sentiment">75%</div>
+                        <div class="stat-label">Positive Sentiment</div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="../modules/vibegraph/vibegraph-client.html" class="btn btn-primary" target="_blank">Open VibeGraph</a>
+                    <button class="btn btn-secondary" onclick="dashboard.testModule('vibegraph')">Test</button>
+                </div>
+            </div>
+
+            <!-- Module 4: QR Check-in -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">📱</div>
+                    <div class="module-title">QR Check-in</div>
+                </div>
+                <div class="module-description">
+                    Location-based QR code check-in system with rewards, analytics, and geofencing.
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="qr-locations">2</div>
+                        <div class="stat-label">Locations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="qr-checkins">0</div>
+                        <div class="stat-label">Check-ins</div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="../modules/qr-checkin/qr-client.html" class="btn btn-primary" target="_blank">Open Scanner</a>
+                    <button class="btn btn-secondary" onclick="dashboard.testModule('qr-checkin')">Test</button>
+                </div>
+            </div>
+
+            <!-- Module 5: Agent Promotion -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">⭐</div>
+                    <div class="module-title">Agent Promotion</div>
+                </div>
+                <div class="module-description">
+                    Review-based agent promotion system with eligibility tracking and campaign management.
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="promotion-eligible">0</div>
+                        <div class="stat-label">Eligible Agents</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="promotion-campaigns">0</div>
+                        <div class="stat-label">Active Campaigns</div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="../modules/agent-promotion/promotion-client.html" class="btn btn-primary" target="_blank">Open Promotion</a>
+                    <button class="btn btn-secondary" onclick="dashboard.testModule('agent-promotion')">Test</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="chart-section">
+            <div class="chart-container">
+                <h3 class="chart-title">System Activity</h3>
+                <canvas id="activity-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Module Usage</h3>
+                <canvas id="usage-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Integration Flow -->
+        <div class="integration-section">
+            <h2 class="integration-title">MirrorOS Integration Flow</h2>
+            <div class="integration-flow">
+                <div class="flow-node">Cal Chat</div>
+                <div class="flow-node">Agent Creation</div>
+                <div class="flow-node">VibeGraph Reviews</div>
+                <div class="flow-node">QR Check-ins</div>
+                <div class="flow-node">Agent Promotion</div>
+            </div>
+            <p style="color: #888; margin-bottom: 20px;">
+                Complete workflow from chat interactions to agent promotion based on user feedback and engagement.
+            </p>
+            
+            <div class="vault-status">
+                <h4 style="margin-bottom: 15px; color: #667eea;">Vault Logging Status</h4>
+                <div class="vault-logs" id="vault-logs">
+                    <div class="log-entry">
+                        <span class="log-timestamp">[2024-01-15 14:30:22]</span>
+                        <span class="log-module">[VAULT]</span>
+                        <span class="log-action">System initialized</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="dashboard.runFullDemo()">
+                <div class="quick-action-icon">🚀</div>
+                <div class="quick-action-title">Run Full Demo</div>
+                <div class="quick-action-desc">Execute complete workflow across all modules</div>
+            </div>
+            <div class="quick-action" onclick="dashboard.generateSampleData()">
+                <div class="quick-action-icon">📊</div>
+                <div class="quick-action-title">Generate Sample Data</div>
+                <div class="quick-action-desc">Populate modules with demo data</div>
+            </div>
+            <div class="quick-action" onclick="dashboard.exportVaultLogs()">
+                <div class="quick-action-icon">📁</div>
+                <div class="quick-action-title">Export Vault Logs</div>
+                <div class="quick-action-desc">Download complete system logs</div>
+            </div>
+            <div class="quick-action" onclick="dashboard.resetSystem()">
+                <div class="quick-action-icon">🔄</div>
+                <div class="quick-action-title">Reset System</div>
+                <div class="quick-action-desc">Clear all data and restart demo</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-banner">
+        🎯 MirrorOS Demo System - All Modules Active
+    </div>
+
+    <script>
+        class UnifiedDashboard {
+            constructor() {
+                this.apiBase = '/api';
+                this.wsConnections = new Map();
+                this.moduleStatus = {
+                    'cal-chat': { status: 'active', lastUpdate: Date.now() },
+                    'agent-monetization': { status: 'active', lastUpdate: Date.now() },
+                    'vibegraph': { status: 'active', lastUpdate: Date.now() },
+                    'qr-checkin': { status: 'active', lastUpdate: Date.now() },
+                    'agent-promotion': { status: 'active', lastUpdate: Date.now() }
+                };
+                this.vaultLogs = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.loadSystemData();
+                this.setupCharts();
+                this.startVaultLogging();
+                this.simulateRealTimeUpdates();
+            }
+
+            async loadSystemData() {
+                // Simulate loading data from all modules
+                try {
+                    await this.updateOverviewStats();
+                    await this.updateModuleStats();
+                } catch (error) {
+                    console.error('Failed to load system data:', error);
+                    this.simulateData();
+                }
+            }
+
+            async updateOverviewStats() {
+                // In a real implementation, these would be API calls to each module
+                const stats = {
+                    totalAgents: Math.floor(Math.random() * 50) + 10,
+                    totalConversations: Math.floor(Math.random() * 200) + 50,
+                    totalReviews: Math.floor(Math.random() * 150) + 30,
+                    totalCheckins: Math.floor(Math.random() * 100) + 20,
+                    totalExports: Math.floor(Math.random() * 25) + 5,
+                    promotedAgents: Math.floor(Math.random() * 8) + 2
+                };
+
+                document.getElementById('total-agents').textContent = stats.totalAgents;
+                document.getElementById('total-conversations').textContent = stats.totalConversations;
+                document.getElementById('total-reviews').textContent = stats.totalReviews;
+                document.getElementById('total-checkins').textContent = stats.totalCheckins;
+                document.getElementById('total-exports').textContent = stats.totalExports;
+                document.getElementById('promoted-agents').textContent = stats.promotedAgents;
+            }
+
+            async updateModuleStats() {
+                // Cal Chat stats
+                document.getElementById('cal-active-sessions').textContent = Math.floor(Math.random() * 5) + 1;
+                document.getElementById('cal-total-messages').textContent = Math.floor(Math.random() * 100) + 20;
+
+                // Agent Monetization stats
+                document.getElementById('monetization-agents').textContent = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('monetization-exports').textContent = Math.floor(Math.random() * 15) + 3;
+
+                // VibeGraph stats
+                document.getElementById('vibegraph-reviews').textContent = Math.floor(Math.random() * 50) + 10;
+                document.getElementById('vibegraph-sentiment').textContent = (Math.random() * 30 + 65).toFixed(0) + '%';
+
+                // QR Check-in stats
+                document.getElementById('qr-locations').textContent = 2;
+                document.getElementById('qr-checkins').textContent = Math.floor(Math.random() * 30) + 5;
+
+                // Agent Promotion stats
+                document.getElementById('promotion-eligible').textContent = Math.floor(Math.random() * 8) + 2;
+                document.getElementById('promotion-campaigns').textContent = Math.floor(Math.random() * 3) + 1;
+            }
+
+            setupCharts() {
+                this.setupActivityChart();
+                this.setupUsageChart();
+            }
+
+            setupActivityChart() {
+                const ctx = document.getElementById('activity-chart').getContext('2d');
+                
+                // Generate sample data for the last 7 days
+                const labels = [];
+                const data = [];
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                    data.push(Math.floor(Math.random() * 100) + 20);
+                }
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'System Activity',
+                            data: data,
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#fff' }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                ticks: { color: '#888' },
+                                grid: { color: '#333' }
+                            },
+                            y: { 
+                                ticks: { color: '#888' },
+                                grid: { color: '#333' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            setupUsageChart() {
+                const ctx = document.getElementById('usage-chart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cal Chat', 'Agent Monetization', 'VibeGraph', 'QR Check-in', 'Agent Promotion'],
+                        datasets: [{
+                            data: [25, 20, 22, 18, 15],
+                            backgroundColor: [
+                                '#667eea',
+                                '#764ba2',
+                                '#f093fb',
+                                '#f5576c',
+                                '#4facfe'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { 
+                                    color: '#fff',
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            startVaultLogging() {
+                // Simulate vault logging
+                const modules = ['cal-chat', 'agent-monetization', 'vibegraph', 'qr-checkin', 'agent-promotion'];
+                const actions = ['user_authenticated', 'data_saved', 'export_generated', 'review_created', 'checkin_completed'];
+
+                setInterval(() => {
+                    const module = modules[Math.floor(Math.random() * modules.length)];
+                    const action = actions[Math.floor(Math.random() * actions.length)];
+                    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                    
+                    this.addVaultLog(timestamp, module, action);
+                }, 3000 + Math.random() * 5000); // Random interval between 3-8 seconds
+            }
+
+            addVaultLog(timestamp, module, action) {
+                const logEntry = {
+                    timestamp,
+                    module,
+                    action,
+                    id: Date.now()
+                };
+
+                this.vaultLogs.unshift(logEntry);
+                
+                // Keep only last 50 logs
+                if (this.vaultLogs.length > 50) {
+                    this.vaultLogs = this.vaultLogs.slice(0, 50);
+                }
+
+                this.updateVaultDisplay();
+            }
+
+            updateVaultDisplay() {
+                const container = document.getElementById('vault-logs');
+                container.innerHTML = this.vaultLogs.slice(0, 10).map(log => `
+                    <div class="log-entry">
+                        <span class="log-timestamp">[${log.timestamp}]</span>
+                        <span class="log-module">[${log.module.toUpperCase()}]</span>
+                        <span class="log-action">${log.action}</span>
+                    </div>
+                `).join('');
+
+                // Auto-scroll to top
+                container.scrollTop = 0;
+            }
+
+            simulateRealTimeUpdates() {
+                setInterval(() => {
+                    this.updateOverviewStats();
+                    this.updateModuleStats();
+                }, 10000); // Update every 10 seconds
+            }
+
+            testModule(moduleName) {
+                console.log(`Testing module: ${moduleName}`);
+                
+                // Simulate module test
+                const testResults = {
+                    success: Math.random() > 0.1, // 90% success rate
+                    responseTime: Math.floor(Math.random() * 500) + 100,
+                    status: 'operational'
+                };
+
+                this.showNotification(
+                    `${moduleName} test ${testResults.success ? 'passed' : 'failed'}`,
+                    testResults.success ? 'success' : 'error'
+                );
+
+                // Log the test
+                this.addVaultLog(
+                    new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    moduleName,
+                    `test_${testResults.success ? 'passed' : 'failed'}`
+                );
+            }
+
+            async runFullDemo() {
+                this.showNotification('Starting full demo workflow...', 'info');
+                
+                const steps = [
+                    'Initializing Cal Chat session',
+                    'Creating sample agent',
+                    'Generating sample reviews',
+                    'Processing QR check-ins',
+                    'Evaluating agent for promotion'
+                ];
+
+                for (let i = 0; i < steps.length; i++) {
+                    setTimeout(() => {
+                        this.showNotification(steps[i], 'info');
+                        this.addVaultLog(
+                            new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            'demo-workflow',
+                            steps[i].toLowerCase().replace(/\s+/g, '_')
+                        );
+                    }, i * 2000);
+                }
+
+                setTimeout(() => {
+                    this.showNotification('Full demo workflow completed!', 'success');
+                    this.updateOverviewStats();
+                    this.updateModuleStats();
+                }, steps.length * 2000);
+            }
+
+            generateSampleData() {
+                this.showNotification('Generating sample data across all modules...', 'info');
+                
+                // Simulate data generation
+                setTimeout(() => {
+                    this.updateOverviewStats();
+                    this.updateModuleStats();
+                    this.showNotification('Sample data generated successfully!', 'success');
+                    
+                    // Add multiple log entries
+                    const modules = ['cal-chat', 'agent-monetization', 'vibegraph', 'qr-checkin', 'agent-promotion'];
+                    modules.forEach((module, index) => {
+                        setTimeout(() => {
+                            this.addVaultLog(
+                                new Date().toISOString().slice(0, 19).replace('T', ' '),
+                                module,
+                                'sample_data_generated'
+                            );
+                        }, index * 500);
+                    });
+                }, 1000);
+            }
+
+            exportVaultLogs() {
+                const logsText = this.vaultLogs.map(log => 
+                    `[${log.timestamp}] [${log.module.toUpperCase()}] ${log.action}`
+                ).join('\n');
+
+                const blob = new Blob([logsText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mirroros-vault-logs-${new Date().toISOString().slice(0, 10)}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                this.showNotification('Vault logs exported successfully!', 'success');
+            }
+
+            resetSystem() {
+                if (confirm('Are you sure you want to reset the entire system? This will clear all demo data.')) {
+                    this.showNotification('Resetting system...', 'info');
+                    
+                    setTimeout(() => {
+                        // Reset all counters
+                        document.querySelectorAll('.overview-value, .stat-value').forEach(el => {
+                            el.textContent = '0';
+                        });
+                        
+                        // Clear vault logs
+                        this.vaultLogs = [];
+                        this.updateVaultDisplay();
+                        
+                        // Add reset log
+                        this.addVaultLog(
+                            new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            'system',
+                            'full_reset_completed'
+                        );
+                        
+                        this.showNotification('System reset completed!', 'success');
+                        
+                        // Restart with fresh data
+                        setTimeout(() => {
+                            this.loadSystemData();
+                        }, 2000);
+                    }, 1500);
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                // Remove existing notifications
+                document.querySelectorAll('.notification').forEach(n => n.remove());
+
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: #fff;
+                    font-weight: 600;
+                    z-index: 2000;
+                    max-width: 300px;
+                    animation: slideIn 0.3s ease;
+                `;
+
+                const colors = {
+                    success: '#44ff44',
+                    error: '#ff4444',
+                    info: '#667eea',
+                    warning: '#ffaa44'
+                };
+
+                notification.style.backgroundColor = colors[type] || colors.info;
+                notification.textContent = message;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+
+            simulateData() {
+                // Fallback if API calls fail
+                this.updateOverviewStats();
+                this.updateModuleStats();
+            }
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the dashboard
+        const dashboard = new UnifiedDashboard();
+    </script>
+</body>
+</html>

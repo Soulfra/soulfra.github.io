@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Personal Mirror Agreement - Soulfra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+            --consumer-purple: #8B5CF6;
+            --consumer-blue: #3B82F6;
+            --personal-teal: #14B8A6;
+            --private-pink: #EC4899;
+            --success-green: #10B981;
+            --background-dark: #0F172A;
+            --surface-dark: #1E293B;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Mobile-optimized header */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding-top: var(--safe-area-top);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Floating particles for ambiance */
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--consumer-purple);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float-up 8s linear infinite;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        /* Main content */
+        .content {
+            padding: 80px 20px 120px;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .emoji-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: gentle-bounce 3s ease-in-out infinite;
+        }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--consumer-purple), var(--personal-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Key points cards */
+        .key-points {
+            margin-bottom: 32px;
+        }
+
+        .point-card {
+            background: var(--surface-dark);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .point-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--consumer-purple), var(--personal-teal));
+        }
+
+        .point-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .point-icon {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .point-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .point-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Consumer benefits */
+        .benefits-section {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(20, 184, 166, 0.1));
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        /* Acceptance methods */
+        .acceptance-methods {
+            margin-bottom: 32px;
+        }
+
+        .method-card {
+            background: var(--surface-dark);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-card:active {
+            transform: scale(0.98);
+        }
+
+        .method-card.selected {
+            border-color: var(--consumer-purple);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .method-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .method-icon {
+            margin-right: 12px;
+        }
+
+        .method-badge {
+            background: var(--consumer-purple);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .method-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        /* Whisper phrases */
+        .whisper-phrases {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .whisper-phrases.active {
+            display: block;
+        }
+
+        .phrase-bubble {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 20px;
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .phrase-bubble:active {
+            transform: scale(0.98);
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .phrase-bubble.selected {
+            background: var(--consumer-purple);
+            border-color: var(--consumer-purple);
+        }
+
+        /* Biometric button */
+        .biometric-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, var(--consumer-purple), var(--personal-teal));
+            border: none;
+            color: white;
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .biometric-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Bottom action area */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            padding-bottom: calc(20px + var(--safe-area-bottom));
+            background: linear-gradient(to top, var(--background-dark) 70%, transparent);
+            z-index: 100;
+        }
+
+        .accept-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--consumer-purple), var(--personal-teal));
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accept-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .accept-button:not(:disabled):active {
+            transform: scale(0.98);
+        }
+
+        .decline-text {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .decline-link {
+            color: var(--text-secondary);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Success state */
+        .success-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--background-dark);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 40px;
+        }
+
+        .success-content {
+            text-align: center;
+            animation: success-enter 0.5s ease-out;
+        }
+
+        @keyframes success-enter {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--success-green), var(--personal-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .success-message {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .continue-button {
+            padding: 16px 40px;
+            background: var(--success-green);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .continue-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Voice command modal */
+        .voice-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 150;
+            padding: 40px;
+        }
+
+        .voice-content {
+            background: var(--surface-dark);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .voice-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .voice-instruction {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .voice-example {
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        @media (prefers-color-scheme: light) {
+            /* Keep dark theme for accord - it's more serious */
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle effects -->
+    <div class="particle-container" id="particles"></div>
+
+    <!-- Header -->
+    <div class="mobile-header">
+        <div class="header-content">
+            <button class="back-button" onclick="goBack()">←</button>
+            <div style="font-weight: 600;">Personal Agreement</div>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="title-section">
+            <div class="emoji-icon">🪞</div>
+            <h1>Your Personal Mirrors</h1>
+            <p class="subtitle">Private AI that belongs only to you</p>
+        </div>
+
+        <!-- Key points -->
+        <div class="key-points">
+            <div class="point-card">
+                <div class="point-header">
+                    <span class="point-icon">🔒</span>
+                    <h3 class="point-title">100% Private</h3>
+                </div>
+                <p class="point-description">
+                    Your mirrors stay on your device. No employer access, no corporate monitoring.
+                </p>
+            </div>
+
+            <div class="point-card">
+                <div class="point-header">
+                    <span class="point-icon">🗑️</span>
+                    <h3 class="point-title">Delete Anytime</h3>
+                </div>
+                <p class="point-description">
+                    One tap to delete everything. No questions, no consequences, no trace left behind.
+                </p>
+            </div>
+
+            <div class="point-card">
+                <div class="point-header">
+                    <span class="point-icon">📱</span>
+                    <h3 class="point-title">Works Offline</h3>
+                </div>
+                <p class="point-description">
+                    Your mirrors work without internet. Your data never leaves your phone unless you want it to.
+                </p>
+            </div>
+        </div>
+
+        <!-- Consumer benefits -->
+        <div class="benefits-section">
+            <h3 style="font-size: 20px; margin-bottom: 20px;">What You Get</h3>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">🎭</div>
+                <div class="benefit-text">Create mirrors that match your personality</div>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">💭</div>
+                <div class="benefit-text">Private thoughts that train only your mirrors</div>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">👥</div>
+                <div class="benefit-text">Share mirrors with friends, not companies</div>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">📤</div>
+                <div class="benefit-text">Export your consciousness data anytime</div>
+            </div>
+        </div>
+
+        <!-- Acceptance methods -->
+        <div class="acceptance-methods">
+            <h3 style="font-size: 20px; margin-bottom: 16px;">Choose How to Accept</h3>
+
+            <!-- Biometric method -->
+            <div class="method-card" onclick="selectMethod('biometric')">
+                <div class="method-header">
+                    <div class="method-title">
+                        <span class="method-icon">👤</span>
+                        Face ID / Touch ID
+                    </div>
+                    <span class="method-badge">Fastest</span>
+                </div>
+                <p class="method-description">
+                    Use your device's biometric authentication
+                </p>
+                <button class="biometric-button" onclick="triggerBiometric(event)">
+                    <span id="biometric-icon">👤</span>
+                </button>
+            </div>
+
+            <!-- Voice method -->
+            <div class="method-card" onclick="selectMethod('voice')">
+                <div class="method-header">
+                    <div class="method-title">
+                        <span class="method-icon">🎤</span>
+                        Voice Command
+                    </div>
+                    <span class="method-badge" style="background: var(--personal-teal);">Hands-free</span>
+                </div>
+                <p class="method-description">
+                    Use Siri or Google Assistant to accept
+                </p>
+            </div>
+
+            <!-- Whisper method -->
+            <div class="method-card" onclick="selectMethod('whisper')">
+                <div class="method-header">
+                    <div class="method-title">
+                        <span class="method-icon">💬</span>
+                        Secret Phrase
+                    </div>
+                </div>
+                <p class="method-description">
+                    Choose a personal phrase to accept
+                </p>
+                <div class="whisper-phrases" id="whisper-phrases">
+                    <div class="phrase-bubble" onclick="selectPhrase(this, event)">
+                        "my mirror my rules"
+                    </div>
+                    <div class="phrase-bubble" onclick="selectPhrase(this, event)">
+                        "i own my digital reflection"
+                    </div>
+                    <div class="phrase-bubble" onclick="selectPhrase(this, event)">
+                        "personal consciousness stays personal"
+                    </div>
+                    <div class="phrase-bubble" onclick="selectPhrase(this, event)">
+                        "my data my soul my choice"
+                    </div>
+                    <div class="phrase-bubble" onclick="selectPhrase(this, event)">
+                        "mirrors reflect only for me"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom actions -->
+    <div class="bottom-actions">
+        <button class="accept-button" id="accept-button" onclick="acceptAccord()" disabled>
+            Accept Personal Mirror Agreement
+        </button>
+        <p class="decline-text">
+            Not ready? <span class="decline-link" onclick="declineAccord()">Maybe later</span>
+        </p>
+    </div>
+
+    <!-- Success state -->
+    <div class="success-container" id="success-container">
+        <div class="success-content">
+            <div class="success-icon">✨</div>
+            <h2 class="success-title">Welcome to Your Mirrors!</h2>
+            <p class="success-message">
+                Your personal mirror space is ready. Everything you create here belongs to you alone.
+            </p>
+            <button class="continue-button" onclick="continueToApp()">
+                Start Creating Mirrors
+            </button>
+        </div>
+    </div>
+
+    <!-- Voice command modal -->
+    <div class="voice-modal" id="voice-modal">
+        <div class="voice-content">
+            <div class="voice-icon">🎤</div>
+            <h3 class="voice-instruction">Say this to your assistant:</h3>
+            <div class="voice-example" id="voice-example">
+                "Hey Siri, I accept my mirror rights"
+            </div>
+            <button class="continue-button" onclick="closeVoiceModal()">
+                Done
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        let selectedPhrase = null;
+        let isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        let isAndroid = /Android/.test(navigator.userAgent);
+
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Method selection
+        function selectMethod(method) {
+            selectedMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Show/hide whisper phrases
+            if (method === 'whisper') {
+                document.getElementById('whisper-phrases').classList.add('active');
+            } else {
+                document.getElementById('whisper-phrases').classList.remove('active');
+            }
+
+            // Handle voice method
+            if (method === 'voice') {
+                showVoiceModal();
+            }
+
+            // Update accept button
+            updateAcceptButton();
+        }
+
+        // Phrase selection
+        function selectPhrase(element, event) {
+            event.stopPropagation();
+            selectedPhrase = element.textContent.trim().replace(/["""]/g, '');
+            
+            // Update UI
+            document.querySelectorAll('.phrase-bubble').forEach(bubble => {
+                bubble.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            updateAcceptButton();
+        }
+
+        // Biometric authentication
+        async function triggerBiometric(event) {
+            event.stopPropagation();
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(10);
+            }
+
+            // Simulate biometric auth
+            const icon = document.getElementById('biometric-icon');
+            icon.textContent = '⏳';
+            
+            // In real app, this would trigger native biometric
+            setTimeout(() => {
+                icon.textContent = '✅';
+                selectedMethod = 'biometric';
+                updateAcceptButton();
+                
+                // Auto-accept after biometric success
+                setTimeout(() => {
+                    acceptAccord();
+                }, 500);
+            }, 1500);
+        }
+
+        // Voice modal
+        function showVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const example = document.getElementById('voice-example');
+            
+            if (isIOS) {
+                example.textContent = '"Hey Siri, I accept my mirror rights"';
+            } else if (isAndroid) {
+                example.textContent = '"Hey Google, accept personal mirror terms"';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeVoiceModal() {
+            document.getElementById('voice-modal').style.display = 'none';
+            updateAcceptButton();
+        }
+
+        // Update accept button state
+        function updateAcceptButton() {
+            const button = document.getElementById('accept-button');
+            
+            if (selectedMethod === 'biometric' || 
+                selectedMethod === 'voice' || 
+                (selectedMethod === 'whisper' && selectedPhrase)) {
+                button.disabled = false;
+            } else {
+                button.disabled = true;
+            }
+        }
+
+        // Accept accord
+        async function acceptAccord() {
+            const button = document.getElementById('accept-button');
+            button.textContent = 'Accepting...';
+            button.disabled = true;
+
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([50, 50, 50]);
+            }
+
+            // Send acceptance to backend
+            const acceptanceData = {
+                method: selectedMethod,
+                phrase: selectedPhrase,
+                device: {
+                    platform: isIOS ? 'ios' : isAndroid ? 'android' : 'web',
+                    userAgent: navigator.userAgent,
+                    hasBiometric: 'ontouchstart' in window,
+                    hasVoiceAssistant: isIOS || isAndroid
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            // In production, would POST to API
+            console.log('Accord accepted:', acceptanceData);
+
+            // Store locally
+            localStorage.setItem('soulfra_personal_accord', JSON.stringify({
+                accepted: true,
+                method: selectedMethod,
+                timestamp: acceptanceData.timestamp
+            }));
+
+            // Show success
+            setTimeout(() => {
+                document.getElementById('success-container').style.display = 'flex';
+            }, 1000);
+        }
+
+        // Decline accord
+        function declineAccord() {
+            if (confirm('You can always accept later. Your personal mirrors will be waiting for you.')) {
+                goBack();
+            }
+        }
+
+        // Navigation
+        function goBack() {
+            window.history.back();
+        }
+
+        function continueToApp() {
+            // In production, would navigate to main app
+            window.location.href = '/app/mirrors';
+        }
+
+        // Initialize
+        createParticles();
+
+        // Update biometric icon based on platform
+        if (isIOS) {
+            document.getElementById('biometric-icon').textContent = '👤';
+        } else if (isAndroid) {
+            document.getElementById('biometric-icon').textContent = '👆';
+        }
+
+        // Check if already accepted
+        const existingAccord = localStorage.getItem('soulfra_personal_accord');
+        if (existingAccord) {
+            const accord = JSON.parse(existingAccord);
+            if (accord.accepted) {
+                continueToApp();
+            }
+        }
+
+        // Add touch feedback
+        document.querySelectorAll('button, .method-card, .phrase-bubble').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.opacity = '0.7';
+            });
+            element.addEventListener('touchend', function() {
+                this.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>

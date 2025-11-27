@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Licensing Dashboard - Branded Sub-Platform Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #00ddff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .licensing-header {
+            background: linear-gradient(90deg, #001133, #002255);
+            border-bottom: 3px solid #00ddff;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 221, 255, 0.4);
+            position: relative;
+        }
+        
+        .licensing-title {
+            font-size: 40px;
+            font-weight: bold;
+            color: #00ddff;
+            text-shadow: 0 0 20px #00ddff;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        
+        .licensing-subtitle {
+            font-size: 18px;
+            color: #55ddff;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .branding-badge {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 221, 255, 0.15);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-size: 14px;
+            color: #00ddff;
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .brand-identity {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .powered-by {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+            color: #88ddff;
+        }
+        
+        .platform-metrics {
+            background: #0a1a2a;
+            border-bottom: 1px solid #00ddff;
+            padding: 18px 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            font-size: 13px;
+        }
+        
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0, 221, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #00ddff;
+        }
+        
+        .metric-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #00ddff;
+            animation: pulse 2.5s infinite;
+        }
+        
+        .metric-label {
+            color: #55ddff;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            color: #00ddff;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        .main-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-section {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 2px solid #00ddff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 221, 255, 0.15);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(0, 221, 255, 0.3);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #00ddff;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .section-badge {
+            background: rgba(0, 221, 255, 0.25);
+            color: #00ddff;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .sub-platform-list {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .platform-item {
+            background: rgba(0, 221, 255, 0.08);
+            border: 1px solid rgba(0, 221, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-item:hover {
+            background: rgba(0, 221, 255, 0.12);
+            border-color: #00ddff;
+            box-shadow: 0 0 15px rgba(0, 221, 255, 0.3);
+        }
+        
+        .platform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .platform-name {
+            font-size: 18px;
+            color: #00ddff;
+            font-weight: bold;
+        }
+        
+        .platform-status {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .platform-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            font-size: 13px;
+        }
+        
+        .detail-item {
+            text-align: center;
+        }
+        
+        .detail-value {
+            font-size: 20px;
+            color: #00ddff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            color: #55ddff;
+            font-size: 11px;
+        }
+        
+        .embed-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .embed-card {
+            background: rgba(0, 221, 255, 0.05);
+            border: 1px solid rgba(0, 221, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .embed-card:hover {
+            background: rgba(0, 221, 255, 0.1);
+            border-color: #00ddff;
+        }
+        
+        .embed-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #00ddff;
+        }
+        
+        .embed-title {
+            font-size: 16px;
+            color: #00ddff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .embed-description {
+            font-size: 12px;
+            color: #55ddff;
+            line-height: 1.4;
+        }
+        
+        .markup-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .markup-input {
+            background: rgba(0, 221, 255, 0.08);
+            border: 1px solid rgba(0, 221, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .input-label {
+            color: #55ddff;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-field {
+            background: transparent;
+            border: 1px solid #00ddff;
+            border-radius: 6px;
+            padding: 10px;
+            color: #00ddff;
+            font-family: inherit;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #55ddff;
+            box-shadow: 0 0 10px rgba(0, 221, 255, 0.3);
+        }
+        
+        .referral-section {
+            margin-bottom: 25px;
+        }
+        
+        .referral-code-display {
+            background: rgba(0, 221, 255, 0.1);
+            border: 2px dashed #00ddff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .referral-code {
+            font-size: 24px;
+            color: #00ddff;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .referral-stat {
+            background: rgba(0, 221, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 221, 255, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .action-button {
+            background: linear-gradient(145deg, #003366, #005599);
+            color: #00ddff;
+            border: 1px solid #00ddff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .action-button:hover {
+            background: linear-gradient(145deg, #005599, #0077bb);
+            box-shadow: 0 0 20px rgba(0, 221, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .action-button.primary {
+            background: linear-gradient(145deg, #00ddff, #55ddff);
+            color: #000;
+        }
+        
+        .action-button.primary:hover {
+            background: linear-gradient(145deg, #55ddff, #88ddff);
+        }
+        
+        .revenue-share {
+            grid-column: span 2;
+            background: linear-gradient(145deg, #0a2a1a, #0f3f2f);
+            border: 2px solid #00ff88;
+        }
+        
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .revenue-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .revenue-amount {
+            font-size: 28px;
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .revenue-label {
+            color: #55ff99;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .revenue-percentage {
+            color: #88ffaa;
+            font-size: 12px;
+        }
+        
+        .sync-status {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px dashed #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .sync-message {
+            color: #00ff88;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .sync-detail {
+            color: #55ff99;
+            font-size: 12px;
+        }
+        
+        .powered-footer {
+            background: rgba(0, 221, 255, 0.05);
+            border: 1px solid rgba(0, 221, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #55ddff;
+        }
+        
+        .footer-highlight {
+            color: #00ddff;
+            font-weight: bold;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 221, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ddff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="licensing-header">
+        <div class="licensing-title">MIRROROS LICENSING DASHBOARD</div>
+        <div class="licensing-subtitle">Launch Branded Sub-Platforms & Monetize Agent Reflections</div>
+        
+        <div class="branding-badge">
+            <div class="brand-identity">YOUR ENTERPRISE BRAND</div>
+            <div style="font-size: 12px; color: #88ddff;">Custom Sub-Platform Authority</div>
+            <div class="powered-by">Powered by MirrorOS — reflections routed securely</div>
+        </div>
+    </div>
+    
+    <div class="platform-metrics">
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Active Sub-Platforms:</span>
+                <span class="metric-value">5</span>
+            </div>
+        </div>
+        
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Embedded Agents:</span>
+                <span class="metric-value">23</span>
+            </div>
+        </div>
+        
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Monthly Revenue:</span>
+                <span class="metric-value">$34,567</span>
+            </div>
+        </div>
+        
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Your Share (85%):</span>
+                <span class="metric-value">$29,382</span>
+            </div>
+        </div>
+        
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">API Calls Today:</span>
+                <span class="metric-value">12,456</span>
+            </div>
+        </div>
+        
+        <div class="metric-item">
+            <div class="metric-icon"></div>
+            <div>
+                <span class="metric-label">Fork Credits:</span>
+                <span class="metric-value">47</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-dashboard">
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">Branded Sub-Platforms</div>
+                <div class="section-badge">5 Active</div>
+            </div>
+            
+            <div class="sub-platform-list">
+                <div class="platform-item">
+                    <div class="platform-header">
+                        <div class="platform-name">Enterprise Client Portal</div>
+                        <div class="platform-status">ACTIVE</div>
+                    </div>
+                    <div class="platform-details">
+                        <div class="detail-item">
+                            <div class="detail-value">$12,450</div>
+                            <div class="detail-label">Monthly Revenue</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">8</div>
+                            <div class="detail-label">Embedded Agents</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">156</div>
+                            <div class="detail-label">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="platform-item">
+                    <div class="platform-header">
+                        <div class="platform-name">Customer Support Hub</div>
+                        <div class="platform-status">ACTIVE</div>
+                    </div>
+                    <div class="platform-details">
+                        <div class="detail-item">
+                            <div class="detail-value">$8,234</div>
+                            <div class="detail-label">Monthly Revenue</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">5</div>
+                            <div class="detail-label">Embedded Agents</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">89</div>
+                            <div class="detail-label">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="platform-item">
+                    <div class="platform-header">
+                        <div class="platform-name">Analytics Dashboard</div>
+                        <div class="platform-status">ACTIVE</div>
+                    </div>
+                    <div class="platform-details">
+                        <div class="detail-item">
+                            <div class="detail-value">$6,789</div>
+                            <div class="detail-label">Monthly Revenue</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">4</div>
+                            <div class="detail-label">Embedded Agents</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">67</div>
+                            <div class="detail-label">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="managePlatforms()">Manage Platforms</button>
+                <button class="action-button primary" onclick="createSubPlatform()">Create New Platform</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">Agent Embedding</div>
+                <div class="section-badge">iframe & PWA</div>
+            </div>
+            
+            <div class="embed-options">
+                <div class="embed-card" onclick="generateIframe()">
+                    <div class="embed-icon">🖼️</div>
+                    <div class="embed-title">iframe Embed</div>
+                    <div class="embed-description">
+                        Embed agents directly into existing websites with customizable styling and branding
+                    </div>
+                </div>
+                
+                <div class="embed-card" onclick="generatePWA()">
+                    <div class="embed-icon">📱</div>
+                    <div class="embed-title">PWA Deploy</div>
+                    <div class="embed-description">
+                        Deploy as Progressive Web App with offline capability and native app experience
+                    </div>
+                </div>
+            </div>
+            
+            <div class="markup-controls">
+                <div class="markup-input">
+                    <label class="input-label">iframe Width (px)</label>
+                    <input type="number" class="input-field" value="800" id="iframeWidth">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">iframe Height (px)</label>
+                    <input type="number" class="input-field" value="600" id="iframeHeight">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">Custom Theme</label>
+                    <input type="text" class="input-field" value="enterprise-dark" id="customTheme">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">Branding Logo URL</label>
+                    <input type="text" class="input-field" value="https://your-brand.com/logo.svg" id="brandingLogo">
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="previewEmbed()">Preview Embed</button>
+                <button class="action-button" onclick="copyEmbedCode()">Copy Embed Code</button>
+                <button class="action-button primary" onclick="deployEmbedded()">Deploy Embedded</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">Reflection Export Markup</div>
+                <div class="section-badge">API Pricing</div>
+            </div>
+            
+            <div class="markup-controls">
+                <div class="markup-input">
+                    <label class="input-label">Agent Reflection Markup (%)</label>
+                    <input type="number" class="input-field" value="150" id="agentMarkup">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">API Call Markup (%)</label>
+                    <input type="number" class="input-field" value="125" id="apiMarkup">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">Export Fee (USD)</label>
+                    <input type="number" class="input-field" value="25.00" id="exportFee">
+                </div>
+                
+                <div class="markup-input">
+                    <label class="input-label">Volume Discount (%)</label>
+                    <input type="number" class="input-field" value="10" id="volumeDiscount">
+                </div>
+            </div>
+            
+            <div class="sync-status">
+                <div class="sync-message">
+                    <span class="loading-spinner"></span>
+                    Pricing synced with enterprise-licensing.json
+                </div>
+                <div class="sync-detail">
+                    Last update: 3 minutes ago • Next sync: 45 seconds • Token relay: ACTIVE
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="updateMarkup()">Update Markup</button>
+                <button class="action-button primary" onclick="applyPricing()">Apply Pricing</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="section-title">Referral Fork Credits</div>
+                <div class="section-badge">47 Credits</div>
+            </div>
+            
+            <div class="referral-section">
+                <div class="referral-code-display">
+                    <div class="referral-code">ENT-FORK-001</div>
+                    <div style="color: #55ddff; font-size: 13px;">
+                        Share this code to earn fork credits and platform revenue
+                    </div>
+                </div>
+                
+                <div class="referral-stats">
+                    <div class="referral-stat">
+                        <div class="detail-value">47</div>
+                        <div class="detail-label">Total Credits</div>
+                    </div>
+                    
+                    <div class="referral-stat">
+                        <div class="detail-value">23</div>
+                        <div class="detail-label">Successful Forks</div>
+                    </div>
+                    
+                    <div class="referral-stat">
+                        <div class="detail-value">$2,345</div>
+                        <div class="detail-label">Credit Value</div>
+                    </div>
+                    
+                    <div class="referral-stat">
+                        <div class="detail-value">34.8%</div>
+                        <div class="detail-label">Conversion Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="shareReferralCode()">Share Code</button>
+                <button class="action-button" onclick="redeemCredits()">Redeem Credits</button>
+                <button class="action-button primary" onclick="viewReferrals()">View Referrals</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-section revenue-share">
+            <div class="section-header">
+                <div class="section-title">Revenue Share Distribution</div>
+                <div class="section-badge">You Keep 85%</div>
+            </div>
+            
+            <div class="revenue-grid">
+                <div class="revenue-card">
+                    <div class="revenue-amount">$29,382</div>
+                    <div class="revenue-label">Your Share</div>
+                    <div class="revenue-percentage">85% of total revenue</div>
+                </div>
+                
+                <div class="revenue-card">
+                    <div class="revenue-amount">$5,185</div>
+                    <div class="revenue-label">MirrorOS Platform</div>
+                    <div class="revenue-percentage">15% platform fee</div>
+                </div>
+                
+                <div class="revenue-card">
+                    <div class="revenue-amount">$2,456</div>
+                    <div class="revenue-label">Fork Credits</div>
+                    <div class="revenue-percentage">Applied to future deployments</div>
+                </div>
+                
+                <div class="revenue-card">
+                    <div class="revenue-amount">$1,234</div>
+                    <div class="revenue-label">Referral Bonus</div>
+                    <div class="revenue-percentage">Commission from referred forks</div>
+                </div>
+            </div>
+            
+            <div class="sync-status">
+                <div class="sync-message">
+                    Revenue distribution automatically calculated and routed
+                </div>
+                <div class="sync-detail">
+                    Next payout: Friday Dec 22 • Bank: ****1234 • Processing: Stripe Connect
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-button" onclick="viewRevenueDetails()">Revenue Details</button>
+                <button class="action-button" onclick="updatePayoutSettings()">Payout Settings</button>
+                <button class="action-button primary" onclick="requestPayout()">Request Payout</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="powered-footer">
+        🔗 <span class="footer-highlight">Powered by MirrorOS</span> — All agent reflections are routed securely through the core platform infrastructure. Enterprise licensing ensures 85% revenue share while maintaining platform integrity and witnessed validation.
+    </div>
+    
+    <script>
+        // MirrorOS Licensing Dashboard JavaScript
+        
+        class LicensingDashboard {
+            constructor() {
+                this.subPlatforms = [];
+                this.embeddedAgents = [];
+                this.revenueMetrics = {};
+                this.tokenRelay = null;
+                this.enterpriseLicensing = null;
+                
+                this.initializeDashboard();
+            }
+            
+            async initializeDashboard() {
+                console.log('🎯 Initializing MirrorOS Licensing Dashboard...');
+                
+                // Load enterprise licensing configuration
+                await this.loadEnterpriseLicensing();
+                
+                // Initialize token relay connection
+                await this.initializeTokenRelay();
+                
+                // Load sub-platform data
+                await this.loadSubPlatforms();
+                
+                // Start revenue sync monitoring
+                this.startRevenueSyncMonitoring();
+                
+                console.log('✅ Licensing Dashboard operational');
+                console.log('💰 Revenue share: 85% • Platform fee: 15%');
+            }
+            
+            async loadEnterpriseLicensing() {
+                // Simulate loading from /vault/logs/enterprise-licensing.json
+                this.enterpriseLicensing = {
+                    version: '1.0.0',
+                    licenseType: 'enterprise_partner',
+                    revenueShare: 85.0,
+                    platformFee: 15.0,
+                    subPlatformLimit: 10,
+                    embeddedAgentLimit: 50,
+                    monthlyRevenue: 34567.89,
+                    forkCredits: 47,
+                    lastSync: Date.now()
+                };
+                
+                console.log('📄 Enterprise licensing configuration loaded');
+            }
+            
+            async initializeTokenRelay() {
+                // Simulate connection to /mirror/token-relay.js
+                this.tokenRelay = {
+                    status: 'active',
+                    routes: 847,
+                    latency: 23.4,
+                    successRate: 99.7,
+                    lastHeartbeat: Date.now()
+                };
+                
+                console.log('🔗 Token relay connection established');
+            }
+            
+            async loadSubPlatforms() {
+                // Load existing sub-platforms
+                this.subPlatforms = [
+                    {
+                        id: 'platform_001',
+                        name: 'Enterprise Client Portal',
+                        status: 'active',
+                        monthlyRevenue: 12450.00,
+                        embeddedAgents: 8,
+                        activeUsers: 156,
+                        lastActivity: Date.now()
+                    },
+                    {
+                        id: 'platform_002',
+                        name: 'Customer Support Hub',
+                        status: 'active',
+                        monthlyRevenue: 8234.00,
+                        embeddedAgents: 5,
+                        activeUsers: 89,
+                        lastActivity: Date.now() - 300000
+                    },
+                    {
+                        id: 'platform_003',
+                        name: 'Analytics Dashboard',
+                        status: 'active',
+                        monthlyRevenue: 6789.00,
+                        embeddedAgents: 4,
+                        activeUsers: 67,
+                        lastActivity: Date.now() - 600000
+                    }
+                ];
+                
+                console.log(`🏗️ ${this.subPlatforms.length} sub-platforms loaded`);
+            }
+            
+            startRevenueSyncMonitoring() {
+                // Monitor revenue sync every 30 seconds
+                setInterval(() => {
+                    this.syncRevenueMetrics();
+                }, 30000);
+                
+                // Update token relay status every 10 seconds
+                setInterval(() => {
+                    this.updateTokenRelayStatus();
+                }, 10000);
+                
+                console.log('📊 Revenue sync monitoring started');
+            }
+            
+            async syncRevenueMetrics() {
+                // Simulate revenue metrics calculation
+                const totalRevenue = this.subPlatforms.reduce((sum, platform) => 
+                    sum + platform.monthlyRevenue, 0
+                );
+                
+                this.revenueMetrics = {
+                    totalRevenue: totalRevenue,
+                    yourShare: totalRevenue * (this.enterpriseLicensing.revenueShare / 100),
+                    platformShare: totalRevenue * (this.enterpriseLicensing.platformFee / 100),
+                    forkCredits: this.enterpriseLicensing.forkCredits,
+                    lastSync: Date.now()
+                };
+                
+                // Update sync status in UI
+                this.updateSyncStatus();
+            }
+            
+            updateSyncStatus() {
+                const syncElements = document.querySelectorAll('.sync-detail');
+                syncElements.forEach(element => {
+                    const now = new Date();
+                    element.innerHTML = `Last update: ${Math.floor((Date.now() - this.revenueMetrics.lastSync) / 1000)} seconds ago • Next sync: ${30 - Math.floor((Date.now() % 30000) / 1000)} seconds • Token relay: ACTIVE`;
+                });
+            }
+            
+            updateTokenRelayStatus() {
+                // Simulate token relay metrics updates
+                this.tokenRelay.routes = 847 + Math.floor(Math.random() * 20) - 10;
+                this.tokenRelay.latency = 23.4 + (Math.random() - 0.5) * 10;
+                this.tokenRelay.successRate = 99.7 + (Math.random() - 0.5) * 0.6;
+                this.tokenRelay.lastHeartbeat = Date.now();
+            }
+            
+            async logLicensingAction(action, data) {
+                const logEntry = {
+                    actionId: this.generateActionId(),
+                    action: action,
+                    data: data,
+                    timestamp: Date.now(),
+                    licenseType: this.enterpriseLicensing.licenseType,
+                    synced: false
+                };
+                
+                // Sync to enterprise licensing log
+                await this.syncToEnterpriseLicensing(logEntry);
+                
+                // Route through token relay
+                await this.routeThroughTokenRelay(logEntry);
+                
+                console.log(`📝 Licensing action logged: ${action} [${logEntry.actionId}]`);
+                
+                return logEntry;
+            }
+            
+            async syncToEnterpriseLicensing(logEntry) {
+                // Simulate sync to /vault/logs/enterprise-licensing.json
+                logEntry.synced = true;
+                logEntry.syncTimestamp = Date.now();
+                
+                console.log(`💾 Action synced to enterprise licensing: ${logEntry.actionId}`);
+            }
+            
+            async routeThroughTokenRelay(logEntry) {
+                // Simulate routing through /mirror/token-relay.js
+                if (this.tokenRelay.status === 'active') {
+                    logEntry.routed = true;
+                    logEntry.routeTimestamp = Date.now();
+                    
+                    console.log(`🔗 Action routed through token relay: ${logEntry.actionId}`);
+                }
+            }
+            
+            generateActionId() {
+                return 'license_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+            }
+        }
+        
+        // Initialize dashboard
+        const licensingDashboard = new LicensingDashboard();
+        
+        // Action handlers
+        async function createSubPlatform() {
+            const platformData = {
+                name: prompt('Enter sub-platform name:', 'New Enterprise Platform'),
+                type: 'branded_sub_platform',
+                branding: {
+                    theme: 'enterprise',
+                    customLogo: true,
+                    customDomain: true
+                }
+            };
+            
+            if (platformData.name) {
+                await licensingDashboard.logLicensingAction('create_sub_platform', platformData);
+                
+                alert(`Sub-platform "${platformData.name}" created successfully!\n\n✓ Branded with your enterprise identity\n✓ Custom domain configuration available\n✓ Agent embedding enabled\n✓ Revenue sharing: 85% to you, 15% to platform\n\nPlatform URL: https://${platformData.name.toLowerCase().replace(/\s+/g, '-')}.your-brand.com`);
+            }
+        }
+        
+        function managePlatforms() {
+            alert('Platform Management Interface\n\n• Configure custom domains and SSL\n• Update branding and themes\n• Manage embedded agent permissions\n• Monitor revenue and usage analytics\n• Configure API rate limits and quotas');
+        }
+        
+        async function generateIframe() {
+            const width = document.getElementById('iframeWidth').value;
+            const height = document.getElementById('iframeHeight').value;
+            const theme = document.getElementById('customTheme').value;
+            const logo = document.getElementById('brandingLogo').value;
+            
+            const embedData = {
+                type: 'iframe',
+                dimensions: { width, height },
+                theme: theme,
+                branding: { logo: logo },
+                secureRouting: true
+            };
+            
+            await licensingDashboard.logLicensingAction('generate_iframe_embed', embedData);
+            
+            const iframeCode = `<iframe 
+    src="https://your-brand.mirroros.ai/agent-embed?theme=${theme}&logo=${encodeURIComponent(logo)}" 
+    width="${width}" 
+    height="${height}" 
+    frameborder="0" 
+    style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</iframe>
+<!-- Powered by MirrorOS — reflections routed securely -->`;
+            
+            navigator.clipboard.writeText(iframeCode).then(() => {
+                alert('iframe embed code copied to clipboard!\n\nFeatures included:\n• Secure agent reflection routing\n• Custom branding and theming\n• Responsive design\n• Real-time API connectivity\n• Revenue tracking and analytics');
+            });
+        }
+        
+        async function generatePWA() {
+            const theme = document.getElementById('customTheme').value;
+            const logo = document.getElementById('brandingLogo').value;
+            
+            const pwaData = {
+                type: 'progressive_web_app',
+                theme: theme,
+                branding: { logo: logo },
+                offlineCapable: true,
+                nativeFeatures: true
+            };
+            
+            await licensingDashboard.logLicensingAction('generate_pwa_deploy', pwaData);
+            
+            alert('Progressive Web App deployment package generated!\n\n📱 Native app experience\n🔄 Offline capability\n📊 Performance optimized\n🎨 Custom branding applied\n💰 Revenue tracking included\n\nDeployment URL: https://pwa.your-brand.com\nManifest and service worker files ready for download.');
+        }
+        
+        function previewEmbed() {
+            const width = document.getElementById('iframeWidth').value;
+            const height = document.getElementById('iframeHeight').value;
+            const theme = document.getElementById('customTheme').value;
+            
+            alert(`Embed Preview Configuration:\n\n📐 Dimensions: ${width}x${height}px\n🎨 Theme: ${theme}\n🔗 Routing: Secure MirrorOS reflection\n💰 Revenue: 85% to your account\n🏷️ Branding: Your enterprise identity\n\nPreview URL: https://preview.your-brand.mirroros.ai`);
+        }
+        
+        function copyEmbedCode() {
+            alert('📋 Embed code copied to clipboard!\n\nCode includes:\n• Secure iframe with custom branding\n• MirrorOS reflection routing\n• Revenue tracking integration\n• Responsive design\n• API connectivity\n\nPaste into your website HTML to start earning revenue from embedded agents.');
+        }
+        
+        async function deployEmbedded() {
+            const deployData = {
+                deployment: 'embedded_agent',
+                target: 'production',
+                revenueSharing: true,
+                secureRouting: true
+            };
+            
+            await licensingDashboard.logLicensingAction('deploy_embedded_agent', deployData);
+            
+            alert('🚀 Embedded agent deployed successfully!\n\n✓ Secure reflection routing active\n✓ Revenue tracking enabled (85% share)\n✓ Custom branding applied\n✓ API calls being monitored\n✓ Real-time analytics available\n\nYour embedded agents are now generating revenue!');
+        }
+        
+        async function updateMarkup() {
+            const agentMarkup = document.getElementById('agentMarkup').value;
+            const apiMarkup = document.getElementById('apiMarkup').value;
+            const exportFee = document.getElementById('exportFee').value;
+            const volumeDiscount = document.getElementById('volumeDiscount').value;
+            
+            const markupData = {
+                agentMarkup: parseFloat(agentMarkup),
+                apiMarkup: parseFloat(apiMarkup),
+                exportFee: parseFloat(exportFee),
+                volumeDiscount: parseFloat(volumeDiscount)
+            };
+            
+            await licensingDashboard.logLicensingAction('update_reflection_markup', markupData);
+            
+            alert(`Reflection markup updated!\n\n💰 Agent Reflection: ${agentMarkup}% markup\n🔗 API Calls: ${apiMarkup}% markup\n📤 Export Fee: $${exportFee}\n📊 Volume Discount: ${volumeDiscount}%\n\n⚡ Changes synced to enterprise-licensing.json\n🔗 Token relay routing updated`);
+        }
+        
+        async function applyPricing() {
+            await licensingDashboard.logLicensingAction('apply_pricing_configuration', {
+                applied: true,
+                timestamp: Date.now()
+            });
+            
+            alert('💰 Pricing configuration applied to all platforms!\n\n✓ Agent reflection markup active\n✓ API call pricing updated\n✓ Export fees configured\n✓ Volume discounts enabled\n✓ Revenue routing: 85% to your account\n\nAll embedded agents and sub-platforms now using new pricing.');
+        }
+        
+        function shareReferralCode() {
+            const referralCode = 'ENT-FORK-001';
+            const shareText = `Join the MirrorOS enterprise network with my referral code: ${referralCode}\n\nGet access to:\n• Branded sub-platform creation\n• 85% revenue share\n• Agent embedding & PWA deployment\n• Secure reflection routing\n\nhttps://mirroros.ai/enterprise/signup?ref=${referralCode}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'MirrorOS Enterprise Partnership',
+                    text: shareText,
+                    url: `https://mirroros.ai/enterprise/signup?ref=${referralCode}`
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Referral information copied to clipboard!\n\nShare with potential enterprise partners to earn fork credits and revenue commissions.');
+                });
+            }
+        }
+        
+        function redeemCredits() {
+            alert('Fork Credits Redemption\n\n💰 47 credits available ($2,345 value)\n\nRedemption options:\n• Apply to platform hosting fees\n• Convert to cash payout\n• Use for additional agent deployments\n• Upgrade to premium enterprise features\n\nSelect redemption method to continue.');
+        }
+        
+        function viewReferrals() {
+            alert('Referral Network Analytics\n\n📊 23 successful forks generated\n💰 $2,345 in credit value earned\n📈 34.8% conversion rate\n🎯 Top source: LinkedIn enterprise network\n\nDetailed analytics available in partner dashboard.');
+        }
+        
+        function viewRevenueDetails() {
+            alert('Revenue Distribution Details\n\n💰 Total Revenue: $34,567\n👤 Your Share (85%): $29,382\n🏗️ Platform Fee (15%): $5,185\n🔗 Fork Credits: $2,456\n💰 Referral Bonus: $1,234\n\n📊 Monthly growth: +23.7%\n💳 Next payout: Friday Dec 22\n🏦 Method: Stripe Connect transfer');
+        }
+        
+        function updatePayoutSettings() {
+            alert('Payout Settings Configuration\n\n💳 Current: Stripe Connect\n🏦 Bank: ****1234 (Verified)\n📅 Frequency: Weekly (Fridays)\n💰 Minimum: $100\n🌍 Currency: USD\n\nUpdate frequency, minimum amounts, or bank details as needed.');
+        }
+        
+        async function requestPayout() {
+            await licensingDashboard.logLicensingAction('request_manual_payout', {
+                amount: 29382.00,
+                method: 'stripe_connect'
+            });
+            
+            alert('💰 Manual payout requested!\n\n💵 Amount: $29,382\n📅 Processing: 2-3 business days\n🏦 Destination: ****1234\n📋 Reference: Manual payout request\n\n✓ Request submitted to Stripe Connect\n✓ Confirmation email sent\n✓ Tracking ID: PAY_' + Date.now());
+        }
+        
+        // Real-time updates
+        setInterval(() => {
+            // Update metrics with small variations
+            const revenueElements = document.querySelectorAll('.metric-value');
+            if (revenueElements.length > 2) {
+                const currentRevenue = parseFloat(revenueElements[2].textContent.replace('$', '').replace(',', ''));
+                const newRevenue = currentRevenue + (Math.random() * 10 - 5);
+                revenueElements[2].textContent = `$${Math.round(newRevenue).toLocaleString()}`;
+                
+                const shareRevenue = Math.round(newRevenue * 0.85);
+                revenueElements[3].textContent = `$${shareRevenue.toLocaleString()}`;
+            }
+        }, 45000);
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 MirrorOS Licensing Dashboard initialized');
+            console.log('🏗️ Sub-platform creation: ENABLED');
+            console.log('📱 Agent embedding: iframe & PWA ready');
+            console.log('💰 Revenue sharing: 85% enterprise partner');
+            console.log('🔗 Secure reflection routing: ACTIVE');
+        });
+    </script>
+</body>
+</html>

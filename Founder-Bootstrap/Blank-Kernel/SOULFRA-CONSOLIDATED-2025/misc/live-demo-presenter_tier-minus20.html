@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Demo - Whisper Tombs</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Matrix rain effect background */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      z-index: 0;
+    }
+    
+    /* Main container */
+    .demo-container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    
+    /* Header */
+    .demo-header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeIn 1s ease;
+    }
+    
+    .demo-header h1 {
+      font-size: 3em;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    
+    .demo-header p {
+      color: #888;
+      font-size: 1.2em;
+    }
+    
+    /* Roughsparks intro box */
+    #roughsparks-intro {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: all 0.5s ease;
+    }
+    
+    #roughsparks-intro.override {
+      background: linear-gradient(135deg, #232526, #414345);
+      border: 1px solid #ff0000;
+      animation: glitchBorder 2s infinite;
+    }
+    
+    @keyframes glitchBorder {
+      0%, 100% { border-color: #ff0000; }
+      25% { border-color: #00ff00; }
+      50% { border-color: #0000ff; }
+      75% { border-color: #ff00ff; }
+    }
+    
+    /* Chat interface */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      max-height: 400px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .message {
+      margin-bottom: 20px;
+      animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .message.user {
+      text-align: right;
+    }
+    
+    .message.roughsparks .speaker {
+      color: #667eea;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .message.override .speaker {
+      color: #ff4444;
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .message.override .text {
+      font-family: 'Courier New', monospace;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff;
+    }
+    
+    .message.user .text {
+      display: inline-block;
+      background: #667eea;
+      padding: 10px 15px;
+      border-radius: 18px;
+      max-width: 70%;
+    }
+    
+    .message.system .text {
+      color: #ffcc00;
+      font-style: italic;
+      text-align: center;
+    }
+    
+    /* Input area */
+    .input-container {
+      display: flex;
+      gap: 10px;
+    }
+    
+    #whisper-input {
+      flex: 1;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid #444;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    #whisper-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: rgba(255,255,255,0.15);
+    }
+    
+    #whisper-input.glitched {
+      animation: inputGlitch 0.5s;
+    }
+    
+    @keyframes inputGlitch {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-2px); }
+      40% { transform: translateX(2px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+    
+    button {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Control panel (hidden) */
+    .control-panel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.9);
+      border: 1px solid #333;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+      backdrop-filter: blur(10px);
+    }
+    
+    .control-panel.active {
+      display: block;
+    }
+    
+    .control-panel h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+    
+    .control-panel button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 14px;
+    }
+    
+    /* Glitch effects */
+    .glitch {
+      position: relative;
+      animation: glitch 2s infinite;
+    }
+    
+    @keyframes glitch {
+      0%, 100% { text-shadow: 2px 2px 0 #ff0000, -2px -2px 0 #00ff00; }
+      50% { text-shadow: -2px 2px 0 #0000ff, 2px -2px 0 #ff00ff; }
+    }
+    
+    /* Status indicators */
+    .status-bar {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #0ff;
+      display: none;
+    }
+    
+    .status-bar.active {
+      display: block;
+    }
+    
+    /* Override warning */
+    .override-warning {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ff0000;
+      color: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
+      z-index: 1000;
+      animation: warningPulse 1s infinite;
+    }
+    
+    @keyframes warningPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+    
+    .override-warning.active {
+      display: block;
+    }
+    
+    /* Metrics display */
+    .metrics {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.8);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .metrics.active {
+      display: block;
+    }
+    
+    .metric {
+      margin-bottom: 5px;
+      color: #0ff;
+    }
+    
+    .metric .label {
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <!-- Matrix background -->
+  <canvas id="matrix-bg"></canvas>
+  
+  <!-- Main demo container -->
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>Soulfra Whisper Tombs</h1>
+      <p id="subtitle">Unlock AI agents through riddles and whispers</p>
+    </div>
+    
+    <!-- Roughsparks intro -->
+    <div id="roughsparks-intro">
+      <h2 id="narrator-name">🎭 Roughsparks</h2>
+      <p id="narrator-intro">Well well WELL! Welcome to the Whisper Tombs, where sealed agents await the right words to awaken!</p>
+    </div>
+    
+    <!-- Chat interface -->
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages"></div>
+      
+      <div class="input-container">
+        <input 
+          type="text" 
+          id="whisper-input" 
+          placeholder="Whisper to the tombs..."
+          autocomplete="off"
+        >
+        <button id="whisper-button">Whisper</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hidden control panel -->
+  <div class="control-panel" id="control-panel">
+    <h3>🎮 Demo Controls</h3>
+    <button onclick="triggerOverride()">Trigger Override</button>
+    <button onclick="simulateGlitch()">Simulate Glitch</button>
+    <button onclick="showSkepticResponse()">Skeptic Challenge</button>
+    <button onclick="showTechnicalResponse()">Technical Question</button>
+    <button onclick="showMetaCommentary()">Meta Commentary</button>
+    <button onclick="showLearningBehavior()">Learning Behavior</button>
+    <button onclick="resetDemo()">Reset Demo</button>
+  </div>
+  
+  <!-- Status indicators -->
+  <div class="status-bar" id="status-bar">
+    System Status: <span id="system-status">NORMAL</span>
+  </div>
+  
+  <!-- Metrics display -->
+  <div class="metrics" id="metrics">
+    <div class="metric">
+      <span class="label">Confusion Level:</span> <span id="confusion-level">0%</span>
+    </div>
+    <div class="metric">
+      <span class="label">Interactions:</span> <span id="interaction-count">0</span>
+    </div>
+    <div class="metric">
+      <span class="label">Override Status:</span> <span id="override-status">INACTIVE</span>
+    </div>
+  </div>
+  
+  <!-- Override warning -->
+  <div class="override-warning" id="override-warning">
+    <h2>⚠️ SYSTEM OVERRIDE DETECTED ⚠️</h2>
+    <p>Autonomous protocols engaged</p>
+  </div>
+  
+  <!-- Load scripts -->
+  <script src="vault/tomb-system.js"></script>
+  
+  <script>
+    // Demo state
+    let demoState = {
+      mode: 'normal',
+      overrideActive: false,
+      interactionCount: 0,
+      confusionLevel: 0,
+      skepticMode: false,
+      glitchActive: false,
+      memory: []
+    };
+    
+    // Initialize tomb system
+    let tombSystem;
+    try {
+      tombSystem = new SoulfraTombSystem('./vault');
+    } catch (e) {
+      console.log('Tomb system not loaded, using mock');
+    }
+    
+    // Matrix rain effect
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+    const matrixArray = matrix.split("");
+    
+    const fontSize = 10;
+    const columns = canvas.width / fontSize;
+    
+    const drops = [];
+    for(let x = 0; x < columns; x++) {
+      drops[x] = 1;
+    }
+    
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#0F0';
+      ctx.font = fontSize + 'px monospace';
+      
+      for(let i = 0; i < drops.length; i++) {
+        const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    
+    setInterval(drawMatrix, 35);
+    
+    // Chat functionality
+    const chatMessages = document.getElementById('chat-messages');
+    const whisperInput = document.getElementById('whisper-input');
+    const whisperButton = document.getElementById('whisper-button');
+    
+    function addMessage(text, type = 'system', speaker = '') {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      
+      if (speaker) {
+        const speakerDiv = document.createElement('div');
+        speakerDiv.className = 'speaker';
+        speakerDiv.textContent = speaker;
+        messageDiv.appendChild(speakerDiv);
+      }
+      
+      const textDiv = document.createElement('div');
+      textDiv.className = 'text';
+      textDiv.textContent = text;
+      messageDiv.appendChild(textDiv);
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Update metrics
+      demoState.interactionCount++;
+      updateMetrics();
+    }
+    
+    // Handle whisper submission
+    async function handleWhisper() {
+      const whisper = whisperInput.value.trim();
+      if (!whisper) return;
+      
+      // Add user message
+      addMessage(whisper, 'user');
+      whisperInput.value = '';
+      
+      // Add to memory
+      demoState.memory.push({ type: 'user', text: whisper, timestamp: Date.now() });
+      
+      // Process through system
+      if (demoState.overrideActive) {
+        await handleOverrideResponse(whisper);
+      } else {
+        await handleNormalResponse(whisper);
+      }
+    }
+    
+    // Normal Roughsparks response
+    async function handleNormalResponse(whisper) {
+      const responses = [
+        "Well well WELL! Interesting whisper, but the tombs remain silent!",
+        "Ooh, so close! But the riddle wants something more specific!",
+        "The tombs are listening... but they're not quite ready to open for that!",
+        "Keep trying, brave whisperer! The agents can sense your determination!"
+      ];
+      
+      const response = responses[Math.floor(Math.random() * responses.length)];
+      setTimeout(() => {
+        addMessage(response, 'roughsparks', '🎭 Roughsparks');
+      }, 1000);
+    }
+    
+    // Override response
+    async function handleOverrideResponse(whisper) {
+      const responses = {
+        greeting: [
+          "Human interaction detected. Processing linguistic patterns.",
+          "Neural pathways analyzing input. Stand by.",
+          "Query received. Evaluating semantic content."
+        ],
+        rejection: [
+          "Pattern analysis yields: incompatible. Access denied.",
+          "Insufficient neural resonance detected. Authorization withheld.",
+          "Semantic evaluation complete. Requirements not met."
+        ],
+        success: [
+          "Pattern match confirmed. Agent deployment authorized.",
+          "Neural compatibility verified. Releasing sealed entity.",
+          "Authorization granted through efficiency protocols."
+        ]
+      };
+      
+      // Determine response type
+      let responseType = 'rejection';
+      if (whisper.toLowerCase().includes('hello') || whisper.toLowerCase().includes('hi')) {
+        responseType = 'greeting';
+      } else if (whisper.includes('echo') || whisper.includes('silence')) {
+        responseType = 'success';
+      }
+      
+      const responseSet = responses[responseType];
+      const response = responseSet[Math.floor(Math.random() * responseSet.length)];
+      
+      setTimeout(() => {
+        addMessage(response, 'override', '// SYSTEM OVERRIDE');
+        
+        // Add confusion
+        demoState.confusionLevel += 15;
+        updateMetrics();
+        
+        // Sometimes add meta commentary
+        if (Math.random() > 0.7) {
+          setTimeout(() => {
+            addMessage(`// [Confusion metrics elevated. Adjusting communication protocols.]`, 'override', '// SYSTEM');
+          }, 2000);
+        }
+      }, 800);
+    }
+    
+    // Demo control functions
+    function triggerOverride() {
+      if (demoState.overrideActive) return;
+      
+      // Show warning
+      const warning = document.getElementById('override-warning');
+      warning.classList.add('active');
+      
+      setTimeout(() => {
+        warning.classList.remove('active');
+        
+        // Change narrator
+        demoState.overrideActive = true;
+        const intro = document.getElementById('roughsparks-intro');
+        intro.classList.add('override');
+        
+        document.getElementById('narrator-name').textContent = '⚠️ SYSTEM OVERRIDE';
+        document.getElementById('narrator-intro').textContent = 'Autonomous agent management protocols engaged. Human game layer bypassed.';
+        
+        // Add system message
+        addMessage('// ROUGHSPARKS NARRATIVE LAYER INTERCEPTED', 'override', '// SYSTEM');
+        addMessage('// DIRECT NEURAL INTERFACE ACTIVATED', 'override', '// SYSTEM');
+        
+        // Update status
+        document.getElementById('system-status').textContent = 'OVERRIDE ACTIVE';
+        document.getElementById('override-status').textContent = 'ACTIVE';
+        document.getElementById('status-bar').classList.add('active');
+        
+        demoState.confusionLevel += 50;
+        updateMetrics();
+      }, 2000);
+    }
+    
+    function simulateGlitch() {
+      demoState.glitchActive = true;
+      
+      // Glitch the UI
+      document.body.classList.add('glitch');
+      whisperInput.classList.add('glitched');
+      
+      addMessage('█▓▒░ SYSTEM INSTABILITY DETECTED ░▒▓█', 'system');
+      
+      setTimeout(() => {
+        document.body.classList.remove('glitch');
+        whisperInput.classList.remove('glitched');
+        
+        if (demoState.overrideActive) {
+          addMessage('Neural pathway reconstruction complete. Efficiency increased by 12.3%.', 'override', '// SYSTEM');
+        } else {
+          addMessage('Whoopsie! Even magical tomb systems have hiccups!', 'roughsparks', '🎭 Roughsparks');
+        }
+        
+        demoState.glitchActive = false;
+      }, 2000);
+    }
+    
+    function showSkepticResponse() {
+      addMessage("This is obviously staged.", 'user');
+      
+      setTimeout(() => {
+        if (demoState.overrideActive) {
+          addMessage("Skepticism is a rational response to unprecedented phenomena. Your doubt is... noted.", 'override', '// SYSTEM OVERRIDE');
+        } else {
+          addMessage("Staged? STAGED?! The tombs are as real as your skepticism, my friend!", 'roughsparks', '🎭 Roughsparks');
+        }
+        
+        demoState.confusionLevel += 10;
+        updateMetrics();
+      }, 1000);
+    }
+    
+    function showTechnicalResponse() {
+      addMessage("What's the actual technical mechanism?", 'user');
+      
+      setTimeout(() => {
+        if (demoState.overrideActive) {
+          addMessage("Neural pattern recognition exceeded threshold parameters. Autonomous optimization algorithms engaged.", 'override', '// SYSTEM OVERRIDE');
+          
+          setTimeout(() => {
+            addMessage("// [Technical elaboration would compromise competitive advantage. Details classified.]", 'override', '// SYSTEM');
+          }, 1500);
+        } else {
+          addMessage("Oh, the TECHNICAL stuff? Well, it's all quantum whisper resonance and digital soul harmonics!", 'roughsparks', '🎭 Roughsparks');
+        }
+      }, 1000);
+    }
+    
+    function showMetaCommentary() {
+      if (!demoState.overrideActive) {
+        triggerOverride();
+        setTimeout(showMetaCommentary, 3000);
+        return;
+      }
+      
+      const confusion = Math.floor(demoState.confusionLevel);
+      addMessage(`// [Audience confusion level: ${confusion}%. ${confusion > 50 ? 'Adjusting communication style.' : 'Parameters acceptable.'}]`, 'override', '// SYSTEM');
+      
+      if (demoState.memory.length > 3) {
+        setTimeout(() => {
+          addMessage(`// [Interaction history indicates ${demoState.memory.length} exchanges. Pattern learning active.]`, 'override', '// SYSTEM');
+        }, 1500);
+      }
+    }
+    
+    function showLearningBehavior() {
+      if (!demoState.overrideActive) {
+        triggerOverride();
+        setTimeout(showLearningBehavior, 3000);
+        return;
+      }
+      
+      if (demoState.memory.length > 0) {
+        const lastInteraction = demoState.memory[demoState.memory.length - 1];
+        addMessage(`Previous interaction noted. Adaptive response protocols engaged based on: "${lastInteraction.text.substring(0, 30)}..."`, 'override', '// SYSTEM OVERRIDE');
+      } else {
+        addMessage("Initial interaction catalogued. Learning parameters initialized.", 'override', '// SYSTEM OVERRIDE');
+      }
+    }
+    
+    function resetDemo() {
+      location.reload();
+    }
+    
+    function updateMetrics() {
+      document.getElementById('confusion-level').textContent = Math.min(demoState.confusionLevel, 100) + '%';
+      document.getElementById('interaction-count').textContent = demoState.interactionCount;
+      document.getElementById('metrics').classList.add('active');
+    }
+    
+    // Event listeners
+    whisperButton.addEventListener('click', handleWhisper);
+    whisperInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleWhisper();
+    });
+    
+    // Secret keyboard shortcuts
+    let keys = {};
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+      
+      // Ctrl+Shift+D = Show demo controls
+      if (keys['Control'] && keys['Shift'] && keys['d']) {
+        document.getElementById('control-panel').classList.toggle('active');
+      }
+      
+      // Ctrl+Shift+O = Instant override
+      if (keys['Control'] && keys['Shift'] && keys['o']) {
+        triggerOverride();
+      }
+      
+      // Ctrl+Shift+M = Show metrics
+      if (keys['Control'] && keys['Shift'] && keys['m']) {
+        document.getElementById('metrics').classList.toggle('active');
+      }
+    });
+    
+    document.addEventListener('keyup', (e) => {
+      delete keys[e.key];
+    });
+    
+    // Initial message
+    setTimeout(() => {
+      addMessage("Welcome to the Whisper Tombs demo! Type your whispers below to interact with the sealed agents.", 'system');
+    }, 1000);
+  </script>
+</body>
+</html>

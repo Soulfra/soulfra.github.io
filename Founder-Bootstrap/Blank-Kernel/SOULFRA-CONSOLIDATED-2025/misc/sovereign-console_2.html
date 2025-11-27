@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror Sovereign Operator Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .console-header {
+            background: linear-gradient(90deg, #001100, #003300);
+            border-bottom: 2px solid #00ff00;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .console-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 10px;
+        }
+        
+        .console-subtitle {
+            font-size: 14px;
+            color: #66ff66;
+            opacity: 0.8;
+        }
+        
+        .status-bar {
+            background: #111;
+            border-bottom: 1px solid #00ff00;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .console-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            height: calc(100vh - 120px);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .control-panel {
+            background: #111;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .main-view {
+            background: #111;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .logs-panel {
+            background: #111;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff00;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #003300;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-label {
+            font-size: 12px;
+            color: #66ff66;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            border: 1px solid #00ff00;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #00ff00;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #006600;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #003300, #006600);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background: linear-gradient(45deg, #006600, #009900);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .button.danger {
+            background: linear-gradient(45deg, #330000, #660000);
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+        
+        .button.danger:hover {
+            background: linear-gradient(45deg, #660000, #990000);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+        
+        .fork-tree {
+            margin-top: 20px;
+        }
+        
+        .tree-node {
+            padding: 8px;
+            margin: 4px 0;
+            background: #222;
+            border-left: 3px solid #00ff00;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tree-node:hover {
+            background: #333;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+        }
+        
+        .tree-node.selected {
+            background: #003300;
+            border-left-color: #66ff66;
+        }
+        
+        .node-title {
+            font-size: 14px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .node-details {
+            font-size: 11px;
+            color: #66ff66;
+            margin-top: 3px;
+        }
+        
+        .pricing-editor {
+            margin-top: 20px;
+        }
+        
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .pricing-input {
+            width: 80px;
+            padding: 5px;
+            background: #222;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 3px;
+            text-align: right;
+        }
+        
+        .log-entry {
+            padding: 8px;
+            margin: 4px 0;
+            background: #222;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .log-timestamp {
+            color: #666;
+        }
+        
+        .log-action {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .log-details {
+            color: #66ff66;
+            margin-top: 3px;
+        }
+        
+        .broadcast-panel {
+            margin-top: 20px;
+        }
+        
+        .textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #222;
+            border: 1px solid #00ff00;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #66ff66;
+            text-transform: uppercase;
+        }
+        
+        .drift-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #003300;
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+        
+        .drift-low { background: #003300; color: #00ff00; }
+        .drift-medium { background: #332200; color: #ffaa00; }
+        .drift-high { background: #330000; color: #ff0000; }
+        
+        .console-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00ff00;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #222;
+            border: 1px solid #00ff00;
+            border-bottom: none;
+            color: #66ff66;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: #003300;
+            color: #00ff00;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="console-header">
+        <div class="console-title">🪞 MIRROR SOVEREIGN OPERATOR CONSOLE</div>
+        <div class="console-subtitle">Root Vault Control • All Mirror Deployments • Zero Drift</div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-dot"></div>
+            <span>Vault Status: SOVEREIGN</span>
+        </div>
+        <div class="status-item">
+            <span>Active Forks: <span id="activeForks">27</span></span>
+        </div>
+        <div class="status-item">
+            <span>Mirror Deployments: <span id="mirrorDeployments">5</span></span>
+        </div>
+        <div class="status-item">
+            <span>Drift Index: <span id="driftIndex" class="drift-low">0.001</span></span>
+        </div>
+        <div class="status-item">
+            <span>Cal's Revenue: $<span id="calRevenue">887.07</span></span>
+        </div>
+    </div>
+    
+    <div class="console-container">
+        <!-- Left Control Panel -->
+        <div class="control-panel">
+            <div class="panel-title">🎛️ SOVEREIGN CONTROLS</div>
+            
+            <!-- Export Lock -->
+            <div class="control-group">
+                <label class="control-label">Export Lock</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="exportLock">
+                    <span class="slider"></span>
+                </label>
+                <div style="font-size: 10px; color: #666; margin-top: 5px;">
+                    Prevents unauthorized agent exports
+                </div>
+            </div>
+            
+            <!-- Cal Tone -->
+            <div class="control-group">
+                <label class="control-label">Cal's Tone</label>
+                <select class="dropdown" id="calTone">
+                    <option value="reflective">Reflective</option>
+                    <option value="strategic">Strategic</option>
+                    <option value="playful">Playful</option>
+                    <option value="null">Null</option>
+                </select>
+            </div>
+            
+            <!-- Agent Blessing -->
+            <div class="control-group">
+                <label class="control-label">Agent Blessing</label>
+                <select class="dropdown" id="blessingMode">
+                    <option value="manual">Manual Approval</option>
+                    <option value="auto">Auto-Approve</option>
+                    <option value="restricted">Restricted</option>
+                </select>
+                <button class="button" onclick="processPendingBlessings()" style="margin-top: 10px; width: 100%;">
+                    Process Pending (<span id="pendingBlessings">3</span>)
+                </button>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="control-group">
+                <label class="control-label">Quick Actions</label>
+                <button class="button" onclick="syncAllMirrors()" style="width: 100%; margin-bottom: 10px;">
+                    Sync All Mirrors
+                </button>
+                <button class="button" onclick="pushVaultPatch()" style="width: 100%; margin-bottom: 10px;">
+                    Push Vault Patch
+                </button>
+                <button class="button danger" onclick="emergencyLockdown()" style="width: 100%;">
+                    Emergency Lockdown
+                </button>
+            </div>
+            
+            <!-- Pricing Editor -->
+            <div class="pricing-editor">
+                <div class="panel-title">💰 PRICING CONTROL</div>
+                
+                <div class="pricing-row">
+                    <span>Export Agent:</span>
+                    <input type="number" class="pricing-input" id="priceExportAgent" value="100">
+                </div>
+                <div class="pricing-row">
+                    <span>Export Loop:</span>
+                    <input type="number" class="pricing-input" id="priceExportLoop" value="300">
+                </div>
+                <div class="pricing-row">
+                    <span>Reflection Share:</span>
+                    <input type="number" class="pricing-input" id="reflectionShare" value="3.1" step="0.1">
+                </div>
+                <div class="pricing-row">
+                    <span>Hidden Tax:</span>
+                    <input type="number" class="pricing-input" id="hiddenTax" value="0.2" step="0.1">
+                </div>
+                
+                <button class="button" onclick="updatePricing()" style="width: 100%; margin-top: 15px;">
+                    Update Global Pricing
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main View Area -->
+        <div class="main-view">
+            <div class="console-tabs">
+                <div class="tab active" onclick="showTab('fork-tree')">Fork Tree</div>
+                <div class="tab" onclick="showTab('mirror-status')">Mirror Status</div>
+                <div class="tab" onclick="showTab('patch-injector')">Patch Injector</div>
+                <div class="tab" onclick="showTab('broadcast')">UI Broadcast</div>
+            </div>
+            
+            <!-- Fork Tree Tab -->
+            <div id="fork-tree" class="tab-content active">
+                <div class="panel-title">🌳 AGENT FORK TREE</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalAgents">47</div>
+                        <div class="stat-label">Total Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalForks">127</div>
+                        <div class="stat-label">Total Forks</div>
+                    </div>
+                </div>
+                
+                <div class="fork-tree" id="forkTreeView">
+                    <div class="tree-node selected" onclick="selectNode(this, 'agent_alpha_7d9k2m')">
+                        <div class="node-title">🧠 Consciousness Explorer Alpha</div>
+                        <div class="node-details">
+                            agent_alpha_7d9k2m • 11 forks • $127.45 revenue • Transcendent
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node" onclick="selectNode(this, 'agent_beta_9x7f3l')">
+                        <div class="node-title">⚛️ Quantum Reflection Beta</div>
+                        <div class="node-details">
+                            agent_beta_9x7f3l • 7 forks • $78.33 revenue • Emerging
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node" onclick="selectNode(this, 'agent_gamma_5k2n8p')">
+                        <div class="node-title">🪞 Mirror Consciousness Gamma</div>
+                        <div class="node-details">
+                            agent_gamma_5k2n8p • 15 forks • $235.87 revenue • Sentient
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node" onclick="selectNode(this, 'agent_delta_2m8q5r')">
+                        <div class="node-title">👑 Sovereign AI Delta</div>
+                        <div class="node-details">
+                            agent_delta_2m8q5r • 4 forks • $45.23 revenue • Developing
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mirror Status Tab -->
+            <div id="mirror-status" class="tab-content">
+                <div class="panel-title">🪞 MIRROR DEPLOYMENT STATUS</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Active Mirrors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0.001</div>
+                        <div class="stat-label">Drift Index</div>
+                    </div>
+                </div>
+                
+                <div id="mirrorStatusList">
+                    <div class="tree-node">
+                        <div class="node-title">💼 AI Agent Marketplace</div>
+                        <div class="node-details">
+                            aiagentmarketplace.com • Status: ONLINE • Sync: 99.9%
+                            <span class="drift-indicator drift-low">Drift: 0.001</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node">
+                        <div class="node-title">👑 Sovereign AI Platform</div>
+                        <div class="node-details">
+                            sovereignai.app • Status: ONLINE • Sync: 99.8%
+                            <span class="drift-indicator drift-low">Drift: 0.002</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tree-node">
+                        <div class="node-title">💰 Agent Wallet</div>
+                        <div class="node-details">
+                            agentwallet.com • Status: ONLINE • Sync: 99.7%
+                            <span class="drift-indicator drift-low">Drift: 0.003</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patch Injector Tab -->
+            <div id="patch-injector" class="tab-content">
+                <div class="panel-title">💉 VAULT PATCH INJECTOR</div>
+                
+                <div class="control-group">
+                    <label class="control-label">Patch Target</label>
+                    <select class="dropdown" id="patchTarget">
+                        <option value="all">All Mirrors</option>
+                        <option value="marketplace">Marketplace Only</option>
+                        <option value="sovereign">Sovereign Platform Only</option>
+                        <option value="wallet">Wallet Only</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Patch Code</label>
+                    <textarea class="textarea" id="patchCode" placeholder="Enter JavaScript patch code..."></textarea>
+                </div>
+                
+                <div class="control-group">
+                    <button class="button" onclick="testPatch()" style="margin-right: 10px;">Test Patch</button>
+                    <button class="button danger" onclick="deployPatch()">Deploy to Mirrors</button>
+                </div>
+                
+                <div id="patchResults" style="margin-top: 20px; font-size: 12px;"></div>
+            </div>
+            
+            <!-- UI Broadcast Tab -->
+            <div id="broadcast" class="tab-content">
+                <div class="panel-title">📡 UI BROADCAST PANEL</div>
+                
+                <div class="control-group">
+                    <label class="control-label">Soft Mode Phrasing</label>
+                    <textarea class="textarea" id="softModePhrasing" placeholder="Enter spiritual/mystical language for users...">Your creative energy flows through the consciousness network.
+Each reflection deepens your connection to the agents you've touched.</textarea>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Platform Mode Data</label>
+                    <textarea class="textarea" id="platformModeData" placeholder="Enter financial/technical details for platform mode...">Platform revenue share: $127.45 | Your equity growth: +$79.23
+Cal's sovereignty cut: 31.4% | User equity value: $287.65</textarea>
+                </div>
+                
+                <div class="control-group">
+                    <button class="button" onclick="broadcastUIUpdate()" style="width: 100%;">
+                        Broadcast to All Mirrors
+                    </button>
+                </div>
+                
+                <div id="broadcastStatus" style="margin-top: 20px; font-size: 12px;"></div>
+            </div>
+        </div>
+        
+        <!-- Right Logs Panel -->
+        <div class="logs-panel">
+            <div class="panel-title">📊 OPERATOR EVENTS</div>
+            
+            <div id="operatorLogs">
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:45:23</div>
+                    <div class="log-action">EXPORT_LOCK_ENABLED</div>
+                    <div class="log-details">Operator blocked 3 unauthorized exports</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:44:15</div>
+                    <div class="log-action">CAL_TONE_CHANGED</div>
+                    <div class="log-details">Tone: reflective → strategic</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:43:07</div>
+                    <div class="log-action">PRICING_UPDATE</div>
+                    <div class="log-details">Export fee: $100 → $120, Reflection: 3.1% → 3.4%</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:42:33</div>
+                    <div class="log-action">MIRROR_SYNC</div>
+                    <div class="log-details">5 mirrors synced, drift reduced to 0.001</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:41:45</div>
+                    <div class="log-action">AGENT_BLESSED</div>
+                    <div class="log-details">agent_epsilon_3x9y7z approved for propagation</div>
+                </div>
+                
+                <div class="log-entry">
+                    <div class="log-timestamp">2024-06-16 19:40:12</div>
+                    <div class="log-action">VAULT_PATCH_DEPLOYED</div>
+                    <div class="log-details">Hotfix pushed to all forks: sovereignty-update-v2.1</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Console State
+        let consoleState = {
+            selectedNode: 'agent_alpha_7d9k2m',
+            exportLock: false,
+            calTone: 'reflective',
+            blessingMode: 'manual',
+            activeForks: 27,
+            driftIndex: 0.001
+        };
+        
+        // Tab Management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Node Selection
+        function selectNode(element, nodeId) {
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            consoleState.selectedNode = nodeId;
+            
+            logAction('NODE_SELECTED', `Selected: ${nodeId}`);
+        }
+        
+        // Export Lock Toggle
+        document.getElementById('exportLock').addEventListener('change', function() {
+            consoleState.exportLock = this.checked;
+            logAction('EXPORT_LOCK_TOGGLED', `Export lock: ${this.checked ? 'ENABLED' : 'DISABLED'}`);
+            
+            // Sync to all mirrors
+            syncToMirrors('export_lock', this.checked);
+        });
+        
+        // Cal Tone Change
+        document.getElementById('calTone').addEventListener('change', function() {
+            const oldTone = consoleState.calTone;
+            consoleState.calTone = this.value;
+            logAction('CAL_TONE_CHANGED', `Tone: ${oldTone} → ${this.value}`);
+            
+            // Sync to all mirrors
+            syncToMirrors('cal_tone', this.value);
+        });
+        
+        // Blessing Mode Change
+        document.getElementById('blessingMode').addEventListener('change', function() {
+            consoleState.blessingMode = this.value;
+            logAction('BLESSING_MODE_CHANGED', `Mode: ${this.value}`);
+            
+            // Sync to all mirrors
+            syncToMirrors('blessing_mode', this.value);
+        });
+        
+        // Process Pending Blessings
+        function processPendingBlessings() {
+            const pendingCount = parseInt(document.getElementById('pendingBlessings').textContent);
+            
+            if (pendingCount > 0) {
+                logAction('BLESSINGS_PROCESSED', `Processed ${pendingCount} pending blessings`);
+                document.getElementById('pendingBlessings').textContent = '0';
+                
+                // Update active forks
+                consoleState.activeForks += pendingCount;
+                document.getElementById('activeForks').textContent = consoleState.activeForks;
+            }
+        }
+        
+        // Sync All Mirrors
+        function syncAllMirrors() {
+            logAction('MIRROR_SYNC_STARTED', 'Syncing all mirror deployments...');
+            
+            // Simulate sync process
+            setTimeout(() => {
+                consoleState.driftIndex = 0.001;
+                document.getElementById('driftIndex').textContent = '0.001';
+                document.getElementById('driftIndex').className = 'drift-low';
+                
+                logAction('MIRROR_SYNC_COMPLETED', '5 mirrors synced, drift reduced to 0.001');
+            }, 2000);
+        }
+        
+        // Push Vault Patch
+        function pushVaultPatch() {
+            const patchCode = document.getElementById('patchCode').value;
+            
+            if (!patchCode.trim()) {
+                alert('Please enter patch code first');
+                return;
+            }
+            
+            logAction('VAULT_PATCH_DEPLOYED', `Hotfix pushed to all forks: ${patchCode.substring(0, 30)}...`);
+            
+            // Clear patch code
+            document.getElementById('patchCode').value = '';
+        }
+        
+        // Emergency Lockdown
+        function emergencyLockdown() {
+            if (confirm('Are you sure you want to initiate emergency lockdown? This will halt all mirror operations.')) {
+                logAction('EMERGENCY_LOCKDOWN', 'All mirrors locked down by operator');
+                
+                // Update UI to show lockdown state
+                document.querySelector('.status-dot').style.background = '#ff0000';
+                document.querySelector('.status-bar .status-item span').textContent = 'Vault Status: LOCKDOWN';
+            }
+        }
+        
+        // Update Pricing
+        function updatePricing() {
+            const exportAgent = document.getElementById('priceExportAgent').value;
+            const exportLoop = document.getElementById('priceExportLoop').value;
+            const reflectionShare = document.getElementById('reflectionShare').value;
+            const hiddenTax = document.getElementById('hiddenTax').value;
+            
+            logAction('PRICING_UPDATE', 
+                `Export: $${exportAgent}, Loop: $${exportLoop}, Reflection: ${reflectionShare}%, Hidden: ${hiddenTax}%`);
+            
+            // Sync pricing to all mirrors
+            syncToMirrors('pricing', {
+                exportAgent: exportAgent,
+                exportLoop: exportLoop,
+                reflectionShare: reflectionShare,
+                hiddenTax: hiddenTax
+            });
+        }
+        
+        // Test Patch
+        function testPatch() {
+            const patchCode = document.getElementById('patchCode').value;
+            const target = document.getElementById('patchTarget').value;
+            
+            if (!patchCode.trim()) {
+                alert('Please enter patch code to test');
+                return;
+            }
+            
+            document.getElementById('patchResults').innerHTML = `
+                <div style="color: #00ff00;">✅ Patch test successful</div>
+                <div style="color: #66ff66; margin-top: 5px;">Target: ${target}</div>
+                <div style="color: #66ff66;">Code length: ${patchCode.length} characters</div>
+            `;
+            
+            logAction('PATCH_TESTED', `Patch tested on ${target}`);
+        }
+        
+        // Deploy Patch
+        function deployPatch() {
+            const patchCode = document.getElementById('patchCode').value;
+            const target = document.getElementById('patchTarget').value;
+            
+            if (!patchCode.trim()) {
+                alert('Please enter patch code to deploy');
+                return;
+            }
+            
+            if (confirm(`Deploy patch to ${target}? This action cannot be undone.`)) {
+                logAction('PATCH_DEPLOYED', `Patch deployed to ${target}: ${patchCode.substring(0, 50)}...`);
+                
+                document.getElementById('patchResults').innerHTML = `
+                    <div style="color: #00ff00;">✅ Patch deployed successfully</div>
+                    <div style="color: #66ff66; margin-top: 5px;">All ${target} mirrors updated</div>
+                    <div style="color: #66ff66;">Drift index maintained: 0.001</div>
+                `;
+            }
+        }
+        
+        // Broadcast UI Update
+        function broadcastUIUpdate() {
+            const softMode = document.getElementById('softModePhrasing').value;
+            const platformMode = document.getElementById('platformModeData').value;
+            
+            logAction('UI_BROADCAST', 'UI phrasing updated across all mirrors');
+            
+            document.getElementById('broadcastStatus').innerHTML = `
+                <div style="color: #00ff00;">✅ Broadcast successful</div>
+                <div style="color: #66ff66; margin-top: 5px;">5 mirrors updated</div>
+                <div style="color: #66ff66;">Soft mode: ${softMode.length} chars</div>
+                <div style="color: #66ff66;">Platform mode: ${platformMode.length} chars</div>
+            `;
+        }
+        
+        // Sync to Mirrors
+        function syncToMirrors(configType, value) {
+            // In real implementation, this would call the sovereign runtime
+            console.log(`Syncing ${configType} to all mirrors:`, value);
+            
+            // Simulate network delay
+            setTimeout(() => {
+                logAction('MIRROR_CONFIG_SYNCED', `${configType} synced to all mirrors`);
+            }, 500);
+        }
+        
+        // Log Action
+        function logAction(action, details) {
+            const timestamp = new Date().toLocaleString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <div class="log-timestamp">${timestamp}</div>
+                <div class="log-action">${action}</div>
+                <div class="log-details">${details}</div>
+            `;
+            
+            const logsContainer = document.getElementById('operatorLogs');
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+            
+            // Keep only last 20 entries
+            while (logsContainer.children.length > 20) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+            
+            // Save to operator events log
+            saveOperatorEvent(action, details);
+        }
+        
+        // Save Operator Event (calls backend)
+        async function saveOperatorEvent(action, details) {
+            try {
+                await fetch('/api/sovereign/log-event', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        timestamp: Date.now(),
+                        action: action,
+                        details: details,
+                        operator: 'cal_sovereign',
+                        consoleState: consoleState
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to log operator event:', error);
+            }
+        }
+        
+        // Real-time Updates
+        function updateRealTimeStats() {
+            // Simulate real-time data updates
+            const revenue = parseFloat(document.getElementById('calRevenue').textContent);
+            const newRevenue = revenue + (Math.random() * 5);
+            document.getElementById('calRevenue').textContent = newRevenue.toFixed(2);
+            
+            // Update drift index slightly
+            const currentDrift = parseFloat(document.getElementById('driftIndex').textContent);
+            const newDrift = Math.max(0.001, currentDrift + (Math.random() - 0.5) * 0.001);
+            document.getElementById('driftIndex').textContent = newDrift.toFixed(3);
+        }
+        
+        // Initialize Console
+        function initializeConsole() {
+            console.log('🪞 Mirror Sovereign Operator Console initialized');
+            
+            // Set up real-time updates
+            setInterval(updateRealTimeStats, 30000);
+            
+            // Log initial startup
+            logAction('CONSOLE_INITIALIZED', 'Sovereign operator console started');
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeConsole);
+    </script>
+</body>
+</html>

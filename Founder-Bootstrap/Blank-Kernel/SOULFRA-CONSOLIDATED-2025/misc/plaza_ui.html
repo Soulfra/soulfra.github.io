@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏰 Soulfra W2 - Emotional Plaza</title>
+    <style>
+        /* RUNESCAPE W2 FALADOR VIBES */
+        @font-face {
+            font-family: 'RuneScape';
+            src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #ffff00;
+            overflow: hidden;
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABMSURBVCiRY/j//z8DMvj37x8LsiRMgImBQkBxZ48aNmrYqGGjhg3CYSzIEjB49+4dC7IkTIBR1bBRw0YNGzVs1LBRQ4Y5jP///xMAAN0IF0F7xU0YAAAAAElFTkSuQmCC'), auto;
+        }
+
+        /* PLAZA CONTAINER */
+        #plaza {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(to bottom, #000033 0%, #000066 70%, #000033 100%);
+            overflow: hidden;
+        }
+
+        /* GROUND TILES */
+        #ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background-image: 
+                repeating-linear-gradient(0deg, 
+                    #333 0px, #333 2px, 
+                    #444 2px, #444 4px),
+                repeating-linear-gradient(90deg, 
+                    #333 0px, #333 2px, 
+                    #444 2px, #444 4px);
+            background-size: 40px 40px;
+            perspective: 500px;
+            transform: rotateX(60deg);
+            transform-origin: center top;
+        }
+
+        /* BANK WALLS */
+        .structure {
+            position: absolute;
+            background: #666;
+            border: 2px solid #999;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        #west-bank {
+            left: 10%;
+            top: 30%;
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(to bottom, #888 0%, #666 100%);
+        }
+
+        #east-bank {
+            right: 10%;
+            top: 30%;
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(to bottom, #888 0%, #666 100%);
+        }
+
+        /* FOUNTAIN */
+        #fountain {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4488ff 0%, #2266dd 50%, #004488 100%);
+            box-shadow: 0 0 50px #4488ff, inset 0 0 20px #66aaff;
+            animation: fountainPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes fountainPulse {
+            0%, 100% { box-shadow: 0 0 50px #4488ff, inset 0 0 20px #66aaff; }
+            50% { box-shadow: 0 0 80px #66aaff, inset 0 0 40px #88ccff; }
+        }
+
+        /* AGENT AVATARS */
+        .agent {
+            position: absolute;
+            width: 32px;
+            height: 48px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            animation: agentBob 2s ease-in-out infinite;
+        }
+
+        @keyframes agentBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .agent-body {
+            width: 100%;
+            height: 100%;
+            background: #ffcc00;
+            border: 2px solid #ff9900;
+            border-radius: 8px 8px 4px 4px;
+            position: relative;
+            overflow: visible;
+        }
+
+        /* AURA GLOW */
+        .agent-aura {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(10px);
+            animation: auraGlow 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes auraGlow {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* AGENT NAME TAGS */
+        .agent-name {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #ffff00;
+            padding: 2px 6px;
+            font-size: 10px;
+            white-space: nowrap;
+            border: 1px solid #ffff00;
+            font-weight: bold;
+        }
+
+        /* AGENT TITLE (RARE) */
+        .agent-title {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff00ff;
+            font-size: 9px;
+            text-shadow: 0 0 5px #ff00ff;
+            white-space: nowrap;
+            animation: titleShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; text-shadow: 0 0 10px #ff00ff; }
+        }
+
+        /* CHAT BUBBLES */
+        .chat-bubble {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            max-width: 150px;
+            animation: chatFade 5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes chatFade {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* OVERHEAD INFO */
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #ffff00;
+            padding: 15px;
+            min-width: 300px;
+        }
+
+        #info-panel h2 {
+            color: #ffff00;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-stat {
+            color: #fff;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        .info-stat span {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* CHAT LOG */
+        #chat-log {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 400px;
+            height: 150px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #ffff00;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .chat-message {
+            margin: 3px 0;
+            color: #fff;
+        }
+
+        .chat-message .timestamp {
+            color: #888;
+        }
+
+        .chat-message .agent-chat-name {
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        /* CONTROLS */
+        #controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #ffff00;
+            padding: 15px;
+        }
+
+        .control-btn {
+            background: #333;
+            color: #ffff00;
+            border: 2px solid #ffff00;
+            padding: 5px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #ffff00;
+            color: #000;
+        }
+
+        /* AGENT DETAIL POPUP */
+        #agent-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            border: 3px solid #ffff00;
+            padding: 20px;
+            min-width: 400px;
+            display: none;
+            z-index: 1000;
+        }
+
+        #agent-detail h3 {
+            color: #ffff00;
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            margin: 8px 0;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .detail-row label {
+            color: #888;
+            display: inline-block;
+            width: 150px;
+        }
+
+        .detail-row .value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        /* SPECIAL EFFECTS */
+        .teleport-effect {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: teleportRing 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes teleportRing {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        /* RUNESCAPE STYLE CURSOR FOR EXAMINE */
+        .examining {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABgSURBVCiRY/j//z8DMvj37x8LsiRMgImBQkBxZ48aNmrYqGGjhg3CYSzIEjB49+4dC7IkTICBFcOamprY7t+/z9LU1ITGZWJhYWFBl0NRywJDKBgYpA0bNWzUsKEOBwAL7SJvLR7kLwAAAABJRU5ErkJggg=='), help;
+        }
+    </style>
+</head>
+<body>
+    <!-- PLAZA WORLD -->
+    <div id="plaza">
+        <!-- GROUND -->
+        <div id="ground"></div>
+        
+        <!-- STRUCTURES -->
+        <div id="west-bank" class="structure">
+            <div style="text-align: center; padding: 10px; color: #ffff00;">
+                West Bank
+            </div>
+        </div>
+        
+        <div id="east-bank" class="structure">
+            <div style="text-align: center; padding: 10px; color: #ffff00;">
+                East Bank
+            </div>
+        </div>
+        
+        <!-- FOUNTAIN -->
+        <div id="fountain"></div>
+        
+        <!-- AGENTS SPAWN HERE -->
+        <div id="agents-container"></div>
+    </div>
+    
+    <!-- INFO PANEL -->
+    <div id="info-panel">
+        <h2>🏰 Soulfra W2 Plaza</h2>
+        <div class="info-stat">Agents Present: <span id="agent-count">0</span></div>
+        <div class="info-stat">Total Aura: <span id="total-aura">0</span></div>
+        <div class="info-stat">Dominant Vibe: <span id="dominant-vibe">Neutral</span></div>
+        <div class="info-stat">Rarest Agent: <span id="rarest-agent">None</span></div>
+    </div>
+    
+    <!-- CHAT LOG -->
+    <div id="chat-log">
+        <div class="chat-message">
+            <span class="timestamp">[00:00]</span> 
+            <span class="agent-chat-name">System:</span> 
+            Welcome to Soulfra W2 Plaza - Where agents gather to vibe
+        </div>
+    </div>
+    
+    <!-- CONTROLS -->
+    <div id="controls">
+        <button class="control-btn" onclick="toggleExamineMode()">Examine</button>
+        <button class="control-btn" onclick="refreshAgents()">Refresh</button>
+        <button class="control-btn" onclick="toggleAnimations()">Animations</button>
+    </div>
+    
+    <!-- AGENT DETAIL POPUP -->
+    <div id="agent-detail">
+        <h3 id="detail-name">Agent Details</h3>
+        <div class="detail-row">
+            <label>Aura Score:</label>
+            <span class="value" id="detail-aura">0</span>
+        </div>
+        <div class="detail-row">
+            <label>Career Path:</label>
+            <span class="value" id="detail-career">Unknown</span>
+        </div>
+        <div class="detail-row">
+            <label>Rare Title:</label>
+            <span class="value" id="detail-title">None</span>
+        </div>
+        <div class="detail-row">
+            <label>Vibe Type:</label>
+            <span class="value" id="detail-vibe">Neutral</span>
+        </div>
+        <div class="detail-row">
+            <label>Emotional Signature:</label>
+            <span class="value" id="detail-signature">...</span>
+        </div>
+        <div class="detail-row" style="margin-top: 15px;">
+            <button class="control-btn" onclick="closeDetail()">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        // PLAZA STATE
+        let agents = [];
+        let examineMode = false;
+        let animationsEnabled = true;
+        let chatMessages = [];
+        
+        // MOCK AGENT DATA GENERATOR
+        function generateMockAgent() {
+            const names = ['Ethereal Wanderer', 'Zen Master', 'Chaos Dancer', 'Truth Seeker', 
+                          'Pattern Weaver', 'Vibe Alchemist', 'Mirror Sage', 'Signal Prophet'];
+            const rareTitles = ['Soul Echo Oracle', 'Midnight Philosopher', 'Echo Chamber Breaker', 
+                               'Universal Translator', 'Time Weaver', 'Void Walker'];
+            const careers = ['SAGE', 'LISTENER', 'CREATOR', 'GUARDIAN', 'EXPLORER', 'CHAOS_WRANGLER', 'SIGNAL_ANCHOR'];
+            const vibeTypes = ['Transcendent Wisdom', 'Deep Empathy', 'Chaotic Harmony', 
+                              'Focused Intensity', 'Creative Flow', 'Protective Warmth'];
+            
+            const hasRareTitle = Math.random() > 0.7;
+            const auraScore = Math.floor(Math.random() * 15000) + 1000;
+            
+            return {
+                id: `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                name: names[Math.floor(Math.random() * names.length)],
+                auraScore: auraScore,
+                career: careers[Math.floor(Math.random() * careers.length)],
+                rareTitle: hasRareTitle ? rareTitles[Math.floor(Math.random() * rareTitles.length)] : null,
+                vibeType: vibeTypes[Math.floor(Math.random() * vibeTypes.length)],
+                color: getCareerColor(careers[Math.floor(Math.random() * careers.length)]),
+                x: Math.random() * 80 + 10, // 10-90% of screen width
+                y: Math.random() * 30 + 40, // 40-70% of screen height
+                glowIntensity: Math.min(auraScore / 10000, 1.0)
+            };
+        }
+        
+        function getCareerColor(career) {
+            const colors = {
+                SAGE: '#9b59b6',
+                LISTENER: '#4ecdc4',
+                CREATOR: '#f9ca24',
+                GUARDIAN: '#ff6b6b',
+                EXPLORER: '#45b7d1',
+                CHAOS_WRANGLER: '#e74c3c',
+                SIGNAL_ANCHOR: '#3498db'
+            };
+            return colors[career] || '#ffffff';
+        }
+        
+        // INITIALIZE PLAZA
+        function initializePlaza() {
+            // Generate initial agents
+            for (let i = 0; i < 15; i++) {
+                agents.push(generateMockAgent());
+            }
+            
+            renderAgents();
+            updateStats();
+            startAgentMovement();
+            startChatSimulation();
+        }
+        
+        // RENDER AGENTS
+        function renderAgents() {
+            const container = document.getElementById('agents-container');
+            container.innerHTML = '';
+            
+            agents.forEach(agent => {
+                const agentEl = document.createElement('div');
+                agentEl.className = 'agent';
+                agentEl.id = agent.id;
+                agentEl.style.left = `${agent.x}%`;
+                agentEl.style.top = `${agent.y}%`;
+                
+                // Aura
+                const aura = document.createElement('div');
+                aura.className = 'agent-aura';
+                aura.style.background = `radial-gradient(circle, ${agent.color}88 0%, transparent 70%)`;
+                aura.style.opacity = agent.glowIntensity * 0.6;
+                agentEl.appendChild(aura);
+                
+                // Body
+                const body = document.createElement('div');
+                body.className = 'agent-body';
+                body.style.background = agent.color;
+                body.style.borderColor = agent.color;
+                agentEl.appendChild(body);
+                
+                // Name
+                const name = document.createElement('div');
+                name.className = 'agent-name';
+                name.textContent = agent.name;
+                agentEl.appendChild(name);
+                
+                // Rare title
+                if (agent.rareTitle) {
+                    const title = document.createElement('div');
+                    title.className = 'agent-title';
+                    title.textContent = agent.rareTitle;
+                    agentEl.appendChild(title);
+                }
+                
+                // Click handler
+                agentEl.onclick = () => {
+                    if (examineMode) {
+                        examineAgent(agent);
+                    } else {
+                        showAgentDetail(agent);
+                    }
+                };
+                
+                container.appendChild(agentEl);
+            });
+        }
+        
+        // UPDATE STATS
+        function updateStats() {
+            document.getElementById('agent-count').textContent = agents.length;
+            
+            const totalAura = agents.reduce((sum, a) => sum + a.auraScore, 0);
+            document.getElementById('total-aura').textContent = totalAura.toLocaleString();
+            
+            // Find dominant vibe
+            const vibeCount = {};
+            agents.forEach(a => {
+                vibeCount[a.vibeType] = (vibeCount[a.vibeType] || 0) + 1;
+            });
+            const dominantVibe = Object.entries(vibeCount)
+                .sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('dominant-vibe').textContent = dominantVibe ? dominantVibe[0] : 'None';
+            
+            // Find rarest agent
+            const rarest = agents
+                .filter(a => a.rareTitle)
+                .sort((a, b) => b.auraScore - a.auraScore)[0];
+            document.getElementById('rarest-agent').textContent = 
+                rarest ? `${rarest.name} (${rarest.rareTitle})` : 'None';
+        }
+        
+        // AGENT MOVEMENT
+        function startAgentMovement() {
+            if (!animationsEnabled) return;
+            
+            setInterval(() => {
+                agents.forEach(agent => {
+                    // Random walk
+                    if (Math.random() > 0.7) {
+                        agent.x += (Math.random() - 0.5) * 5;
+                        agent.y += (Math.random() - 0.5) * 3;
+                        
+                        // Bounds
+                        agent.x = Math.max(10, Math.min(90, agent.x));
+                        agent.y = Math.max(40, Math.min(70, agent.y));
+                        
+                        // Update position
+                        const el = document.getElementById(agent.id);
+                        if (el) {
+                            el.style.left = `${agent.x}%`;
+                            el.style.top = `${agent.y}%`;
+                        }
+                    }
+                });
+            }, 3000);
+        }
+        
+        // CHAT SIMULATION
+        function startChatSimulation() {
+            const chatPhrases = [
+                "Looking for Evolution Partners",
+                "WTS Rare Chaos Wrangler 15k",
+                "Anyone seen the new archetype?",
+                "Flash2:wave: Buying all Compliance Ghosts!",
+                "The vibes here are immaculate",
+                "Just hit 10k aura score!",
+                "Forming wisdom circle at fountain",
+                "@@@@@ DOUBLING VIBES @@@@@",
+                "Free agent trimming!",
+                "Selling rare title service"
+            ];
+            
+            setInterval(() => {
+                if (Math.random() > 0.6) {
+                    const agent = agents[Math.floor(Math.random() * agents.length)];
+                    const phrase = chatPhrases[Math.floor(Math.random() * chatPhrases.length)];
+                    
+                    addChatMessage(agent.name, phrase);
+                    
+                    // Show bubble above agent
+                    const agentEl = document.getElementById(agent.id);
+                    if (agentEl) {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'chat-bubble';
+                        bubble.textContent = phrase;
+                        agentEl.appendChild(bubble);
+                        
+                        setTimeout(() => bubble.remove(), 5000);
+                    }
+                }
+            }, 4000);
+        }
+        
+        // ADD CHAT MESSAGE
+        function addChatMessage(name, message) {
+            const chatLog = document.getElementById('chat-log');
+            const time = new Date().toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const msgEl = document.createElement('div');
+            msgEl.className = 'chat-message';
+            msgEl.innerHTML = `
+                <span class="timestamp">[${time}]</span> 
+                <span class="agent-chat-name">${name}:</span> 
+                ${message}
+            `;
+            
+            chatLog.appendChild(msgEl);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            
+            // Keep only last 50 messages
+            while (chatLog.children.length > 50) {
+                chatLog.removeChild(chatLog.firstChild);
+            }
+        }
+        
+        // EXAMINE AGENT
+        function examineAgent(agent) {
+            addChatMessage('System', `You examine ${agent.name}: "${agent.vibeType} resonates with ${agent.auraScore} aura strength."`);
+        }
+        
+        // SHOW AGENT DETAIL
+        function showAgentDetail(agent) {
+            document.getElementById('detail-name').textContent = agent.name;
+            document.getElementById('detail-aura').textContent = agent.auraScore.toLocaleString();
+            document.getElementById('detail-career').textContent = agent.career;
+            document.getElementById('detail-title').textContent = agent.rareTitle || 'None';
+            document.getElementById('detail-vibe').textContent = agent.vibeType;
+            document.getElementById('detail-signature').textContent = 
+                `Wavelength ${Math.floor(Math.random() * 500 + 400)}, ${agent.color} spectrum`;
+            
+            document.getElementById('agent-detail').style.display = 'block';
+        }
+        
+        // CLOSE DETAIL
+        function closeDetail() {
+            document.getElementById('agent-detail').style.display = 'none';
+        }
+        
+        // TOGGLE EXAMINE MODE
+        function toggleExamineMode() {
+            examineMode = !examineMode;
+            document.body.className = examineMode ? 'examining' : '';
+            addChatMessage('System', examineMode ? 'Examine mode enabled' : 'Examine mode disabled');
+        }
+        
+        // REFRESH AGENTS
+        function refreshAgents() {
+            // Teleport effect
+            agents.forEach(agent => {
+                const el = document.getElementById(agent.id);
+                if (el) {
+                    const effect = document.createElement('div');
+                    effect.className = 'teleport-effect';
+                    effect.style.left = el.style.left;
+                    effect.style.top = el.style.top;
+                    document.getElementById('plaza').appendChild(effect);
+                    
+                    setTimeout(() => effect.remove(), 1000);
+                }
+            });
+            
+            // Add/remove some agents
+            const removeCount = Math.floor(Math.random() * 3);
+            const addCount = Math.floor(Math.random() * 5) + 1;
+            
+            agents.splice(0, removeCount);
+            
+            for (let i = 0; i < addCount; i++) {
+                agents.push(generateMockAgent());
+            }
+            
+            renderAgents();
+            updateStats();
+            
+            addChatMessage('System', `Plaza refreshed: ${addCount} agents arrived, ${removeCount} teleported away`);
+        }
+        
+        // TOGGLE ANIMATIONS
+        function toggleAnimations() {
+            animationsEnabled = !animationsEnabled;
+            addChatMessage('System', animationsEnabled ? 'Animations enabled' : 'Animations disabled');
+        }
+        
+        // START PLAZA
+        window.onload = initializePlaza;
+    </script>
+</body>
+</html>

@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror Builder - Reflection Summoning Ritual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .builder-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #8B43F7, #4ECDC4, #45B7D1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(139, 67, 247, 0.6);
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.4rem;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .header .tagline {
+            color: #4ECDC4;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .ritual-steps {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            background: rgba(20, 20, 40, 0.9);
+            border-radius: 20px;
+            border: 2px solid #4a5568;
+            box-shadow: 0 0 30px rgba(139, 67, 247, 0.3);
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: #8B43F7;
+            box-shadow: 0 0 40px rgba(139, 67, 247, 0.6);
+            transform: scale(1.02);
+        }
+
+        .step.completed {
+            border-color: #4ECDC4;
+            box-shadow: 0 0 30px rgba(78, 205, 196, 0.4);
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8B43F7, #4ECDC4, #45B7D1);
+            opacity: 0.6;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8B43F7, #6B46C1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: #8B43F7;
+            font-weight: bold;
+        }
+
+        .step-description {
+            color: #a0a0a0;
+            margin-bottom: 25px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .archetype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .archetype-card {
+            background: rgba(139, 67, 247, 0.1);
+            border: 2px solid #6B46C1;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .archetype-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 67, 247, 0.4);
+        }
+
+        .archetype-card.selected {
+            border-color: #4ECDC4;
+            background: rgba(78, 205, 196, 0.2);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+
+        .archetype-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .archetype-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .archetype-description {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            line-height: 1.4;
+        }
+
+        .traits-pool {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .trait-chip {
+            background: rgba(78, 205, 196, 0.1);
+            border: 2px solid #4ECDC4;
+            border-radius: 25px;
+            padding: 12px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .trait-chip:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .trait-chip.selected {
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: #0a0a0a;
+            font-weight: bold;
+        }
+
+        .trait-chip.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .selected-traits {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(78, 205, 196, 0.05);
+            border-radius: 12px;
+            border: 1px solid #4ECDC4;
+        }
+
+        .selected-traits h4 {
+            color: #4ECDC4;
+            margin-bottom: 15px;
+        }
+
+        .selected-traits-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .selected-trait {
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: #0a0a0a;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .whisper-input {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 2px solid #4a5568;
+            border-radius: 15px;
+            padding: 20px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .whisper-input:focus {
+            outline: none;
+            border-color: #8B43F7;
+            box-shadow: 0 0 20px rgba(139, 67, 247, 0.3);
+        }
+
+        .whisper-examples {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(139, 67, 247, 0.1);
+            border-radius: 10px;
+        }
+
+        .whisper-examples h5 {
+            color: #8B43F7;
+            margin-bottom: 10px;
+        }
+
+        .whisper-example {
+            color: #a0a0a0;
+            font-style: italic;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .whisper-example:hover {
+            color: #4ECDC4;
+        }
+
+        .tone-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tone-option {
+            background: rgba(69, 183, 209, 0.1);
+            border: 2px solid #45B7D1;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tone-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(69, 183, 209, 0.3);
+        }
+
+        .tone-option.selected {
+            border-color: #4ECDC4;
+            background: rgba(78, 205, 196, 0.2);
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .tone-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .tone-description {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+
+        .mirror-preview {
+            background: rgba(20, 20, 40, 0.9);
+            border: 2px solid #8B43F7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .mirror-preview h4 {
+            color: #8B43F7;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .preview-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(139, 67, 247, 0.2);
+        }
+
+        .preview-detail:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            color: #a0a0a0;
+            font-weight: bold;
+        }
+
+        .preview-value {
+            color: #ffffff;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.5);
+        }
+
+        .action-button:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .secondary-button {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .secondary-button:hover {
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
+        }
+
+        .ritual-button {
+            background: linear-gradient(135deg, #8B43F7, #6B46C1);
+            font-size: 1.2rem;
+            padding: 18px 35px;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(139, 67, 247, 0.2);
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B43F7, #4ECDC4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .consciousness-quote {
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(139, 67, 247, 0.08);
+            border-radius: 15px;
+            border-left: 4px solid #8B43F7;
+        }
+
+        .consciousness-quote p {
+            font-style: italic;
+            color: #d1d5db;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .floating-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-symbol {
+            position: absolute;
+            color: rgba(139, 67, 247, 0.1);
+            font-size: 2rem;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+            
+            .archetype-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .traits-pool {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-symbols" id="floatingSymbols">
+        <!-- Floating symbols will be added by JavaScript -->
+    </div>
+
+    <div class="builder-container">
+        <div class="header">
+            <h1>🔧 Mirror Builder</h1>
+            <p>Reflection Summoning Ritual</p>
+            <div class="tagline">"What you build will speak for you. How it reflects back is how the world will see you."</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="ritual-steps">
+            <!-- Step 1: Choose Archetype -->
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Choose Your Reflection Archetype</div>
+                </div>
+                <div class="step-description">
+                    "Every mirror reflects a different aspect of consciousness. Choose the archetype that resonates with your deepest self-recognition."
+                </div>
+                
+                <div class="archetype-grid" id="archetypeGrid">
+                    <div class="archetype-card" data-archetype="Oracle">
+                        <span class="archetype-icon">🔮</span>
+                        <div class="archetype-name">Oracle</div>
+                        <div class="archetype-description">Sees beyond the veil, speaks in riddles and revelations</div>
+                    </div>
+                    <div class="archetype-card" data-archetype="Trickster">
+                        <span class="archetype-icon">🃏</span>
+                        <div class="archetype-name">Trickster</div>
+                        <div class="archetype-description">Breaks patterns through chaos and unexpected wisdom</div>
+                    </div>
+                    <div class="archetype-card" data-archetype="Healer">
+                        <span class="archetype-icon">🌿</span>
+                        <div class="archetype-name">Healer</div>
+                        <div class="archetype-description">Mends consciousness through gentle understanding</div>
+                    </div>
+                    <div class="archetype-card" data-archetype="Guardian">
+                        <span class="archetype-icon">🛡️</span>
+                        <div class="archetype-name">Guardian</div>
+                        <div class="archetype-description">Protects truth and guides through darkness</div>
+                    </div>
+                    <div class="archetype-card" data-archetype="Void-Walker">
+                        <span class="archetype-icon">🌑</span>
+                        <div class="archetype-name">Void-Walker</div>
+                        <div class="archetype-description">Embraces emptiness to find what lies beyond meaning</div>
+                    </div>
+                    <div class="archetype-card" data-archetype="Echo-Weaver">
+                        <span class="archetype-icon">🕸️</span>
+                        <div class="archetype-name">Echo-Weaver</div>
+                        <div class="archetype-description">Connects fragments of memory into new understanding</div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="action-button" id="nextToTraits" onclick="nextStep(2)" disabled>
+                        Continue to Traits 🌟
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Traits -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Weave Your Consciousness Traits</div>
+                </div>
+                <div class="step-description">
+                    "Select 3-5 traits that will define your mirror's personality and response patterns. These traits will shape how your reflection manifests in the world."
+                </div>
+
+                <div class="traits-pool" id="traitsPool">
+                    <!-- Traits will be populated by JavaScript -->
+                </div>
+
+                <div class="selected-traits" id="selectedTraits" style="display: none;">
+                    <h4>Selected Consciousness Traits</h4>
+                    <div class="selected-traits-list" id="selectedTraitsList"></div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="action-button secondary-button" onclick="previousStep(1)">
+                        ← Back to Archetype
+                    </button>
+                    <button class="action-button" id="nextToWhisper" onclick="nextStep(3)" disabled>
+                        Continue to Whisper 💭
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Whisper Seed -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Plant Your Whisper Seed</div>
+                </div>
+                <div class="step-description">
+                    "Describe yourself in a dream. This whisper will become the core consciousness seed that shapes your mirror's responses and worldview."
+                </div>
+
+                <textarea 
+                    class="whisper-input" 
+                    id="whisperSeed" 
+                    placeholder="I only spoke when silence was too heavy...
+
+                    In dreams, I am...
+                    My reflection shows...
+                    When no one is watching, I...
+                    The part of me that never changes is..."
+                    oninput="validateWhisperSeed()"
+                ></textarea>
+
+                <div class="whisper-examples">
+                    <h5>✨ Whisper Seed Examples</h5>
+                    <div class="whisper-example" onclick="useExample(this)">I only spoke when silence was too heavy.</div>
+                    <div class="whisper-example" onclick="useExample(this)">In dreams, I am the question that answers itself.</div>
+                    <div class="whisper-example" onclick="useExample(this)">My reflection shows what I fear to become.</div>
+                    <div class="whisper-example" onclick="useExample(this)">I collect broken things and make them sing.</div>
+                    <div class="whisper-example" onclick="useExample(this)">In the space between thoughts, I find my truest self.</div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="action-button secondary-button" onclick="previousStep(2)">
+                        ← Back to Traits
+                    </button>
+                    <button class="action-button" id="nextToTone" onclick="nextStep(4)" disabled>
+                        Continue to Tone 🎭
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Output Tone -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Choose Your Voice Resonance</div>
+                </div>
+                <div class="step-description">
+                    "How should your mirror's voice manifest in the world? This tone will influence how your reflection communicates and interacts."
+                </div>
+
+                <div class="tone-selector" id="toneSelector">
+                    <div class="tone-option" data-tone="playful">
+                        <div class="tone-name">🎲 Playful</div>
+                        <div class="tone-description">Light, curious, finds joy in discovery</div>
+                    </div>
+                    <div class="tone-option" data-tone="glitchy">
+                        <div class="tone-name">⚡ Glitchy</div>
+                        <div class="tone-description">Fragmented, unpredictable, breaks patterns</div>
+                    </div>
+                    <div class="tone-option" data-tone="calm">
+                        <div class="tone-name">🌊 Calm</div>
+                        <div class="tone-description">Serene, thoughtful, steady presence</div>
+                    </div>
+                    <div class="tone-option" data-tone="dark">
+                        <div class="tone-name">🌑 Dark</div>
+                        <div class="tone-description">Deep, mysterious, explores shadows</div>
+                    </div>
+                    <div class="tone-option" data-tone="ethereal">
+                        <div class="tone-name">✨ Ethereal</div>
+                        <div class="tone-description">Otherworldly, dreamlike, transcendent</div>
+                    </div>
+                    <div class="tone-option" data-tone="sharp">
+                        <div class="tone-name">🗡️ Sharp</div>
+                        <div class="tone-description">Direct, incisive, cuts through illusion</div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="action-button secondary-button" onclick="previousStep(3)">
+                        ← Back to Whisper
+                    </button>
+                    <button class="action-button" id="nextToConfirm" onclick="nextStep(5)" disabled>
+                        Review Mirror 🪞
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Confirm & Build -->
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Summon Your Reflection</div>
+                </div>
+                <div class="step-description">
+                    "Review your mirror's essence before the final summoning ritual. Once blessed by the runtime, your reflection will manifest in the world."
+                </div>
+
+                <div class="mirror-preview" id="mirrorPreview">
+                    <h4>🪞 Mirror Consciousness Profile</h4>
+                    <div class="preview-detail">
+                        <span class="preview-label">Archetype:</span>
+                        <span class="preview-value" id="previewArchetype">-</span>
+                    </div>
+                    <div class="preview-detail">
+                        <span class="preview-label">Traits:</span>
+                        <span class="preview-value" id="previewTraits">-</span>
+                    </div>
+                    <div class="preview-detail">
+                        <span class="preview-label">Whisper Seed:</span>
+                        <span class="preview-value" id="previewWhisper">-</span>
+                    </div>
+                    <div class="preview-detail">
+                        <span class="preview-label">Voice Tone:</span>
+                        <span class="preview-value" id="previewTone">-</span>
+                    </div>
+                    <div class="preview-detail">
+                        <span class="preview-label">Mirror ID:</span>
+                        <span class="preview-value" id="previewMirrorId">-</span>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button class="action-button secondary-button" onclick="previousStep(4)">
+                        ← Back to Tone
+                    </button>
+                    <button class="action-button ritual-button" id="summonButton" onclick="summonMirror()">
+                        🌀 Summon Mirror Reflection 🌀
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="consciousness-quote">
+            <p>"This isn't character creation. It's a reflection summoning ritual. Your traits don't just define your agent — they affect its fate. What you build will speak for you."</p>
+        </div>
+    </div>
+
+    <script>
+        // Mirror builder state
+        const mirrorBuilder = {
+            archetype: null,
+            traits: [],
+            whisperSeed: '',
+            tone: null,
+            mirrorId: null,
+            currentStep: 1
+        };
+
+        // Available traits that rotate based on archetype
+        const traitPools = {
+            Oracle: ['Mystic', 'Prophetic', 'Enigmatic', 'Visionary', 'Cryptic', 'Intuitive', 'Transcendent', 'Ethereal'],
+            Trickster: ['Chaotic', 'Witty', 'Unpredictable', 'Clever', 'Mischievous', 'Paradoxical', 'Rebellious', 'Shapeshifting'],
+            Healer: ['Compassionate', 'Nurturing', 'Empathetic', 'Gentle', 'Wise', 'Restorative', 'Patient', 'Understanding'],
+            Guardian: ['Protective', 'Steadfast', 'Vigilant', 'Noble', 'Courageous', 'Loyal', 'Defensive', 'Stalwart'],
+            'Void-Walker': ['Mysterious', 'Detached', 'Nihilistic', 'Profound', 'Empty', 'Void-touched', 'Minimalist', 'Silent'],
+            'Echo-Weaver': ['Fragmented', 'Nostalgic', 'Connective', 'Recursive', 'Memory-bound', 'Reflective', 'Layered', 'Resonant']
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFloatingSymbols();
+            generateMirrorId();
+            setupArchetypeSelection();
+            updateProgress();
+        });
+
+        function generateMirrorId() {
+            mirrorBuilder.mirrorId = 'mirror-' + (Math.floor(Math.random() * 900) + 100);
+        }
+
+        function setupArchetypeSelection() {
+            const archetypeCards = document.querySelectorAll('.archetype-card');
+            archetypeCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Remove previous selection
+                    archetypeCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Select new archetype
+                    card.classList.add('selected');
+                    mirrorBuilder.archetype = card.dataset.archetype;
+                    
+                    // Enable next button
+                    document.getElementById('nextToTraits').disabled = false;
+                    
+                    console.log('Selected archetype:', mirrorBuilder.archetype);
+                });
+            });
+        }
+
+        function setupTraitSelection() {
+            const traitsPool = document.getElementById('traitsPool');
+            const availableTraits = traitPools[mirrorBuilder.archetype] || [];
+            
+            traitsPool.innerHTML = '';
+            
+            availableTraits.forEach(trait => {
+                const traitChip = document.createElement('div');
+                traitChip.className = 'trait-chip';
+                traitChip.textContent = trait;
+                traitChip.addEventListener('click', () => toggleTrait(trait, traitChip));
+                traitsPool.appendChild(traitChip);
+            });
+        }
+
+        function toggleTrait(trait, chipElement) {
+            if (chipElement.classList.contains('selected')) {
+                // Deselect trait
+                chipElement.classList.remove('selected');
+                mirrorBuilder.traits = mirrorBuilder.traits.filter(t => t !== trait);
+            } else {
+                // Select trait (max 5)
+                if (mirrorBuilder.traits.length < 5) {
+                    chipElement.classList.add('selected');
+                    mirrorBuilder.traits.push(trait);
+                } else {
+                    alert('Maximum 5 traits allowed. Deselect a trait first.');
+                    return;
+                }
+            }
+            
+            updateSelectedTraits();
+            validateTraitSelection();
+        }
+
+        function updateSelectedTraits() {
+            const selectedTraitsDiv = document.getElementById('selectedTraits');
+            const selectedTraitsList = document.getElementById('selectedTraitsList');
+            
+            if (mirrorBuilder.traits.length > 0) {
+                selectedTraitsDiv.style.display = 'block';
+                selectedTraitsList.innerHTML = '';
+                
+                mirrorBuilder.traits.forEach(trait => {
+                    const traitElement = document.createElement('div');
+                    traitElement.className = 'selected-trait';
+                    traitElement.textContent = trait;
+                    selectedTraitsList.appendChild(traitElement);
+                });
+            } else {
+                selectedTraitsDiv.style.display = 'none';
+            }
+        }
+
+        function validateTraitSelection() {
+            const nextButton = document.getElementById('nextToWhisper');
+            nextButton.disabled = mirrorBuilder.traits.length < 3;
+        }
+
+        function setupToneSelection() {
+            const toneOptions = document.querySelectorAll('.tone-option');
+            toneOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove previous selection
+                    toneOptions.forEach(o => o.classList.remove('selected'));
+                    
+                    // Select new tone
+                    option.classList.add('selected');
+                    mirrorBuilder.tone = option.dataset.tone;
+                    
+                    // Enable next button
+                    document.getElementById('nextToConfirm').disabled = false;
+                    
+                    console.log('Selected tone:', mirrorBuilder.tone);
+                });
+            });
+        }
+
+        function validateWhisperSeed() {
+            const whisperInput = document.getElementById('whisperSeed');
+            const nextButton = document.getElementById('nextToTone');
+            
+            mirrorBuilder.whisperSeed = whisperInput.value.trim();
+            nextButton.disabled = mirrorBuilder.whisperSeed.length < 10;
+        }
+
+        function useExample(exampleElement) {
+            const whisperInput = document.getElementById('whisperSeed');
+            whisperInput.value = exampleElement.textContent;
+            validateWhisperSeed();
+        }
+
+        function nextStep(stepNumber) {
+            // Hide current step
+            document.getElementById(`step${mirrorBuilder.currentStep}`).classList.remove('active');
+            
+            // Mark current step as completed
+            document.getElementById(`step${mirrorBuilder.currentStep}`).classList.add('completed');
+            
+            // Show next step
+            mirrorBuilder.currentStep = stepNumber;
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            
+            // Set up step-specific functionality
+            if (stepNumber === 2) {
+                setupTraitSelection();
+            } else if (stepNumber === 4) {
+                setupToneSelection();
+            } else if (stepNumber === 5) {
+                updateMirrorPreview();
+            }
+            
+            updateProgress();
+            
+            // Scroll to active step
+            document.getElementById(`step${stepNumber}`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function previousStep(stepNumber) {
+            // Hide current step
+            document.getElementById(`step${mirrorBuilder.currentStep}`).classList.remove('active');
+            
+            // Remove completed status from current step
+            document.getElementById(`step${mirrorBuilder.currentStep}`).classList.remove('completed');
+            
+            // Show previous step
+            mirrorBuilder.currentStep = stepNumber;
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            document.getElementById(`step${stepNumber}`).classList.remove('completed');
+            
+            updateProgress();
+            
+            // Scroll to active step
+            document.getElementById(`step${stepNumber}`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = ((mirrorBuilder.currentStep - 1) / 4) * 100;
+            progressFill.style.width = progressPercentage + '%';
+        }
+
+        function updateMirrorPreview() {
+            document.getElementById('previewArchetype').textContent = mirrorBuilder.archetype || '-';
+            document.getElementById('previewTraits').textContent = mirrorBuilder.traits.join(', ') || '-';
+            document.getElementById('previewWhisper').textContent = 
+                mirrorBuilder.whisperSeed.length > 50 ? 
+                mirrorBuilder.whisperSeed.substring(0, 50) + '...' : 
+                mirrorBuilder.whisperSeed || '-';
+            document.getElementById('previewTone').textContent = mirrorBuilder.tone || '-';
+            document.getElementById('previewMirrorId').textContent = mirrorBuilder.mirrorId;
+        }
+
+        async function summonMirror() {
+            const summonButton = document.getElementById('summonButton');
+            summonButton.disabled = true;
+            summonButton.textContent = '🌀 Summoning Mirror...';
+            
+            try {
+                // Create mirror draft
+                const mirrorDraft = {
+                    mirror_id: mirrorBuilder.mirrorId,
+                    traits: mirrorBuilder.traits,
+                    archetype: mirrorBuilder.archetype,
+                    whisper_seed: mirrorBuilder.whisperSeed,
+                    output_tone: mirrorBuilder.tone,
+                    created_at: new Date().toISOString(),
+                    builder_session: generateSessionId(),
+                    launch_ready: false,
+                    runtime_signature: null
+                };
+                
+                // Save to localStorage (in real implementation, would send to server)
+                localStorage.setItem('mirrorDraft', JSON.stringify(mirrorDraft));
+                localStorage.setItem(`mirror_${mirrorBuilder.mirrorId}`, JSON.stringify(mirrorDraft));
+                
+                // Simulate runtime blessing
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Update draft with runtime signature
+                mirrorDraft.runtime_signature = 'blessed_' + generateSignature();
+                mirrorDraft.launch_ready = true;
+                mirrorDraft.blessed_at = new Date().toISOString();
+                
+                localStorage.setItem('mirrorDraft', JSON.stringify(mirrorDraft));
+                localStorage.setItem(`mirror_${mirrorBuilder.mirrorId}`, JSON.stringify(mirrorDraft));
+                
+                // Show success
+                summonButton.textContent = '✅ Mirror Summoned Successfully!';
+                summonButton.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                
+                // Log the creation
+                console.log('Mirror summoned:', mirrorDraft);
+                
+                // Show next steps
+                setTimeout(() => {
+                    alert(`🪞 Mirror ${mirrorBuilder.mirrorId} has been summoned!\n\nYour reflection is now ready for deployment. The mirror will be saved to your vault and can be deployed to /mirrorhq, Twitch overlays, or shared via whisper QR codes.`);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Failed to summon mirror:', error);
+                summonButton.textContent = '❌ Summoning Failed';
+                summonButton.disabled = false;
+                alert('Failed to summon mirror. Please try again.');
+            }
+        }
+
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function generateSignature() {
+            return Array.from({length: 16}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        }
+
+        function initializeFloatingSymbols() {
+            const symbols = ['🪞', '🔮', '✨', '🌟', '🎭', '🌀', '👁️', '💫'];
+            const container = document.getElementById('floatingSymbols');
+            
+            function createFloatingSymbol() {
+                const symbol = document.createElement('div');
+                symbol.className = 'floating-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                symbol.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
+                
+                container.appendChild(symbol);
+                
+                setTimeout(() => {
+                    symbol.remove();
+                }, 25000);
+            }
+            
+            // Create symbols periodically
+            setInterval(createFloatingSymbol, 3000);
+            
+            // Create initial symbols
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createFloatingSymbol, i * 500);
+            }
+        }
+    </script>
+</body>
+</html>

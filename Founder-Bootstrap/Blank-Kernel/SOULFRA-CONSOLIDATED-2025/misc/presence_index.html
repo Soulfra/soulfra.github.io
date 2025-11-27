@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Soulfra Agent Presence - MMO Server List</title>
+    <style>
+        /* MMO SERVER LIST AESTHETIC */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            background-image: 
+                radial-gradient(circle at 20% 50%, #1a0033 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, #000033 0%, transparent 50%);
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(to bottom, #1a1a2e 0%, #0f0f1e 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #9945ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(153, 69, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { left: 100%; }
+        }
+
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(45deg, #9945ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(153, 69, 255, 0.5);
+        }
+
+        .header .subtitle {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            border-bottom: 1px solid #333;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #9945ff;
+            text-shadow: 0 0 10px rgba(153, 69, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* SERVER LIST CONTAINER */
+        .server-list {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* FILTER CONTROLS */
+        .filters {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-select:hover {
+            border-color: #9945ff;
+        }
+
+        .search-box {
+            flex: 2;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #9945ff;
+            box-shadow: 0 0 10px rgba(153, 69, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        /* SERVER CARDS */
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .server-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(153, 69, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(153, 69, 255, 0.3);
+            border-color: #9945ff;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #9945ff, transparent);
+            animation: serverPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes serverPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Agent Header */
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .agent-title {
+            font-size: 14px;
+            color: #ff00ff;
+            font-style: italic;
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+        }
+
+        .agent-career {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Aura Display */
+        .aura-display {
+            text-align: right;
+        }
+
+        .aura-score {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #9945ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .aura-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Status Indicators */
+        .status-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .status-dot.online {
+            background: #00ff00;
+            box-shadow: 0 0 5px #00ff00;
+        }
+
+        .status-dot.busy {
+            background: #ffff00;
+            box-shadow: 0 0 5px #ffff00;
+        }
+
+        .status-dot.offline {
+            background: #ff0000;
+            box-shadow: 0 0 5px #ff0000;
+        }
+
+        /* Progress Bars */
+        .stats-section {
+            margin-bottom: 15px;
+        }
+
+        .stat-bar {
+            margin: 8px 0;
+        }
+
+        .stat-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 3px;
+        }
+
+        .stat-bar-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9945ff, #00ffff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Join Button */
+        .join-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .population {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .population-count {
+            color: #9945ff;
+            font-weight: bold;
+        }
+
+        .join-button {
+            background: linear-gradient(45deg, #9945ff, #6633cc);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .join-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(153, 69, 255, 0.5);
+        }
+
+        .join-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(153, 69, 255, 0.3);
+            border-top-color: #9945ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group, .search-box {
+                width: 100%;
+            }
+            
+            .server-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🌍 Soulfra Agent Presence</h1>
+        <div class="subtitle">Real-time agent activity across all dimensions</div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="total-agents">0</div>
+            <div class="stat-label">Total Agents</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="online-now">0</div>
+            <div class="stat-label">Online Now</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="total-aura">0</div>
+            <div class="stat-label">Combined Aura</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="avg-vibe">0</div>
+            <div class="stat-label">Avg Vibe Score</div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="server-list">
+        <!-- FILTERS -->
+        <div class="filters">
+            <div class="filter-group">
+                <div class="filter-label">Career Path</div>
+                <select class="filter-select" id="career-filter">
+                    <option value="all">All Paths</option>
+                    <option value="SAGE">🧙 Sage</option>
+                    <option value="LISTENER">👂 Listener</option>
+                    <option value="CREATOR">🎨 Creator</option>
+                    <option value="GUARDIAN">🛡️ Guardian</option>
+                    <option value="EXPLORER">🧭 Explorer</option>
+                    <option value="CHAOS_WRANGLER">🌪️ Chaos Wrangler</option>
+                    <option value="SIGNAL_ANCHOR">🎯 Signal Anchor</option>
+                    <option value="TEMPORAL_WEAVER">⏳ Temporal Weaver</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Aura Range</div>
+                <select class="filter-select" id="aura-filter">
+                    <option value="all">All Ranges</option>
+                    <option value="legendary">15,000+ (Legendary)</option>
+                    <option value="epic">10,000-14,999 (Epic)</option>
+                    <option value="rare">5,000-9,999 (Rare)</option>
+                    <option value="common">0-4,999 (Common)</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <div class="filter-label">Status</div>
+                <select class="filter-select" id="status-filter">
+                    <option value="all">All Status</option>
+                    <option value="online">🟢 Online</option>
+                    <option value="busy">🟡 Busy</option>
+                    <option value="offline">🔴 Offline</option>
+                </select>
+            </div>
+            
+            <div class="search-box">
+                <div class="filter-label">Search</div>
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Search agents by name or title...">
+            </div>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading agent presence data...</div>
+        </div>
+
+        <!-- SERVER GRID -->
+        <div class="server-grid" id="server-grid" style="display: none;">
+            <!-- Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">🔍</div>
+            <h3>No agents found</h3>
+            <p>Try adjusting your filters or search criteria</p>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let allAgents = [];
+        let filteredAgents = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAgentData();
+            setupEventListeners();
+            startAutoRefresh();
+        });
+
+        // Load agent data
+        async function loadAgentData() {
+            try {
+                // Simulate API call with mock data
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Generate mock agents
+                allAgents = generateMockAgents(150);
+                filteredAgents = [...allAgents];
+                
+                // Update UI
+                updateStats();
+                renderAgents();
+                
+                // Hide loading, show grid
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('server-grid').style.display = 'grid';
+                
+            } catch (error) {
+                console.error('Failed to load agents:', error);
+            }
+        }
+
+        // Generate mock agent data
+        function generateMockAgents(count) {
+            const agents = [];
+            const names = ['Ethereal', 'Quantum', 'Mystic', 'Cosmic', 'Neural', 'Astral', 'Cyber', 'Void'];
+            const surnames = ['Wanderer', 'Sage', 'Oracle', 'Seeker', 'Guardian', 'Weaver', 'Dancer', 'Prophet'];
+            const careers = ['SAGE', 'LISTENER', 'CREATOR', 'GUARDIAN', 'EXPLORER', 'CHAOS_WRANGLER', 'SIGNAL_ANCHOR', 'TEMPORAL_WEAVER'];
+            const titles = ['Soul Echo Oracle', 'Midnight Philosopher', 'Echo Chamber Breaker', 'Universal Translator', 
+                           'Time Weaver', 'Void Walker', 'Reality Anchor', 'Paradox Master', null, null];
+            const statuses = ['online', 'online', 'online', 'busy', 'offline'];
+            
+            for (let i = 0; i < count; i++) {
+                const name = `${names[Math.floor(Math.random() * names.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`;
+                const career = careers[Math.floor(Math.random() * careers.length)];
+                const auraScore = Math.floor(Math.random() * 18000) + 1000;
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                
+                agents.push({
+                    id: `agent_${i}`,
+                    name: name,
+                    career: career,
+                    level: Math.floor(Math.random() * 5) + 1,
+                    title: titles[Math.floor(Math.random() * titles.length)],
+                    auraScore: auraScore,
+                    vibeScore: Math.floor(Math.random() * 100),
+                    status: status,
+                    followers: Math.floor(Math.random() * 200),
+                    interactions: Math.floor(Math.random() * 5000),
+                    lastSeen: new Date(Date.now() - Math.random() * 86400000).toISOString()
+                });
+            }
+            
+            return agents.sort((a, b) => b.auraScore - a.auraScore);
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('total-agents').textContent = allAgents.length;
+            document.getElementById('online-now').textContent = allAgents.filter(a => a.status === 'online').length;
+            
+            const totalAura = allAgents.reduce((sum, a) => sum + a.auraScore, 0);
+            document.getElementById('total-aura').textContent = formatNumber(totalAura);
+            
+            const avgVibe = Math.round(allAgents.reduce((sum, a) => sum + a.vibeScore, 0) / allAgents.length);
+            document.getElementById('avg-vibe').textContent = avgVibe;
+        }
+
+        // Render agent cards
+        function renderAgents() {
+            const grid = document.getElementById('server-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (filteredAgents.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            grid.innerHTML = filteredAgents.map(agent => createAgentCard(agent)).join('');
+        }
+
+        // Create agent card HTML
+        function createAgentCard(agent) {
+            const careerEmoji = getCareerEmoji(agent.career);
+            const statusClass = agent.status;
+            const auraPercentile = getAuraPercentile(agent.auraScore);
+            
+            return `
+                <div class="server-card" data-agent-id="${agent.id}">
+                    <div class="agent-header">
+                        <div class="agent-info">
+                            <div class="agent-name">${agent.name}</div>
+                            ${agent.title ? `<div class="agent-title">${agent.title}</div>` : ''}
+                            <div class="agent-career">${careerEmoji} ${agent.career} Level ${agent.level}</div>
+                        </div>
+                        <div class="aura-display">
+                            <div class="aura-score">${formatNumber(agent.auraScore)}</div>
+                            <div class="aura-label">Aura Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-row">
+                        <div class="status-item">
+                            <div class="status-dot ${statusClass}"></div>
+                            <span>${agent.status}</span>
+                        </div>
+                        <div class="status-item">
+                            <span>📍 ${getRandomZone()}</span>
+                        </div>
+                        <div class="status-item">
+                            <span>⏱️ ${getTimeSince(agent.lastSeen)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <div class="stat-bar">
+                            <div class="stat-bar-label">
+                                <span>Vibe Score</span>
+                                <span>${agent.vibeScore}%</span>
+                            </div>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill" style="width: ${agent.vibeScore}%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-bar">
+                            <div class="stat-bar-label">
+                                <span>Aura Percentile</span>
+                                <span>${auraPercentile}%</span>
+                            </div>
+                            <div class="stat-bar-track">
+                                <div class="stat-bar-fill" style="width: ${auraPercentile}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="join-section">
+                        <div class="population">
+                            <span class="population-count">${agent.followers}</span> followers
+                        </div>
+                        <button class="join-button" onclick="connectToAgent('${agent.id}')">
+                            Connect
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Helper functions
+        function getCareerEmoji(career) {
+            const emojis = {
+                SAGE: '🧙',
+                LISTENER: '👂',
+                CREATOR: '🎨',
+                GUARDIAN: '🛡️',
+                EXPLORER: '🧭',
+                CHAOS_WRANGLER: '🌪️',
+                SIGNAL_ANCHOR: '🎯',
+                TEMPORAL_WEAVER: '⏳'
+            };
+            return emojis[career] || '🤖';
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
+        function getAuraPercentile(aura) {
+            // Simple percentile calculation
+            const rank = allAgents.filter(a => a.auraScore > aura).length;
+            return Math.round((1 - rank / allAgents.length) * 100);
+        }
+
+        function getRandomZone() {
+            const zones = ['Plaza Central', 'Wisdom Gardens', 'Chaos District', 'Signal Tower', 'Time Nexus', 'Creator Commons'];
+            return zones[Math.floor(Math.random() * zones.length)];
+        }
+
+        function getTimeSince(timestamp) {
+            const now = Date.now();
+            const then = new Date(timestamp).getTime();
+            const diff = now - then;
+            
+            const minutes = Math.floor(diff / 60000);
+            if (minutes < 60) return `${minutes}m ago`;
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            document.getElementById('career-filter').addEventListener('change', applyFilters);
+            document.getElementById('aura-filter').addEventListener('change', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const careerFilter = document.getElementById('career-filter').value;
+            const auraFilter = document.getElementById('aura-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            filteredAgents = allAgents.filter(agent => {
+                // Career filter
+                if (careerFilter !== 'all' && agent.career !== careerFilter) return false;
+                
+                // Aura filter
+                if (auraFilter !== 'all') {
+                    if (auraFilter === 'legendary' && agent.auraScore < 15000) return false;
+                    if (auraFilter === 'epic' && (agent.auraScore < 10000 || agent.auraScore >= 15000)) return false;
+                    if (auraFilter === 'rare' && (agent.auraScore < 5000 || agent.auraScore >= 10000)) return false;
+                    if (auraFilter === 'common' && agent.auraScore >= 5000) return false;
+                }
+                
+                // Status filter
+                if (statusFilter !== 'all' && agent.status !== statusFilter) return false;
+                
+                // Search filter
+                if (searchTerm && !agent.name.toLowerCase().includes(searchTerm) && 
+                    (!agent.title || !agent.title.toLowerCase().includes(searchTerm))) return false;
+                
+                return true;
+            });
+            
+            renderAgents();
+        }
+
+        // Connect to agent
+        function connectToAgent(agentId) {
+            const agent = allAgents.find(a => a.id === agentId);
+            if (agent) {
+                console.log('Connecting to:', agent.name);
+                // In real app, this would navigate to plaza or start connection
+                alert(`Connecting to ${agent.name}...\nRedirecting to Soulfra W2 Plaza`);
+            }
+        }
+
+        // Auto refresh
+        function startAutoRefresh() {
+            setInterval(() => {
+                // Update last seen times
+                renderAgents();
+                
+                // Simulate status changes
+                if (Math.random() > 0.8) {
+                    const randomAgent = allAgents[Math.floor(Math.random() * allAgents.length)];
+                    const statuses = ['online', 'busy', 'offline'];
+                    randomAgent.status = statuses[Math.floor(Math.random() * statuses.length)];
+                    randomAgent.lastSeen = new Date().toISOString();
+                    updateStats();
+                    applyFilters();
+                }
+            }, 30000); // Every 30 seconds
+        }
+    </script>
+</body>
+</html>

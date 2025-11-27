@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fork Cal Riven</title>
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 { color: #0ff; }
+    .fork-instructions {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    code {
+      background: #222;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+    pre {
+      background: #0a0a0a;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍴 Fork Cal Riven Platform</h1>
+  
+  <div class="fork-instructions">
+    <h2>Prerequisites</h2>
+    <ul>
+      <li>Valid QR code (generate with <code>genesis-qr.js</code>)</li>
+      <li>Device binding (<code>bind-to-device.sh</code>)</li>
+      <li>Node.js 14+ installed</li>
+    </ul>
+  </div>
+  
+  <div class="fork-instructions">
+    <h2>Quick Fork</h2>
+    <pre>git clone https://github.com/cal-riven/platform
+cd platform
+npm install
+npm run qr:generate
+npm run launch:qr</pre>
+  </div>
+  
+  <div class="fork-instructions">
+    <h2>Fork Settings</h2>
+    <pre>{
+  "allowPublicForks": true,
+  "requireQRAuth": true,
+  "inheritVaultState": false,
+  "maxForkDepth": 7
+}</pre>
+  </div>
+  
+  <p>Each fork maintains its own vault and trust chain while inheriting the core reflection logic.</p>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕳️ REVERSE BLACKHOLE - ABSENCE OF FOCUS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+            position: relative;
+        }
+
+        /* PERFECT PERIPHERY BACKGROUND */
+        .perfect-periphery {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, transparent 20%, rgba(255, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.05) 70%, rgba(255, 0, 255, 0.07) 100%);
+            animation: peripheryPerfection 10s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        @keyframes peripheryPerfection {
+            0%, 100% { 
+                filter: brightness(1) contrast(1.2) saturate(2);
+                transform: scale(1);
+            }
+            50% { 
+                filter: brightness(1.3) contrast(1.5) saturate(3);
+                transform: scale(1.02);
+            }
+        }
+
+        /* GAZE VOID AREA */
+        .void-zone {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, transparent 0%, transparent 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0.8) 100%);
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.9),
+                0 0 50px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease-out;
+        }
+
+        .void-zone.active {
+            animation: voidPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes voidPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 
+                    inset 0 0 30px rgba(0, 0, 0, 0.9),
+                    0 0 50px rgba(0, 0, 0, 0.5);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 
+                    inset 0 0 40px rgba(0, 0, 0, 1),
+                    0 0 80px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        /* OUTWARD CONSCIOUSNESS RAYS */
+        .consciousness-ray {
+            position: fixed;
+            width: 2px;
+            height: 0px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
+            transform-origin: top center;
+            pointer-events: none;
+            z-index: 5;
+            animation: rayExtend 3s ease-out infinite;
+        }
+
+        @keyframes rayExtend {
+            0% { 
+                height: 0px;
+                opacity: 0;
+            }
+            50% { 
+                height: 500px;
+                opacity: 1;
+            }
+            100% { 
+                height: 1000px;
+                opacity: 0;
+            }
+        }
+
+        /* PERIPHERAL ENHANCEMENT PARTICLES */
+        .enhancement-particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: rgba(0, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+            animation: peripheralFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes peripheralFloat {
+            0%, 100% { 
+                transform: translateY(0) scale(0.5);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translateY(-30px) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(-10px) scale(1.2);
+                opacity: 0.8;
+            }
+            75% { 
+                transform: translateY(-40px) scale(0.8);
+                opacity: 0.6;
+            }
+        }
+
+        /* ESCAPE STREAMS */
+        .escape-stream {
+            position: fixed;
+            width: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.6), transparent);
+            pointer-events: none;
+            z-index: 4;
+            animation: escapeFromVoid 2s linear infinite;
+        }
+
+        @keyframes escapeFromVoid {
+            0% { 
+                opacity: 0;
+                transform: scale(0);
+            }
+            20% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(2);
+            }
+        }
+
+        /* REALITY INVERSION GRID */
+        .inversion-grid {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.02) 50%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, rgba(255, 255, 255, 0.02) 50%, transparent 51%);
+            background-size: 50px 50px;
+            animation: gridInversion 15s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes gridInversion {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(360deg) scale(1.1); }
+        }
+
+        /* HUD INTERFACE */
+        .hud {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .hud-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hud-metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .hud-value {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* QUANTUM ENTANGLEMENT INDICATORS */
+        .quantum-indicator {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 0, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 6;
+            animation: quantumFlicker 0.5s ease-in-out infinite;
+        }
+
+        @keyframes quantumFlicker {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.3;
+                transform: scale(1.5);
+            }
+        }
+
+        /* INSTRUCTIONS */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 13px;
+            color: #ffff00;
+            z-index: 100;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+        }
+
+        .instructions-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        /* VOID RIPPLES */
+        .void-ripple {
+            position: fixed;
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 8;
+            animation: voidRipple 3s ease-out infinite;
+        }
+
+        @keyframes voidRipple {
+            0% {
+                width: 120px;
+                height: 120px;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* PERIPHERAL CLARITY ENHANCEMENT */
+        .clarity-zone {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.02) 100%);
+            filter: brightness(1.5) contrast(1.3) saturate(2);
+            z-index: 2;
+            animation: clarityPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes clarityPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1.5) contrast(1.3) saturate(2);
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: brightness(2) contrast(1.8) saturate(3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PERFECT PERIPHERY BACKGROUND -->
+    <div class="perfect-periphery"></div>
+    
+    <!-- REALITY INVERSION GRID -->
+    <div class="inversion-grid"></div>
+
+    <!-- GAZE VOID ZONE -->
+    <div class="void-zone" id="void-zone"></div>
+
+    <!-- HUD INTERFACE -->
+    <div class="hud">
+        <div class="hud-title">🕳️ Reverse Blackhole</div>
+        <div class="hud-metric">
+            <span>Void Radius:</span>
+            <span class="hud-value" id="void-radius">0px</span>
+        </div>
+        <div class="hud-metric">
+            <span>Escape Streams:</span>
+            <span class="hud-value" id="escape-streams">0</span>
+        </div>
+        <div class="hud-metric">
+            <span>Peripheral Clarity:</span>
+            <span class="hud-value" id="peripheral-clarity">100%</span>
+        </div>
+        <div class="hud-metric">
+            <span>Consciousness Rays:</span>
+            <span class="hud-value" id="consciousness-rays">0</span>
+        </div>
+        <div class="hud-metric">
+            <span>Quantum Entanglements:</span>
+            <span class="hud-value" id="quantum-count">0</span>
+        </div>
+        <div class="hud-metric">
+            <span>Reality Inversion:</span>
+            <span class="hud-value" id="reality-inversion">Active</span>
+        </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+        <div class="instructions-title">REVERSE BLACKHOLE EXPERIENCE</div>
+        <div>• Move your mouse to control the void</div>
+        <div>• The gaze point becomes an absence</div>
+        <div>• Reality escapes outward from your focus</div>
+        <div>• Peripheral vision becomes crystalline perfect</div>
+        <div>• Experience looking OUT from inside</div>
+    </div>
+
+    <script>
+        // Reverse Blackhole Experience System
+        class ReverseBlackholeExperience {
+            constructor() {
+                this.voidZone = document.getElementById('void-zone');
+                this.mouseX = window.innerWidth / 2;
+                this.mouseY = window.innerHeight / 2;
+                
+                this.metrics = {
+                    voidRadius: 60,
+                    escapeStreams: 0,
+                    peripheralClarity: 100,
+                    consciousnessRays: 0,
+                    quantumEntanglements: 0
+                };
+                
+                this.particles = [];
+                this.escapeStreams = [];
+                this.consciousnessRays = [];
+                this.quantumIndicators = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.setupMouseTracking();
+                this.createInitialParticles();
+                this.startReverseBlackholeLoop();
+                this.setupPeripheralEnhancements();
+                this.updateHUD();
+            }
+
+            setupMouseTracking() {
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                    this.updateVoidPosition();
+                    this.triggerReverseBlackholeEffect();
+                });
+
+                // Initial position
+                this.updateVoidPosition();
+            }
+
+            updateVoidPosition() {
+                this.voidZone.style.left = this.mouseX + 'px';
+                this.voidZone.style.top = this.mouseY + 'px';
+                this.voidZone.classList.add('active');
+                
+                // Update void radius based on movement speed
+                const speed = this.calculateMouseSpeed();
+                this.metrics.voidRadius = Math.max(40, Math.min(120, 60 + speed * 2));
+                this.voidZone.style.width = this.metrics.voidRadius + 'px';
+                this.voidZone.style.height = this.metrics.voidRadius + 'px';
+            }
+
+            triggerReverseBlackholeEffect() {
+                // Create void ripples
+                this.createVoidRipple();
+                
+                // Generate outward consciousness rays
+                this.generateConsciousnessRays();
+                
+                // Create escape streams
+                this.createEscapeStreams();
+                
+                // Enhance peripheral clarity
+                this.enhancePeripheralClarity();
+                
+                // Generate quantum entanglements
+                if (Math.random() > 0.8) {
+                    this.createQuantumEntanglement();
+                }
+                
+                this.updateMetrics();
+            }
+
+            createVoidRipple() {
+                const ripple = document.createElement('div');
+                ripple.className = 'void-ripple';
+                ripple.style.left = this.mouseX + 'px';
+                ripple.style.top = this.mouseY + 'px';
+                document.body.appendChild(ripple);
+                
+                setTimeout(() => {
+                    if (document.body.contains(ripple)) {
+                        document.body.removeChild(ripple);
+                    }
+                }, 3000);
+            }
+
+            generateConsciousnessRays() {
+                // Create multiple rays escaping outward from void
+                const rayCount = 8 + Math.floor(Math.random() * 4);
+                
+                for (let i = 0; i < rayCount; i++) {
+                    const angle = (i * 360 / rayCount) + Math.random() * 45;
+                    this.createConsciousnessRay(angle);
+                }
+                
+                this.metrics.consciousnessRays += rayCount;
+            }
+
+            createConsciousnessRay(angle) {
+                const ray = document.createElement('div');
+                ray.className = 'consciousness-ray';
+                ray.style.left = this.mouseX + 'px';
+                ray.style.top = this.mouseY + 'px';
+                ray.style.transform = `rotate(${angle}deg)`;
+                ray.style.animationDelay = Math.random() * 1 + 's';
+                
+                // Vary ray color based on angle
+                const hue = (angle + Math.random() * 60) % 360;
+                ray.style.background = `linear-gradient(to bottom, transparent, hsla(${hue}, 70%, 70%, 0.8))`;
+                
+                document.body.appendChild(ray);
+                
+                setTimeout(() => {
+                    if (document.body.contains(ray)) {
+                        document.body.removeChild(ray);
+                    }
+                }, 3000);
+            }
+
+            createEscapeStreams() {
+                // Create streams of reality escaping from the void
+                const streamCount = 3 + Math.floor(Math.random() * 3);
+                
+                for (let i = 0; i < streamCount; i++) {
+                    this.createEscapeStream();
+                }
+                
+                this.metrics.escapeStreams += streamCount;
+            }
+
+            createEscapeStream() {
+                const stream = document.createElement('div');
+                stream.className = 'escape-stream';
+                
+                // Random escape direction
+                const angle = Math.random() * 360;
+                const length = 100 + Math.random() * 200;
+                
+                stream.style.left = this.mouseX + 'px';
+                stream.style.top = this.mouseY + 'px';
+                stream.style.width = '2px';
+                stream.style.height = length + 'px';
+                stream.style.transform = `rotate(${angle}deg)`;
+                stream.style.transformOrigin = 'top center';
+                
+                document.body.appendChild(stream);
+                
+                setTimeout(() => {
+                    if (document.body.contains(stream)) {
+                        document.body.removeChild(stream);
+                    }
+                }, 2000);
+            }
+
+            enhancePeripheralClarity() {
+                // Create clarity enhancement zones in periphery
+                const clarityZones = document.querySelectorAll('.clarity-zone');
+                clarityZones.forEach(zone => zone.remove());
+                
+                for (let i = 0; i < 4; i++) {
+                    const zone = document.createElement('div');
+                    zone.className = 'clarity-zone';
+                    
+                    // Position away from void
+                    const angle = (i * 90) + Math.random() * 30;
+                    const distance = 200 + Math.random() * 300;
+                    const x = this.mouseX + Math.cos(angle * Math.PI / 180) * distance;
+                    const y = this.mouseY + Math.sin(angle * Math.PI / 180) * distance;
+                    
+                    zone.style.left = x + 'px';
+                    zone.style.top = y + 'px';
+                    zone.style.width = (50 + Math.random() * 100) + 'px';
+                    zone.style.height = (50 + Math.random() * 100) + 'px';
+                    
+                    document.body.appendChild(zone);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(zone)) {
+                            document.body.removeChild(zone);
+                        }
+                    }, 5000);
+                }
+                
+                // Calculate peripheral clarity based on distance from void
+                this.metrics.peripheralClarity = Math.min(200, 100 + this.metrics.voidRadius);
+            }
+
+            createQuantumEntanglement() {
+                const indicator = document.createElement('div');
+                indicator.className = 'quantum-indicator';
+                
+                // Random position near void edge
+                const angle = Math.random() * 360;
+                const distance = this.metrics.voidRadius + 10 + Math.random() * 30;
+                const x = this.mouseX + Math.cos(angle * Math.PI / 180) * distance;
+                const y = this.mouseY + Math.sin(angle * Math.PI / 180) * distance;
+                
+                indicator.style.left = x + 'px';
+                indicator.style.top = y + 'px';
+                
+                document.body.appendChild(indicator);
+                
+                this.metrics.quantumEntanglements++;
+                
+                setTimeout(() => {
+                    if (document.body.contains(indicator)) {
+                        document.body.removeChild(indicator);
+                    }
+                }, 2000);
+            }
+
+            createInitialParticles() {
+                // Create peripheral enhancement particles
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'enhancement-particle';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = Math.random() * window.innerHeight + 'px';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                    
+                    document.body.appendChild(particle);
+                    this.particles.push(particle);
+                }
+            }
+
+            startReverseBlackholeLoop() {
+                setInterval(() => {
+                    // Periodic void fluctuations
+                    if (Math.random() > 0.7) {
+                        this.createVoidRipple();
+                    }
+                    
+                    // Random consciousness ray bursts
+                    if (Math.random() > 0.8) {
+                        this.generateConsciousnessRays();
+                    }
+                    
+                    // Decay metrics
+                    this.metrics.escapeStreams = Math.max(0, this.metrics.escapeStreams - 1);
+                    this.metrics.consciousnessRays = Math.max(0, this.metrics.consciousnessRays - 2);
+                    this.metrics.quantumEntanglements = Math.max(0, this.metrics.quantumEntanglements - 1);
+                    
+                    this.updateHUD();
+                }, 1000);
+            }
+
+            setupPeripheralEnhancements() {
+                // Dynamic peripheral enhancement
+                setInterval(() => {
+                    const periphery = document.querySelector('.perfect-periphery');
+                    const clarity = this.metrics.peripheralClarity / 100;
+                    
+                    periphery.style.filter = `brightness(${1 + clarity * 0.5}) contrast(${1 + clarity * 0.8}) saturate(${1 + clarity})`;
+                }, 100);
+            }
+
+            calculateMouseSpeed() {
+                // Simple speed calculation for demonstration
+                return Math.random() * 10;
+            }
+
+            updateMetrics() {
+                // Real-time metric updates
+                this.updateHUD();
+            }
+
+            updateHUD() {
+                document.getElementById('void-radius').textContent = Math.floor(this.metrics.voidRadius) + 'px';
+                document.getElementById('escape-streams').textContent = this.metrics.escapeStreams;
+                document.getElementById('peripheral-clarity').textContent = Math.floor(this.metrics.peripheralClarity) + '%';
+                document.getElementById('consciousness-rays').textContent = this.metrics.consciousnessRays;
+                document.getElementById('quantum-count').textContent = this.metrics.quantumEntanglements;
+            }
+        }
+
+        // Initialize the reverse blackhole experience
+        window.addEventListener('load', () => {
+            new ReverseBlackholeExperience();
+        });
+    </script>
+</body>
+</html>

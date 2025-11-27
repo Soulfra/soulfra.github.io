@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cal Riven CLI - Reflection Interface</title>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #header {
+      border-bottom: 2px solid #00ff00;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    
+    #status {
+      color: #888;
+      font-size: 12px;
+    }
+    
+    #terminal {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #00ff00;
+      padding: 10px;
+      background: #0f0f0f;
+    }
+    
+    #output {
+      flex: 1;
+      overflow-y: auto;
+      margin: 0;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+    
+    #input-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+    }
+    
+    #prompt {
+      color: #00ff00;
+      margin-right: 10px;
+    }
+    
+    #input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #00ff00;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .user-input {
+      color: #ffff00;
+    }
+    
+    .cal-response {
+      color: #00ffff;
+      margin-left: 20px;
+    }
+    
+    .infinity-status {
+      color: #ff00ff;
+      font-size: 12px;
+    }
+    
+    .error {
+      color: #ff0000;
+    }
+    
+    .timestamp {
+      color: #666;
+      font-size: 11px;
+    }
+    
+    #history-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #00ff00;
+      color: #000;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1 style="margin: 0; color: #00ff00;">🧠 Cal Riven CLI</h1>
+    <div id="status">Connected to Vault • Infinity Router: <span id="router-status">Checking...</span></div>
+  </div>
+  
+  <button id="history-toggle">View History</button>
+  
+  <div id="terminal">
+    <pre id="output">Cal Riven loaded...
+Mirror reflection active. Vault logging enabled.
+Type a prompt or idea and press Enter:
+</pre>
+    <div id="input-container">
+      <span id="prompt">></span>
+      <input type="text" id="input" autofocus placeholder="Start building..." />
+    </div>
+  </div>
+  
+  <script>
+    const input = document.getElementById("input");
+    const output = document.getElementById("output");
+    const routerStatus = document.getElementById("router-status");
+    const historyToggle = document.getElementById("history-toggle");
+    
+    // Check Infinity Router status
+    async function checkRouterStatus() {
+      try {
+        const res = await fetch('http://localhost:5050/status', { 
+          method: 'GET',
+          mode: 'no-cors'
+        });
+        routerStatus.textContent = 'Online ✓';
+        routerStatus.style.color = '#00ff00';
+      } catch (error) {
+        routerStatus.textContent = 'Offline (Local Mode)';
+        routerStatus.style.color = '#ff8800';
+      }
+    }
+    
+    checkRouterStatus();
+    setInterval(checkRouterStatus, 5000); // Check every 5 seconds
+    
+    // Load history
+    async function loadHistory() {
+      try {
+        const res = await fetch('/api/history');
+        const data = await res.json();
+        
+        if (data.history && data.history.length > 0) {
+          output.textContent = "=== Reflection History ===\n\n";
+          data.history.forEach(entry => {
+            output.textContent += `[${new Date(entry.timestamp).toLocaleTimeString()}]\n`;
+            output.textContent += `> ${entry.input}\n`;
+            output.textContent += `${entry.response}\n\n`;
+          });
+          output.textContent += "=== End History ===\n\n";
+        }
+      } catch (error) {
+        console.error('Failed to load history:', error);
+      }
+    }
+    
+    // Toggle history view
+    historyToggle.addEventListener('click', () => {
+      if (historyToggle.textContent === 'View History') {
+        loadHistory();
+        historyToggle.textContent = 'Clear History';
+      } else {
+        output.textContent = "Cal Riven loaded...\nMirror reflection active. Vault logging enabled.\nType a prompt or idea and press Enter:\n";
+        historyToggle.textContent = 'View History';
+      }
+    });
+
+    // Handle input
+    input.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter" && input.value.trim()) {
+        const cmd = input.value.trim();
+        input.value = "";
+        
+        // Add timestamp
+        const timestamp = new Date().toLocaleTimeString();
+        output.innerHTML += `\n<span class="timestamp">[${timestamp}]</span>\n`;
+        output.innerHTML += `<span class="user-input">> ${cmd}</span>\n`;
+        
+        // Show loading
+        output.innerHTML += `<span class="infinity-status">🔄 Reflecting through vault...</span>\n`;
+        
+        try {
+          const res = await fetch("/api/reflect", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: cmd })
+          });
+          
+          const data = await res.json();
+          
+          // Clear loading message
+          output.innerHTML = output.innerHTML.replace(
+            '<span class="infinity-status">🔄 Reflecting through vault...</span>\n', 
+            ''
+          );
+          
+          // Display response with formatting
+          if (data.response) {
+            const lines = data.response.split('\n');
+            lines.forEach(line => {
+              if (line.includes('Cal reflected:')) {
+                output.innerHTML += `<span class="cal-response">${line}</span>\n`;
+              } else if (line.includes('Infinity Router:')) {
+                output.innerHTML += `<span class="infinity-status">${line}</span>\n`;
+              } else if (line.includes('⛔')) {
+                output.innerHTML += `<span class="error">${line}</span>\n`;
+              } else {
+                output.innerHTML += `<span class="cal-response">${line}</span>\n`;
+              }
+            });
+          }
+          
+          if (data.entry && data.entry.vault_reflected) {
+            output.innerHTML += `<span class="timestamp">✓ Vault reflected</span>\n`;
+          }
+          
+        } catch (error) {
+          output.innerHTML += `<span class="error">❌ Reflection error: ${error.message}</span>\n`;
+        }
+        
+        output.scrollTop = output.scrollHeight;
+      }
+    });
+    
+    // Focus input on click
+    document.addEventListener('click', () => input.focus());
+  </script>
+</body>
+</html>

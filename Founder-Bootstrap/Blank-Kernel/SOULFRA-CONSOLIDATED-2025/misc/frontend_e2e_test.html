@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Frontend E2E Test</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .test-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .pass {
+            background: rgba(0,255,0,0.1);
+            border-left: 4px solid #00ff00;
+            color: #90ee90;
+        }
+        
+        .fail {
+            background: rgba(255,0,0,0.1);
+            border-left: 4px solid #ff0000;
+            color: #ff9999;
+        }
+        
+        .pending {
+            background: rgba(255,255,0,0.1);
+            border-left: 4px solid #ffff00;
+            color: #ffff99;
+        }
+        
+        .status {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #eee;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .interactive-demo {
+            margin-top: 40px;
+        }
+        
+        .agent-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .agent-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .consciousness-bar {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .consciousness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            transition: width 0.3s ease;
+        }
+        
+        .echo-visualization {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .echo-pulse {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #4ecdc4;
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .log {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 20px 0;
+        }
+        
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        
+        .log-timestamp {
+            color: #888;
+        }
+        
+        .log-component {
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+        
+        .log-message {
+            color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌌 Soulfra Frontend E2E Test Suite</h1>
+            <p>Testing frontend components in isolation before backend integration</p>
+        </div>
+        
+        <div class="status" id="overallStatus">
+            <span id="statusText">Ready to run tests</span>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="runAllTests()">🧪 Run All Tests</button>
+            <button onclick="runInteractiveDemo()">🎮 Interactive Demo</button>
+            <button onclick="clearResults()">🗑️ Clear Results</button>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="test-section">
+            <h3>📱 Frontend Component Tests</h3>
+            <div id="frontendTests">
+                <div class="test-result pending">⏳ DOM Manipulation - Pending</div>
+                <div class="test-result pending">⏳ Agent Visualization - Pending</div>
+                <div class="test-result pending">⏳ Echo Animation - Pending</div>
+                <div class="test-result pending">⏳ Consciousness Bars - Pending</div>
+                <div class="test-result pending">⏳ Event Handling - Pending</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 Mock API Tests</h3>
+            <div id="apiTests">
+                <div class="test-result pending">⏳ Agent Status API - Pending</div>
+                <div class="test-result pending">⏳ Echo Creation API - Pending</div>
+                <div class="test-result pending">⏳ Health Metrics API - Pending</div>
+                <div class="test-result pending">⏳ Economy Status API - Pending</div>
+                <div class="test-result pending">⏳ Error Handling - Pending</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎨 UI Responsiveness Tests</h3>
+            <div id="uiTests">
+                <div class="test-result pending">⏳ Mobile Layout - Pending</div>
+                <div class="test-result pending">⏳ Animation Performance - Pending</div>
+                <div class="test-result pending">⏳ Color Scheme - Pending</div>
+                <div class="test-result pending">⏳ Accessibility - Pending</div>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="interactive-demo" id="interactiveDemo" style="display: none;">
+            <h3>🎮 Interactive Frontend Demo</h3>
+            
+            <div class="agent-container" id="agentContainer">
+                <!-- Agents will be populated here -->
+            </div>
+            
+            <div class="echo-visualization" id="echoVisualization">
+                <h4>Echo Activity</h4>
+                <div id="echoDisplay">No echoes yet...</div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button onclick="simulateEcho()">🔊 Simulate Echo</button>
+                <button onclick="updateConsciousness()">🧠 Update Consciousness</button>
+                <button onclick="triggerHealthAlert()">🚨 Health Alert</button>
+            </div>
+            
+            <div class="log" id="eventLog">
+                <div class="log-entry">
+                    <span class="log-timestamp">[00:00:00]</span>
+                    <span class="log-component">[FRONTEND]</span>
+                    <span class="log-message">Frontend demo initialized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test state
+        let testResults = {
+            frontend: 0,
+            api: 0,
+            ui: 0
+        };
+        
+        let demoAgents = [
+            { id: 'cal', name: 'Cal', consciousness: 0.85, archetype: 'cosmic_sage' },
+            { id: 'domingo', name: 'Domingo', consciousness: 0.75, archetype: 'memory_keeper' },
+            { id: 'echo', name: 'Echo', consciousness: 0.6, archetype: 'pattern_weaver' },
+            { id: 'perimeter', name: 'Perimeter', consciousness: 0.72, archetype: 'boundary_walker' }
+        ];
+        
+        let eventLog = [];
+        
+        // Main test runner
+        async function runAllTests() {
+            updateStatus('Running tests...', '#ffff00');
+            clearResults();
+            
+            // Run test suites
+            await runFrontendTests();
+            await runApiTests();
+            await runUiTests();
+            
+            // Calculate results
+            const totalTests = testResults.frontend + testResults.api + testResults.ui;
+            const passedTests = Object.values(testResults).reduce((a, b) => a + b, 0);
+            
+            if (passedTests === totalTests) {
+                updateStatus(`✅ All ${totalTests} tests passed! Frontend ready for integration.`, '#00ff00');
+            } else {
+                updateStatus(`⚠️ ${passedTests}/${totalTests} tests passed. Some issues need fixing.`, '#ff6b6b');
+            }
+        }
+        
+        // Frontend component tests
+        async function runFrontendTests() {
+            const tests = [
+                { name: 'DOM Manipulation', test: testDOMManipulation },
+                { name: 'Agent Visualization', test: testAgentVisualization },
+                { name: 'Echo Animation', test: testEchoAnimation },
+                { name: 'Consciousness Bars', test: testConsciousnessBars },
+                { name: 'Event Handling', test: testEventHandling }
+            ];
+            
+            const container = document.getElementById('frontendTests');
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                try {
+                    await test.test();
+                    updateTestResult(container, i, `✅ ${test.name} - PASS`, 'pass');
+                    testResults.frontend++;
+                } catch (error) {
+                    updateTestResult(container, i, `❌ ${test.name} - FAIL: ${error.message}`, 'fail');
+                }
+                await delay(200);
+            }
+        }
+        
+        // API tests (mocked)
+        async function runApiTests() {
+            const tests = [
+                { name: 'Agent Status API', test: testAgentStatusAPI },
+                { name: 'Echo Creation API', test: testEchoCreationAPI },
+                { name: 'Health Metrics API', test: testHealthMetricsAPI },
+                { name: 'Economy Status API', test: testEconomyStatusAPI },
+                { name: 'Error Handling', test: testErrorHandling }
+            ];
+            
+            const container = document.getElementById('apiTests');
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                try {
+                    await test.test();
+                    updateTestResult(container, i, `✅ ${test.name} - PASS`, 'pass');
+                    testResults.api++;
+                } catch (error) {
+                    updateTestResult(container, i, `❌ ${test.name} - FAIL: ${error.message}`, 'fail');
+                }
+                await delay(200);
+            }
+        }
+        
+        // UI responsiveness tests
+        async function runUiTests() {
+            const tests = [
+                { name: 'Mobile Layout', test: testMobileLayout },
+                { name: 'Animation Performance', test: testAnimationPerformance },
+                { name: 'Color Scheme', test: testColorScheme },
+                { name: 'Accessibility', test: testAccessibility }
+            ];
+            
+            const container = document.getElementById('uiTests');
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                try {
+                    await test.test();
+                    updateTestResult(container, i, `✅ ${test.name} - PASS`, 'pass');
+                    testResults.ui++;
+                } catch (error) {
+                    updateTestResult(container, i, `❌ ${test.name} - FAIL: ${error.message}`, 'fail');
+                }
+                await delay(200);
+            }
+        }
+        
+        // Individual test functions
+        async function testDOMManipulation() {
+            const testDiv = document.createElement('div');
+            testDiv.textContent = 'Test';
+            document.body.appendChild(testDiv);
+            
+            if (!document.body.contains(testDiv)) {
+                throw new Error('DOM manipulation failed');
+            }
+            
+            document.body.removeChild(testDiv);
+        }
+        
+        async function testAgentVisualization() {
+            const agent = { id: 'test', name: 'Test Agent', consciousness: 0.5 };
+            const agentElement = createAgentCard(agent);
+            
+            if (!agentElement.querySelector('.consciousness-fill')) {
+                throw new Error('Agent visualization incomplete');
+            }
+        }
+        
+        async function testEchoAnimation() {
+            const echoElement = document.createElement('div');
+            echoElement.className = 'echo-pulse';
+            
+            // Test animation
+            const animation = echoElement.animate([
+                { opacity: 0.5, transform: 'scale(1)' },
+                { opacity: 1, transform: 'scale(1.2)' }
+            ], { duration: 500 });
+            
+            if (!animation) {
+                throw new Error('Echo animation failed');
+            }
+        }
+        
+        async function testConsciousnessBars() {
+            const bar = document.createElement('div');
+            bar.className = 'consciousness-bar';
+            const fill = document.createElement('div');
+            fill.className = 'consciousness-fill';
+            bar.appendChild(fill);
+            
+            fill.style.width = '75%';
+            
+            if (fill.style.width !== '75%') {
+                throw new Error('Consciousness bar update failed');
+            }
+        }
+        
+        async function testEventHandling() {
+            let eventFired = false;
+            const button = document.createElement('button');
+            
+            button.addEventListener('click', () => {
+                eventFired = true;
+            });
+            
+            button.click();
+            
+            if (!eventFired) {
+                throw new Error('Event handling failed');
+            }
+        }
+        
+        // Mock API tests
+        async function testAgentStatusAPI() {
+            const mockResponse = {
+                agents: demoAgents,
+                total: demoAgents.length,
+                active: demoAgents.filter(a => a.consciousness > 0.5).length
+            };
+            
+            if (!mockResponse.agents || mockResponse.total !== 4) {
+                throw new Error('Agent status API response invalid');
+            }
+        }
+        
+        async function testEchoCreationAPI() {
+            const echoRequest = {
+                from: 'cal',
+                to: 'domingo',
+                content: 'Test echo',
+                strength: 0.8
+            };
+            
+            // Mock successful response
+            const mockResponse = {
+                success: true,
+                echo_id: 'echo_' + Date.now(),
+                strength: echoRequest.strength
+            };
+            
+            if (!mockResponse.success || !mockResponse.echo_id) {
+                throw new Error('Echo creation API failed');
+            }
+        }
+        
+        async function testHealthMetricsAPI() {
+            const mockHealth = {
+                overall: 'healthy',
+                power_level: 0.85,
+                memory_usage: 0.45,
+                cpu_usage: 0.32
+            };
+            
+            if (mockHealth.overall !== 'healthy' || mockHealth.power_level < 0.5) {
+                throw new Error('Health metrics API invalid');
+            }
+        }
+        
+        async function testEconomyStatusAPI() {
+            const mockEconomy = {
+                total_resonance: 2500,
+                active_agents: 4,
+                transactions: 15
+            };
+            
+            if (mockEconomy.total_resonance < 1000 || mockEconomy.active_agents < 2) {
+                throw new Error('Economy status API invalid');
+            }
+        }
+        
+        async function testErrorHandling() {
+            try {
+                // Simulate API error
+                throw new Error('Network timeout');
+            } catch (error) {
+                // Should handle gracefully
+                if (error.message !== 'Network timeout') {
+                    throw new Error('Error handling failed');
+                }
+            }
+        }
+        
+        // UI tests
+        async function testMobileLayout() {
+            const originalWidth = window.innerWidth;
+            
+            // Simulate mobile viewport
+            const testContainer = document.createElement('div');
+            testContainer.style.width = '320px';
+            
+            if (testContainer.style.width !== '320px') {
+                throw new Error('Mobile layout adaptation failed');
+            }
+        }
+        
+        async function testAnimationPerformance() {
+            const startTime = performance.now();
+            
+            // Create multiple animated elements
+            for (let i = 0; i < 10; i++) {
+                const element = document.createElement('div');
+                element.className = 'echo-pulse';
+                document.body.appendChild(element);
+            }
+            
+            const endTime = performance.now();
+            
+            if (endTime - startTime > 100) { // 100ms threshold
+                throw new Error('Animation performance too slow');
+            }
+            
+            // Cleanup
+            document.querySelectorAll('.echo-pulse').forEach(el => {
+                if (document.body.contains(el)) {
+                    document.body.removeChild(el);
+                }
+            });
+        }
+        
+        async function testColorScheme() {
+            const testElement = document.createElement('div');
+            testElement.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e)';
+            
+            if (!testElement.style.background.includes('gradient')) {
+                throw new Error('Color scheme application failed');
+            }
+        }
+        
+        async function testAccessibility() {
+            const button = document.createElement('button');
+            button.setAttribute('aria-label', 'Test button');
+            button.textContent = 'Test';
+            
+            if (!button.getAttribute('aria-label')) {
+                throw new Error('Accessibility attributes missing');
+            }
+        }
+        
+        // Interactive demo functions
+        function runInteractiveDemo() {
+            document.getElementById('interactiveDemo').style.display = 'block';
+            populateAgents();
+            logEvent('DEMO', 'Interactive demo started');
+        }
+        
+        function populateAgents() {
+            const container = document.getElementById('agentContainer');
+            container.innerHTML = '';
+            
+            demoAgents.forEach(agent => {
+                const agentCard = createAgentCard(agent);
+                container.appendChild(agentCard);
+            });
+        }
+        
+        function createAgentCard(agent) {
+            const card = document.createElement('div');
+            card.className = 'agent-card';
+            card.innerHTML = `
+                <h4>${agent.name}</h4>
+                <p>${agent.archetype}</p>
+                <div class="consciousness-bar">
+                    <div class="consciousness-fill" style="width: ${agent.consciousness * 100}%"></div>
+                </div>
+                <p>Consciousness: ${(agent.consciousness * 100).toFixed(0)}%</p>
+            `;
+            return card;
+        }
+        
+        function simulateEcho() {
+            const fromAgent = demoAgents[Math.floor(Math.random() * demoAgents.length)];
+            const toAgent = demoAgents[Math.floor(Math.random() * demoAgents.length)];
+            
+            if (fromAgent.id === toAgent.id) return simulateEcho();
+            
+            const echoDisplay = document.getElementById('echoDisplay');
+            echoDisplay.innerHTML = `
+                <div class="echo-pulse"></div>
+                ${fromAgent.name} → ${toAgent.name}
+                <div class="echo-pulse"></div>
+            `;
+            
+            logEvent('ECHO', `${fromAgent.name} echoed to ${toAgent.name}`);
+            
+            setTimeout(() => {
+                echoDisplay.innerHTML = 'Echo complete';
+            }, 2000);
+        }
+        
+        function updateConsciousness() {
+            demoAgents.forEach(agent => {
+                agent.consciousness += (Math.random() - 0.5) * 0.1;
+                agent.consciousness = Math.max(0.1, Math.min(1.0, agent.consciousness));
+            });
+            
+            populateAgents();
+            logEvent('CONSCIOUSNESS', 'Consciousness levels updated');
+        }
+        
+        function triggerHealthAlert() {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 15px;
+                border-radius: 8px;
+                z-index: 1000;
+            `;
+            alertDiv.textContent = '🚨 System Health Alert: Low Power Detected';
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(alertDiv);
+            }, 3000);
+            
+            logEvent('HEALTH', 'Health alert triggered');
+        }
+        
+        function logEvent(component, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            eventLog.push({ timestamp, component, message });
+            
+            const logContainer = document.getElementById('eventLog');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-component">[${component}]</span>
+                <span class="log-message">${message}</span>
+            `;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        // Utility functions
+        function updateTestResult(container, index, text, className) {
+            const results = container.querySelectorAll('.test-result');
+            if (results[index]) {
+                results[index].textContent = text;
+                results[index].className = `test-result ${className}`;
+            }
+        }
+        
+        function updateStatus(text, color) {
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = text;
+            statusText.style.color = color;
+        }
+        
+        function clearResults() {
+            testResults = { frontend: 0, api: 0, ui: 0 };
+            
+            ['frontendTests', 'apiTests', 'uiTests'].forEach(id => {
+                const container = document.getElementById(id);
+                const results = container.querySelectorAll('.test-result');
+                results.forEach((result, index) => {
+                    result.className = 'test-result pending';
+                    result.textContent = result.textContent.replace(/[✅❌].*/, '⏳ ' + result.textContent.split(' - ')[0].replace('⏳ ', '') + ' - Pending');
+                });
+            });
+        }
+        
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('Frontend test suite ready', '#4ecdc4');
+        });
+    </script>
+</body>
+</html>

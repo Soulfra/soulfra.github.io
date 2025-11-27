@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Roughsparks</title>
+    <meta name="description" content="Build in public, ship fast - Learn about our mission and why we exist">
+
+    <!-- X/Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@roughsparks">
+    <meta name="twitter:title" content="About Roughsparks">
+    <meta name="twitter:description" content="Build in public, ship fast">
+
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f9f9f9;
+        }
+
+        /* Hero Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        header p.tagline {
+            opacity: 0.95;
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .x-follow-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .x-follow-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #333;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .philosophy-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            border-left: 4px solid #667eea;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .philosophy-box h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .philosophy-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .worth-millions {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left: 4px solid #e17055;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .worth-millions h3 {
+            color: #d63031;
+        }
+
+        .free-principle {
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            border-left: 4px solid #2d3436;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .free-principle h3 {
+            color: #2d3436;
+        }
+
+        /* Call-to-Action */
+        .cta-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .cta-section h2 {
+            color: white;
+            border-bottom: none;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .brand-ecosystem {
+            margin: 1.5rem 0;
+            padding: 1rem 0;
+            border-top: 1px solid #4a5568;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .brand-ecosystem a {
+            margin: 0 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header p.tagline {
+                font-size: 1.1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Roughsparks</h1>
+        <p class="tagline">Build in public, ship fast</p>
+        <a href="https://x.com/roughsparks" class="x-follow-btn" target="_blank">Follow @roughsparks on X</a>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- The Power of This Brand -->
+        <div class="content-section">
+            <h2>The Power of Roughsparks</h2>
+            <p>Building tools that matter and giving them away for free</p>
+        </div>
+
+        <!-- Our Mission -->
+        <div class="content-section">
+            <h2>Our Mission</h2>
+            <p><strong>Build tools that matter, give them away for free.</strong></p>
+            <p>We believe Roughsparks is more than just a tool or platform—it's a platform that changes how people solve real problems.</p>
+        </div>
+
+        <!-- Why This is Worth Millions -->
+        <div class="worth-millions">
+            <h3>💰 Why Roughsparks is Worth Millions</h3>
+            <ul>
+  <li><strong>Market Need:</strong> Solves a real problem millions of people face</li>
+  <li><strong>Network Effects:</strong> Value increases with each user</li>
+  <li><strong>Scalability:</strong> Built to serve millions with minimal infrastructure</li>
+  <li><strong>Open Source:</strong> Community contributions accelerate growth</li>
+</ul>
+        </div>
+
+        <!-- Why We Give This Away FREE -->
+        <div class="free-principle">
+            <h3>🎁 Why We Give This Away for FREE</h3>
+            <p><strong>This isn't about profit. It's about principle.</strong></p>
+            <p>The tools that change the world should be accessible to everyone. We believe in:</p>
+            <ul>
+                <li><strong>Open-source over proprietary</strong> - Code should be transparent and collaborative</li>
+                <li><strong>Community over corporations</strong> - People matter more than shareholders</li>
+                <li><strong>Impact over income</strong> - Changing lives is the real ROI</li>
+                <li><strong>Principle over profit</strong> - Some things are too important to monetize</li>
+            </ul>
+            <p>Roughsparks represents an idea worth hundreds of millions. By giving it away, we prove that value isn't measured in dollars—it's measured in how many lives you change.</p>
+        </div>
+
+        <!-- Why Roughsparks? -->
+        <div class="content-section">
+            <h2>Why Roughsparks?</h2>
+            <p>We're not just another platform. Here's what makes Roughsparks different:</p>
+            <ul>
+                <li><strong>Built with Principle:</strong> Every decision guided by values, not metrics</li>
+                <li><strong>Transparent by Design:</strong> Open-source, honest, no hidden agendas</li>
+                <li><strong>Community-Driven:</strong> Built by users, for users</li>
+                <li><strong>FREE Forever:</strong> No paywalls, no premium tiers, no BS</li>
+            </ul>
+        </div>
+
+        <!-- How You Can Support -->
+        <div class="philosophy-box">
+            <h3>💙 How You Can Support</h3>
+            <p>We don't need your money. We need something more valuable:</p>
+            <ul>
+                <li><strong>Use it.</strong> Build something amazing with Roughsparks</li>
+                <li><strong>Share it.</strong> Tell others who could benefit</li>
+                <li><strong>Contribute.</strong> Improve it, suggest ideas, report bugs</li>
+                <li><strong>Believe it.</strong> Principle over profit isn't naive—it's revolutionary</li>
+            </ul>
+            <p>That's all we ask. Change the world with us.</p>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h2>Let's Build Something Legendary</h2>
+            <p>Roughsparks is ready. Are you?</p>
+            <a href="../index.html" class="cta-btn">Get Started</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Roughsparks. Built with principle, not profit.</p>
+
+        <div class="brand-ecosystem">
+            <p>Part of the Brand Ecosystem:</p>
+            <p>First brand in the ecosystem!</p>
+        </div>
+
+        <p><a href="https://x.com/roughsparks" target="_blank">Follow @roughsparks on X</a></p>
+    </footer>
+</body>
+</html>

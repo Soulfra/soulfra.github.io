@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeChat - Connect Through Energy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Animated gradient background */
+        .vibe-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+            background-size: 400% 400%;
+            animation: vibeShift 10s ease infinite;
+            opacity: 0.2;
+        }
+        
+        @keyframes vibeShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Vibe selector */
+        .vibe-selector {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+            transition: all 0.5s ease;
+        }
+        
+        .vibe-selector.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+        
+        .vibe-title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s ease infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .vibe-question {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .vibe-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .vibe-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .vibe-card:hover {
+            transform: translateY(-10px);
+            border-color: currentColor;
+            box-shadow: 0 20px 40px rgba(255,255,255,0.2);
+        }
+        
+        .vibe-emoji {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        
+        .vibe-name {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .vibe-desc {
+            opacity: 0.8;
+        }
+        
+        .vibe-chill { color: #06ffa5; }
+        .vibe-energetic { color: #ff006e; }
+        .vibe-creative { color: #8338ec; }
+        .vibe-focused { color: #3a86ff; }
+        
+        /* Chat interface */
+        .chat-container {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .chat-container.active {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .current-vibe {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+        }
+        
+        .vibe-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: vibeGlow 2s ease infinite;
+        }
+        
+        @keyframes vibeGlow {
+            0%, 100% { box-shadow: 0 0 10px currentColor; }
+            50% { box-shadow: 0 0 30px currentColor, 0 0 50px currentColor; }
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            position: relative;
+            animation: messageSlide 0.3s ease;
+        }
+        
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.own {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #8338ec, #3a86ff);
+        }
+        
+        .message.other {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .message-vibe {
+            position: absolute;
+            top: -5px;
+            right: 10px;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .message-input {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 20px;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.1em;
+        }
+        
+        .message-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .send-button {
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,0,110,0.4);
+        }
+        
+        /* Online vibers */
+        .vibers-panel {
+            width: 300px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .vibers-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        .viber-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .viber-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        
+        .viber-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+        
+        .viber-info {
+            flex: 1;
+        }
+        
+        .viber-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .viber-status {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        .viber-vibe {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: vibeGlow 2s ease infinite;
+        }
+        
+        /* Vibe particles */
+        .vibe-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .vibe-particle {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            from {
+                transform: translate(0, 100vh) rotate(0deg);
+            }
+            to {
+                transform: translate(0, -100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vibe-background"></div>
+    <div class="vibe-particles" id="vibeParticles"></div>
+    
+    <div class="container">
+        <!-- Vibe Selection -->
+        <div class="vibe-selector" id="vibeSelector">
+            <h1 class="vibe-title">VibeChat</h1>
+            <p class="vibe-question">What's your vibe today?</p>
+            
+            <div class="vibe-options">
+                <div class="vibe-card vibe-chill" onclick="selectVibe('chill', '#06ffa5')">
+                    <div class="vibe-emoji">🌊</div>
+                    <div class="vibe-name">Chill</div>
+                    <div class="vibe-desc">Relaxed conversations, easy flow</div>
+                </div>
+                
+                <div class="vibe-card vibe-energetic" onclick="selectVibe('energetic', '#ff006e')">
+                    <div class="vibe-emoji">⚡</div>
+                    <div class="vibe-name">Energetic</div>
+                    <div class="vibe-desc">High energy, exciting talks</div>
+                </div>
+                
+                <div class="vibe-card vibe-creative" onclick="selectVibe('creative', '#8338ec')">
+                    <div class="vibe-emoji">🎨</div>
+                    <div class="vibe-name">Creative</div>
+                    <div class="vibe-desc">Imaginative, artistic minds</div>
+                </div>
+                
+                <div class="vibe-card vibe-focused" onclick="selectVibe('focused', '#3a86ff')">
+                    <div class="vibe-emoji">🎯</div>
+                    <div class="vibe-name">Focused</div>
+                    <div class="vibe-desc">Deep conversations, meaningful</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Interface -->
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="current-vibe">
+                    <div class="vibe-indicator" id="vibeIndicator"></div>
+                    <span>Vibing: <span id="currentVibeName"></span></span>
+                </div>
+                <button class="send-button" onclick="changeVibe()">Change Vibe</button>
+            </div>
+            
+            <div class="chat-area">
+                <div class="chat-main">
+                    <div class="messages" id="messages">
+                        <!-- Messages appear here -->
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" class="message-input" id="messageInput" 
+                               placeholder="Share your vibe..." 
+                               onkeypress="handleKeyPress(event)">
+                        <button class="send-button" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+                
+                <div class="vibers-panel">
+                    <h3 class="vibers-title">Vibing Now</h3>
+                    <div id="vibersList">
+                        <!-- Online vibers -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentVibe = null;
+        let messageId = 0;
+        
+        const vibeColors = {
+            chill: '#06ffa5',
+            energetic: '#ff006e',
+            creative: '#8338ec',
+            focused: '#3a86ff'
+        };
+        
+        const vibeEmojis = {
+            chill: '🌊',
+            energetic: '⚡',
+            creative: '🎨',
+            focused: '🎯'
+        };
+        
+        const fakeVibers = [
+            { name: 'Luna', vibe: 'creative', status: 'Painting words', avatar: '🌙' },
+            { name: 'Phoenix', vibe: 'energetic', status: 'On fire today!', avatar: '🔥' },
+            { name: 'River', vibe: 'chill', status: 'Going with the flow', avatar: '💫' },
+            { name: 'Sage', vibe: 'focused', status: 'Deep in thought', avatar: '🧘' },
+            { name: 'Nova', vibe: 'creative', status: 'Dreaming in color', avatar: '✨' },
+            { name: 'Storm', vibe: 'energetic', status: 'Electric vibes', avatar: '⛈️' }
+        ];
+        
+        function selectVibe(vibe, color) {
+            currentVibe = vibe;
+            
+            // Update UI
+            document.getElementById('vibeSelector').classList.add('hidden');
+            document.getElementById('chatContainer').classList.add('active');
+            document.getElementById('currentVibeName').textContent = vibe.charAt(0).toUpperCase() + vibe.slice(1);
+            
+            const indicator = document.getElementById('vibeIndicator');
+            indicator.style.backgroundColor = color;
+            indicator.style.color = color;
+            
+            // Add system message
+            addMessage(`Welcome to the ${vibe} vibe room! ${vibeEmojis[vibe]}`, 'system');
+            
+            // Load vibers
+            loadVibers();
+            
+            // Create vibe particles
+            createVibeParticles(color);
+            
+            // Simulate incoming messages
+            setTimeout(() => simulateMessage(), 2000);
+        }
+        
+        function changeVibe() {
+            document.getElementById('vibeSelector').classList.remove('hidden');
+            document.getElementById('chatContainer').classList.remove('active');
+            document.getElementById('messages').innerHTML = '';
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (text) {
+                addMessage(text, 'own');
+                input.value = '';
+                
+                // Simulate response
+                setTimeout(() => {
+                    const responses = getVibeResponses();
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    const responder = fakeVibers[Math.floor(Math.random() * fakeVibers.length)];
+                    addMessage(response, 'other', responder.name);
+                }, 1000 + Math.random() * 2000);
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function addMessage(text, type, sender = 'You') {
+            const messages = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            
+            if (type === 'system') {
+                message.style.alignSelf = 'center';
+                message.style.background = 'rgba(255,255,255,0.1)';
+                message.style.maxWidth = '90%';
+                message.innerHTML = text;
+            } else {
+                message.innerHTML = `
+                    ${type === 'other' ? `<div class="message-vibe">${sender}</div>` : ''}
+                    ${text}
+                `;
+            }
+            
+            messages.appendChild(message);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function loadVibers() {
+            const list = document.getElementById('vibersList');
+            list.innerHTML = '';
+            
+            // Filter vibers by current vibe (with some mixing)
+            const vibers = fakeVibers.filter(v => 
+                v.vibe === currentVibe || Math.random() > 0.5
+            );
+            
+            vibers.forEach(viber => {
+                const item = document.createElement('div');
+                item.className = 'viber-item';
+                item.innerHTML = `
+                    <div class="viber-avatar" style="background: ${vibeColors[viber.vibe]}20">
+                        ${viber.avatar}
+                    </div>
+                    <div class="viber-info">
+                        <div class="viber-name">${viber.name}</div>
+                        <div class="viber-status">${viber.status}</div>
+                    </div>
+                    <div class="viber-vibe" style="background: ${vibeColors[viber.vibe]}"></div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function getVibeResponses() {
+            const responses = {
+                chill: [
+                    "That's so peaceful, love it 🌊",
+                    "Totally feeling those vibes",
+                    "Just going with the flow here",
+                    "Such good energy in here",
+                    "This is my happy place"
+                ],
+                energetic: [
+                    "YESSS! That's what I'm talking about! ⚡",
+                    "Let's gooooo! 🚀",
+                    "The energy here is INSANE!",
+                    "I'm so pumped right now!",
+                    "This is lighting me up! 🔥"
+                ],
+                creative: [
+                    "That's such a beautiful way to put it 🎨",
+                    "I never thought of it like that!",
+                    "Your mind is like a kaleidoscope",
+                    "This sparks so many ideas!",
+                    "The creativity here is infectious ✨"
+                ],
+                focused: [
+                    "That's a really profound point 🎯",
+                    "I appreciate the depth of that",
+                    "This resonates deeply with me",
+                    "Such clarity in your words",
+                    "That's exactly what I needed to hear"
+                ]
+            };
+            
+            return responses[currentVibe] || responses.chill;
+        }
+        
+        function simulateMessage() {
+            if (Math.random() > 0.7) {
+                const viber = fakeVibers[Math.floor(Math.random() * fakeVibers.length)];
+                const messages = getVibeResponses();
+                const message = messages[Math.floor(Math.random() * messages.length)];
+                addMessage(message, 'other', viber.name);
+            }
+            
+            // Schedule next message
+            setTimeout(() => simulateMessage(), 5000 + Math.random() * 10000);
+        }
+        
+        function createVibeParticles(color) {
+            const container = document.getElementById('vibeParticles');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'vibe-particle';
+                particle.style.background = color;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+    </script>
+</body>
+</html>

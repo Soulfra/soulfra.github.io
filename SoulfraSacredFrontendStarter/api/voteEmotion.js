@@ -1,0 +1,1 @@
+// voteEmotion.js - Sacred Starter

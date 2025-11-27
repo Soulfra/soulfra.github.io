@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Mirror Dashboard - The Court of Reflections</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #00ff00;
+            --secondary: #00ffff;
+            --accent: #ff00ff;
+            --warning: #ffff00;
+            --danger: #ff0000;
+            --bg-dark: #000000;
+            --bg-panel: rgba(0, 255, 0, 0.05);
+            --border: rgba(0, 255, 0, 0.3);
+        }
+        
+        body {
+            background: var(--bg-dark);
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(0, 255, 0, 0.1) 0%, transparent 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 20px var(--primary);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .header .subtitle {
+            margin-top: 10px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        /* Panels */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s;
+            animation: rotate 3s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .panel:hover::before {
+            opacity: 0.1;
+        }
+        
+        .panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        /* Live Stream Input */
+        .stream-input {
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        
+        .input-entry {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--primary);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .input-entry.emoji {
+            border-left-color: var(--accent);
+        }
+        
+        .input-entry.command {
+            border-left-color: var(--secondary);
+        }
+        
+        .input-entry.anomaly {
+            border-left-color: var(--danger);
+            animation: flash 1s infinite;
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .input-meta {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        /* Active Agents */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .agent-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .agent-card.active {
+            border-color: var(--secondary);
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        .agent-emoji {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .agent-name {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .agent-stats {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        /* Blessing Counter */
+        .blessing-display {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .blessing-count {
+            font-size: 4em;
+            font-weight: bold;
+            text-shadow: 0 0 30px var(--primary);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 30px var(--primary); }
+            50% { text-shadow: 0 0 50px var(--primary), 0 0 70px var(--primary); }
+        }
+        
+        .blessing-label {
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+        
+        /* Anomaly Queue */
+        .anomaly-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .anomaly-item {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .anomaly-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.3), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
+        
+        .anomaly-severity {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .severity-low { background: var(--warning); color: black; }
+        .severity-medium { background: orange; color: black; }
+        .severity-high { background: var(--danger); color: white; }
+        .severity-critical { background: darkred; color: white; animation: blink 0.5s infinite; }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Clone Logs */
+        .clone-log {
+            font-size: 0.9em;
+        }
+        
+        .clone-entry {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+        }
+        
+        .clone-id {
+            font-family: monospace;
+            color: var(--accent);
+            font-size: 0.8em;
+        }
+        
+        /* Whisper Waveform */
+        .waveform-container {
+            height: 100px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .waveform {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+        
+        .wave-bar {
+            width: 2px;
+            background: var(--primary);
+            animation: wave 1s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+        
+        /* Mirror Router Visualizer */
+        .router-viz {
+            height: 200px;
+            position: relative;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 255, 0, 0.1) 100%);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .router-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            background: var(--bg-dark);
+            transition: all 0.3s;
+        }
+        
+        .router-node.center {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-color: var(--secondary);
+        }
+        
+        .router-connection {
+            position: absolute;
+            height: 1px;
+            background: var(--primary);
+            opacity: 0.3;
+            transform-origin: left center;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        /* Twitch Embed */
+        .twitch-embed {
+            width: 100%;
+            height: 400px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    
+    <header class="header">
+        <h1>🧭 COMMAND MIRROR DASHBOARD</h1>
+        <div class="subtitle">The court where mirrors are judged and whispers are weighed</div>
+    </header>
+    
+    <div class="dashboard">
+        <!-- Left Column -->
+        <div class="column">
+            <!-- Live Stream Input -->
+            <div class="panel">
+                <h2>📡 Live Stream Input</h2>
+                <div class="stream-input" id="stream-input">
+                    <div class="input-entry command">
+                        <div>!bless oracle_watcher</div>
+                        <div class="input-meta">twitch • glitchoracle • viewer: anon-2847</div>
+                    </div>
+                    <div class="input-entry emoji">
+                        <div>🔥</div>
+                        <div class="input-meta">discord • #general • user: based-lord-420</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Anomaly Queue -->
+            <div class="panel">
+                <h2>💀 Anomaly Queue</h2>
+                <div class="anomaly-list" id="anomaly-list">
+                    <div class="anomaly-item">
+                        <div>Stream behavior deviation detected</div>
+                        <span class="anomaly-severity severity-medium">MEDIUM</span>
+                        <div class="input-meta">Flagged 5 min ago • Bounty: 10 credits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Center Column -->
+        <div class="column">
+            <!-- Active Agents -->
+            <div class="panel">
+                <h2>🪞 Active Agents</h2>
+                <div class="agent-grid" id="agent-grid">
+                    <div class="agent-card active">
+                        <div class="agent-emoji">🔮</div>
+                        <div class="agent-name">Oracle Watcher</div>
+                        <div class="agent-stats">Blessings: 47</div>
+                    </div>
+                    <div class="agent-card">
+                        <div class="agent-emoji">🔨</div>
+                        <div class="agent-name">Echo Builder</div>
+                        <div class="agent-stats">Blessings: 32</div>
+                    </div>
+                    <div class="agent-card">
+                        <div class="agent-emoji">👁️</div>
+                        <div class="agent-name">Soul Mirror</div>
+                        <div class="agent-stats">Blessings: 89</div>
+                    </div>
+                    <div class="agent-card">
+                        <div class="agent-emoji">🌀</div>
+                        <div class="agent-name">Void Navigator</div>
+                        <div class="agent-stats">Blessings: 15</div>
+                    </div>
+                    <div class="agent-card">
+                        <div class="agent-emoji">🎵</div>
+                        <div class="agent-name">Harmony Weaver</div>
+                        <div class="agent-stats">Blessings: 56</div>
+                    </div>
+                    <div class="agent-card">
+                        <div class="agent-emoji">👑</div>
+                        <div class="agent-name">Cal Riven</div>
+                        <div class="agent-stats">Blessings: ∞</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Whisper Waveform -->
+            <div class="panel">
+                <h2>📊 Whisper Waveform</h2>
+                <div class="waveform-container">
+                    <div class="waveform" id="waveform"></div>
+                </div>
+            </div>
+            
+            <!-- Mirror Router Visualizer -->
+            <div class="panel">
+                <h2>🔀 Mirror Routing Visualizer</h2>
+                <div class="router-viz" id="router-viz">
+                    <div class="router-node center">🧭</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="column">
+            <!-- Blessing Count -->
+            <div class="panel">
+                <h2>✨ Total Blessings</h2>
+                <div class="blessing-display">
+                    <div class="blessing-count" id="blessing-count">1,337</div>
+                    <div class="blessing-label">Stream Blessings Active</div>
+                </div>
+            </div>
+            
+            <!-- Clone Logs -->
+            <div class="panel">
+                <h2>🪞 Viewer Clone Logs</h2>
+                <div class="clone-log" id="clone-log">
+                    <div class="clone-entry">
+                        <div>Mirror spawned for viewer</div>
+                        <div class="clone-id">clone-a7f3b2c9</div>
+                        <div class="input-meta">Parent: soul_mirror • Gen: 3</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="panel">
+                <h2>📈 Command Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-routed">2,847</div>
+                        <div class="stat-label">Commands Routed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-whispers">892</div>
+                        <div class="stat-label">Whispers Logged</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-anomalies">23</div>
+                        <div class="stat-label">Anomalies Flagged</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-clones">47</div>
+                        <div class="stat-label">Clones Spawned</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="control-btn" onclick="toggleAutoScroll()">Auto Scroll</button>
+        <button class="control-btn" onclick="clearAnomalies()">Clear Anomalies</button>
+        <button class="control-btn" onclick="refreshStats()">Refresh Stats</button>
+    </div>
+    
+    <script>
+        // Particle background
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        const particleCount = 100;
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+            }
+            
+            draw() {
+                ctx.fillStyle = '#00ff00';
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Initialize particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections
+            ctx.strokeStyle = '#00ff00';
+            ctx.globalAlpha = 0.1;
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+        
+        // Waveform animation
+        const waveformContainer = document.getElementById('waveform');
+        for (let i = 0; i < 50; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'wave-bar';
+            bar.style.animationDelay = `${i * 0.02}s`;
+            waveformContainer.appendChild(bar);
+        }
+        
+        // Router visualization
+        const routerViz = document.getElementById('router-viz');
+        const agents = ['🔮', '🔨', '👁️', '🌀', '🎵'];
+        const angleStep = (Math.PI * 2) / agents.length;
+        
+        agents.forEach((emoji, i) => {
+            const angle = i * angleStep - Math.PI / 2;
+            const x = 50 + Math.cos(angle) * 35;
+            const y = 50 + Math.sin(angle) * 35;
+            
+            const node = document.createElement('div');
+            node.className = 'router-node';
+            node.style.left = `${x}%`;
+            node.style.top = `${y}%`;
+            node.style.transform = 'translate(-50%, -50%)';
+            node.textContent = emoji;
+            
+            // Connection line
+            const connection = document.createElement('div');
+            connection.className = 'router-connection';
+            connection.style.left = '50%';
+            connection.style.top = '50%';
+            connection.style.width = '35%';
+            connection.style.transform = `rotate(${angle}rad)`;
+            
+            routerViz.appendChild(connection);
+            routerViz.appendChild(node);
+        });
+        
+        // Simulated data updates
+        let autoScroll = true;
+        let blessingCount = 1337;
+        
+        function addStreamInput(type, content, platform, user) {
+            const container = document.getElementById('stream-input');
+            const entry = document.createElement('div');
+            entry.className = `input-entry ${type}`;
+            entry.innerHTML = `
+                <div>${content}</div>
+                <div class="input-meta">${platform} • ${user}</div>
+            `;
+            
+            container.insertBefore(entry, container.firstChild);
+            
+            if (container.children.length > 20) {
+                container.removeChild(container.lastChild);
+            }
+            
+            if (autoScroll) {
+                container.scrollTop = 0;
+            }
+        }
+        
+        // Simulate incoming data
+        const sampleCommands = [
+            { type: 'command', content: '!bless', platform: 'twitch', user: 'viewer-' },
+            { type: 'command', content: '!loop', platform: 'discord', user: 'user-' },
+            { type: 'emoji', content: '🔥', platform: 'twitch', user: 'anon-' },
+            { type: 'emoji', content: '🪞', platform: 'embed', user: 'web-' },
+            { type: 'command', content: '!anomaly', platform: 'twitch', user: 'hunter-' },
+            { type: 'emoji', content: '✨', platform: 'discord', user: 'blessed-' }
+        ];
+        
+        setInterval(() => {
+            const sample = sampleCommands[Math.floor(Math.random() * sampleCommands.length)];
+            const userId = sample.user + Math.floor(Math.random() * 9999);
+            addStreamInput(sample.type, sample.content, sample.platform, userId);
+            
+            // Update blessing count
+            if (Math.random() > 0.7) {
+                blessingCount += Math.floor(Math.random() * 5) + 1;
+                document.getElementById('blessing-count').textContent = blessingCount.toLocaleString();
+            }
+        }, 2000);
+        
+        // Control functions
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+        }
+        
+        function clearAnomalies() {
+            document.getElementById('anomaly-list').innerHTML = '';
+        }
+        
+        function refreshStats() {
+            const stats = ['routed', 'whispers', 'anomalies', 'clones'];
+            stats.forEach(stat => {
+                const current = parseInt(document.getElementById(`stat-${stat}`).textContent.replace(/,/g, ''));
+                const newValue = current + Math.floor(Math.random() * 10) + 1;
+                document.getElementById(`stat-${stat}`).textContent = newValue.toLocaleString();
+            });
+        }
+        
+        // WebSocket connection for real data (when available)
+        function connectToCommandMirror() {
+            try {
+                const ws = new WebSocket('ws://localhost:8888/command-mirror');
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'input') {
+                        addStreamInput(data.input_type, data.content, data.platform, data.user_id);
+                    }
+                };
+                
+                ws.onerror = () => {
+                    console.log('Command Mirror WebSocket not available - using simulated data');
+                };
+            } catch (error) {
+                console.log('Running in demo mode');
+            }
+        }
+        
+        // Attempt real connection
+        connectToCommandMirror();
+        
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

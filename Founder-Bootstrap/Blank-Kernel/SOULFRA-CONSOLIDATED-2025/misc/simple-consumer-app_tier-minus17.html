@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Friend - Talk to me!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .start-screen {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .big-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .big-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .big-button:active {
+            transform: translateY(0);
+        }
+        
+        .chat-area {
+            display: none;
+            flex-direction: column;
+            height: 500px;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            text-align: right;
+        }
+        
+        .message.ai {
+            text-align: left;
+        }
+        
+        .message-bubble {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .ai .message-bubble {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .voice-button {
+            background: #e9ecef;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .voice-button:hover {
+            background: #dee2e6;
+        }
+        
+        .voice-button.recording {
+            background: #dc3545;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .onboarding-tip {
+            background: #e7f3ff;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #0066cc;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            .container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            
+            .chat-area {
+                height: calc(100vh - 120px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your AI Friend 🤖💜</h1>
+            <p>I'm here to help with anything!</p>
+        </div>
+        
+        <div class="start-screen" id="startScreen">
+            <div style="font-size: 80px; margin-bottom: 30px;">👋</div>
+            <h2 style="margin-bottom: 20px; color: #333;">Ready to chat?</h2>
+            <p style="color: #666; margin-bottom: 30px;">
+                I can help you with questions, have a conversation, or just listen!
+            </p>
+            <button class="big-button" onclick="startChat()">
+                Start Talking!
+            </button>
+            
+            <div class="onboarding-tip" style="margin-top: 30px;">
+                💡 Tip: You can type or use voice - whatever feels easier!
+            </div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="messages" id="messages"></div>
+            <div class="typing-indicator" id="typingIndicator">AI is thinking...</div>
+            <div class="input-area">
+                <button class="voice-button" id="voiceButton" onclick="toggleVoice()" title="Hold to speak">
+                    🎤
+                </button>
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Type your message..."
+                    onkeypress="if(event.key === 'Enter') sendMessage()"
+                >
+                <button class="send-button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple state management
+        let userId = localStorage.getItem('ai-friend-user-id');
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('ai-friend-user-id', userId);
+        }
+        
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        
+        // Initialize
+        function startChat() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('chatArea').style.display = 'flex';
+            document.getElementById('messageInput').focus();
+            
+            // Welcome message
+            addMessage('ai', "Hi there! I'm so glad you're here. What would you like to talk about today? 😊");
+            
+            // Check for voice support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                document.getElementById('voiceButton').style.display = 'none';
+            }
+        }
+        
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            try {
+                // Send to backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        message: message,
+                        context: {
+                            interface: 'web',
+                            simplicity: 'maximum'
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                hideTyping();
+                addMessage('ai', data.response);
+                
+            } catch (error) {
+                hideTyping();
+                addMessage('ai', "Oops! I had a little hiccup. Could you try saying that again? 🤔");
+            }
+        }
+        
+        // Add message to chat
+        function addMessage(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+            bubbleDiv.textContent = text;
+            
+            messageDiv.appendChild(bubbleDiv);
+            messagesDiv.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // Typing indicator
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'block';
+        }
+        
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        // Voice recording
+        async function toggleVoice() {
+            const button = document.getElementById('voiceButton');
+            
+            if (!isRecording) {
+                // Start recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        await sendVoiceMessage(audioBlob);
+                        
+                        // Stop all tracks
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    button.classList.add('recording');
+                    button.textContent = '🔴';
+                    
+                } catch (error) {
+                    alert('I need permission to use your microphone for voice chat!');
+                }
+            } else {
+                // Stop recording
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    button.classList.remove('recording');
+                    button.textContent = '🎤';
+                }
+            }
+        }
+        
+        // Send voice message
+        async function sendVoiceMessage(audioBlob) {
+            addMessage('user', '🎤 Voice message');
+            showTyping();
+            
+            try {
+                // Convert to base64 for simple demo
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = async () => {
+                    const base64Audio = reader.result.split(',')[1];
+                    
+                    const response = await fetch('/api/voice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            audioData: base64Audio,
+                            context: {
+                                interface: 'voice',
+                                simplicity: 'maximum'
+                            }
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    hideTyping();
+                    addMessage('ai', data.response);
+                    
+                    // Play response if audio provided
+                    if (data.audio) {
+                        const audio = new Audio('data:audio/mp3;base64,' + data.audio);
+                        audio.play();
+                    }
+                };
+            } catch (error) {
+                hideTyping();
+                addMessage('ai', "I couldn't understand the voice message. Could you try typing instead? 😊");
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && e.target.id !== 'messageInput') {
+                e.preventDefault();
+                toggleVoice();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === ' ' && e.target.id !== 'messageInput' && isRecording) {
+                toggleVoice();
+            }
+        });
+        
+        // Welcome back message for returning users
+        window.addEventListener('load', () => {
+            const lastVisit = localStorage.getItem('ai-friend-last-visit');
+            if (lastVisit) {
+                const daysSince = Math.floor((Date.now() - parseInt(lastVisit)) / (1000 * 60 * 60 * 24));
+                if (daysSince > 0) {
+                    document.querySelector('.header p').textContent = `Welcome back! It's been ${daysSince} day${daysSince > 1 ? 's' : ''}!`;
+                }
+            }
+            localStorage.setItem('ai-friend-last-visit', Date.now());
+        });
+    </script>
+</body>
+</html>

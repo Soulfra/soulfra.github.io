@@ -1,0 +1,428 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/soulfra-icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Soulfra Demo - Privacy-First, Trust-Native AI Agent Platform" />
+    <meta name="keywords" content="AI, Agents, Trust, Privacy, Blockchain, Soulfra" />
+    <meta name="author" content="Soulfra Team" />
+    <meta name="theme-color" content="#1f2937" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://demo.soulfra.com/" />
+    <meta property="og:title" content="Soulfra Demo - Trust-Native AI Platform" />
+    <meta property="og:description" content="Experience trust-based AI routing, agent marketplace, and privacy-preserving interactions" />
+    <meta property="og:image" content="/soulfra-og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://demo.soulfra.com/" />
+    <meta property="twitter:title" content="Soulfra Demo - Trust-Native AI Platform" />
+    <meta property="twitter:description" content="Experience trust-based AI routing, agent marketplace, and privacy-preserving interactions" />
+    <meta property="twitter:image" content="/soulfra-og-image.png" />
+    
+    <title>Soulfra Demo - Trust-Native AI Platform</title>
+    
+    <style>
+      /* Loading screen styles */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+      
+      .loading-logo {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+        animation: pulse 2s infinite;
+      }
+      
+      .loading-text {
+        color: #9ca3af;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .loading-subtext {
+        color: #6b7280;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        font-size: 0.9rem;
+        text-align: center;
+        max-width: 400px;
+        line-height: 1.5;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #374151;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-top: 2rem;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-logo">🧠</div>
+      <div class="loading-text">Initializing Soulfra Demo</div>
+      <div class="loading-subtext">
+        Loading trust-native AI infrastructure with privacy-preserving routing and behavioral reputation systems
+      </div>
+      <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- React App Container -->
+    <div id="root"></div>
+    
+    <script type="module" src="/src/frontend/main.tsx"></script>
+    
+    <script>
+      // Hide loading screen when React app mounts
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.classList.add('fade-out');
+            setTimeout(() => {
+              loadingScreen.style.display = 'none';
+            }, 500);
+          }
+        }, 1000);
+      });
+      
+      // Error handling
+      window.addEventListener('error', (e) => {
+        console.error('Soulfra Demo Error:', e.error);
+      });
+      
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('Soulfra Demo Unhandled Promise Rejection:', e.reason);
+      });
+    </script>
+  </body>
+</html>
+
+---
+
+// src/frontend/main.tsx
+// React application entry point
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Dashboard } from './components/Dashboard';
+import './index.css';
+
+// Import missing components
+import { TrustScoreWidget } from './components/TrustScoreWidget';
+import { RouterDemo } from './components/RouterDemo';
+import { AgentMarketplace } from './components/AgentMarketplace';
+import { VaultViewer } from './components/VaultViewer';
+import { BillingDashboard } from './components/BillingDashboard';
+
+// Make components available globally for development
+if (import.meta.env.DEV) {
+  (window as any).SoulfraDemoComponents = {
+    Dashboard,
+    TrustScoreWidget,
+    RouterDemo,
+    AgentMarketplace,
+    VaultViewer,
+    BillingDashboard
+  };
+}
+
+// Application startup
+console.log('🚀 Starting Soulfra Demo Application');
+console.log('📅 Build Time:', __BUILD_TIME__);
+console.log('🔧 Version:', __SOULFRA_VERSION__);
+console.log('🌍 Environment:', import.meta.env.MODE);
+
+// Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Soulfra Demo Error Boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+          <div className="text-center max-w-md">
+            <h1 className="text-2xl font-bold text-red-400 mb-4">
+              🚨 Application Error
+            </h1>
+            <p className="text-gray-400 mb-4">
+              The Soulfra demo encountered an unexpected error.
+            </p>
+            <details className="text-left bg-gray-800 p-4 rounded-lg mb-4">
+              <summary className="cursor-pointer text-sm font-medium mb-2">
+                Error Details
+              </summary>
+              <pre className="text-xs text-red-300 overflow-auto">
+                {this.state.error?.stack || this.state.error?.message || 'Unknown error'}
+              </pre>
+            </details>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+            >
+              Reload Application
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Application component
+const App: React.FC = () => {
+  React.useEffect(() => {
+    // Hide loading screen after React mounts
+    const timer = setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <ErrorBoundary>
+      <Dashboard />
+    </ErrorBoundary>
+  );
+};
+
+// Render application
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// Development helpers
+if (import.meta.env.DEV) {
+  console.log('🔧 Development mode enabled');
+  console.log('📊 React DevTools available');
+  console.log('🌐 API Base URL:', import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001');
+}
+
+---
+
+// src/frontend/index.css
+/* Global styles for Soulfra Demo */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom CSS variables */
+:root {
+  --soulfra-primary: #3b82f6;
+  --soulfra-secondary: #8b5cf6;
+  --soulfra-accent: #06b6d4;
+  --soulfra-bg-primary: #111827;
+  --soulfra-bg-secondary: #1f2937;
+  --soulfra-text-primary: #f9fafb;
+  --soulfra-text-secondary: #9ca3af;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--soulfra-bg-primary);
+  color: var(--soulfra-text-primary);
+  line-height: 1.6;
+}
+
+/* Custom utility classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Focus styles for accessibility */
+.focus\:outline-soulfra:focus {
+  outline: 2px solid var(--soulfra-primary);
+  outline-offset: 2px;
+}
+
+/* Code block styling */
+pre {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: 'ui-monospace', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+code {
+  font-family: 'ui-monospace', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+  font-size: 0.875rem;
+  background-color: #374151;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Toast notifications (for future enhancement) */
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: var(--soulfra-bg-secondary);
+  color: var(--soulfra-text-primary);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --soulfra-text-primary: #ffffff;
+    --soulfra-text-secondary: #e5e7eb;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

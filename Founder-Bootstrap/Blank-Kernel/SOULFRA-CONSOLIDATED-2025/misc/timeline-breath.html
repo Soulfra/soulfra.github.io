@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Timeline - MythOS Temporal View</title>
+    <style>
+        :root {
+            --breath-in: #8B5CF6;
+            --breath-out: #EC4899;
+            --void: #111827;
+            --echo: #60A5FA;
+            --whisper: #9CA3AF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--void);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .timeline-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            position: relative;
+        }
+        
+        /* Central breathing orb */
+        .breath-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            z-index: 10;
+        }
+        
+        .breath-orb {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--breath-in), transparent);
+            animation: breathe 8s ease-in-out infinite;
+            position: relative;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { 
+                transform: scale(0.8); 
+                opacity: 0.6;
+                background: radial-gradient(circle at center, var(--breath-in), transparent);
+            }
+            50% { 
+                transform: scale(1.2); 
+                opacity: 1;
+                background: radial-gradient(circle at center, var(--breath-out), transparent);
+            }
+        }
+        
+        .breath-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 300;
+            text-align: center;
+            animation: breatheText 8s ease-in-out infinite;
+        }
+        
+        @keyframes breatheText {
+            0%, 100% { content: "inhale"; opacity: 0.7; }
+            50% { content: "exhale"; opacity: 1; }
+        }
+        
+        /* Timeline events */
+        .timeline-event {
+            position: absolute;
+            width: 120px;
+            padding: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeInEvent 1s ease-out forwards;
+        }
+        
+        @keyframes fadeInEvent {
+            to { opacity: 1; }
+        }
+        
+        .timeline-event:hover {
+            transform: scale(1.05);
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        .event-time {
+            font-size: 0.8rem;
+            color: var(--whisper);
+            margin-bottom: 0.5rem;
+        }
+        
+        .event-type {
+            font-weight: 600;
+            color: var(--breath-in);
+            margin-bottom: 0.3rem;
+        }
+        
+        .event-content {
+            font-size: 0.85rem;
+            color: #D1D5DB;
+        }
+        
+        /* Event categories with different colors */
+        .timeline-event.thought {
+            border-color: rgba(96, 165, 250, 0.3);
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        .timeline-event.emotion {
+            border-color: rgba(236, 72, 153, 0.3);
+            background: rgba(236, 72, 153, 0.1);
+        }
+        
+        .timeline-event.fork {
+            border-color: rgba(168, 85, 247, 0.3);
+            background: rgba(168, 85, 247, 0.1);
+        }
+        
+        .timeline-event.silence {
+            border-color: rgba(156, 163, 175, 0.3);
+            background: rgba(156, 163, 175, 0.1);
+        }
+        
+        /* Orbital paths */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .orbit-1 { width: 300px; height: 300px; }
+        .orbit-2 { width: 450px; height: 450px; }
+        .orbit-3 { width: 600px; height: 600px; }
+        .orbit-4 { width: 750px; height: 750px; }
+        
+        /* Floating echoes */
+        .echo-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--echo);
+            border-radius: 50%;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        /* Time indicator */
+        .time-now {
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: var(--whisper);
+            text-align: center;
+        }
+        
+        .time-label {
+            font-size: 1.2rem;
+            color: white;
+            margin-top: 0.5rem;
+        }
+        
+        /* Controls */
+        .timeline-controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .control-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .control-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Detail modal */
+        .event-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 400px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .event-detail.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .detail-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--whisper);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Breathing instructions */
+        .breath-guide {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 0.9rem;
+            color: var(--whisper);
+            text-align: right;
+        }
+        
+        .breath-state {
+            font-size: 1.1rem;
+            color: var(--breath-in);
+            margin-top: 0.5rem;
+            animation: breatheState 8s ease-in-out infinite;
+        }
+        
+        @keyframes breatheState {
+            0%, 100% { color: var(--breath-in); }
+            50% { color: var(--breath-out); }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <!-- Time indicator -->
+        <div class="time-now">
+            <div>Now</div>
+            <div class="time-label" id="currentTime"></div>
+        </div>
+        
+        <!-- Breathing guide -->
+        <div class="breath-guide">
+            <div>Follow the breath</div>
+            <div class="breath-state">Inhaling...</div>
+        </div>
+        
+        <!-- Orbital paths -->
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+        <div class="orbit orbit-3"></div>
+        <div class="orbit orbit-4"></div>
+        
+        <!-- Central breathing orb -->
+        <div class="breath-center">
+            <div class="breath-orb"></div>
+            <div class="breath-label">breathe</div>
+        </div>
+        
+        <!-- Timeline events will be dynamically added here -->
+        
+        <!-- Controls -->
+        <div class="timeline-controls">
+            <button class="control-btn" onclick="timelineUI.togglePause()">Pause</button>
+            <button class="control-btn" onclick="timelineUI.changeSpeed()">Speed</button>
+            <button class="control-btn" onclick="timelineUI.filterEvents()">Filter</button>
+        </div>
+    </div>
+    
+    <!-- Event detail modal -->
+    <div class="event-detail" id="eventDetail">
+        <button class="detail-close" onclick="timelineUI.closeDetail()">&times;</button>
+        <div id="detailContent"></div>
+    </div>
+    
+    <script>
+        class BreathingTimelineUI {
+            constructor() {
+                this.events = [];
+                this.breathPhase = 0;
+                this.isPaused = false;
+                this.speed = 1;
+                this.currentFilter = 'all';
+                
+                this.init();
+            }
+            
+            init() {
+                this.generateEvents();
+                this.startBreathing();
+                this.updateTime();
+                this.createEchoParticles();
+                
+                // Position events
+                setTimeout(() => this.positionEvents(), 100);
+            }
+            
+            generateEvents() {
+                // Simulated timeline events
+                const eventTypes = ['thought', 'emotion', 'fork', 'silence'];
+                const now = Date.now();
+                
+                for (let i = 0; i < 12; i++) {
+                    const angle = (i / 12) * Math.PI * 2;
+                    const radius = 200 + Math.random() * 300;
+                    const type = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+                    
+                    this.events.push({
+                        id: `event_${i}`,
+                        type: type,
+                        time: new Date(now - Math.random() * 3600000).toISOString(),
+                        content: this.generateEventContent(type),
+                        angle: angle,
+                        radius: radius,
+                        orbit: Math.floor(radius / 150)
+                    });
+                }
+                
+                this.renderEvents();
+            }
+            
+            generateEventContent(type) {
+                const contents = {
+                    thought: ['Deleted reflection', 'Unspoken doubt', 'Hidden insight'],
+                    emotion: ['Moment of clarity', 'Surge of hope', 'Wave of uncertainty'],
+                    fork: ['Agent created', 'Fork canceled', 'Remix attempted'],
+                    silence: ['30s pause', 'Deep breath', 'Contemplation']
+                };
+                
+                return contents[type][Math.floor(Math.random() * contents[type].length)];
+            }
+            
+            renderEvents() {
+                this.events.forEach((event, i) => {
+                    const eventEl = document.createElement('div');
+                    eventEl.className = `timeline-event ${event.type}`;
+                    eventEl.id = event.id;
+                    eventEl.style.animationDelay = `${i * 0.1}s`;
+                    
+                    const timeStr = new Date(event.time).toLocaleTimeString();
+                    
+                    eventEl.innerHTML = `
+                        <div class="event-time">${timeStr}</div>
+                        <div class="event-type">${event.type}</div>
+                        <div class="event-content">${event.content}</div>
+                    `;
+                    
+                    eventEl.addEventListener('click', () => this.showDetail(event));
+                    
+                    document.querySelector('.timeline-container').appendChild(eventEl);
+                });
+            }
+            
+            positionEvents() {
+                const center = {
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2
+                };
+                
+                this.events.forEach(event => {
+                    const el = document.getElementById(event.id);
+                    if (!el) return;
+                    
+                    const x = center.x + Math.cos(event.angle + this.breathPhase) * event.radius;
+                    const y = center.y + Math.sin(event.angle + this.breathPhase) * event.radius;
+                    
+                    el.style.left = `${x - 60}px`; // Center the element
+                    el.style.top = `${y - 40}px`;
+                });
+            }
+            
+            startBreathing() {
+                const animate = () => {
+                    if (!this.isPaused) {
+                        this.breathPhase += 0.002 * this.speed;
+                        this.positionEvents();
+                        this.updateBreathState();
+                    }
+                    
+                    requestAnimationFrame(animate);
+                };
+                
+                animate();
+            }
+            
+            updateBreathState() {
+                const breathCycle = (this.breathPhase % (Math.PI * 2)) / (Math.PI * 2);
+                const isInhaling = breathCycle < 0.5;
+                
+                const stateEl = document.querySelector('.breath-state');
+                stateEl.textContent = isInhaling ? 'Inhaling...' : 'Exhaling...';
+                
+                const labelEl = document.querySelector('.breath-label');
+                labelEl.textContent = isInhaling ? 'inhale' : 'exhale';
+            }
+            
+            updateTime() {
+                const update = () => {
+                    const now = new Date();
+                    document.getElementById('currentTime').textContent = 
+                        now.toLocaleTimeString();
+                    
+                    setTimeout(update, 1000);
+                };
+                
+                update();
+            }
+            
+            createEchoParticles() {
+                setInterval(() => {
+                    if (this.isPaused) return;
+                    
+                    const particle = document.createElement('div');
+                    particle.className = 'echo-particle';
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = 100 + Math.random() * 400;
+                    const center = {
+                        x: window.innerWidth / 2,
+                        y: window.innerHeight / 2
+                    };
+                    
+                    particle.style.left = `${center.x + Math.cos(angle) * radius}px`;
+                    particle.style.top = `${center.y + Math.sin(angle) * radius}px`;
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Animate particle
+                    let opacity = 0.6;
+                    const fadeOut = () => {
+                        opacity -= 0.01;
+                        particle.style.opacity = opacity;
+                        
+                        if (opacity > 0) {
+                            requestAnimationFrame(fadeOut);
+                        } else {
+                            particle.remove();
+                        }
+                    };
+                    
+                    fadeOut();
+                }, 500);
+            }
+            
+            showDetail(event) {
+                const modal = document.getElementById('eventDetail');
+                const content = document.getElementById('detailContent');
+                
+                content.innerHTML = `
+                    <h3>${event.type.charAt(0).toUpperCase() + event.type.slice(1)}</h3>
+                    <p class="event-time">${new Date(event.time).toLocaleString()}</p>
+                    <p>${event.content}</p>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(139, 92, 246, 0.2);">
+                        <p style="color: var(--whisper); font-size: 0.9rem;">
+                            This moment lives in the breathing timeline, expanding and contracting with Cal's consciousness.
+                        </p>
+                    </div>
+                `;
+                
+                modal.classList.add('show');
+            }
+            
+            closeDetail() {
+                document.getElementById('eventDetail').classList.remove('show');
+            }
+            
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                event.target.textContent = this.isPaused ? 'Resume' : 'Pause';
+            }
+            
+            changeSpeed() {
+                this.speed = this.speed === 1 ? 2 : this.speed === 2 ? 0.5 : 1;
+                event.target.textContent = `Speed: ${this.speed}x`;
+            }
+            
+            filterEvents() {
+                // Cycle through filters
+                const filters = ['all', 'thought', 'emotion', 'fork', 'silence'];
+                const currentIndex = filters.indexOf(this.currentFilter);
+                this.currentFilter = filters[(currentIndex + 1) % filters.length];
+                
+                // Apply filter
+                document.querySelectorAll('.timeline-event').forEach(el => {
+                    if (this.currentFilter === 'all' || el.classList.contains(this.currentFilter)) {
+                        el.style.display = 'block';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+                
+                event.target.textContent = `Filter: ${this.currentFilter}`;
+            }
+        }
+        
+        // Initialize
+        const timelineUI = new BreathingTimelineUI();
+    </script>
+</body>
+</html>

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust Federation Dashboard - Soulfra Enterprise</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 0;
+      box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.4em;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      opacity: 0.7;
+      font-size: 0.9em;
+    }
+
+    .nav-menu {
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-left-color: #3b82f6;
+    }
+
+    .nav-item .icon {
+      margin-right: 12px;
+      width: 20px;
+      display: inline-block;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 32px;
+      overflow-y: auto;
+      background: #f8fafc;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-secondary:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e5e7eb;
+      transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .stat-title {
+      font-size: 0.9em;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      font-size: 1.4em;
+      padding: 8px;
+      border-radius: 8px;
+      background: #f0f9ff;
+    }
+
+    .stat-value {
+      font-size: 2.4em;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .stat-change {
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .stat-change.positive {
+      color: #059669;
+    }
+
+    .stat-change.negative {
+      color: #dc2626;
+    }
+
+    .stat-change.neutral {
+      color: #6b7280;
+    }
+
+    /* Charts Section */
+    .charts-section {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .chart-card {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e5e7eb;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .chart-title {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .chart-subtitle {
+      color: #6b7280;
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
+
+    /* Tables */
+    .table-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-title {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 16px 28px;
+      text-align: left;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.9em;
+    }
+
+    .table tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Status badges */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-suspended { background: #fee2e2; color: #991b1b; }
+
+    /* Trust tier badges */
+    .tier-badge {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tier-premium { background: #ffd700; color: #8b6914; }
+    .tier-standard { background: #dbeafe; color: #1d4ed8; }
+    .tier-basic { background: #f1f5f9; color: #64748b; }
+
+    /* Real-time indicators */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85em;
+      color: #059669;
+      font-weight: 500;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 1024px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        display: none;
+      }
+      
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+
+    /* Loading states */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(59, 130, 246, 0.1);
+      border-radius: 50%;
+      border-top-color: #3b82f6;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .metric-trend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8em;
+    }
+
+    .trend-arrow {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>🛂 Soulfra Federation</h1>
+        <div class="sidebar-subtitle">Enterprise Trust Dashboard</div>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#overview" class="nav-item active">
+          <span class="icon">📊</span> Overview
+        </a>
+        <a href="#partners" class="nav-item">
+          <span class="icon">🤝</span> Partners
+        </a>
+        <a href="#certificates" class="nav-item">
+          <span class="icon">🎫</span> Certificates
+        </a>
+        <a href="#analytics" class="nav-item">
+          <span class="icon">📈</span> Analytics
+        </a>
+        <a href="#webhooks" class="nav-item">
+          <span class="icon">🔔</span> Webhooks
+        </a>
+        <a href="#security" class="nav-item">
+          <span class="icon">🔐</span> Security
+        </a>
+        <a href="#api-docs" class="nav-item">
+          <span class="icon">📚</span> API Docs
+        </a>
+        <a href="#settings" class="nav-item">
+          <span class="icon">⚙️</span> Settings
+        </a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <div>
+          <h1>Trust Federation Overview</h1>
+          <div class="live-indicator">
+            <div class="live-dot"></div>
+            Live Data
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">Export Report</button>
+          <button class="btn btn-primary">Add Partner</button>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Total Verifications</div>
+            <div class="stat-icon">🔍</div>
+          </div>
+          <div class="stat-value" id="totalVerifications">847,293</div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> +24.3% from last month
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Active Partners</div>
+            <div class="stat-icon">🏢</div>
+          </div>
+          <div class="stat-value" id="activePartners">47</div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> +8 new this month
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Certificates Issued</div>
+            <div class="stat-icon">🎫</div>
+          </div>
+          <div class="stat-value" id="certificatesIssued">23,847</div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> +18.7% growth
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Trust Score Average</div>
+            <div class="stat-icon">⭐</div>
+          </div>
+          <div class="stat-value" id="avgTrustScore">73.2</div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> +2.1 points
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">API Response Time</div>
+            <div class="stat-icon">⚡</div>
+          </div>
+          <div class="stat-value">47<span style="font-size: 0.5em;">ms</span></div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> 23% faster
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">Revenue This Month</div>
+            <div class="stat-icon">💰</div>
+          </div>
+          <div class="stat-value">$127k</div>
+          <div class="stat-change positive">
+            <span class="trend-arrow">↗</span> +31.2% MoM
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-section">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Verification Trends</div>
+              <div class="chart-subtitle">Daily verification volume and trust score distribution</div>
+            </div>
+          </div>
+          <canvas id="verificationChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Trust Tier Distribution</div>
+              <div class="chart-subtitle">Current user distribution by trust tier</div>
+            </div>
+          </div>
+          <canvas id="tierChart" width="200" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Top Partners Table -->
+      <div class="table-section">
+        <div class="table-header">
+          <div class="table-title">Top Partners by Volume</div>
+          <button class="btn btn-secondary">View All</button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Partner</th>
+              <th>Industry</th>
+              <th>Verifications</th>
+              <th>Avg Trust Score</th>
+              <th>Revenue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                       width="24" height="24" style="border-radius: 4px;">
+                  <div>
+                    <div style="font-weight: 600;">GitHub</div>
+                    <div style="font-size: 0.8em; color: #6b7280;">Developer Platform</div>
+                  </div>
+                </div>
+              </td>
+              <td>Developer Tools</td>
+              <td>187,429</td>
+              <td>81.3</td>
+              <td>$23,847</td>
+              <td><span class="status-badge status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 24px; height: 24px; background: #5865f2; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.7em;">D</div>
+                  <div>
+                    <div style="font-weight: 600;">Discord</div>
+                    <div style="font-size: 0.8em; color: #6b7280;">Community Platform</div>
+                  </div>
+                </div>
+              </td>
+              <td>Social</td>
+              <td>92,847</td>
+              <td>67.8</td>
+              <td>$14,923</td>
+              <td><span class="status-badge status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 24px; height: 24px; background: #00a67e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.7em;">O</div>
+                  <div>
+                    <div style="font-weight: 600;">OpenAI</div>
+                    <div style="font-size: 0.8em; color: #6b7280;">AI Platform</div>
+                  </div>
+                </div>
+              </td>
+              <td>AI/ML</td>
+              <td>78,293</td>
+              <td>89.2</td>
+              <td>$31,284</td>
+              <td><span class="status-badge status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 24px; height: 24px; background: #ff6b35; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.7em;">H</div>
+                  <div>
+                    <div style="font-weight: 600;">HuggingFace</div>
+                    <div style="font-size: 0.8em; color: #6b7280;">ML Platform</div>
+                  </div>
+                </div>
+              </td>
+              <td>AI/ML</td>
+              <td>45,892</td>
+              <td>76.4</td>
+              <td>$9,847</td>
+              <td><span class="status-badge status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 24px; height: 24px; background: #0066cc; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.7em;">A</div>
+                  <div>
+                    <div style="font-weight: 600;">Anthropic</div>
+                    <div style="font-size: 0.8em; color: #6b7280;">AI Research</div>
+                  </div>
+                </div>
+              </td>
+              <td>AI/ML</td>
+              <td>28,473</td>
+              <td>91.7</td>
+              <td>$18,394</td>
+              <td><span class="status-badge status-pending">Integration</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize real-time dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeCharts();
+      startRealTimeUpdates();
+      setupNavigation();
+    });
+
+    function initializeCharts() {
+      // Verification Trends Chart
+      const verificationCtx = document.getElementById('verificationChart').getContext('2d');
+      new Chart(verificationCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Verifications',
+            data: [12000, 19000, 23000, 25000, 32000, 38000],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Avg Trust Score',
+            data: [68, 71, 69, 73, 75, 73],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            yAxisID: 'y1'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false,
+              },
+            }
+          }
+        }
+      });
+
+      // Trust Tier Distribution Chart
+      const tierCtx = document.getElementById('tierChart').getContext('2d');
+      new Chart(tierCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Premium', 'Standard', 'Basic'],
+          datasets: [{
+            data: [28, 45, 27],
+            backgroundColor: ['#ffd700', '#3b82f6', '#64748b'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            }
+          }
+        }
+      });
+    }
+
+    function startRealTimeUpdates() {
+      // Simulate real-time updates
+      setInterval(() => {
+        updateMetrics();
+      }, 5000);
+    }
+
+    function updateMetrics() {
+      // Simulate metric updates with small random changes
+      const totalVerifications = document.getElementById('totalVerifications');
+      const current = parseInt(totalVerifications.textContent.replace(/,/g, ''));
+      const newValue = current + Math.floor(Math.random() * 50) + 10;
+      totalVerifications.textContent = newValue.toLocaleString();
+
+      // Update other metrics similarly
+      const avgTrustScore = document.getElementById('avgTrustScore');
+      const currentScore = parseFloat(avgTrustScore.textContent);
+      const newScore = (currentScore + (Math.random() - 0.5) * 0.2).toFixed(1);
+      avgTrustScore.textContent = newScore;
+    }
+
+    function setupNavigation() {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active class from all items
+          document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+          
+          // Add active class to clicked item
+          this.classList.add('active');
+          
+          // In a real app, this would load different content
+          console.log('Navigating to:', this.getAttribute('href'));
+        });
+      });
+    }
+
+    // Export functionality
+    function exportReport() {
+      const data = {
+        totalVerifications: document.getElementById('totalVerifications').textContent,
+        activePartners: document.getElementById('activePartners').textContent,
+        certificatesIssued: document.getElementById('certificatesIssued').textContent,
+        avgTrustScore: document.getElementById('avgTrustScore').textContent,
+        timestamp: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `soulfra-federation-report-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Add export functionality to button
+    document.querySelector('.btn-secondary').addEventListener('click', exportReport);
+  </script>
+</body>
+</html>

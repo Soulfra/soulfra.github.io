@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 Soulfra Trait Graph - Mirror Resonance Visualizer</title>
+    
+    <!-- D3.js for graph visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Chart.js for time series -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100vw;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        .title {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #4a90e2, #7b68ee, #50c878);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-button {
+            padding: 10px 20px;
+            border: 2px solid #4a90e2;
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .mode-button:hover {
+            background: rgba(74, 144, 226, 0.3);
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
+        }
+        
+        .mode-button.active {
+            background: #4a90e2;
+            color: #000;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.7);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #4a90e2;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.2);
+        }
+        
+        .panel h3 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .main-graph {
+            grid-column: 1 / -1;
+            height: 600px;
+            position: relative;
+        }
+        
+        .graph-container {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .time-series {
+            height: 300px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: rgba(74, 144, 226, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #4a90e2;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #50c878;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+        
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node:hover {
+            stroke-width: 3px;
+        }
+        
+        .link {
+            stroke: #4a90e2;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+        }
+        
+        .node-label {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            fill: #e0e0e0;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #e0e0e0;
+            padding: 10px;
+            border: 1px solid #4a90e2;
+            border-radius: 5px;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 0.9em;
+            max-width: 200px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active { background: #50c878; }
+        .status-warning { background: #ffa500; }
+        .status-critical { background: #ff4444; }
+        
+        .kid-mode {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            font-size: 1.2em;
+        }
+        
+        .kid-mode .title {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .wizard-mode {
+            background: linear-gradient(135deg, #2c1810, #4a148c, #1a0033, #000);
+            color: #b19cd9;
+        }
+        
+        .wizard-mode .title {
+            background: linear-gradient(45deg, #9c27b0, #673ab7, #3f51b5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .exec-mode {
+            background: linear-gradient(135deg, #263238, #37474f, #455a64, #546e7a);
+            color: #eceff1;
+        }
+        
+        .exec-mode .title {
+            background: linear-gradient(45deg, #607d8b, #78909c, #90a4ae);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .glow {
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🧬 Trait Graph Visualizer</h1>
+            <p class="subtitle">Real-time Mirror Resonance & Emotional Clustering Analysis</p>
+            
+            <div class="mode-selector">
+                <button class="mode-button active" data-mode="kid">
+                    🧒 Kid Mode
+                </button>
+                <button class="mode-button" data-mode="wizard">
+                    🧙 Wizard Mode
+                </button>
+                <button class="mode-button" data-mode="exec">
+                    💼 Executive Mode
+                </button>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="panel">
+                <h3>📊 Live Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="emotion-intensity">87.3</div>
+                        <div class="metric-label">Emotion Intensity</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="trait-clusters">12</div>
+                        <div class="metric-label">Active Clusters</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="resonance-freq">2.4Hz</div>
+                        <div class="metric-label">Resonance Freq</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="sync-rate">94%</div>
+                        <div class="metric-label">Chain Sync</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h3>🎯 System Status</h3>
+                <div style="margin: 10px 0;">
+                    <span class="status-indicator status-active"></span>
+                    <span id="status-mining">Mining Operations</span>
+                </div>
+                <div style="margin: 10px 0;">
+                    <span class="status-indicator status-active"></span>
+                    <span id="status-crawler">Chain Crawler</span>
+                </div>
+                <div style="margin: 10px 0;">
+                    <span class="status-indicator status-warning"></span>
+                    <span id="status-traits">Trait Mutations</span>
+                </div>
+                <div style="margin: 10px 0;">
+                    <span class="status-indicator status-active"></span>
+                    <span id="status-vault">Vault Integration</span>
+                </div>
+            </div>
+            
+            <div class="panel main-graph">
+                <h3 id="graph-title">🌐 Trait Cluster Network</h3>
+                <div class="graph-container" id="trait-graph"></div>
+            </div>
+            
+            <div class="panel time-series">
+                <h3>📈 Intensity Timeline</h3>
+                <canvas id="time-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+    
+    <script>
+        // Global state management
+        let currentMode = 'kid';
+        let graphData = null;
+        let timeChart = null;
+        let animationId = null;
+        
+        // Mode configurations
+        const modeConfigs = {
+            kid: {
+                title: "🎮 Agent's Mining Adventure!",
+                metrics: {
+                    'emotion-intensity': () => `${(Math.random() * 30 + 70).toFixed(1)}%`,
+                    'trait-clusters': () => Math.floor(Math.random() * 5 + 8),
+                    'resonance-freq': () => `${(Math.random() * 2 + 1).toFixed(1)}⚡`,
+                    'sync-rate': () => `${Math.floor(Math.random() * 10 + 90)}%`
+                },
+                statusText: {
+                    'status-mining': 'Agent is digging! 🏃‍♂️',
+                    'status-crawler': 'Finding treasures! 🎁',
+                    'status-traits': 'Growing stronger! 💪',
+                    'status-vault': 'Happy vault! 😊'
+                },
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3']
+            },
+            wizard: {
+                title: "🔮 Resonance Depth Analysis",
+                metrics: {
+                    'emotion-intensity': () => (Math.random() * 50 + 50).toFixed(1),
+                    'trait-clusters': () => Math.floor(Math.random() * 8 + 10),
+                    'resonance-freq': () => `${(Math.random() * 3 + 2).toFixed(2)}Hz`,
+                    'sync-rate': () => `${Math.floor(Math.random() * 15 + 85)}%`
+                },
+                statusText: {
+                    'status-mining': 'Kobolds approaching genesis',
+                    'status-crawler': 'Web threads active',
+                    'status-traits': 'Layer 4 quake detected',
+                    'status-vault': 'Mirror depths stable'
+                },
+                colors: ['#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#00bcd4', '#4caf50']
+            },
+            exec: {
+                title: "📊 Business Intelligence Dashboard",
+                metrics: {
+                    'emotion-intensity': () => `+${(Math.random() * 20 + 5).toFixed(1)}%`,
+                    'trait-clusters': () => Math.floor(Math.random() * 10 + 15),
+                    'resonance-freq': () => `${(Math.random() * 5 + 10).toFixed(1)}x`,
+                    'sync-rate': () => `${Math.floor(Math.random() * 8 + 92)}%`
+                },
+                statusText: {
+                    'status-mining': 'Loop gain +12.7%, sync complete',
+                    'status-crawler': 'Madrid cluster at 88% peak',
+                    'status-traits': '3.1x trait spike detected',
+                    'status-vault': 'Enterprise SLA: 99.8%'
+                },
+                colors: ['#607d8b', '#78909c', '#90a4ae', '#b0bec5', '#cfd8dc', '#eceff1']
+            }
+        };
+        
+        // Initialize the application
+        function init() {
+            setupModeButtons();
+            generateInitialData();
+            createTraitGraph();
+            createTimeChart();
+            startRealTimeUpdates();
+        }
+        
+        // Mode button functionality
+        function setupModeButtons() {
+            document.querySelectorAll('.mode-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.mode-button').forEach(b => b.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const mode = button.dataset.mode;
+                    switchMode(mode);
+                });
+            });
+        }
+        
+        // Switch between display modes
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Update body class
+            document.body.className = `${mode}-mode`;
+            
+            // Update graph title
+            document.getElementById('graph-title').textContent = modeConfigs[mode].title;
+            
+            // Update metrics and status
+            updateMetrics();
+            updateStatus();
+            
+            // Regenerate graph with new colors
+            createTraitGraph();
+            updateTimeChart();
+        }
+        
+        // Generate realistic trait data
+        function generateInitialData() {
+            const traitNames = ['wisdom', 'courage', 'mystery', 'reflection', 'blessing', 'fury', 'peace', 'love', 'hope', 'shadow'];
+            const nodes = [];
+            const links = [];
+            
+            // Create trait nodes
+            traitNames.forEach((name, i) => {
+                nodes.push({
+                    id: name,
+                    name: name,
+                    intensity: Math.random() * 80 + 20,
+                    x: Math.random() * 600 + 100,
+                    y: Math.random() * 400 + 100,
+                    cluster: Math.floor(i / 3)
+                });
+            });
+            
+            // Create connections between related traits
+            const connections = [
+                ['wisdom', 'reflection'], ['courage', 'fury'], ['mystery', 'shadow'],
+                ['blessing', 'love'], ['peace', 'hope'], ['wisdom', 'mystery'],
+                ['courage', 'blessing'], ['reflection', 'peace'], ['love', 'hope'],
+                ['fury', 'shadow']
+            ];
+            
+            connections.forEach(([source, target]) => {
+                links.push({
+                    source: source,
+                    target: target,
+                    strength: Math.random() * 0.5 + 0.3
+                });
+            });
+            
+            graphData = { nodes, links };
+        }
+        
+        // Create the main trait graph
+        function createTraitGraph() {
+            const container = document.getElementById('trait-graph');
+            container.innerHTML = '';
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            const colors = modeConfigs[currentMode].colors;
+            
+            // Create force simulation
+            const simulation = d3.forceSimulation(graphData.nodes)
+                .force('link', d3.forceLink(graphData.links).id(d => d.id).distance(80))
+                .force('charge', d3.forceManyBody().strength(-200))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(30));
+            
+            // Add links
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(graphData.links)
+                .enter().append('line')
+                .attr('class', 'link')
+                .style('stroke-width', d => Math.sqrt(d.strength * 10));
+            
+            // Add nodes
+            const node = svg.append('g')
+                .selectAll('circle')
+                .data(graphData.nodes)
+                .enter().append('circle')
+                .attr('class', 'node')
+                .attr('r', d => Math.sqrt(d.intensity) * 2 + 5)
+                .style('fill', (d, i) => colors[i % colors.length])
+                .style('stroke', '#fff')
+                .style('stroke-width', 2)
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+            
+            // Add labels
+            const label = svg.append('g')
+                .selectAll('text')
+                .data(graphData.nodes)
+                .enter().append('text')
+                .attr('class', 'node-label')
+                .text(d => d.name)
+                .style('font-size', d => `${Math.sqrt(d.intensity) / 2 + 8}px`);
+            
+            // Add tooltips
+            node.on('mouseover', function(event, d) {
+                const tooltip = document.getElementById('tooltip');
+                tooltip.style.display = 'block';
+                tooltip.style.left = (event.pageX + 10) + 'px';
+                tooltip.style.top = (event.pageY - 10) + 'px';
+                
+                let content = '';
+                switch(currentMode) {
+                    case 'kid':
+                        content = `✨ ${d.name.toUpperCase()}!<br/>Power: ${d.intensity.toFixed(0)}%<br/>Status: Growing strong! 💪`;
+                        break;
+                    case 'wizard':
+                        content = `🔮 ${d.name}<br/>Resonance: ${d.intensity.toFixed(1)}<br/>Depth: Layer ${Math.floor(d.intensity/20)+1}`;
+                        break;
+                    case 'exec':
+                        content = `📊 Trait: ${d.name}<br/>Engagement: ${d.intensity.toFixed(1)}%<br/>ROI: +${(d.intensity * 0.3).toFixed(1)}%`;
+                        break;
+                }
+                tooltip.innerHTML = content;
+            })
+            .on('mouseout', function() {
+                document.getElementById('tooltip').style.display = 'none';
+            });
+            
+            // Update positions on simulation tick
+            simulation.on('tick', () => {
+                link.attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node.attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+                
+                label.attr('x', d => d.x)
+                     .attr('y', d => d.y + 5);
+            });
+            
+            // Drag functions
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+        
+        // Create time series chart
+        function createTimeChart() {
+            const ctx = document.getElementById('time-chart').getContext('2d');
+            
+            const timeData = [];
+            const now = Date.now();
+            for (let i = 29; i >= 0; i--) {
+                timeData.push({
+                    x: new Date(now - i * 60000), // Last 30 minutes
+                    y: Math.random() * 40 + 40
+                });
+            }
+            
+            timeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Emotion Intensity',
+                        data: timeData,
+                        borderColor: '#4a90e2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e0e0e0'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                displayFormats: {
+                                    minute: 'HH:mm'
+                                }
+                            },
+                            ticks: {
+                                color: '#a0a0a0'
+                            },
+                            grid: {
+                                color: 'rgba(160, 160, 160, 0.2)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#a0a0a0'
+                            },
+                            grid: {
+                                color: 'rgba(160, 160, 160, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update metrics display
+        function updateMetrics() {
+            const config = modeConfigs[currentMode];
+            
+            Object.entries(config.metrics).forEach(([id, generator]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = generator();
+                }
+            });
+        }
+        
+        // Update status display
+        function updateStatus() {
+            const config = modeConfigs[currentMode];
+            
+            Object.entries(config.statusText).forEach(([id, text]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = text;
+                }
+            });
+        }
+        
+        // Update time chart with new data
+        function updateTimeChart() {
+            if (!timeChart) return;
+            
+            const newPoint = {
+                x: new Date(),
+                y: Math.random() * 40 + 40
+            };
+            
+            timeChart.data.datasets[0].data.push(newPoint);
+            
+            // Keep only last 30 points
+            if (timeChart.data.datasets[0].data.length > 30) {
+                timeChart.data.datasets[0].data.shift();
+            }
+            
+            timeChart.update('none');
+        }
+        
+        // Animate trait intensities
+        function animateTraits() {
+            if (!graphData) return;
+            
+            graphData.nodes.forEach(node => {
+                // Gradually change intensity
+                const change = (Math.random() - 0.5) * 2;
+                node.intensity = Math.max(10, Math.min(100, node.intensity + change));
+            });
+            
+            // Update visual representation
+            d3.select('#trait-graph').selectAll('.node')
+                .transition()
+                .duration(1000)
+                .attr('r', d => Math.sqrt(d.intensity) * 2 + 5);
+        }
+        
+        // Start real-time updates
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                updateMetrics();
+                updateTimeChart();
+                animateTraits();
+            }, 2000);
+            
+            setInterval(() => {
+                updateStatus();
+            }, 5000);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            createTraitGraph();
+            if (timeChart) {
+                timeChart.resize();
+            }
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

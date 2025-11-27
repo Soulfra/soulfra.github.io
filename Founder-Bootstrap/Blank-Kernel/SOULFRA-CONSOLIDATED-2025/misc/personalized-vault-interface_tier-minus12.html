@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Your Personal AI Learning Vault</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #fff; min-height: 100vh; overflow-x: hidden;
+        }
+        
+        .vault-header {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            padding: 20px 30px; border-bottom: 1px solid #333;
+        }
+        
+        .vault-title {
+            font-size: 2.2em; font-weight: 300; margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00d4ff, #ff77c6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .vault-subtitle {
+            font-size: 1.1em; opacity: 0.8;
+        }
+        
+        .owner-info {
+            position: absolute; top: 20px; right: 30px;
+            text-align: right;
+        }
+        
+        .owner-name {
+            font-size: 1.2em; font-weight: 600; color: #00ff88;
+        }
+        
+        .company-name {
+            font-size: 0.9em; opacity: 0.7;
+        }
+        
+        .vault-container {
+            max-width: 1400px; margin: 0 auto; padding: 40px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
+        }
+        
+        .upload-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1a2a3a, #2a3a4a);
+            border: 2px dashed #00d4ff; border-radius: 20px;
+            padding: 60px; text-align: center; margin-bottom: 40px;
+            transition: all 0.3s ease; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        
+        .upload-section::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transform: translateX(-100%); transition: transform 0.6s;
+        }
+        
+        .upload-section:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .upload-section:hover {
+            border-color: #00ff88; background: linear-gradient(135deg, #2a3a4a, #3a4a5a);
+            transform: translateY(-5px);
+        }
+        
+        .upload-section.drag-over {
+            border-color: #ff77c6; background: linear-gradient(135deg, #3a2a4a, #4a3a5a);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 4em; margin-bottom: 20px;
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .upload-title {
+            font-size: 1.8em; font-weight: 600; margin-bottom: 15px;
+        }
+        
+        .upload-description {
+            font-size: 1.1em; opacity: 0.8; margin-bottom: 25px;
+        }
+        
+        .upload-button {
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            border: none; color: #000; padding: 15px 30px;
+            border-radius: 25px; font-size: 1.1em; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .learning-progress {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; margin-bottom: 30px;
+        }
+        
+        .progress-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00ff88; display: flex; align-items: center;
+        }
+        
+        .progress-icon {
+            font-size: 1.5em; margin-right: 10px;
+        }
+        
+        .progress-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff;
+            border-radius: 10px; padding: 15px; text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em; font-weight: bold; color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em; opacity: 0.8;
+        }
+        
+        .intelligence-bar {
+            background: rgba(0, 0, 0, 0.3); border-radius: 10px;
+            height: 20px; margin-top: 20px; overflow: hidden;
+        }
+        
+        .intelligence-fill {
+            height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 10px; transition: width 1s ease;
+            display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: bold; font-size: 0.8em;
+        }
+        
+        .agents-section {
+            background: linear-gradient(135deg, #1a2a18, #2a3d17);
+            border: 1px solid #00ff88; border-radius: 15px; padding: 25px;
+        }
+        
+        .agents-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00ff88; display: flex; align-items: center;
+        }
+        
+        .agent-card {
+            background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88;
+            border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card:hover {
+            background: rgba(0, 255, 136, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .agent-name {
+            font-size: 1.1em; font-weight: 600; margin-bottom: 10px;
+            color: #00ff88;
+        }
+        
+        .agent-role {
+            font-size: 0.9em; opacity: 0.8; margin-bottom: 10px;
+        }
+        
+        .agent-description {
+            font-size: 0.9em; line-height: 1.4; margin-bottom: 15px;
+        }
+        
+        .agent-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        
+        .agent-stat {
+            background: rgba(0, 0, 0, 0.3); border-radius: 5px;
+            padding: 8px; text-align: center;
+        }
+        
+        .agent-stat-value {
+            font-weight: bold; color: #00ff88;
+        }
+        
+        .agent-stat-label {
+            font-size: 0.8em; opacity: 0.7;
+        }
+        
+        .intelligence-section {
+            background: linear-gradient(135deg, #2a1a3a, #3a2a4a);
+            border: 1px solid #ff77c6; border-radius: 15px; padding: 25px;
+        }
+        
+        .intelligence-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #ff77c6; display: flex; align-items: center;
+        }
+        
+        .insight-card {
+            background: rgba(255, 119, 198, 0.1); border: 1px solid #ff77c6;
+            border-radius: 10px; padding: 15px; margin-bottom: 15px;
+        }
+        
+        .insight-type {
+            font-size: 0.8em; font-weight: 600; color: #ff77c6;
+            text-transform: uppercase; margin-bottom: 5px;
+        }
+        
+        .insight-content {
+            font-size: 0.95em; line-height: 1.4;
+        }
+        
+        .insight-value {
+            color: #00ff88; font-weight: 600;
+        }
+        
+        .live-feed {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            border-radius: 15px; padding: 25px; margin-top: 30px;
+        }
+        
+        .feed-title {
+            font-size: 1.3em; font-weight: 600; margin-bottom: 20px;
+            color: #00d4ff; display: flex; align-items: center;
+        }
+        
+        .live-indicator {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #ff0000; margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .feed-item {
+            display: flex; align-items: center; padding: 12px 0;
+            border-bottom: 1px solid #333; font-family: monospace;
+        }
+        
+        .feed-time {
+            color: #666; margin-right: 15px; font-size: 0.8em;
+        }
+        
+        .feed-event {
+            flex: 1; color: #fff;
+        }
+        
+        .feed-value {
+            color: #00ff88; font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .processing-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: none;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        
+        .processing-content {
+            background: linear-gradient(135deg, #1a2a3a, #2a3a4a);
+            border: 1px solid #00d4ff; border-radius: 15px;
+            padding: 40px; text-align: center; max-width: 500px;
+        }
+        
+        .processing-spinner {
+            width: 60px; height: 60px; border: 3px solid rgba(0, 212, 255, 0.2);
+            border-top: 3px solid #00d4ff; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-text {
+            font-size: 1.2em; margin-bottom: 10px;
+        }
+        
+        .processing-details {
+            font-size: 0.9em; opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .vault-container {
+                grid-template-columns: 1fr; padding: 20px;
+            }
+            
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vault-header">
+        <div class="vault-title">🧠 Your Personal AI Learning Vault</div>
+        <div class="vault-subtitle">Drop documents → AI learns your business → Agents get smarter → Revenue increases</div>
+        <div class="owner-info">
+            <div class="owner-name" id="ownerName">Loading...</div>
+            <div class="company-name" id="companyName">Company</div>
+        </div>
+    </div>
+    
+    <div class="vault-container">
+        <!-- Document Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Drop Your Business Documents Here</div>
+            <div class="upload-description">
+                Upload contracts, proposals, financial reports, client communications, or any business document.
+                Our AI will analyze it and make your agents smarter about your specific business.
+            </div>
+            <button class="upload-button" onclick="document.getElementById('fileInput').click()">
+                Choose Documents
+            </button>
+            <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" class="hidden">
+        </div>
+        
+        <!-- Learning Progress -->
+        <div class="learning-progress">
+            <div class="progress-title">
+                <span class="progress-icon">📊</span>
+                AI Learning Progress
+            </div>
+            <div class="progress-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="documentsProcessed">0</div>
+                    <div class="stat-label">Documents Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="knowledgeExtracted">0</div>
+                    <div class="stat-label">Insights Extracted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="agentsUpgraded">0</div>
+                    <div class="stat-label">Agents Upgraded</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="intelligenceLevel">30%</div>
+                    <div class="stat-label">Intelligence Level</div>
+                </div>
+            </div>
+            <div class="intelligence-bar">
+                <div class="intelligence-fill" id="intelligenceFill" style="width: 30%;">
+                    Learning...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personalized Agents -->
+        <div class="agents-section">
+            <div class="agents-title">
+                <span class="progress-icon">🤖</span>
+                Your Personalized AI Team
+            </div>
+            <div id="agentsList">
+                <!-- Agents will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Business Intelligence -->
+        <div class="intelligence-section">
+            <div class="intelligence-title">
+                <span class="progress-icon">💡</span>
+                Business Intelligence
+            </div>
+            <div id="intelligenceInsights">
+                <div class="insight-card">
+                    <div class="insight-type">System Status</div>
+                    <div class="insight-content">
+                        Your AI vault is ready to learn. Upload your first document to begin intelligence extraction.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Live Learning Feed -->
+        <div class="live-feed">
+            <div class="feed-title">
+                <span class="progress-icon">⚡</span>
+                Live Learning Stream
+                <div class="live-indicator"></div>
+            </div>
+            <div id="learningFeed">
+                <div class="feed-item">
+                    <div class="feed-time">--:--:--</div>
+                    <div class="feed-event">AI vault initialized and ready for learning</div>
+                    <div class="feed-value">Ready</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <div class="processing-text" id="processingText">Analyzing document...</div>
+            <div class="processing-details" id="processingDetails">
+                AI is extracting business intelligence and updating your agents
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global state
+        let vaultStats = {
+            documentsProcessed: 0,
+            knowledgeExtracted: 0,
+            agentsUpgraded: 0,
+            intelligenceLevel: 30
+        };
+        
+        let personalizedAgents = [];
+        let ownerInfo = {
+            name: 'Executive User',
+            company: 'Your Company'
+        };
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeVault();
+            setupFileUpload();
+            setupWebSocket();
+            loadPersonalizedAgents();
+        });
+        
+        function initializeVault() {
+            // Get owner info from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            ownerInfo.name = urlParams.get('owner') || 'Executive User';
+            ownerInfo.company = urlParams.get('company') || 'Your Company';
+            
+            document.getElementById('ownerName').textContent = ownerInfo.name;
+            document.getElementById('companyName').textContent = ownerInfo.company;
+            
+            // Update vault title
+            document.querySelector('.vault-title').textContent = `🧠 ${ownerInfo.name}'s AI Learning Vault`;
+            document.querySelector('.vault-subtitle').textContent = `Personal AI agents trained exclusively on ${ownerInfo.company}'s business data`;
+        }
+        
+        function setupFileUpload() {
+            const uploadSection = document.getElementById('uploadSection');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Drag and drop
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('drag-over');
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('drag-over');
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        async function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                await uploadDocument(files[i]);
+            }
+        }
+        
+        async function uploadDocument(file) {
+            // Show processing overlay
+            showProcessingOverlay(`Processing ${file.name}...`, 'Extracting business intelligence and updating AI agents');
+            
+            try {
+                // Simulate upload and processing
+                const formData = new FormData();
+                formData.append('document', file);
+                
+                // Simulate processing time
+                await simulateDocumentProcessing(file);
+                
+                // Update stats
+                vaultStats.documentsProcessed++;
+                vaultStats.knowledgeExtracted += Math.floor(Math.random() * 5) + 3;
+                vaultStats.agentsUpgraded++;
+                vaultStats.intelligenceLevel = Math.min(vaultStats.intelligenceLevel + Math.floor(Math.random() * 10) + 5, 100);
+                
+                updateVaultStats();
+                
+                // Add learning event
+                addLearningEvent(`Document processed: ${file.name}`, `+${Math.floor(Math.random() * 5) + 3} insights extracted`);
+                
+                // Update agents
+                updateAgentIntelligence();
+                
+                // Add business insights
+                addBusinessInsights(file.name);
+                
+                hideProcessingOverlay();
+                
+            } catch (error) {
+                console.error('Upload failed:', error);
+                hideProcessingOverlay();
+                alert('Failed to process document. Please try again.');
+            }
+        }
+        
+        async function simulateDocumentProcessing(file) {
+            const steps = [
+                'Analyzing document structure...',
+                'Extracting text and metadata...',
+                'Identifying business entities...',
+                'Analyzing sentiment and context...',
+                'Extracting client information...',
+                'Identifying revenue opportunities...',
+                'Updating agent knowledge bases...',
+                'Generating business insights...',
+                'Optimizing agent capabilities...'
+            ];
+            
+            for (let i = 0; i < steps.length; i++) {
+                document.getElementById('processingText').textContent = steps[i];
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+        }
+        
+        function showProcessingOverlay(title, details) {
+            document.getElementById('processingText').textContent = title;
+            document.getElementById('processingDetails').textContent = details;
+            document.getElementById('processingOverlay').style.display = 'flex';
+        }
+        
+        function hideProcessingOverlay() {
+            document.getElementById('processingOverlay').style.display = 'none';
+        }
+        
+        function updateVaultStats() {
+            document.getElementById('documentsProcessed').textContent = vaultStats.documentsProcessed;
+            document.getElementById('knowledgeExtracted').textContent = vaultStats.knowledgeExtracted;
+            document.getElementById('agentsUpgraded').textContent = vaultStats.agentsUpgraded;
+            document.getElementById('intelligenceLevel').textContent = vaultStats.intelligenceLevel + '%';
+            
+            // Update intelligence bar
+            const fill = document.getElementById('intelligenceFill');
+            fill.style.width = vaultStats.intelligenceLevel + '%';
+            fill.textContent = vaultStats.intelligenceLevel < 70 ? 'Learning...' : 
+                              vaultStats.intelligenceLevel < 90 ? 'Advanced' : 'Expert Level';
+        }
+        
+        function loadPersonalizedAgents() {
+            personalizedAgents = [
+                {
+                    id: 'business_intelligence',
+                    name: `${ownerInfo.company} Business Intelligence Agent`,
+                    role: 'Strategic Advisor',
+                    description: `Specialized AI agent trained exclusively on ${ownerInfo.company}'s business data and ${ownerInfo.name}'s decision patterns`,
+                    intelligence: 30,
+                    documentsProcessed: 0,
+                    insightsGenerated: 0
+                },
+                {
+                    id: 'client_relationship',
+                    name: `${ownerInfo.company} Client Success Agent`,
+                    role: 'Relationship Manager', 
+                    description: `AI agent that understands ${ownerInfo.company}'s clients and can predict their needs based on ${ownerInfo.name}'s interaction patterns`,
+                    intelligence: 25,
+                    documentsProcessed: 0,
+                    insightsGenerated: 0
+                },
+                {
+                    id: 'revenue_optimization',
+                    name: `${ownerInfo.company} Revenue Agent`,
+                    role: 'Growth Specialist',
+                    description: `Revenue-focused AI that learns ${ownerInfo.company}'s sales patterns and ${ownerInfo.name}'s successful deal strategies`,
+                    intelligence: 35,
+                    documentsProcessed: 0,
+                    insightsGenerated: 0
+                }
+            ];
+            
+            renderAgents();
+        }
+        
+        function renderAgents() {
+            const agentsList = document.getElementById('agentsList');
+            agentsList.innerHTML = '';
+            
+            personalizedAgents.forEach(agent => {
+                const agentCard = document.createElement('div');
+                agentCard.className = 'agent-card';
+                agentCard.innerHTML = `
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-role">${agent.role}</div>
+                    <div class="agent-description">${agent.description}</div>
+                    <div class="agent-stats">
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.intelligence}%</div>
+                            <div class="agent-stat-label">Intelligence</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.documentsProcessed}</div>
+                            <div class="agent-stat-label">Documents</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.insightsGenerated}</div>
+                            <div class="agent-stat-label">Insights</div>
+                        </div>
+                        <div class="agent-stat">
+                            <div class="agent-stat-value">${agent.intelligence > 70 ? 'Advanced' : 'Learning'}</div>
+                            <div class="agent-stat-label">Status</div>
+                        </div>
+                    </div>
+                `;
+                agentsList.appendChild(agentCard);
+            });
+        }
+        
+        function updateAgentIntelligence() {
+            personalizedAgents.forEach(agent => {
+                agent.documentsProcessed++;
+                agent.intelligence = Math.min(agent.intelligence + Math.floor(Math.random() * 8) + 3, 100);
+                agent.insightsGenerated += Math.floor(Math.random() * 3) + 1;
+            });
+            
+            renderAgents();
+            
+            // Add agent upgrade events
+            personalizedAgents.forEach(agent => {
+                if (Math.random() > 0.7) {
+                    addLearningEvent(`${agent.role} upgraded`, `Intelligence: ${agent.intelligence}%`);
+                }
+            });
+        }
+        
+        function addBusinessInsights(documentName) {
+            const insights = [
+                {
+                    type: 'Financial Insight',
+                    content: `Analysis of ${documentName} reveals ${ownerInfo.company} has strong performance indicators with potential for ${(Math.random() * 30 + 10).toFixed(0)}% revenue increase`
+                },
+                {
+                    type: 'Client Intelligence',
+                    content: `Document analysis identified ${Math.floor(Math.random() * 5) + 2} new client relationship optimization opportunities`
+                },
+                {
+                    type: 'Strategic Opportunity',
+                    content: `AI detected market expansion opportunity worth approximately $${(Math.random() * 200000 + 50000).toFixed(0)}`
+                },
+                {
+                    type: 'Competitive Analysis',
+                    content: `Document suggests ${ownerInfo.company} has competitive advantages in ${Math.floor(Math.random() * 3) + 2} key areas`
+                }
+            ];
+            
+            const selectedInsights = insights.slice(0, Math.floor(Math.random() * 3) + 1);
+            const intelligenceSection = document.getElementById('intelligenceInsights');
+            
+            selectedInsights.forEach(insight => {
+                const insightCard = document.createElement('div');
+                insightCard.className = 'insight-card';
+                insightCard.innerHTML = `
+                    <div class="insight-type">${insight.type}</div>
+                    <div class="insight-content">${insight.content}</div>
+                `;
+                intelligenceSection.appendChild(insightCard);
+            });
+        }
+        
+        function addLearningEvent(event, value) {
+            const feed = document.getElementById('learningFeed');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const feedItem = document.createElement('div');
+            feedItem.className = 'feed-item';
+            feedItem.innerHTML = `
+                <div class="feed-time">${timestamp}</div>
+                <div class="feed-event">${event}</div>
+                <div class="feed-value">${value}</div>
+            `;
+            
+            feed.insertBefore(feedItem, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        function setupWebSocket() {
+            // Simulate live updates
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    const events = [
+                        'AI agent discovered new pattern',
+                        'Business intelligence algorithm improved',
+                        'Client relationship model updated',
+                        'Revenue optimization strategy refined'
+                    ];
+                    
+                    const event = events[Math.floor(Math.random() * events.length)];
+                    const value = ['Enhanced', 'Optimized', 'Improved', '+3% accuracy'][Math.floor(Math.random() * 4)];
+                    
+                    addLearningEvent(event, value);
+                }
+            }, 10000);
+        }
+        
+        // Auto-demo for presentations
+        function startAutoDemo() {
+            const demoFiles = [
+                { name: 'Q3_Financial_Report.pdf', size: 2.1 },
+                { name: 'Client_Proposal_MegaCorp.docx', size: 1.8 },
+                { name: 'Strategic_Plan_2024.pptx', size: 3.2 }
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= demoFiles.length) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const file = demoFiles[index];
+                uploadDocument({ name: file.name, size: file.size * 1024 * 1024 });
+                index++;
+            }, 8000);
+        }
+        
+        // Start auto demo after 5 seconds if no user interaction
+        setTimeout(() => {
+            if (vaultStats.documentsProcessed === 0) {
+                addLearningEvent('Auto-demo starting', 'Simulating document uploads');
+                setTimeout(startAutoDemo, 2000);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

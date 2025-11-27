@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>create a multiplayer puzzle game with friends - Play Now!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/game.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 create a multiplayer puzzle game with friends</h1>
+        <div class="game-area" id="gameArea">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="game-stats">
+            <div class="stat">Score: <span id="score">0</span></div>
+            <div class="stat">Level: <span id="level">1</span></div>
+            <div class="stat">Lives: <span id="lives">3</span></div>
+        </div>
+        <div class="controls">
+            <button onclick="startGame()">Start Game</button>
+            <button onclick="pauseGame()">Pause</button>
+            <button onclick="shareGame()">Share</button>
+        </div>
+    </div>
+    <script src="/static/js/game-engine.js"></script>
+    <script>
+        const GAME_ID = '14a8bd61-7c82-44f5-ba9a-1f21f52c6830';
+        const GAME_NAME = 'create a multiplayer puzzle game with friends';
+    </script>
+</body>
+</html>

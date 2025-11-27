@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cal QR Verification</title>
+    <link rel="stylesheet" href="css/cal-interface.css">
+</head>
+<body>
+    <div class="qr-login-container">
+        <header>
+            <h1>🔐 Cal Device Verification</h1>
+            <p>Enter your QR code to bind this device to the vault</p>
+        </header>
+
+        <main>
+            <form id="qr-form">
+                <div class="input-group">
+                    <label for="qr-code">QR Code:</label>
+                    <input type="text" id="qr-code" placeholder="qr-founder-0000" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="device-name">Device Name (optional):</label>
+                    <input type="text" id="device-name" placeholder="browser-client-001">
+                </div>
+
+                <button type="submit" class="submit-btn">🔓 Verify & Connect</button>
+            </form>
+
+            <div id="error-message" class="error hidden"></div>
+            <div id="success-message" class="success hidden"></div>
+        </main>
+
+        <footer>
+            <p><a href="index.html">← Back to Interface</a></p>
+        </footer>
+    </div>
+
+    <script src="js/qr-login.js"></script>
+</body>
+</html>

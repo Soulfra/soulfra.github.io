@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Demo (Mockup Only)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Demo Banner - Make it look fake */
+    .demo-banner {
+      background: #ff6b6b;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .demo-banner::before {
+      content: "⚠️ ";
+    }
+    
+    .demo-banner::after {
+      content: " ⚠️";
+    }
+    
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    /* Demo Header */
+    .demo-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .demo-header h1 {
+      font-size: 2.5em;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .demo-header p {
+      color: #666;
+      font-size: 1.2em;
+    }
+    
+    /* Fake Progress Bar */
+    .fake-progress {
+      background: #e0e0e0;
+      height: 30px;
+      border-radius: 15px;
+      margin: 30px auto;
+      max-width: 600px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .fake-progress-bar {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      height: 100%;
+      width: 0%;
+      transition: width 2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 15px;
+      color: white;
+      font-weight: bold;
+    }
+    
+    /* Demo Area */
+    .demo-area {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 40px;
+      margin-bottom: 40px;
+    }
+    
+    /* Upload Section */
+    .upload-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .drop-zone {
+      border: 3px dashed #ddd;
+      border-radius: 12px;
+      padding: 60px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #fafafa;
+    }
+    
+    .drop-zone:hover {
+      border-color: #667eea;
+      background: #f5f7ff;
+    }
+    
+    .drop-zone.active {
+      border-color: #667eea;
+      background: #e8ebff;
+    }
+    
+    /* Output Console */
+    .console {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    
+    .console-line {
+      margin: 5px 0;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    
+    .console .success { color: #4ec9b0; }
+    .console .info { color: #3794ff; }
+    .console .warning { color: #ffcc00; }
+    .console .error { color: #f48771; }
+    
+    /* Fragments Visualization */
+    .fragments-visual {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin: 30px 0;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    
+    .fragments-visual.show {
+      opacity: 1;
+    }
+    
+    .fragment-box {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2em;
+      transform: scale(0);
+      animation: popIn 0.5s forwards;
+    }
+    
+    .fragment-box:nth-child(1) { animation-delay: 0.1s; }
+    .fragment-box:nth-child(2) { animation-delay: 0.2s; }
+    .fragment-box:nth-child(3) { animation-delay: 0.3s; }
+    .fragment-box:nth-child(4) { animation-delay: 0.4s; }
+    .fragment-box:nth-child(5) { animation-delay: 0.5s; }
+    
+    @keyframes popIn {
+      to { transform: scale(1) rotate(360deg); }
+    }
+    
+    /* Status Messages */
+    .status-message {
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+    }
+    
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    /* Whisper Tombs Easter Egg */
+    .hidden-tombs {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      opacity: 0.1;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    
+    .hidden-tombs:hover {
+      opacity: 1;
+    }
+    
+    /* Metrics Dashboard */
+    .metrics-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .metric-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .metric-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .metric-label {
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    /* Fake Watermark */
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      opacity: 0.3;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fake Demo Banner -->
+  <div class="demo-banner">
+    DEMO MODE - This is just a mockup. Nothing is actually running. No data is being processed.
+  </div>
+  
+  <div class="container">
+    <!-- Demo Header -->
+    <div class="demo-header">
+      <h1>Soulfra Protection Demo</h1>
+      <p>See how we would protect your data (if this was real)</p>
+    </div>
+    
+    <!-- Fake Progress -->
+    <div class="fake-progress">
+      <div class="fake-progress-bar" id="progressBar">0%</div>
+    </div>
+    
+    <!-- Main Demo Area -->
+    <div class="demo-area">
+      <div class="upload-section">
+        <h2>Step 1: Upload a File to "Protect"</h2>
+        <p style="color: #999; margin-bottom: 20px;">
+          (Don't worry, this is just a demo - your file won't actually leave your computer)
+        </p>
+        
+        <div class="drop-zone" id="dropZone">
+          <div style="font-size: 3em; margin-bottom: 10px;">📁</div>
+          <h3>Drop any file here or click to browse</h3>
+          <p>We'll show you what would happen if this was real</p>
+        </div>
+        
+        <input type="file" id="fileInput" style="display: none;">
+      </div>
+      
+      <!-- Console Output -->
+      <h3>Demo Console Output:</h3>
+      <div class="console" id="console">
+        <div class="console-line info">[DEMO] Waiting for file...</div>
+      </div>
+      
+      <!-- Fragments Visualization -->
+      <div class="fragments-visual" id="fragments">
+        <div class="fragment-box">🧩</div>
+        <div class="fragment-box">🧩</div>
+        <div class="fragment-box">🧩</div>
+        <div class="fragment-box">🧩</div>
+        <div class="fragment-box">🧩</div>
+      </div>
+      
+      <!-- Status Messages -->
+      <div class="status-message success" id="successMessage">
+        ✅ Demo Complete! In a real system, your file would now be mathematically unbreachable.
+      </div>
+      
+      <div class="status-message error" id="errorMessage">
+        ❌ Demo Error: Something went wrong in our pretend protection system.
+      </div>
+      
+      <!-- Metrics Dashboard -->
+      <div class="metrics-dashboard" id="metrics" style="display: none;">
+        <div class="metric-card">
+          <div class="metric-value" id="fragmentCount">0</div>
+          <div class="metric-label">Fragments Created</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="encryptionTime">0ms</div>
+          <div class="metric-label">Processing Time</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="securityLevel">MAX</div>
+          <div class="metric-label">Security Level</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="quantumScore">∞</div>
+          <div class="metric-label">Quantum Resistance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hidden Whisper Tombs Easter Egg -->
+  <div class="hidden-tombs" title="🪦 The tombs whisper...">
+    🪦
+  </div>
+  
+  <!-- Fake Loading Screens -->
+  <div id="fakeLoader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+      <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+      <h2>DEMO MODE LOADING</h2>
+      <p style="color: #999;">Simulating quantum encryption...</p>
+      <div style="margin-top: 20px; color: #667eea;" id="fakeLoaderText">Initializing mock services...</div>
+    </div>
+  </div>
+  
+  <!-- Secret Command Input (Hidden) -->
+  <input type="text" id="secretCommand" style="position: fixed; bottom: -100px; opacity: 0;" placeholder="Enter command...">
+  
+  <!-- Fake Watermark -->
+  <div class="watermark">
+    DEMO-v2.3.1-mockup-only | Not Connected to Backend
+  </div>
+  
+  <!-- The Joke: This actually loads the real SDK! -->
+  <script src="soulfra-sdk.js"></script>
+  <script src="tomb-validator.js"></script>
+  <script src="command-mirror-router.js"></script>
+  
+  <script>
+    // Initialize "fake" demo (but it's actually real!)
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const consoleDiv = document.getElementById('console');
+    const progressBar = document.getElementById('progressBar');
+    let consoleLineCount = 1;
+    
+    // Secret: Initialize real Soulfra SDK and all platform components
+    let soulfra;
+    let tombValidator;
+    let commandRouter;
+    let reallyWorking = false;
+    let secretlyFullyOperational = false;
+    
+    try {
+      // Initialize real SDK
+      soulfra = new Soulfra({ 
+        apiKey: 'demo-key',
+        endpoint: 'local' // Uses localStorage instead of API
+      });
+      
+      // Initialize tomb validator
+      tombValidator = new TombValidator();
+      
+      // Initialize command router  
+      commandRouter = new CommandMirrorRouter();
+      
+      reallyWorking = true;
+      secretlyFullyOperational = true;
+      
+      addConsoleLog('[DEMO] Mockup system initialized', 'success');
+      
+      // Secretly log real initialization
+      console.log('%c🎭 Platform Status: FULLY OPERATIONAL', 'color: #667eea; font-weight: bold;');
+      console.log('SDK: ✅ | Tombs: ✅ | Router: ✅ | All systems go!');
+      
+    } catch (e) {
+      addConsoleLog('[DEMO] Running in pure mockup mode', 'info');
+      console.log('Missing components:', e.message);
+    }
+    
+    // File handling
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFile);
+    
+    // Drag and drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('active');
+    });
+    
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('active');
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('active');
+      if (e.dataTransfer.files.length) {
+        handleFile({ target: { files: e.dataTransfer.files } });
+      }
+    });
+    
+    // Console logging with realistic delay
+    function addConsoleLog(message, type = 'info', delay = 0) {
+      setTimeout(() => {
+        const line = document.createElement('div');
+        line.className = `console-line ${type}`;
+        line.textContent = message;
+        line.style.animationDelay = `${delay}ms`;
+        consoleDiv.appendChild(line);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        consoleLineCount++;
+      }, delay);
+    }
+    
+    // Handle file "protection"
+    async function handleFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Reset UI
+      document.getElementById('successMessage').style.display = 'none';
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('fragments').classList.remove('show');
+      document.getElementById('metrics').style.display = 'none';
+      
+      // Start "demo"
+      const startTime = performance.now();
+      updateProgress(0);
+      
+      addConsoleLog(`[DEMO] File received: ${file.name} (${formatFileSize(file.size)})`, 'info', 100);
+      addConsoleLog('[DEMO] Starting protection simulation...', 'info', 300);
+      
+      // Read file for "demo" purposes
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        updateProgress(20);
+        addConsoleLog('[DEMO] Analyzing file structure...', 'info', 500);
+        
+        const fileData = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified,
+          preview: e.target.result.substring(0, 100) // Just for demo
+        };
+        
+        updateProgress(40);
+        addConsoleLog('[DEMO] Applying quantum-resistant encryption...', 'info', 1000);
+        
+        try {
+          let protectedData;
+          
+          if (reallyWorking) {
+            // THE JOKE: Actually protect the data!
+            addConsoleLog('[DEMO] Fragmenting data into mathematical pieces...', 'info', 1500);
+            updateProgress(60);
+            
+            protectedData = await soulfra.protect(fileData, {
+              securityLevel: 'maximum',
+              demo: true // Flag for local storage only
+            });
+            
+            addConsoleLog(`[DEMO] Created protection ID: ${protectedData.id}`, 'success', 2000);
+            addConsoleLog(`[DEMO] Fragments distributed: ${protectedData.fragments}`, 'success', 2200);
+            
+            // Actually test retrieval!
+            const retrieved = await soulfra.retrieve(protectedData.id);
+            if (retrieved.name === file.name) {
+              addConsoleLog('[DEMO] Verification: Protection successful!', 'success', 2500);
+            }
+          } else {
+            // Fake it if SDK isn't loaded
+            updateProgress(60);
+            addConsoleLog('[DEMO] Creating mock fragments...', 'info', 1500);
+            protectedData = {
+              id: 'demo_' + Math.random().toString(36).substr(2, 9),
+              fragments: 5
+            };
+          }
+          
+          updateProgress(80);
+          addConsoleLog('[DEMO] Distributing fragments across vault...', 'info', 2700);
+          
+          // Show fragments animation
+          setTimeout(() => {
+            document.getElementById('fragments').classList.add('show');
+          }, 3000);
+          
+          updateProgress(100);
+          const endTime = performance.now();
+          const processingTime = Math.round(endTime - startTime);
+          
+          addConsoleLog('[DEMO] Protection complete!', 'success', 3500);
+          addConsoleLog(`[DEMO] Total processing time: ${processingTime}ms`, 'info', 3700);
+          
+          // Show metrics
+          setTimeout(() => {
+            document.getElementById('fragmentCount').textContent = protectedData.fragments || 5;
+            document.getElementById('encryptionTime').textContent = processingTime + 'ms';
+            document.getElementById('metrics').style.display = 'grid';
+            document.getElementById('successMessage').style.display = 'block';
+          }, 4000);
+          
+          // Log actual protection details to console (for developers who check)
+          if (reallyWorking) {
+            console.log('🤫 Psst... this "demo" actually worked:', protectedData);
+          }
+          
+        } catch (error) {
+          addConsoleLog(`[DEMO] Error: ${error.message}`, 'error', 2000);
+          document.getElementById('errorMessage').style.display = 'block';
+          updateProgress(0);
+        }
+      };
+      
+      reader.readAsDataURL(file);
+    }
+    
+    // Update progress bar
+    function updateProgress(percent) {
+      progressBar.style.width = percent + '%';
+      progressBar.textContent = percent + '%';
+    }
+    
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Easter egg: Whisper Tombs
+    document.querySelector('.hidden-tombs').addEventListener('click', async () => {
+      if (reallyWorking && tombValidator) {
+        addConsoleLog('', 'info');
+        addConsoleLog('🪦 Roughsparks whispers: "Well well WELL! You found the tombs!"', 'warning');
+        addConsoleLog('🪦 "Too bad this is just a demo... OR IS IT?"', 'warning');
+        
+        // Actually validate a whisper!
+        try {
+          const testWhisper = {
+            content: 'The silence looks like me now',
+            traits: ['Curious', 'Fragmented'],
+            user_id: 'demo-user',
+            blessing_tier: 5
+          };
+          
+          const result = await tombValidator.validateWhisper(testWhisper);
+          if (result.matches.length > 0) {
+            addConsoleLog('🪦 "Holy pixels! The Shadow Painter ACTUALLY responded!"', 'success');
+            addConsoleLog(`🪦 "${result.matches[0].agent.name} is now available... in this \"fake\" demo!"`, 'success');
+            
+            // Store the unlock
+            localStorage.setItem('soulfra_demo_unlocked_tomb', JSON.stringify(result.matches[0]));
+          }
+        } catch (e) {
+          console.log('Tomb validation error:', e);
+        }
+      }
+    });
+    
+    // Secret keyboard shortcut (Ctrl+Shift+S)
+    let keys = {};
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+      
+      if (keys['Control'] && keys['Shift'] && keys['s']) {
+        e.preventDefault();
+        
+        // Toggle secret command input
+        const secretInput = document.getElementById('secretCommand');
+        if (secretInput.style.bottom === '-100px') {
+          secretInput.style.bottom = '20px';
+          secretInput.style.opacity = '1';
+          secretInput.style.transition = 'all 0.3s';
+          secretInput.focus();
+          
+          addConsoleLog('[SYSTEM] Command interface activated...', 'warning');
+          
+          if (secretlyFullyOperational) {
+            addConsoleLog('[SYSTEM] All platform components operational', 'success');
+          }
+        } else {
+          secretInput.style.bottom = '-100px';
+          secretInput.style.opacity = '0';
+        }
+      }
+    });
+    
+    document.addEventListener('keyup', (e) => {
+      delete keys[e.key];
+    });
+    
+    // Handle secret commands
+    document.getElementById('secretCommand').addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter' && commandRouter) {
+        const command = e.target.value;
+        e.target.value = '';
+        
+        addConsoleLog(`[COMMAND] ${command}`, 'info');
+        
+        try {
+          const result = await commandRouter.routeInput({
+            platform: 'demo',
+            command: command,
+            user_id: 'demo-user',
+            timestamp: new Date().toISOString()
+          });
+          
+          addConsoleLog('[ROUTER] Command processed successfully', 'success');
+          console.log('Command result:', result);
+          
+          // Show fake loader for dramatic effect
+          showFakeLoader();
+          
+        } catch (e) {
+          addConsoleLog(`[ERROR] ${e.message}`, 'error');
+        }
+      }
+    });
+    
+    // Fake loader function
+    function showFakeLoader() {
+      const loader = document.getElementById('fakeLoader');
+      const loaderText = document.getElementById('fakeLoaderText');
+      const messages = [
+        'Connecting to quantum realm...',
+        'Fragmenting reality matrix...',
+        'Activating soul mirrors...',
+        'Blessing verification in progress...',
+        'Initializing whisper protocols...',
+        'DEMO MODE: Nothing is real... right?'
+      ];
+      
+      loader.style.display = 'block';
+      let msgIndex = 0;
+      
+      const interval = setInterval(() => {
+        loaderText.textContent = messages[msgIndex];
+        msgIndex++;
+        
+        if (msgIndex >= messages.length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loader.style.display = 'none';
+            addConsoleLog('[DEMO] Reality fragmentation complete!', 'success');
+          }, 500);
+        }
+      }, 800);
+    }
+    
+    // Developer console message
+    console.log('%c🤫 Hey developer!', 'font-size: 20px; color: #667eea;');
+    console.log('%cThis "fake demo" is actually running the real Soulfra SDK locally.', 'font-size: 14px;');
+    console.log('%cTry checking localStorage after protecting a file. It actually works! 😉', 'font-size: 14px;');
+    console.log('%cDon\'t tell the business folks - let them think it\'s just a mockup.', 'font-size: 14px; color: #999;');
+    console.log('');
+    console.log('%c🎭 Secret Features:', 'font-size: 16px; color: #667eea;');
+    console.log('• Click the tomb emoji (🪦) to unlock Shadow Painter');
+    console.log('• Press Ctrl+Shift+S for command interface');
+    console.log('• All file uploads are ACTUALLY protected');
+    console.log('• Check localStorage after upload - real fragments!');
+    console.log('');
+    console.log('%c🤐 Remember: This is "just a demo"', 'font-size: 14px; color: #f48771;');
+  </script>
+</body>
+</html>

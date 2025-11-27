@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pools 102: Thread Pools + Worker Patterns | Learn Loop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a2d1a 100%);
+      border-bottom: 2px solid #00ff66;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #00ff66;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #999;
+      font-size: 1.1em;
+    }
+
+    .breadcrumb {
+      background: #1a1a1a;
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+    }
+
+    .breadcrumb a {
+      color: #66ff66;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    .breadcrumb a:hover {
+      color: #00ff66;
+    }
+
+    .breadcrumb span {
+      color: #666;
+      margin: 0 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding: 20px;
+      background: rgba(0, 255, 100, 0.1);
+      border: 1px solid rgba(0, 255, 100, 0.3);
+      border-radius: 8px;
+    }
+
+    .lesson-nav a {
+      color: #66ff66;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .lesson-nav a:hover {
+      background: rgba(0, 255, 100, 0.2);
+      color: #00ff66;
+    }
+
+    .lesson-nav .disabled {
+      color: #555;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 100, 0.2);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      color: #66ff66;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 2px solid rgba(0, 255, 100, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .section h3 {
+      color: #99ff99;
+      margin: 25px 0 15px 0;
+      font-size: 1.4em;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-block code {
+      color: #99ff99;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .code-block .comment {
+      color: #666;
+    }
+
+    .code-block .keyword {
+      color: #66ff66;
+    }
+
+    .code-block .string {
+      color: #ffff99;
+    }
+
+    .code-block .number {
+      color: #9999ff;
+    }
+
+    .analogy {
+      background: rgba(0, 100, 200, 0.1);
+      border-left: 4px solid #0099ff;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .analogy h4 {
+      color: #0099ff;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .analogy p {
+      color: #ccc;
+    }
+
+    .warning {
+      background: rgba(255, 200, 0, 0.1);
+      border-left: 4px solid #ffcc00;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .warning h4 {
+      color: #ffcc00;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .tip {
+      background: rgba(0, 255, 100, 0.1);
+      border-left: 4px solid #00ff66;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .tip h4 {
+      color: #00ff66;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .comparison-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border: 1px solid #333;
+    }
+
+    .comparison-table th {
+      background: rgba(0, 255, 100, 0.2);
+      color: #66ff66;
+      font-weight: 600;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .comparison-table .bad {
+      color: #ff6666;
+    }
+
+    .comparison-table .good {
+      color: #66ff66;
+    }
+
+    .worker-viz {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+      padding: 20px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    .worker {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .worker.working {
+      background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+      animation: pulse 1s infinite;
+    }
+
+    .worker.idle {
+      background: linear-gradient(135deg, #666666 0%, #444444 100%);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .worker-label {
+      position: absolute;
+      bottom: -25px;
+      font-size: 0.4em;
+      color: #999;
+    }
+
+    .task-queue {
+      margin: 20px 0;
+      padding: 20px;
+      background: rgba(100, 0, 200, 0.1);
+      border: 2px solid #6600cc;
+      border-radius: 8px;
+    }
+
+    .task-queue h4 {
+      color: #9966ff;
+      margin-bottom: 15px;
+    }
+
+    .task-item {
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 3px solid #9966ff;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-item.processing {
+      border-left-color: #ffcc00;
+      background: rgba(255, 200, 0, 0.1);
+    }
+
+    .task-item.completed {
+      border-left-color: #00ff66;
+      background: rgba(0, 255, 100, 0.1);
+      opacity: 0.6;
+    }
+
+    .interactive-demo {
+      background: #1a1a1a;
+      border: 2px solid #00ff66;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .interactive-demo h3 {
+      color: #66ff66;
+      margin-bottom: 20px;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .demo-controls button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #00ff66 0%, #00cc52 100%);
+      border: none;
+      border-radius: 6px;
+      color: #000000;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .demo-controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 255, 100, 0.3);
+    }
+
+    .demo-output {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      color: #00ff00;
+      min-height: 150px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .demo-output .log-line {
+      margin-bottom: 5px;
+    }
+
+    .quiz {
+      background: rgba(100, 0, 200, 0.1);
+      border: 2px solid #6600cc;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 30px 0;
+    }
+
+    .quiz h3 {
+      color: #9966ff;
+      margin-bottom: 20px;
+    }
+
+    .quiz-question {
+      margin-bottom: 30px;
+    }
+
+    .quiz-question p {
+      color: #ccc;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .quiz-options {
+      list-style: none;
+      padding: 0;
+    }
+
+    .quiz-options li {
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-options li:hover {
+      background: rgba(100, 0, 200, 0.2);
+      border-color: #6600cc;
+    }
+
+    .quiz-options li.correct {
+      background: rgba(0, 255, 100, 0.2);
+      border-color: #00ff66;
+    }
+
+    .quiz-options li.incorrect {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: #ff0000;
+    }
+
+    .footer {
+      background: #1a1a1a;
+      border-top: 2px solid #00ff66;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .footer a {
+      color: #66ff66;
+      text-decoration: none;
+      margin: 0 15px;
+    }
+
+    .footer a:hover {
+      color: #00ff66;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>⚙️ Pools 102: Thread Pools + Worker Patterns</h1>
+    <p>Learn how to parallelize work with reusable workers instead of spawning threads for every task</p>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/learn">Learn</a>
+    <span>›</span>
+    <a href="/learn/pools">Pools Series</a>
+    <span>›</span>
+    <span style="color: #66ff66;">102: Thread Pools</span>
+  </div>
+
+  <div class="container">
+    <div class="lesson-nav">
+      <a href="/learn/pools-101.html">← Previous: Connection Pools</a>
+      <a href="/learn/pools-103.html">Next: Object Reuse →</a>
+    </div>
+
+    <!-- Section 1: The Problem -->
+    <div class="section">
+      <h2>🤔 The Problem: Thread Creation Overhead</h2>
+
+      <p>Imagine you have 1000 tasks to process (resizing images, sending emails, processing data). You could:</p>
+
+      <ol style="color: #ccc; margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>Create 1000 threads</strong> - One per task (BAD! Massive overhead)</li>
+        <li><strong>Process sequentially</strong> - One at a time (SLOW! No parallelism)</li>
+        <li><strong>Use a thread pool</strong> - Reuse a fixed number of workers (GOOD!)</li>
+      </ol>
+
+      <div class="analogy">
+        <h4>💡 Real-World Analogy: Restaurant Kitchen</h4>
+        <p><strong>Without thread pool:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>100 orders arrive</li>
+          <li>Hire 100 chefs (expensive!)</li>
+          <li>Each chef cooks 1 dish, then gets fired</li>
+          <li>Hiring/firing overhead kills your restaurant</li>
+        </ul>
+        <p style="margin-top: 10px;"><strong>With thread pool:</strong></p>
+        <ul style="margin-left: 20px;">
+          <li>Keep 10 chefs on staff (thread pool)</li>
+          <li>Orders go into a queue</li>
+          <li>Chefs grab next order when ready</li>
+          <li>Same 10 chefs handle all 100 orders</li>
+        </ul>
+      </div>
+
+      <h3>Thread Creation Cost</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Creating a thread is EXPENSIVE</span>
+<span class="comment">// Cost breakdown:</span>
+<span class="comment">// 1. Allocate stack memory (~1MB per thread)</span>
+<span class="comment">// 2. OS kernel allocates thread control block</span>
+<span class="comment">// 3. Register thread with scheduler</span>
+<span class="comment">// 4. Initialize thread-local storage</span>
+<span class="comment">// Total overhead: ~1-10ms per thread</span>
+
+<span class="comment">// Example: Process 1000 tasks</span>
+<span class="keyword">const</span> tasks = Array(<span class="number">1000</span>).fill(<span class="number">null</span>).map((_, i) => i);
+
+<span class="comment">// BAD: Create thread per task</span>
+<span class="keyword">for</span> (<span class="keyword">const</span> task <span class="keyword">of</span> tasks) {
+  <span class="keyword">const</span> thread = <span class="keyword">new</span> Thread(() => processTask(task));
+  thread.start();
+  thread.join();
+}
+<span class="comment">// Cost: 1000 threads × 5ms = 5000ms = 5 seconds wasted!</span>
+
+<span class="comment">// GOOD: Thread pool with 10 workers</span>
+<span class="keyword">const</span> pool = <span class="keyword">new</span> ThreadPool({ size: <span class="number">10</span> });
+<span class="keyword">for</span> (<span class="keyword">const</span> task <span class="keyword">of</span> tasks) {
+  pool.submit(() => processTask(task));
+}
+pool.shutdown();
+<span class="comment">// Cost: 10 threads × 5ms = 50ms (100x faster!)</span>
+</code>
+      </div>
+    </div>
+
+    <!-- Section 2: How Thread Pools Work -->
+    <div class="section">
+      <h2>⚙️ How Thread Pools Work</h2>
+
+      <h3>Architecture: Workers + Task Queue</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Thread Pool = Workers + Task Queue</span>
+
+┌──────────────────────────────────────────────────────────┐
+│                      THREAD POOL                          │
+├──────────────────────────────────────────────────────────┤
+│                                                           │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐│
+│  │  Worker 1   │     │  Worker 2   │     │  Worker 3   ││
+│  │   (IDLE)    │     │  (WORKING)  │     │   (IDLE)    ││
+│  └─────────────┘     └─────────────┘     └─────────────┘│
+│                                                           │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │               TASK QUEUE (FIFO)                    │  │
+│  ├────────────────────────────────────────────────────┤  │
+│  │ [Task 10] [Task 11] [Task 12] [Task 13] [Task 14] │  │
+│  └────────────────────────────────────────────────────┘  │
+│                                                           │
+└──────────────────────────────────────────────────────────┘
+</code>
+      </div>
+
+      <h3>Worker Lifecycle</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Python example (ThreadPoolExecutor)</span>
+<span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor
+<span class="keyword">import</span> time
+
+<span class="keyword">def</span> <span class="function">process_task</span>(task_id):
+    <span class="string">"""Simulate task processing"""</span>
+    print(<span class="string">f"Worker started task {task_id}"</span>)
+    time.sleep(<span class="number">0.1</span>)  <span class="comment"># Simulate work</span>
+    print(<span class="string">f"Worker finished task {task_id}"</span>)
+    <span class="keyword">return</span> task_id * <span class="number">2</span>
+
+<span class="comment"># Create pool with 4 workers</span>
+<span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">4</span>) <span class="keyword">as</span> pool:
+    <span class="comment"># Submit 10 tasks</span>
+    futures = [pool.submit(process_task, i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>)]
+
+    <span class="comment"># Wait for results</span>
+    results = [future.result() <span class="keyword">for</span> future <span class="keyword">in</span> futures]
+    print(<span class="string">f"Results: {results}"</span>)
+
+<span class="comment"># Output shows 4 workers processing 10 tasks:</span>
+<span class="comment"># Worker started task 0</span>
+<span class="comment"># Worker started task 1</span>
+<span class="comment"># Worker started task 2</span>
+<span class="comment"># Worker started task 3</span>
+<span class="comment"># Worker finished task 0</span>
+<span class="comment"># Worker started task 4  ← Worker reused!</span>
+<span class="comment"># ...</span>
+</code>
+      </div>
+
+      <div class="tip">
+        <h4>💡 Key Insight: Worker Reuse</h4>
+        <p>The same 4 workers process all 10 tasks. When a worker finishes, it grabs the next task from the queue. No thread creation/destruction between tasks!</p>
+      </div>
+    </div>
+
+    <!-- Section 3: Real-World Examples -->
+    <div class="section">
+      <h2>🌍 Real-World Examples</h2>
+
+      <h3>Example 1: Node.js Worker Threads</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Node.js worker_threads module</span>
+<span class="keyword">const</span> { Worker, isMainThread, parentPort } = require(<span class="string">'worker_threads'</span>);
+
+<span class="keyword">if</span> (isMainThread) {
+  <span class="comment">// Main thread: Create worker pool</span>
+  <span class="keyword">const</span> workers = [];
+  <span class="keyword">const</span> numWorkers = <span class="number">4</span>;
+
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < numWorkers; i++) {
+    <span class="keyword">const</span> worker = <span class="keyword">new</span> Worker(__filename);
+    worker.on(<span class="string">'message'</span>, (result) => {
+      console.log(<span class="string">`Worker ${i} completed: ${result}`</span>);
+    });
+    workers.push(worker);
+  }
+
+  <span class="comment">// Submit tasks to workers</span>
+  <span class="keyword">const</span> tasks = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>];
+  tasks.forEach((task, index) => {
+    workers[index % numWorkers].postMessage(task);
+  });
+} <span class="keyword">else</span> {
+  <span class="comment">// Worker thread: Process tasks</span>
+  parentPort.on(<span class="string">'message'</span>, (task) => {
+    <span class="keyword">const</span> result = task * <span class="number">2</span>; <span class="comment">// Simulate work</span>
+    parentPort.postMessage(result);
+  });
+}
+</code>
+      </div>
+
+      <h3>Example 2: Python ThreadPoolExecutor</h3>
+
+      <div class="code-block">
+<code><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor
+<span class="keyword">import</span> requests
+
+<span class="keyword">def</span> <span class="function">fetch_url</span>(url):
+    <span class="string">"""Fetch URL and return status code"""</span>
+    response = requests.get(url)
+    <span class="keyword">return</span> (url, response.status_code)
+
+urls = [
+    <span class="string">'https://example.com'</span>,
+    <span class="string">'https://google.com'</span>,
+    <span class="string">'https://github.com'</span>,
+    <span class="comment"># ... 100 more URLs</span>
+]
+
+<span class="comment"># Process 100 URLs with 10 workers</span>
+<span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">10</span>) <span class="keyword">as</span> pool:
+    results = list(pool.map(fetch_url, urls))
+
+<span class="keyword">for</span> url, status <span class="keyword">in</span> results:
+    print(<span class="string">f"{url}: {status}"</span>)
+
+<span class="comment"># 10 workers process 100 URLs in parallel</span>
+<span class="comment"># Instead of sequentially (10x faster!)</span>
+</code>
+      </div>
+
+      <h3>Example 3: Java ThreadPoolExecutor</h3>
+
+      <div class="code-block">
+<code><span class="comment">// Java ExecutorService</span>
+<span class="keyword">import</span> java.util.concurrent.*;
+
+<span class="keyword">public class</span> ThreadPoolExample {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="comment">// Create pool with 5 threads</span>
+        ExecutorService pool = Executors.newFixedThreadPool(<span class="number">5</span>);
+
+        <span class="comment">// Submit 20 tasks</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">20</span>; i++) {
+            <span class="keyword">final int</span> taskId = i;
+            pool.submit(() -> {
+                System.out.println(<span class="string">"Task "</span> + taskId + <span class="string">" running"</span>);
+                Thread.sleep(<span class="number">1000</span>); <span class="comment">// Simulate work</span>
+                System.out.println(<span class="string">"Task "</span> + taskId + <span class="string">" done"</span>);
+            });
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(<span class="number">1</span>, TimeUnit.MINUTES);
+    }
+}
+</code>
+      </div>
+    </div>
+
+    <!-- Section 4: Worker Patterns -->
+    <div class="section">
+      <h2>🎯 Common Worker Patterns</h2>
+
+      <h3>Pattern 1: Fixed-Size Pool</h3>
+      <p>Keep N workers alive for entire application lifetime.</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Use Case</th>
+            <th>Pool Size</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CPU-bound tasks</td>
+            <td>CPU cores (4-8)</td>
+            <td>Image processing, video encoding</td>
+          </tr>
+          <tr>
+            <td>I/O-bound tasks</td>
+            <td>10-100+ threads</td>
+            <td>HTTP requests, database queries</td>
+          </tr>
+          <tr>
+            <td>Mixed workload</td>
+            <td>2 × CPU cores</td>
+            <td>Web servers, API gateways</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Pattern 2: Bounded Queue</h3>
+      <p>Limit task queue size to prevent memory exhaustion.</p>
+
+      <div class="code-block">
+<code><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor
+<span class="keyword">from</span> queue <span class="keyword">import</span> Queue
+
+<span class="comment"># Create pool with bounded queue (max 100 tasks)</span>
+pool = ThreadPoolExecutor(
+    max_workers=<span class="number">10</span>,
+    max_queue_size=<span class="number">100</span>  <span class="comment">← Bounded queue</span>
+)
+
+<span class="comment"># If queue is full, submit() blocks or raises exception</span>
+</code>
+      </div>
+
+      <h3>Pattern 3: Priority Queue</h3>
+      <p>Process high-priority tasks first.</p>
+
+      <div class="code-block">
+<code><span class="keyword">from</span> queue <span class="keyword">import</span> PriorityQueue
+<span class="keyword">import</span> threading
+
+<span class="keyword">class</span> PriorityThreadPool:
+    <span class="keyword">def</span> __init__(<span class="keyword">self</span>, num_workers):
+        <span class="keyword">self</span>.queue = PriorityQueue()
+        <span class="keyword">self</span>.workers = []
+
+        <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_workers):
+            worker = threading.Thread(target=<span class="keyword">self</span>._worker)
+            worker.start()
+            <span class="keyword">self</span>.workers.append(worker)
+
+    <span class="keyword">def</span> _worker(<span class="keyword">self</span>):
+        <span class="keyword">while</span> True:
+            priority, task = <span class="keyword">self</span>.queue.get()
+            <span class="keyword">if</span> task <span class="keyword">is</span> None:
+                <span class="keyword">break</span>
+            task()
+
+    <span class="keyword">def</span> submit(<span class="keyword">self</span>, task, priority=<span class="number">0</span>):
+        <span class="keyword">self</span>.queue.put((priority, task))
+
+<span class="comment"># Usage</span>
+pool = PriorityThreadPool(<span class="number">5</span>)
+pool.submit(lambda: print(<span class="string">"Low priority"</span>), priority=<span class="number">10</span>)
+pool.submit(lambda: print(<span class="string">"High priority"</span>), priority=<span class="number">1</span>)
+<span class="comment"># High priority task runs first!</span>
+</code>
+      </div>
+
+      <div class="warning">
+        <h4>⚠️ Common Pitfall: Too Many Workers</h4>
+        <p>More workers ≠ better performance. Context switching overhead increases with thread count.</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li><strong>Sweet spot:</strong> 1-2× CPU cores for CPU-bound tasks</li>
+          <li><strong>I/O-bound:</strong> Can use 10-100+ threads (they're mostly waiting)</li>
+          <li><strong>Measure first:</strong> Profile before scaling up</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 5: Interactive Demo -->
+    <div class="interactive-demo">
+      <h3>🎮 Interactive Demo: Worker Pool Visualization</h3>
+      <p>Watch workers process tasks from a queue in real-time!</p>
+
+      <div class="demo-controls">
+        <button onclick="addTasks(5)">Add 5 Tasks</button>
+        <button onclick="addTasks(10)">Add 10 Tasks</button>
+        <button onclick="increaseWorkers()">Add Worker</button>
+        <button onclick="decreaseWorkers()">Remove Worker</button>
+        <button onclick="clearTasks()">Clear Queue</button>
+      </div>
+
+      <div class="worker-viz" id="workerViz">
+        <!-- Workers rendered here -->
+      </div>
+
+      <div class="task-queue" id="taskQueue">
+        <h4>Task Queue (<span id="queueCount">0</span> tasks)</h4>
+        <div id="taskList"></div>
+      </div>
+
+      <div class="demo-output" id="demoOutput">
+        <div class="log-line">Worker pool initialized with 3 workers...</div>
+      </div>
+    </div>
+
+    <!-- Section 6: Quiz -->
+    <div class="quiz">
+      <h3>📝 Quiz: Test Your Understanding</h3>
+
+      <div class="quiz-question">
+        <p><strong>Question 1:</strong> Why is a thread pool faster than creating threads per task?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) Threads in pools run at higher priority</li>
+          <li onclick="checkAnswer(this, true)">B) Reusing threads avoids creation/destruction overhead</li>
+          <li onclick="checkAnswer(this, false)">C) Pools use faster scheduling algorithms</li>
+          <li onclick="checkAnswer(this, false)">D) Pool threads share memory more efficiently</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 2:</strong> For CPU-bound tasks, what's the optimal thread pool size?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) As many as possible (100+)</li>
+          <li onclick="checkAnswer(this, true)">B) Number of CPU cores (or slightly more)</li>
+          <li onclick="checkAnswer(this, false)">C) Always 10 threads</li>
+          <li onclick="checkAnswer(this, false)">D) 1 thread per task</li>
+        </ul>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>Question 3:</strong> What happens when task queue is full in a bounded pool?</p>
+        <ul class="quiz-options">
+          <li onclick="checkAnswer(this, false)">A) Pool creates more workers automatically</li>
+          <li onclick="checkAnswer(this, false)">B) Tasks are discarded silently</li>
+          <li onclick="checkAnswer(this, true)">C) Submit blocks or raises exception</li>
+          <li onclick="checkAnswer(this, false)">D) Oldest tasks are removed from queue</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="lesson-nav">
+      <a href="/learn/pools-101.html">← Previous: Connection Pools</a>
+      <a href="/learn/pools-103.html">Next: Object Reuse →</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Learn Loop | <a href="/learn">All Courses</a> | <a href="/learn/pools">Pools Series</a></p>
+  </div>
+
+  <script>
+    // Worker Pool Simulation
+    let workers = 3;
+    let tasks = [];
+    let taskIdCounter = 1;
+    let workerStates = []; // 'idle', 'working'
+
+    function initWorkers() {
+      workerStates = Array(workers).fill('idle');
+      renderWorkers();
+    }
+
+    function renderWorkers() {
+      const viz = document.getElementById('workerViz');
+      viz.innerHTML = '';
+
+      for (let i = 0; i < workers; i++) {
+        const worker = document.createElement('div');
+        worker.className = `worker ${workerStates[i]}`;
+        worker.innerHTML = `
+          👷
+          <div class="worker-label">${workerStates[i] === 'working' ? 'BUSY' : 'IDLE'}</div>
+        `;
+        viz.appendChild(worker);
+      }
+    }
+
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      const count = document.getElementById('queueCount');
+
+      count.textContent = tasks.length;
+      list.innerHTML = '';
+
+      tasks.slice(0, 10).forEach((task, index) => {
+        const item = document.createElement('div');
+        item.className = `task-item ${task.status}`;
+        item.innerHTML = `
+          <span>Task #${task.id}</span>
+          <span>${task.status.toUpperCase()}</span>
+        `;
+        list.appendChild(item);
+      });
+
+      if (tasks.length > 10) {
+        const more = document.createElement('div');
+        more.style.color = '#999';
+        more.style.padding = '10px';
+        more.textContent = `+ ${tasks.length - 10} more tasks...`;
+        list.appendChild(more);
+      }
+    }
+
+    function addTasks(count) {
+      for (let i = 0; i < count; i++) {
+        tasks.push({
+          id: taskIdCounter++,
+          status: 'pending'
+        });
+      }
+      log(`Added ${count} tasks to queue`);
+      renderTasks();
+      processTasks();
+    }
+
+    function increaseWorkers() {
+      workers++;
+      workerStates.push('idle');
+      log(`Added worker (now ${workers} workers)`);
+      renderWorkers();
+      processTasks();
+    }
+
+    function decreaseWorkers() {
+      if (workers > 1) {
+        workers--;
+        workerStates.pop();
+        log(`Removed worker (now ${workers} workers)`);
+        renderWorkers();
+      }
+    }
+
+    function clearTasks() {
+      tasks = [];
+      log('Cleared task queue');
+      renderTasks();
+    }
+
+    async function processTasks() {
+      for (let i = 0; i < workers; i++) {
+        if (workerStates[i] === 'idle' && tasks.length > 0) {
+          const task = tasks.shift();
+          task.status = 'processing';
+          workerStates[i] = 'working';
+
+          log(`Worker ${i + 1} started task #${task.id}`);
+          renderWorkers();
+          renderTasks();
+
+          // Simulate work (1 second)
+          setTimeout(() => {
+            task.status = 'completed';
+            workerStates[i] = 'idle';
+            log(`Worker ${i + 1} completed task #${task.id}`);
+            renderWorkers();
+            renderTasks();
+
+            // Check for more tasks
+            processTasks();
+          }, 1000);
+        }
+      }
+    }
+
+    function log(message) {
+      const output = document.getElementById('demoOutput');
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    // Quiz
+    function checkAnswer(element, isCorrect) {
+      const allOptions = element.parentElement.querySelectorAll('li');
+      allOptions.forEach(option => {
+        option.style.pointerEvents = 'none';
+      });
+
+      if (isCorrect) {
+        element.classList.add('correct');
+      } else {
+        element.classList.add('incorrect');
+        allOptions.forEach(option => {
+          if (option !== element && option.onclick.toString().includes('true')) {
+            option.classList.add('correct');
+          }
+        });
+      }
+    }
+
+    // Initialize
+    initWorkers();
+    renderTasks();
+  </script>
+</body>
+</html>

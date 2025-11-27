@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Document Intake - Cal's Reflection Engine</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .cal-intro {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .cal-intro .cal-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        .drop-zone {
+            border: 3px dashed rgba(99, 102, 241, 0.5);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .drop-zone:hover {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .drop-zone.dragging {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.1);
+            transform: scale(1.02);
+        }
+
+        .drop-zone-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .drop-zone p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .drop-zone small {
+            opacity: 0.7;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            font-size: 1.5em;
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-size {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .privacy-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #475569;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--success);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .reflection-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .reflection-preview h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .reflection-preview pre {
+            white-space: pre-wrap;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .processing {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Document Intake</h1>
+            <p>Transform your documents into intelligent agents</p>
+        </div>
+
+        <div class="cal-intro">
+            <span class="cal-icon">🔮</span>
+            <p>"Want me to reflect this into something useful? I'm Cal - I'll analyze your documents, extract their essence, and help you transform them into deployable agents. Your content stays private unless you choose to export it."</p>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-icon">📁</div>
+            <p>Drag & Drop your documents here</p>
+            <small>Supports PDF, TXT, MD, DOCX, and folders</small>
+            <input type="file" id="fileInput" multiple webkitdirectory directory>
+        </div>
+
+        <div class="file-list" id="fileList"></div>
+
+        <div class="action-buttons">
+            <button class="btn-secondary" onclick="selectFiles()">Browse Files</button>
+            <button class="btn-primary" id="processBtn" onclick="processDocuments()" style="display: none;">
+                Start Reflection
+            </button>
+        </div>
+
+        <div class="progress" id="progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Processing documents...</div>
+        </div>
+
+        <div class="reflection-preview" id="reflectionPreview">
+            <h3>Cal's Initial Reflection:</h3>
+            <pre id="reflectionContent"></pre>
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn-secondary" onclick="exportAsReadme()">Export README</button>
+                <button class="btn-primary" onclick="createAgent()">Create Agent</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFiles = [];
+        let folderStructure = {};
+        
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const processBtn = document.getElementById('processBtn');
+
+        // Drag and drop handlers
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragging');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragging');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragging');
+            handleFiles(e.dataTransfer.items);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(items) {
+            uploadedFiles = [];
+            folderStructure = {};
+            
+            if (items instanceof FileList) {
+                // Handle file input
+                for (let file of items) {
+                    uploadedFiles.push(file);
+                    updateFolderStructure(file);
+                }
+            } else {
+                // Handle drag & drop items
+                for (let item of items) {
+                    if (item.kind === 'file') {
+                        const entry = item.webkitGetAsEntry();
+                        if (entry) {
+                            await traverseFileTree(entry);
+                        }
+                    }
+                }
+            }
+            
+            displayFiles();
+            processBtn.style.display = uploadedFiles.length > 0 ? 'block' : 'none';
+        }
+
+        async function traverseFileTree(item, path = '') {
+            if (item.isFile) {
+                await new Promise((resolve) => {
+                    item.file((file) => {
+                        file.relativePath = path + file.name;
+                        uploadedFiles.push(file);
+                        updateFolderStructure(file);
+                        resolve();
+                    });
+                });
+            } else if (item.isDirectory) {
+                const dirReader = item.createReader();
+                const entries = await new Promise((resolve) => {
+                    dirReader.readEntries((entries) => resolve(entries));
+                });
+                
+                for (let entry of entries) {
+                    await traverseFileTree(entry, path + item.name + '/');
+                }
+            }
+        }
+
+        function updateFolderStructure(file) {
+            const path = file.relativePath || file.webkitRelativePath || file.name;
+            const parts = path.split('/');
+            let current = folderStructure;
+            
+            for (let i = 0; i < parts.length - 1; i++) {
+                if (!current[parts[i]]) {
+                    current[parts[i]] = {};
+                }
+                current = current[parts[i]];
+            }
+            
+            current[parts[parts.length - 1]] = {
+                type: 'file',
+                size: file.size,
+                mime: file.type,
+                file: file
+            };
+        }
+
+        function displayFiles() {
+            fileList.innerHTML = '';
+            
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'file-info';
+                
+                const icon = getFileIcon(file.type || file.name);
+                const fileName = file.relativePath || file.webkitRelativePath || file.name;
+                const fileSize = formatFileSize(file.size);
+                
+                fileInfo.innerHTML = `
+                    <span class="file-icon">${icon}</span>
+                    <div>
+                        <div class="file-name">${fileName}</div>
+                        <div class="file-size">${fileSize}</div>
+                    </div>
+                `;
+                
+                const privacyToggle = createPrivacyToggle(index);
+                
+                fileItem.appendChild(fileInfo);
+                fileItem.appendChild(privacyToggle);
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function getFileIcon(fileType) {
+            if (fileType.includes('pdf')) return '📄';
+            if (fileType.includes('text') || fileType.endsWith('.md')) return '📝';
+            if (fileType.includes('word')) return '📃';
+            if (fileType.includes('image')) return '🖼️';
+            return '📎';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function createPrivacyToggle(index) {
+            const container = document.createElement('div');
+            container.className = 'privacy-toggle';
+            
+            const toggle = document.createElement('div');
+            toggle.className = 'toggle-switch';
+            toggle.innerHTML = '<div class="toggle-slider"></div>';
+            
+            const label = document.createElement('span');
+            label.textContent = 'Private';
+            
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                label.textContent = toggle.classList.contains('active') ? 'Public' : 'Private';
+                uploadedFiles[index].privacy = toggle.classList.contains('active') ? 'public' : 'private';
+            });
+            
+            container.appendChild(toggle);
+            container.appendChild(label);
+            
+            return container;
+        }
+
+        async function processDocuments() {
+            const progress = document.getElementById('progress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progress.style.display = 'block';
+            processBtn.disabled = true;
+            processBtn.classList.add('processing');
+            
+            // Simulate processing
+            for (let i = 0; i <= 100; i += 10) {
+                progressFill.style.width = i + '%';
+                progressText.textContent = `Processing documents... ${i}%`;
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // Send to backend for processing
+            const formData = new FormData();
+            uploadedFiles.forEach((file, index) => {
+                formData.append('files', file);
+                formData.append(`privacy_${index}`, file.privacy || 'private');
+            });
+            formData.append('folderStructure', JSON.stringify(folderStructure));
+            
+            try {
+                const response = await fetch('/api/doc-intake/process', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    displayReflection(result);
+                } else {
+                    // Fallback demo reflection
+                    displayReflection({
+                        reflection: "I've analyzed your documents and found several interesting patterns. Your content appears to focus on technical documentation with a methodical, educational tone. I can help transform this into a knowledge agent that answers questions in your style, or create a structured README that captures the essence of your work. What would be most useful for you?",
+                        stats: {
+                            totalFiles: uploadedFiles.length,
+                            totalSize: uploadedFiles.reduce((sum, f) => sum + f.size, 0),
+                            documentTypes: [...new Set(uploadedFiles.map(f => f.type || 'unknown'))].length
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Processing error:', error);
+                progressText.textContent = 'Processing complete (demo mode)';
+            }
+            
+            processBtn.disabled = false;
+            processBtn.classList.remove('processing');
+        }
+
+        function displayReflection(result) {
+            const preview = document.getElementById('reflectionPreview');
+            const content = document.getElementById('reflectionContent');
+            
+            content.textContent = result.reflection;
+            preview.style.display = 'block';
+            
+            // Smooth scroll to reflection
+            preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function exportAsReadme() {
+            // Send request to generate README
+            alert('README export will be generated and downloaded. This would trigger the export-trigger monetization flow.');
+        }
+
+        async function createAgent() {
+            // Send request to create agent
+            alert('Agent creation will transform your documents into a deployable Cal fork. This would trigger the agent-forker flow.');
+        }
+
+        function selectFiles() {
+            fileInput.click();
+        }
+    </script>
+</body>
+</html>

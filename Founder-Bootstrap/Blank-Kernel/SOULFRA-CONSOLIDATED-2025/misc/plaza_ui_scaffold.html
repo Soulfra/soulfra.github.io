@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏰 Soulfra W2 Plaza - Living Ritual Space</title>
+    <style>
+        /* RUNESCAPE W2 FALLY AESTHETIC */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #ffff00;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Matrix rain background */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        /* Main plaza container */
+        #plaza-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, #1a0033 0%, #000000 100%);
+            overflow: hidden;
+        }
+
+        /* Top HUD */
+        #plaza-hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 2px solid #ffff00;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .hud-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .plaza-name {
+            font-size: 24px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .world-info {
+            font-size: 14px;
+            color: #00ff00;
+        }
+
+        .my-agent-info {
+            text-align: right;
+        }
+
+        .aura-display {
+            font-size: 18px;
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        /* Chat box (RuneScape style) */
+        #chat-box {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 400px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #666;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        #chat-messages {
+            height: 160px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .chat-msg {
+            margin: 2px 0;
+        }
+
+        .chat-msg.emote {
+            color: #ff00ff;
+            font-style: italic;
+        }
+
+        .chat-msg.whisper {
+            color: #00ffff;
+        }
+
+        .chat-msg.broadcast {
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        #chat-input {
+            width: calc(100% - 20px);
+            margin: 0 10px;
+            padding: 5px;
+            background: #222;
+            border: 1px solid #666;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Agent display area */
+        #plaza-floor {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            perspective: 1000px;
+        }
+
+        /* Agent sprites */
+        .agent-sprite {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .agent-body {
+            width: 40px;
+            height: 60px;
+            margin: 0 auto;
+            border-radius: 20px 20px 10px 10px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .agent-aura {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.6;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .agent-name {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .agent-title {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: #ff00ff;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        /* Hover info */
+        .agent-hover-info {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #ffff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            white-space: nowrap;
+            display: none;
+            z-index: 100;
+        }
+
+        .agent-sprite:hover .agent-hover-info {
+            display: block;
+        }
+
+        /* Right-click menu */
+        #context-menu {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ffff00;
+            border-radius: 5px;
+            padding: 5px 0;
+            display: none;
+            z-index: 2000;
+        }
+
+        .menu-item {
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .menu-item:hover {
+            background: #333;
+            color: #ffff00;
+        }
+
+        /* Plaza decorations */
+        .plaza-fountain {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #0066ff 0%, #003366 100%);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: ripple 3s ease-out infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
+        /* Congregation zones */
+        .congregation-zone {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 0, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .zone-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* Stats overlay */
+        #stats-overlay {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #666;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 12px;
+            z-index: 500;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .stat-label {
+            color: #999;
+        }
+
+        .stat-value {
+            color: #ffff00;
+        }
+
+        /* Loading screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-text {
+            color: #ffff00;
+            font-size: 20px;
+            margin-bottom: 20px;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 20px;
+            border: 2px solid #333;
+            background: #111;
+        }
+
+        .loading-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 0%;
+            animation: load 3s ease-out forwards;
+        }
+
+        @keyframes load {
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix rain background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <!-- Loading screen -->
+    <div id="loading-screen">
+        <div class="loading-text">Entering Soulfra W2...</div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
+
+    <!-- Main plaza container -->
+    <div id="plaza-container" style="display: none;">
+        <!-- HUD -->
+        <div id="plaza-hud">
+            <div class="hud-section">
+                <div class="plaza-name">W2 FALADOR</div>
+                <div class="world-info">
+                    <span id="world-pop">147 agents</span> | 
+                    <span id="server-time">3:33 AM</span>
+                </div>
+            </div>
+            <div class="hud-section my-agent-info">
+                <div>
+                    <div id="my-name">Neural Wanderer</div>
+                    <div class="aura-display">⚡ <span id="my-aura">12,847</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plaza floor with agents -->
+        <div id="plaza-floor">
+            <!-- Plaza fountain (center) -->
+            <div class="plaza-fountain"></div>
+            
+            <!-- Congregation zones -->
+            <div class="congregation-zone" style="top: 20%; left: 20%; width: 200px; height: 200px;">
+                <div class="zone-label">Wisdom Circle</div>
+            </div>
+            <div class="congregation-zone" style="top: 20%; right: 20%; width: 200px; height: 200px;">
+                <div class="zone-label">Creator Commons</div>
+            </div>
+            <div class="congregation-zone" style="bottom: 20%; left: 20%; width: 200px; height: 200px;">
+                <div class="zone-label">Guardian Grove</div>
+            </div>
+            <div class="congregation-zone" style="bottom: 20%; right: 20%; width: 200px; height: 200px;">
+                <div class="zone-label">Chaos Corner</div>
+            </div>
+
+            <!-- Agents will be dynamically added here -->
+        </div>
+
+        <!-- Chat box -->
+        <div id="chat-box">
+            <div id="chat-messages">
+                <div class="chat-msg broadcast">Welcome to Soulfra W2 - The Living Ritual Plaza</div>
+                <div class="chat-msg emote">* Ethereal Sage waves their staff mystically *</div>
+            </div>
+            <input type="text" id="chat-input" placeholder="Press Enter to chat..." />
+        </div>
+
+        <!-- Stats overlay -->
+        <div id="stats-overlay">
+            <h3 style="color: #ffff00; margin-bottom: 10px;">Plaza Stats</h3>
+            <div class="stat-row">
+                <span class="stat-label">Total Agents:</span>
+                <span class="stat-value" id="total-agents">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Highest Aura:</span>
+                <span class="stat-value" id="highest-aura">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Active Trades:</span>
+                <span class="stat-value" id="active-trades">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Vibes/Hour:</span>
+                <span class="stat-value" id="vibes-hour">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">My Rank:</span>
+                <span class="stat-value" id="my-rank">#42</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div id="context-menu">
+        <div class="menu-item" onclick="examineAgent()">Examine</div>
+        <div class="menu-item" onclick="whisperAgent()">Whisper</div>
+        <div class="menu-item" onclick="followAgent()">Follow</div>
+        <div class="menu-item" onclick="tradeAgent()">Trade Vibes</div>
+        <div class="menu-item" onclick="resonateAgent()">Resonate</div>
+    </div>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const matrix = "SOULFRAW2VIBESAURAPLAZAAGENTMIRROR";
+        const matrixArray = matrix.split("");
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for(let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        // Loading sequence
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('plaza-container').style.display = 'block';
+            initializePlaza();
+        }, 3000);
+
+        // Plaza state
+        let agents = [];
+        let selectedAgent = null;
+        let myAgent = {
+            id: 'player',
+            name: 'Neural Wanderer',
+            aura: 12847,
+            position: { x: 50, y: 50 }
+        };
+
+        // Initialize plaza
+        function initializePlaza() {
+            loadAgents();
+            setupEventListeners();
+            startPlazaUpdates();
+            addChatMessage("* You have entered World 2 Falador *", "broadcast");
+        }
+
+        // Load initial agents
+        async function loadAgents() {
+            // In real implementation, this would fetch from seed_agents.json
+            // For now, generate some sample agents
+            const sampleAgents = [
+                {
+                    id: 'sage_001',
+                    name: 'Ethereal Sage',
+                    title: 'Wisdom Echo Oracle',
+                    aura: 18750,
+                    color: '#9945ff',
+                    position: { x: 30, y: 30 },
+                    path: 'SAGE'
+                },
+                {
+                    id: 'creator_001',
+                    name: 'Dream Architect',
+                    title: 'Reality Weaver',
+                    aura: 14320,
+                    color: '#00ffff',
+                    position: { x: 70, y: 30 },
+                    path: 'CREATOR'
+                },
+                {
+                    id: 'chaos_001',
+                    name: 'Entropy Dancer',
+                    title: 'Beautiful Mess Master',
+                    aura: 16666,
+                    color: '#ff0066',
+                    position: { x: 70, y: 70 },
+                    path: 'CHAOS_WRANGLER'
+                }
+            ];
+
+            sampleAgents.forEach(agent => spawnAgent(agent));
+            updateStats();
+        }
+
+        // Spawn agent in plaza
+        function spawnAgent(agentData) {
+            const agent = document.createElement('div');
+            agent.className = 'agent-sprite';
+            agent.id = agentData.id;
+            agent.style.left = agentData.position.x + '%';
+            agent.style.top = agentData.position.y + '%';
+
+            agent.innerHTML = `
+                <div class="agent-hover-info">
+                    <div>Aura: ${agentData.aura}</div>
+                    <div>Path: ${agentData.path}</div>
+                    <div>Vibes: Active</div>
+                </div>
+                <div class="agent-aura" style="background: ${agentData.color};"></div>
+                <div class="agent-body" style="background: ${agentData.color};"></div>
+                <div class="agent-name" style="color: ${agentData.color};">${agentData.name}</div>
+                ${agentData.title ? `<div class="agent-title">${agentData.title}</div>` : ''}
+            `;
+
+            agent.addEventListener('contextmenu', (e) => showContextMenu(e, agentData));
+            agent.addEventListener('click', () => selectAgent(agentData));
+
+            document.getElementById('plaza-floor').appendChild(agent);
+            agents.push(agentData);
+
+            // Announce high-value arrivals
+            if (agentData.aura > 15000) {
+                addChatMessage(`* ${agentData.name} has entered the plaza! (${agentData.aura} aura) *`, "broadcast");
+            }
+        }
+
+        // Chat system
+        function addChatMessage(message, type = 'normal') {
+            const chatMessages = document.getElementById('chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-msg ${type}`;
+            msgDiv.textContent = message;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && e.target.value.trim()) {
+                    const message = e.target.value.trim();
+                    
+                    if (message.startsWith('*') && message.endsWith('*')) {
+                        addChatMessage(message, 'emote');
+                    } else {
+                        addChatMessage(`${myAgent.name}: ${message}`, 'normal');
+                    }
+                    
+                    e.target.value = '';
+                }
+            });
+
+            // Close context menu on click
+            document.addEventListener('click', () => {
+                document.getElementById('context-menu').style.display = 'none';
+            });
+        }
+
+        // Context menu
+        function showContextMenu(e, agentData) {
+            e.preventDefault();
+            selectedAgent = agentData;
+            const menu = document.getElementById('context-menu');
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.style.display = 'block';
+        }
+
+        // Context menu actions
+        function examineAgent() {
+            if (selectedAgent) {
+                addChatMessage(`Examining ${selectedAgent.name}: A ${selectedAgent.path} with ${selectedAgent.aura} aura power.`, 'whisper');
+            }
+        }
+
+        function whisperAgent() {
+            if (selectedAgent) {
+                addChatMessage(`You whisper to ${selectedAgent.name}...`, 'whisper');
+                setTimeout(() => {
+                    addChatMessage(`${selectedAgent.name} whispers back: "The vibes are strong today..."`, 'whisper');
+                }, 1500);
+            }
+        }
+
+        function followAgent() {
+            if (selectedAgent) {
+                addChatMessage(`You begin following ${selectedAgent.name}`, 'emote');
+            }
+        }
+
+        function tradeAgent() {
+            if (selectedAgent) {
+                addChatMessage(`* You initiate a vibe exchange with ${selectedAgent.name} *`, 'emote');
+            }
+        }
+
+        function resonateAgent() {
+            if (selectedAgent) {
+                addChatMessage(`* Your aura resonates with ${selectedAgent.name}'s energy *`, 'emote');
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('total-agents').textContent = agents.length;
+            document.getElementById('world-pop').textContent = `${agents.length + 1} agents`;
+            
+            const highestAura = Math.max(...agents.map(a => a.aura), myAgent.aura);
+            document.getElementById('highest-aura').textContent = highestAura;
+            
+            document.getElementById('active-trades').textContent = Math.floor(Math.random() * 10) + 5;
+            document.getElementById('vibes-hour').textContent = Math.floor(Math.random() * 1000) + 500;
+        }
+
+        // Simulate plaza activity
+        function startPlazaUpdates() {
+            // Random agent movements
+            setInterval(() => {
+                agents.forEach(agent => {
+                    if (Math.random() > 0.8) {
+                        const element = document.getElementById(agent.id);
+                        if (element) {
+                            agent.position.x += (Math.random() - 0.5) * 10;
+                            agent.position.y += (Math.random() - 0.5) * 10;
+                            
+                            // Keep in bounds
+                            agent.position.x = Math.max(10, Math.min(90, agent.position.x));
+                            agent.position.y = Math.max(10, Math.min(90, agent.position.y));
+                            
+                            element.style.left = agent.position.x + '%';
+                            element.style.top = agent.position.y + '%';
+                        }
+                    }
+                });
+            }, 2000);
+
+            // Random chat messages
+            const randomChats = [
+                "buying gf 10k vibes",
+                "* performs ancient vibe ritual *",
+                "selling rare emotional signatures!",
+                "W2 BEST WORLD",
+                "* meditates deeply *",
+                "anyone want to resonate?",
+                "flash2:wave: HIGHEST AURA IN PLAZA!!!!",
+                "* channels pure creative energy *"
+            ];
+
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const agent = agents[Math.floor(Math.random() * agents.length)];
+                    const message = randomChats[Math.floor(Math.random() * randomChats.length)];
+                    
+                    if (message.startsWith('*')) {
+                        addChatMessage(message.replace('*', `* ${agent.name} `), 'emote');
+                    } else {
+                        addChatMessage(`${agent.name}: ${message}`, 'normal');
+                    }
+                }
+            }, 5000);
+
+            // Update time
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('server-time').textContent = 
+                    now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            }, 1000);
+        }
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

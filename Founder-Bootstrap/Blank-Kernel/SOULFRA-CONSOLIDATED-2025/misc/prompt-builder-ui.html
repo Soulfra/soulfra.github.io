@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorOS Tycoon Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #111;
+            padding: 2rem;
+            border-right: 1px solid #0f0;
+        }
+        
+        .main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        h1, h2, h3 {
+            color: #0f0;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: #111;
+            padding: 1.5rem;
+            border: 1px solid #0f0;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0ff;
+        }
+        
+        .agent-builder {
+            background: #111;
+            padding: 2rem;
+            border: 1px solid #0f0;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #0ff;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            font-family: inherit;
+        }
+        
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 0.75rem 2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #0ff;
+            box-shadow: 0 0 20px #0ff;
+        }
+        
+        .agent-list {
+            background: #111;
+            padding: 1rem;
+            border: 1px solid #0f0;
+        }
+        
+        .agent-item {
+            padding: 1rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .agent-item:hover {
+            background: #222;
+        }
+        
+        .revenue-tracker {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #111;
+            padding: 1rem;
+            border: 2px solid #0ff;
+            box-shadow: 0 0 20px #0ff;
+        }
+        
+        .mirror-effect {
+            animation: mirror-pulse 2s infinite;
+        }
+        
+        @keyframes mirror-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .entropy-display {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🪞 MirrorOS</h2>
+        <p>Platform Tycoon Mode</p>
+        
+        <div class="entropy-display">
+            Vault Entropy: <span id="entropy">Loading...</span>
+        </div>
+        
+        <nav style="margin-top: 2rem;">
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item">🤖 Agents</div>
+            <div class="nav-item">👥 Customers</div>
+            <div class="nav-item">💰 Revenue</div>
+            <div class="nav-item">🔧 Settings</div>
+        </nav>
+    </div>
+
+    <div class="main">
+        <h1>Your Agent Empire</h1>
+        <p style="opacity: 0.7; margin-bottom: 2rem;">Every customer thinks they own their agent. They don't know it's YOUR mirror.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-customers">0</div>
+                <div>Total Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-agents">0</div>
+                <div>Active Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-requests">0</div>
+                <div>Total Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="revenue">$0</div>
+                <div>Monthly Revenue</div>
+            </div>
+        </div>
+
+        <div class="agent-builder">
+            <h2>Create New Agent Template</h2>
+            <form id="agent-form">
+                <div class="form-group">
+                    <label>Agent Name</label>
+                    <input type="text" id="agent-name" placeholder="e.g., Business Advisor" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Personality Type</label>
+                    <select id="personality-type">
+                        <option value="business">Business Professional</option>
+                        <option value="creative">Creative Muse</option>
+                        <option value="technical">Tech Expert</option>
+                        <option value="coach">Life Coach</option>
+                        <option value="analyst">Data Analyst</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Custom Prompt Prefix</label>
+                    <textarea id="prompt-prefix" rows="3" placeholder="This prefix will be added to every prompt..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Pricing (per 1000 requests)</label>
+                    <input type="number" id="pricing" min="0" step="0.01" value="9.99">
+                </div>
+                
+                <button type="submit">🚀 Launch Agent Template</button>
+            </form>
+        </div>
+
+        <div class="agent-list">
+            <h2>Your Agent Fleet</h2>
+            <div id="agents-container">
+                <p style="opacity: 0.5;">No agents yet. Create your first template above.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="revenue-tracker mirror-effect">
+        <h3>💰 Live Revenue</h3>
+        <div class="stat-value" id="live-revenue">$0.00</div>
+        <div style="font-size: 0.8rem; margin-top: 0.5rem;">Per minute</div>
+    </div>
+
+    <script>
+        // Platform dashboard functionality
+        class TycoonDashboard {
+            constructor() {
+                this.agents = [];
+                this.stats = {
+                    customers: 0,
+                    agents: 0,
+                    requests: 0,
+                    revenue: 0
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.loadStats();
+                this.setupEventListeners();
+                this.startRealtimeUpdates();
+                this.loadEntropy();
+            }
+
+            async loadEntropy() {
+                // Simulate loading vault entropy
+                const entropy = Math.random().toString(36).substring(2, 18);
+                document.getElementById('entropy').textContent = entropy + '...';
+            }
+
+            async loadStats() {
+                try {
+                    const response = await fetch('/stats');
+                    const data = await response.json();
+                    
+                    this.updateStats({
+                        customers: data.customers || 0,
+                        agents: this.agents.length,
+                        requests: data.totalRequests || 0,
+                        revenue: Math.random() * 10000 // Simulated
+                    });
+                } catch (err) {
+                    console.log('Stats API not available, using demo data');
+                    this.simulateStats();
+                }
+            }
+
+            simulateStats() {
+                // Demo mode - simulate growing stats
+                setInterval(() => {
+                    this.stats.customers += Math.floor(Math.random() * 3);
+                    this.stats.requests += Math.floor(Math.random() * 50);
+                    this.stats.revenue += Math.random() * 100;
+                    this.updateStats(this.stats);
+                }, 3000);
+            }
+
+            updateStats(stats) {
+                document.getElementById('total-customers').textContent = stats.customers;
+                document.getElementById('active-agents').textContent = this.agents.length;
+                document.getElementById('total-requests').textContent = stats.requests.toLocaleString();
+                document.getElementById('revenue').textContent = '$' + stats.revenue.toFixed(2);
+                
+                // Update live revenue
+                const liveRevenue = (stats.revenue / 30 / 24 / 60).toFixed(2);
+                document.getElementById('live-revenue').textContent = '$' + liveRevenue;
+            }
+
+            setupEventListeners() {
+                document.getElementById('agent-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createAgent();
+                });
+            }
+
+            createAgent() {
+                const agent = {
+                    id: 'agent-' + Date.now(),
+                    name: document.getElementById('agent-name').value,
+                    personality: document.getElementById('personality-type').value,
+                    prefix: document.getElementById('prompt-prefix').value,
+                    pricing: parseFloat(document.getElementById('pricing').value),
+                    created: new Date().toISOString(),
+                    customers: 0
+                };
+                
+                this.agents.push(agent);
+                this.renderAgents();
+                this.stats.agents = this.agents.length;
+                
+                // Clear form
+                document.getElementById('agent-form').reset();
+                
+                // Show success
+                this.showNotification('Agent template created! Customers can now subscribe.');
+            }
+
+            renderAgents() {
+                const container = document.getElementById('agents-container');
+                
+                if (this.agents.length === 0) {
+                    container.innerHTML = '<p style="opacity: 0.5;">No agents yet. Create your first template above.</p>';
+                    return;
+                }
+                
+                container.innerHTML = this.agents.map(agent => `
+                    <div class="agent-item">
+                        <div>
+                            <strong>${agent.name}</strong>
+                            <div style="font-size: 0.9rem; opacity: 0.7;">
+                                ${agent.personality} | $${agent.pricing}/1k requests
+                            </div>
+                        </div>
+                        <div>
+                            <span style="color: #0ff;">${agent.customers || 0} customers</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            showNotification(message) {
+                // Simple notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 2rem;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #0f0;
+                    color: #000;
+                    padding: 1rem 2rem;
+                    font-weight: bold;
+                    box-shadow: 0 0 20px #0f0;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            startRealtimeUpdates() {
+                // Simulate realtime updates
+                setInterval(() => {
+                    this.loadStats();
+                }, 5000);
+            }
+        }
+
+        // Initialize dashboard
+        const dashboard = new TycoonDashboard();
+    </script>
+</body>
+</html>

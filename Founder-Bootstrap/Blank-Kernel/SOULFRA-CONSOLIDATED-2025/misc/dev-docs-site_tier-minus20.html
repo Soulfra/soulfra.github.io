@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Developer Documentation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    /* Layout */
+    .docs-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #f8f9fa;
+      border-right: 1px solid #e0e0e0;
+      padding: 20px;
+      overflow-y: auto;
+      position: fixed;
+      height: 100vh;
+    }
+    
+    .sidebar h3 {
+      font-size: 0.9em;
+      text-transform: uppercase;
+      color: #666;
+      margin: 20px 0 10px;
+      font-weight: 600;
+    }
+    
+    .sidebar ul {
+      list-style: none;
+    }
+    
+    .sidebar li {
+      margin: 5px 0;
+    }
+    
+    .sidebar a {
+      color: #333;
+      text-decoration: none;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .sidebar a:hover {
+      background: #e8e8e8;
+    }
+    
+    .sidebar a.active {
+      background: #667eea;
+      color: white;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 40px;
+      max-width: 900px;
+    }
+    
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 280px;
+      right: 0;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 15px 40px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 1.5em;
+      color: #667eea;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .header-links a {
+      color: #666;
+      text-decoration: none;
+    }
+    
+    .header-links a:hover {
+      color: #667eea;
+    }
+    
+    /* Content Styles */
+    .content {
+      margin-top: 80px;
+    }
+    
+    .content h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .content h2 {
+      font-size: 2em;
+      margin: 40px 0 20px;
+      color: #333;
+    }
+    
+    .content h3 {
+      font-size: 1.5em;
+      margin: 30px 0 15px;
+      color: #333;
+    }
+    
+    .content p {
+      margin: 15px 0;
+      color: #555;
+    }
+    
+    .content code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+    
+    .content pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+    }
+    
+    .content pre .comment { color: #6A9955; }
+    .content pre .keyword { color: #569CD6; }
+    .content pre .string { color: #CE9178; }
+    .content pre .function { color: #DCDCAA; }
+    
+    /* Alert Boxes */
+    .alert {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .alert-info {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      color: #1565c0;
+    }
+    
+    .alert-warning {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      color: #e65100;
+    }
+    
+    .alert-success {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      color: #2e7d32;
+    }
+    
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+    
+    /* Quick Start Card */
+    .quickstart-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    
+    .quickstart-card h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+    
+    .quickstart-card code {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    
+    /* Copy Button */
+    .code-block {
+      position: relative;
+    }
+    
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    
+    .copy-btn:hover {
+      background: #5a67d8;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .header {
+        left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="docs-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h3>Getting Started</h3>
+      <ul>
+        <li><a href="#quickstart" class="active">Quick Start</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#first-app">Your First App</a></li>
+      </ul>
+      
+      <h3>Core Concepts</h3>
+      <ul>
+        <li><a href="#fragmentation">Data Fragmentation</a></li>
+        <li><a href="#distribution">Distribution</a></li>
+        <li><a href="#biometric">Biometric Auth</a></li>
+        <li><a href="#quantum">Quantum Resistance</a></li>
+      </ul>
+      
+      <h3>API Reference</h3>
+      <ul>
+        <li><a href="#protect">protect()</a></li>
+        <li><a href="#retrieve">retrieve()</a></li>
+        <li><a href="#share">share()</a></li>
+        <li><a href="#delete">delete()</a></li>
+        <li><a href="#search">search()</a></li>
+      </ul>
+      
+      <h3>Examples</h3>
+      <ul>
+        <li><a href="#example-financial">Financial Data</a></li>
+        <li><a href="#example-medical">Medical Records</a></li>
+        <li><a href="#example-files">File Storage</a></li>
+        <li><a href="#example-react">React Integration</a></li>
+        <li><a href="#example-node">Node.js Backend</a></li>
+      </ul>
+      
+      <h3>Advanced</h3>
+      <ul>
+        <li><a href="#compliance">Compliance</a></li>
+        <li><a href="#performance">Performance</a></li>
+        <li><a href="#security">Security Model</a></li>
+        <li><a href="#migration">Migration Guide</a></li>
+      </ul>
+    </nav>
+    
+    <!-- Header -->
+    <header class="header">
+      <h1>Soulfra Docs</h1>
+      <div class="header-links">
+        <a href="https://github.com/soulfra/sdk">GitHub</a>
+        <a href="https://discord.gg/soulfra">Discord</a>
+        <a href="/support">Support</a>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content">
+        <!-- Quick Start Section -->
+        <section id="quickstart">
+          <h1>Quick Start Guide</h1>
+          <p>Get up and running with Soulfra in 5 minutes. This guide will show you how to protect your first piece of data.</p>
+          
+          <div class="quickstart-card">
+            <h3>⚡ 3-Line Data Protection</h3>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><span class="keyword">import</span> { Soulfra } <span class="keyword">from</span> <span class="string">'@soulfra/sdk'</span>;
+<span class="keyword">const</span> soulfra = <span class="keyword">new</span> <span class="function">Soulfra</span>();
+<span class="keyword">const</span> protected = <span class="keyword">await</span> soulfra.<span class="function">protect</span>(yourData);</pre>
+            </div>
+            <p>That's it! Your data is now mathematically unbreachable.</p>
+          </div>
+        </section>
+        
+        <!-- Installation -->
+        <section id="installation" style="display: none;">
+          <h1>Installation</h1>
+          
+          <h2>Package Managers</h2>
+          
+          <h3>npm</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>npm install @soulfra/sdk</pre>
+          </div>
+          
+          <h3>yarn</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>yarn add @soulfra/sdk</pre>
+          </div>
+          
+          <h3>pnpm</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>pnpm add @soulfra/sdk</pre>
+          </div>
+          
+          <h2>CDN</h2>
+          <p>For quick prototyping, you can use our CDN:</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>&lt;script src="https://cdn.soulfra.com/sdk/latest.min.js"&gt;&lt;/script&gt;</pre>
+          </div>
+          
+          <h2>Requirements</h2>
+          <ul>
+            <li>Node.js 14+ (for Node.js environments)</li>
+            <li>Modern browsers (Chrome 90+, Firefox 88+, Safari 14+)</li>
+            <li>React 16.8+ (for React integration)</li>
+          </ul>
+        </section>
+        
+        <!-- Authentication -->
+        <section id="authentication" style="display: none;">
+          <h1>Authentication</h1>
+          
+          <h2>API Keys</h2>
+          <p>Get your API key from the <a href="https://dashboard.soulfra.com">Soulfra Dashboard</a>.</p>
+          
+          <h3>Environment Variables</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment"># .env file</span>
+SOULFRA_API_KEY=your_api_key_here</pre>
+          </div>
+          
+          <h3>Direct Configuration</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="keyword">const</span> soulfra = <span class="keyword">new</span> <span class="function">Soulfra</span>({
+  apiKey: <span class="string">'your_api_key_here'</span>
+});</pre>
+          </div>
+          
+          <div class="alert alert-warning">
+            <strong>Security Note:</strong> Never commit API keys to version control. Always use environment variables in production.
+          </div>
+          
+          <h2>Biometric Setup</h2>
+          <p>Soulfra uses device biometrics for ultimate security. Users will be prompted to set up biometric authentication on first use.</p>
+          
+          <h3>Supported Biometrics</h3>
+          <table>
+            <tr>
+              <th>Platform</th>
+              <th>Supported Methods</th>
+            </tr>
+            <tr>
+              <td>iOS</td>
+              <td>Face ID, Touch ID</td>
+            </tr>
+            <tr>
+              <td>Android</td>
+              <td>Fingerprint, Face Unlock</td>
+            </tr>
+            <tr>
+              <td>Windows</td>
+              <td>Windows Hello (Face, Fingerprint, PIN)</td>
+            </tr>
+            <tr>
+              <td>macOS</td>
+              <td>Touch ID, Apple Watch</td>
+            </tr>
+          </table>
+        </section>
+        
+        <!-- API Reference -->
+        <section id="protect" style="display: none;">
+          <h1>protect()</h1>
+          
+          <p>Protects any data by fragmenting it into mathematically unbreachable pieces.</p>
+          
+          <h2>Syntax</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>soulfra.<span class="function">protect</span>(data, options?)</pre>
+          </div>
+          
+          <h2>Parameters</h2>
+          <table>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td><code>data</code></td>
+              <td>any</td>
+              <td>The data to protect (objects, strings, buffers, etc.)</td>
+            </tr>
+            <tr>
+              <td><code>options</code></td>
+              <td>object</td>
+              <td>Optional configuration</td>
+            </tr>
+          </table>
+          
+          <h2>Options</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>{
+  securityLevel: <span class="string">'maximum'</span> | <span class="string">'standard'</span> | <span class="string">'basic'</span>,
+  retentionPeriod: <span class="string">'forever'</span> | <span class="string">'7years'</span> | <span class="string">'1year'</span>,
+  shareWith: [<span class="string">'email@example.com'</span>],
+  compliance: <span class="string">'HIPAA'</span> | <span class="string">'GDPR'</span> | <span class="string">'SOC2'</span>
+}</pre>
+          </div>
+          
+          <h2>Returns</h2>
+          <p>Returns a <code>ProtectedData</code> object:</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>{
+  id: <span class="string">'sf_1234567890'</span>,
+  protected: <span class="keyword">true</span>,
+  size: <span class="number">1024</span>,
+  fragments: <span class="number">5</span>,
+  retrieveUrl: <span class="string">'https://api.soulfra.com/retrieve/sf_1234567890'</span>,
+  retrieve: <span class="function">Function</span>
+}</pre>
+          </div>
+          
+          <h2>Example</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment">// Protect sensitive user data</span>
+<span class="keyword">const</span> userData = {
+  ssn: <span class="string">'123-45-6789'</span>,
+  creditCard: <span class="string">'4111-1111-1111-1111'</span>,
+  medical: { condition: <span class="string">'Diabetes'</span>, medication: <span class="string">'Insulin'</span> }
+};
+
+<span class="keyword">const</span> protected = <span class="keyword">await</span> soulfra.<span class="function">protect</span>(userData, {
+  securityLevel: <span class="string">'maximum'</span>,
+  compliance: <span class="string">'HIPAA'</span>
+});
+
+console.<span class="function">log</span>(<span class="string">'Protected ID:'</span>, protected.id);
+<span class="comment">// Save protected.id to your database instead of the actual data</span></pre>
+          </div>
+        </section>
+        
+        <!-- Examples -->
+        <section id="example-react" style="display: none;">
+          <h1>React Integration</h1>
+          
+          <p>Complete example of using Soulfra in a React application.</p>
+          
+          <h2>Installation</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>npm install @soulfra/sdk @soulfra/react</pre>
+          </div>
+          
+          <h2>Provider Setup</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment">// App.jsx</span>
+<span class="keyword">import</span> { SoulfraPovider } <span class="keyword">from</span> <span class="string">'@soulfra/react'</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;<span class="function">SoulfraProvider</span> apiKey={process.env.REACT_APP_SOULFRA_KEY}&gt;
+      &lt;<span class="function">YourApp</span> /&gt;
+    &lt;/<span class="function">SoulfraProvider</span>&gt;
+  );
+}</pre>
+          </div>
+          
+          <h2>Hook Usage</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment">// ProtectForm.jsx</span>
+<span class="keyword">import</span> { useSoulfra } <span class="keyword">from</span> <span class="string">'@soulfra/react'</span>;
+
+<span class="keyword">function</span> <span class="function">ProtectForm</span>() {
+  <span class="keyword">const</span> { protect, isProtecting } = <span class="function">useSoulfra</span>();
+  <span class="keyword">const</span> [data, setData] = <span class="function">useState</span>(<span class="string">''</span>);
+  <span class="keyword">const</span> [protectedId, setProtectedId] = <span class="function">useState</span>(<span class="keyword">null</span>);
+  
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = <span class="keyword">async</span> (e) => {
+    e.<span class="function">preventDefault</span>();
+    <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="function">protect</span>({ content: data });
+    <span class="function">setProtectedId</span>(result.id);
+    <span class="function">setData</span>(<span class="string">''</span>); <span class="comment">// Clear sensitive data</span>
+  };
+  
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;textarea
+        value={data}
+        onChange={(e) => <span class="function">setData</span>(e.target.value)}
+        placeholder=<span class="string">"Enter sensitive data..."</span>
+      /&gt;
+      &lt;button type=<span class="string">"submit"</span> disabled={isProtecting}&gt;
+        {isProtecting ? <span class="string">'Protecting...'</span> : <span class="string">'Protect Data'</span>}
+      &lt;/button&gt;
+      {protectedId && (
+        &lt;div&gt;✅ Protected! ID: {protectedId}&lt;/div&gt;
+      )}
+    &lt;/form&gt;
+  );
+}</pre>
+          </div>
+          
+          <h2>Complete Component Example</h2>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="comment">// SecureNotes.jsx</span>
+<span class="keyword">import</span> React, { useState, useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> { useSoulfra } <span class="keyword">from</span> <span class="string">'@soulfra/react'</span>;
+
+<span class="keyword">function</span> <span class="function">SecureNotes</span>() {
+  <span class="keyword">const</span> { protect, retrieve, search } = <span class="function">useSoulfra</span>();
+  <span class="keyword">const</span> [notes, setNotes] = <span class="function">useState</span>([]);
+  <span class="keyword">const</span> [newNote, setNewNote] = <span class="function">useState</span>(<span class="string">''</span>);
+  
+  <span class="comment">// Load protected notes on mount</span>
+  <span class="function">useEffect</span>(() => {
+    <span class="keyword">async</span> <span class="keyword">function</span> <span class="function">loadNotes</span>() {
+      <span class="keyword">const</span> results = <span class="keyword">await</span> <span class="function">search</span>(<span class="string">'note'</span>);
+      <span class="function">setNotes</span>(results);
+    }
+    <span class="function">loadNotes</span>();
+  }, []);
+  
+  <span class="keyword">const</span> <span class="function">saveNote</span> = <span class="keyword">async</span> () => {
+    <span class="keyword">const</span> protected = <span class="keyword">await</span> <span class="function">protect</span>({
+      type: <span class="string">'note'</span>,
+      content: newNote,
+      created: <span class="keyword">new</span> <span class="function">Date</span>()
+    });
+    
+    <span class="function">setNotes</span>([...notes, protected]);
+    <span class="function">setNewNote</span>(<span class="string">''</span>);
+  };
+  
+  <span class="keyword">const</span> <span class="function">viewNote</span> = <span class="keyword">async</span> (noteId) => {
+    <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="function">retrieve</span>(noteId);
+    <span class="function">alert</span>(data.content);
+  };
+  
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h2&gt;Secure Notes&lt;/h2&gt;
+      
+      &lt;div&gt;
+        &lt;textarea
+          value={newNote}
+          onChange={(e) => <span class="function">setNewNote</span>(e.target.value)}
+          placeholder=<span class="string">"Write a secure note..."</span>
+        /&gt;
+        &lt;button onClick={saveNote}&gt;Save Securely&lt;/button&gt;
+      &lt;/div&gt;
+      
+      &lt;div&gt;
+        &lt;h3&gt;Your Protected Notes&lt;/h3&gt;
+        {notes.<span class="function">map</span>(note => (
+          &lt;div key={note.id}&gt;
+            Note from {note.created}
+            &lt;button onClick={() => <span class="function">viewNote</span>(note.id)}&gt;
+              View
+            &lt;/button&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+          </div>
+          
+          <div class="alert alert-success">
+            <strong>Best Practice:</strong> Always clear sensitive data from state after protecting it. Soulfra ensures the data is safe, but keeping it in React state defeats the purpose.
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    // Navigation
+    document.querySelectorAll('.sidebar a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Update active state
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        
+        // Show corresponding content
+        const target = link.getAttribute('href').substring(1);
+        document.querySelectorAll('.content section').forEach(section => {
+          section.style.display = 'none';
+        });
+        
+        const targetSection = document.getElementById(target);
+        if (targetSection) {
+          targetSection.style.display = 'block';
+          window.scrollTo(0, 0);
+        }
+      });
+    });
+    
+    // Copy code functionality
+    function copyCode(button) {
+      const codeBlock = button.nextElementSibling;
+      const code = codeBlock.textContent;
+      
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 2000);
+      });
+    }
+    
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      document.querySelector('.sidebar').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -251,6 +251,7 @@
     </div>
   </div>
 
+  <script src="/lib/brand-submission-client.js"></script>
   <script>
     const form = document.getElementById('intake-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -265,47 +266,70 @@
 
       // Collect form data
       const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        linkedin: document.getElementById('linkedin').value,
+        brandName: document.getElementById('name').value,
+        brandSlug: document.getElementById('name').value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+        brandTagline: 'Secure your API keys',
+        contactEmail: document.getElementById('email').value,
+        xHandle: document.getElementById('linkedin').value.includes('linkedin')
+          ? '@' + document.getElementById('name').value.toLowerCase().replace(/\s+/g, '')
+          : '@soulfra',
         security_need: document.querySelector('input[name="security_need"]:checked').value,
         referral: document.getElementById('referral').value,
         message: document.getElementById('message').value,
+        brandDescription: document.getElementById('message').value || 'Building secure API key management solutions',
         timestamp: new Date().toISOString(),
         brand: 'soulfra'
       };
 
       try {
-        // Submit to Google Sheets API (backend endpoint)
-        const response = await fetch('/api/intake/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
+        // Submit via GitHub Issue
+        const client = new BrandSubmissionClient({
+          owner: 'soulfra',
+          repo: 'soulfra.github.io'
         });
 
-        if (response.ok) {
+        const result = await client.submit(formData);
+
+        if (result.success) {
           // Show success message
           form.style.display = 'none';
+          successMessage.innerHTML = `
+            <div class="success-icon">🔒</div>
+            <h2>Thank you!</h2>
+            <p style="margin: 20px 0; color: #999;">
+              Your brand page is being generated...<br>
+              <a href="${result.issueUrl}" target="_blank" style="color: #ff0000;">Track progress</a>
+            </p>
+          `;
           successMessage.classList.add('show');
 
           // Store user info for chat
           localStorage.setItem('soulfra_user', JSON.stringify({
-            name: formData.name,
-            email: formData.email
+            name: formData.brandName,
+            email: formData.contactEmail,
+            brandSlug: formData.brandSlug,
+            issueNumber: result.issueNumber
           }));
 
-          // Redirect to chat after 2 seconds
+          // Redirect to generated brand page after 5 seconds
           setTimeout(() => {
-            window.location.href = '/chat.html';
-          }, 2000);
+            window.location.href = '/brands/' + formData.brandSlug + '/';
+          }, 5000);
         } else {
           throw new Error('Submission failed');
         }
       } catch (error) {
         console.error('Submission error:', error);
-        alert('Something went wrong. Please try again.');
+
+        // Show detailed error
+        const errorMessage = error.message.includes('rate limit')
+          ? 'GitHub API rate limit reached. Please try again in a few minutes.'
+          : error.message.includes('not found')
+          ? 'Repository not found. Please check the configuration.'
+          : 'Submission failed: ' + error.message;
+
+        alert(errorMessage);
+
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit & Chat with Soulfra AI';
       }
