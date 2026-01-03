@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Multi-Domain Router</title>
+  <script>
+    // Multi-domain routing for GitHub Pages
+    // Maps domains to subdirectories
+    const DOMAIN_ROUTES = {
+      'cringeproof.com': '/cringeproof/',
+      'www.cringeproof.com': '/cringeproof/',
+      'calriven.com': '/calriven/',
+      'www.calriven.com': '/calriven/',
+      'soulfra.com': '/',
+      'www.soulfra.com': '/',
+      'localhost': '/',
+      '127.0.0.1': '/'
+    };
+
+    // Get current domain
+    const currentDomain = window.location.hostname;
+
+    // Check if we need to route
+    const targetPath = DOMAIN_ROUTES[currentDomain];
+
+    if (targetPath && window.location.pathname === '/') {
+      // Redirect to appropriate subdirectory
+      window.location.replace(targetPath);
+    } else if (targetPath && !window.location.pathname.startsWith(targetPath)) {
+      // We're on the wrong path for this domain
+      window.location.replace(targetPath);
+    }
+  </script>
+</head>
+<body>
+  <div style="text-align: center; padding: 50px; font-family: system-ui;">
+    <h1>🚀 Routing...</h1>
+    <p>Redirecting to the correct site...</p>
+  </div>
+</body>
+</html>

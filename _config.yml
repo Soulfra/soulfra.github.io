@@ -1,0 +1,29 @@
+# GitHub Pages Configuration for Multi-Domain Routing
+# Disable Jekyll processing
+theme: null
+
+# Include all subdirectories
+include:
+  - cringeproof
+  - calriven
+  - soulfra
+  - debates
+  - frontend
+  - cringeproof-purple
+  - cringeproof-qr
+  - cringeproof-crypto
+  - cringeproof-sports
+
+# Exclude unnecessary files
+exclude:
+  - scripts
+  - TECHDEBT
+  - docs/internal
+  - .git
+  - .github
+  - node_modules
+  - vendor
+
+# Multi-domain support
+# Main domain: soulfra.com
+# Subdirectories accessible as: soulfra.com/cringeproof, soulfra.com/calriven, etc.
