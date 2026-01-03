@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soulfra - Secure Your API Keys</title>
-  <meta name="description" content="Security-first AI platform for API key management, encryption, and vault systems.">
+  <title>Soulfra - Voice Predictions & Community Brands</title>
+  <meta name="description" content="Content-addressed voice predictions, community-driven brands, and authentic conversation.">
   <style>
     * {
       margin: 0;
@@ -14,222 +14,305 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #ffffff;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      padding: 2rem;
     }
 
     .container {
-      max-width: 1200px;
-      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    .hero {
+    header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 4rem;
     }
 
-    .logo {
-      font-size: 72px;
+    h1 {
+      font-size: 4rem;
       font-weight: 900;
-      color: #ff0000;
-      text-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
-      margin-bottom: 20px;
-      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
     .tagline {
-      font-size: 24px;
-      color: #ff6666;
-      margin-bottom: 16px;
-      font-weight: 300;
+      font-size: 1.5rem;
+      opacity: 0.95;
+      margin-bottom: 2rem;
     }
 
-    .description {
-      font-size: 18px;
-      color: #999;
-      max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.6;
+    .section {
+      margin-bottom: 4rem;
     }
 
-    .cta-container {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .cta-button {
-      padding: 18px 40px;
-      font-size: 18px;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: inline-block;
-    }
-
-    .cta-primary {
-      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-      color: #ffffff;
-      border: 2px solid #ff0000;
-    }
-
-    .cta-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
-    }
-
-    .cta-secondary {
-      background: transparent;
-      color: #ff0000;
-      border: 2px solid #ff0000;
-    }
-
-    .cta-secondary:hover {
-      background: rgba(255, 0, 0, 0.1);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(255, 0, 0, 0.2);
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 80px;
-    }
-
-    .feature-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 0, 0, 0.2);
-      border-radius: 12px;
-      padding: 30px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      border-color: #ff0000;
-      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
-    }
-
-    .feature-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-
-    .feature-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #ff6666;
-      margin-bottom: 12px;
-    }
-
-    .feature-description {
-      color: #999;
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .footer {
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
       text-align: center;
-      margin-top: 80px;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255, 0, 0, 0.2);
-      color: #666;
-      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+    }
+
+    .card-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .card-description {
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-link {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .card-link:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .featured-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .brand-calriven { border-left: 4px solid #3b82f6; }
+    .brand-deathtodata { border-left: 4px solid #ef4444; }
+    .brand-soulfra { border-left: 4px solid #8b5cf6; }
+    .brand-howtocookathome { border-left: 4px solid #f59e0b; }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      opacity: 0.8;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
     }
 
     @media (max-width: 768px) {
-      .logo {
-        font-size: 48px;
-      }
-
-      .tagline {
-        font-size: 18px;
-      }
-
-      .description {
-        font-size: 16px;
-      }
-
-      .cta-container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .cta-button {
-        width: 100%;
-        max-width: 300px;
-      }
+      h1 { font-size: 2.5rem; }
+      .tagline { font-size: 1.25rem; }
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="hero">
-      <h1 class="logo">SOULFRA</h1>
-      <p class="tagline">Secure Your API Keys</p>
-      <p class="description">
-        Security-first AI platform for managing API keys, encryption, and vault systems.
-        Built for developers who take security seriously.
-      </p>
+    <header>
+      <h1>🎤 Soulfra</h1>
+      <p class="tagline">Voice Predictions, Content-Addressed Storage, and Community-Driven Brands</p>
+    </header>
 
-      <div class="cta-container">
-        <a href="/intake.html" class="cta-button cta-primary">
-          Take Brand Survey
-        </a>
-        <a href="/chat.html" class="cta-button cta-secondary">
-          Chat with Soulfra AI
-        </a>
+    <!-- Featured: Voice Archive -->
+    <section class="section">
+      <div class="grid">
+        <div class="card featured-card">
+          <div class="card-header">
+            <span class="card-icon">🎙️</span>
+            <h2 class="card-title">Voice Predictions Archive</h2>
+          </div>
+          <p class="card-description">
+            Content-addressed voice recordings with SHA-256 verification. Record your predictions,
+            ideas, and hot takes - all cryptographically signed and immutable. See who ages badly.
+          </p>
+          <a href="/voice-archive/" class="card-link">View Archive →</a>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="features">
-      <div class="feature-card">
-        <div class="feature-icon">🔑</div>
-        <h3 class="feature-title">API Key Management</h3>
-        <p class="feature-description">
-          Automated key rotation, secure storage, and access control for all your API credentials.
-        </p>
+    <!-- Brand Network -->
+    <section class="section">
+      <h2 class="section-title">Community Brands</h2>
+      <div class="grid">
+
+        <!-- CalRiven -->
+        <div class="card brand-calriven">
+          <div class="card-header">
+            <span class="card-icon">📊</span>
+            <h3 class="card-title">CalRiven</h3>
+          </div>
+          <p class="card-description">
+            Data-driven analysis, metrics, proof, and game theory. News scraping, article analysis, and CringeProof predictions.
+          </p>
+          <a href="https://calriven.com" class="card-link">Visit CalRiven →</a>
+        </div>
+
+        <!-- DeathToData -->
+        <div class="card brand-deathtodata">
+          <div class="card-header">
+            <span class="card-icon">🔥</span>
+            <h3 class="card-title">DeathToData</h3>
+          </div>
+          <p class="card-description">
+            Call out the cringe, the fake, and the corrupt. Burn down broken systems. No bullshit allowed.
+          </p>
+          <a href="https://deathtodata.com" class="card-link">Visit DeathToData →</a>
+        </div>
+
+        <!-- Soulfra (Core) -->
+        <div class="card brand-soulfra">
+          <div class="card-header">
+            <span class="card-icon">💜</span>
+            <h3 class="card-title">Soulfra Core</h3>
+          </div>
+          <p class="card-description">
+            Authentic community, trust, genuine connection, and vulnerable conversation. The heart of the network.
+          </p>
+          <a href="https://soulfra.com" class="card-link">Visit Soulfra →</a>
+        </div>
+
+        <!-- HowToCookAtHome -->
+        <div class="card brand-howtocookathome">
+          <div class="card-header">
+            <span class="card-icon">🍳</span>
+            <h3 class="card-title">HowToCookAtHome</h3>
+          </div>
+          <p class="card-description">
+            Simple recipes, cooking tips, and home kitchen hacks. No fancy equipment, no pretentious nonsense.
+          </p>
+          <a href="https://howtocookathome.com" class="card-link">Visit HowToCookAtHome →</a>
+        </div>
+
+        <!-- StPetePros -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🏝️</span>
+            <h3 class="card-title">StPetePros</h3>
+          </div>
+          <p class="card-description">
+            St. Petersburg, FL local community, services, and neighborhood insights.
+          </p>
+          <a href="https://stpetepros.com" class="card-link">Visit StPetePros →</a>
+        </div>
+
+        <!-- Hollowtown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🌙</span>
+            <h3 class="card-title">Hollowtown</h3>
+          </div>
+          <p class="card-description">
+            Creative fiction, strange stories, and experimental content.
+          </p>
+          <a href="https://hollowtown.com" class="card-link">Visit Hollowtown →</a>
+        </div>
+
+        <!-- Niceleak -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">💧</span>
+            <h3 class="card-title">Niceleak</h3>
+          </div>
+          <p class="card-description">
+            Gentle whistle-blowing, kind transparency, and positive accountability.
+          </p>
+          <a href="https://niceleak.com" class="card-link">Visit Niceleak →</a>
+        </div>
+
+        <!-- Oofbox -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">📦</span>
+            <h3 class="card-title">Oofbox</h3>
+          </div>
+          <p class="card-description">
+            Curated collection of mistakes, lessons learned, and embarrassing fails.
+          </p>
+          <a href="https://oofbox.com" class="card-link">Visit Oofbox →</a>
+        </div>
+
       </div>
+    </section>
 
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3 class="feature-title">Encryption & Vaults</h3>
-        <p class="feature-description">
-          Military-grade encryption with keyring integration for macOS, Windows, and Linux.
-        </p>
+    <!-- How It Works -->
+    <section class="section">
+      <h2 class="section-title">How Voice Predictions Work</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">1️⃣</span>
+            <h3 class="card-title">Record</h3>
+          </div>
+          <p class="card-description">
+            Use Voice Memos app on iPhone. AirDrop to Mac. Simple as a text message.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">2️⃣</span>
+            <h3 class="card-title">Import</h3>
+          </div>
+          <p class="card-description">
+            Run import_voice_memo.py. Auto-transcribes with Whisper, calculates SHA-256 hash.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">3️⃣</span>
+            <h3 class="card-title">Publish</h3>
+          </div>
+          <p class="card-description">
+            Git push to GitHub Pages. Static site, no server needed. Immutable record.
+          </p>
+        </div>
       </div>
+    </section>
 
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3 class="feature-title">Audit Logging</h3>
-        <p class="feature-description">
-          Complete audit trails for compliance with SOC 2, GDPR, and HIPAA requirements.
-        </p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">🤖</div>
-        <h3 class="feature-title">AI-Powered Security</h3>
-        <p class="feature-description">
-          Chat with Soulfra AI to get instant security recommendations and best practices.
-        </p>
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>&copy; 2025 Soulfra. Security-first AI for developers.</p>
-    </div>
+    <footer>
+      <p>Decentralized network - <a href="https://github.com/Soulfra">Fork on GitHub</a></p>
+      <p style="margin-top: 0.5rem; opacity: 0.6;">No Archive.org needed - you own the source</p>
+    </footer>
   </div>
 </body>
 </html>
