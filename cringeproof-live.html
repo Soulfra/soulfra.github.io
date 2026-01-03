@@ -255,7 +255,7 @@
   <div class="container">
     <header>
       <h1>CringeProof LIVE</h1>
-      <p class="tagline">Will Your Takes Age Well?</p>
+      <p class="tagline">Track Your Goals. 1% Better Every Day.</p>
       <div class="live-indicator">
         <div class="live-dot"></div>
         <span>LIVE NOW</span>
@@ -287,44 +287,73 @@
           </div>
         </div>
 
-        <!-- Voice Input -->
-        <div id="voiceSection" class="section hidden">
-          <h3 style="margin-bottom: 15px;">Make Prediction</h3>
+        <!-- Goal Setting -->
+        <div id="goalSection" class="section hidden">
+          <h3 style="margin-bottom: 15px;">Set Your Goals</h3>
+
+          <label style="font-size: 0.9rem; opacity: 0.8;">Daily Goal</label>
           <textarea
-            id="predictionText"
-            placeholder="Type or use voice: 'GME will hit $100 by Q4 2026'"
+            id="dailyGoal"
+            placeholder="e.g., Read 10 pages, Walk 5k steps, Code for 1 hour"
+            rows="2"
+          ></textarea>
+
+          <label style="font-size: 0.9rem; opacity: 0.8;">Weekly Goal</label>
+          <textarea
+            id="weeklyGoal"
+            placeholder="e.g., Finish 2 chapters, Lose 1 pound, Ship new feature"
+            rows="2"
+          ></textarea>
+
+          <button id="setGoalsBtn">Set Goals</button>
+        </div>
+
+        <!-- Voice Check-in -->
+        <div id="voiceSection" class="section hidden">
+          <h3 style="margin-bottom: 15px;">Daily Check-In</h3>
+          <textarea
+            id="checkInText"
+            placeholder="Type or record: 'I read 12 pages today and walked 6k steps'"
             rows="3"
           ></textarea>
           <div class="voice-controls">
             <button id="recordBtn">🎤 Record</button>
-            <button id="submitBtn">Submit Prediction</button>
+            <button id="submitBtn">Submit Check-In</button>
           </div>
           <p style="opacity: 0.6; margin-top: 10px; font-size: 0.85rem;">
-            Click record and speak your prediction
+            Record your daily progress
           </p>
         </div>
 
-        <!-- Stats -->
+        <!-- Stats & Improvement -->
         <div id="statsSection" class="section hidden">
           <div class="stats">
             <div class="stat">
-              <div class="stat-value" id="predictionCount">0</div>
-              <div class="stat-label">Predictions</div>
+              <div class="stat-value" id="streakCount">0</div>
+              <div class="stat-label">Day Streak</div>
             </div>
             <div class="stat">
-              <div class="stat-value" id="liveCount">0</div>
-              <div class="stat-label">Live Now</div>
+              <div class="stat-value" id="ratingBadge">-</div>
+              <div class="stat-label">Rating</div>
             </div>
+          </div>
+
+          <div style="background: rgba(155, 89, 182, 0.2); padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <h4 style="margin-bottom: 10px;">1% Better Every Day</h4>
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+              1% improvement/day = <strong>37x better in 1 year</strong><br>
+              0.1% improvement/day = <strong>1.4x better in 1 year</strong>
+            </p>
           </div>
         </div>
       </div>
 
       <!-- Right Panel: Live Feed -->
       <div class="panel">
-        <h2>Live Predictions Feed</h2>
-        <div id="predictionsFeed">
+        <h2>Community Check-Ins</h2>
+        <div id="checkInsFeed">
           <div class="empty-state">
-            No predictions yet. Be the first!
+            No check-ins yet. Be the first to share your progress!
           </div>
         </div>
       </div>
@@ -336,7 +365,8 @@
     let currentUser = null;
     let mediaRecorder = null;
     let audioChunks = [];
-    let predictions = [];
+    let checkIns = [];
+    let userGoals = null;
 
     // Initialize
     loadUserFromStorage();
@@ -378,7 +408,7 @@
     function showUserSection() {
       document.getElementById('faucetSection').classList.add('hidden');
       document.getElementById('userSection').classList.remove('hidden');
-      document.getElementById('voiceSection').classList.remove('hidden');
+      document.getElementById('goalSection').classList.remove('hidden');
       document.getElementById('statsSection').classList.remove('hidden');
 
       // Display user info
@@ -393,8 +423,45 @@
         height: 200
       });
 
-      // Load predictions
-      loadPredictions();
+      // Load goals and check-ins
+      loadGoals();
+      loadCheckIns();
+    }
+
+    // Set Goals
+    document.getElementById('setGoalsBtn').addEventListener('click', setGoals);
+
+    function setGoals() {
+      const daily = document.getElementById('dailyGoal').value.trim();
+      const weekly = document.getElementById('weeklyGoal').value.trim();
+
+      if (!daily && !weekly) {
+        alert('Please set at least one goal');
+        return;
+      }
+
+      userGoals = {
+        daily,
+        weekly,
+        setAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(`goals_${currentUser.email}`, JSON.stringify(userGoals));
+
+      // Show voice section
+      document.getElementById('voiceSection').classList.remove('hidden');
+
+      alert('Goals set! Now record your daily check-ins.');
+    }
+
+    function loadGoals() {
+      const stored = localStorage.getItem(`goals_${currentUser.email}`);
+      if (stored) {
+        userGoals = JSON.parse(stored);
+        document.getElementById('dailyGoal').value = userGoals.daily || '';
+        document.getElementById('weeklyGoal').value = userGoals.weekly || '';
+        document.getElementById('voiceSection').classList.remove('hidden');
+      }
     }
 
     // Voice Recording
@@ -444,14 +511,14 @@
       }
     }
 
-    // Submit Prediction
-    document.getElementById('submitBtn').addEventListener('click', submitPrediction);
+    // Submit Check-In
+    document.getElementById('submitBtn').addEventListener('click', submitCheckIn);
 
-    async function submitPrediction() {
-      const text = document.getElementById('predictionText').value.trim();
+    async function submitCheckIn() {
+      const text = document.getElementById('checkInText').value.trim();
 
       if (!text) {
-        alert('Please enter or record a prediction');
+        alert('Please enter or record your check-in');
         return;
       }
 
@@ -460,27 +527,76 @@
         return;
       }
 
-      // Create prediction
-      const prediction = {
-        id: `pred_${Date.now()}`,
+      // Create check-in
+      const checkIn = {
+        id: `checkin_${Date.now()}`,
         author: currentUser.email,
         code: currentUser.code,
         text,
+        goals: userGoals,
         timestamp: new Date().toISOString(),
         location: await getLocation()
       };
 
       // Save locally (in real app, send to API)
-      predictions.push(prediction);
-      localStorage.setItem('cringeproof_predictions', JSON.stringify(predictions));
+      checkIns.push(checkIn);
+      localStorage.setItem('cringeproof_checkins', JSON.stringify(checkIns));
+
+      // Calculate streak
+      updateStreak();
 
       // Update feed
-      loadPredictions();
+      loadCheckIns();
 
       // Clear input
-      document.getElementById('predictionText').value = '';
+      document.getElementById('checkInText').value = '';
 
-      alert('Prediction submitted!');
+      alert('Check-in recorded! Keep your streak going!');
+    }
+
+    function updateStreak() {
+      // Get user's check-ins
+      const userCheckIns = checkIns.filter(c => c.author === currentUser.email);
+
+      // Calculate streak (consecutive days with check-ins)
+      let streak = 0;
+      const today = new Date().toDateString();
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+      // Check if there's a check-in today
+      const hasToday = userCheckIns.some(c =>
+        new Date(c.timestamp).toDateString() === today
+      );
+
+      if (hasToday) {
+        streak = 1;
+
+        // Count consecutive days
+        let checkDate = new Date(Date.now() - 86400000);
+        for (let i = 0; i < 365; i++) {
+          const dateStr = checkDate.toDateString();
+          const hasCheckIn = userCheckIns.some(c =>
+            new Date(c.timestamp).toDateString() === dateStr
+          );
+
+          if (hasCheckIn) {
+            streak++;
+            checkDate = new Date(checkDate.getTime() - 86400000);
+          } else {
+            break;
+          }
+        }
+      }
+
+      // Calculate rating
+      let rating = '-';
+      if (streak >= 30) rating = '🥇 Gold';
+      else if (streak >= 14) rating = '🥈 Silver';
+      else if (streak >= 7) rating = '🥉 Bronze';
+
+      // Update display
+      document.getElementById('streakCount').textContent = streak;
+      document.getElementById('ratingBadge').textContent = rating;
     }
 
     async function getLocation() {
@@ -504,43 +620,47 @@
       });
     }
 
-    function loadPredictions() {
-      const stored = localStorage.getItem('cringeproof_predictions');
+    function loadCheckIns() {
+      const stored = localStorage.getItem('cringeproof_checkins');
       if (stored) {
-        predictions = JSON.parse(stored);
+        checkIns = JSON.parse(stored);
       }
 
-      // Update stats
-      document.getElementById('predictionCount').textContent = predictions.length;
-      document.getElementById('liveCount').textContent = predictions.length;
+      // Update streak if user has check-ins
+      if (currentUser) {
+        updateStreak();
+      }
 
       // Render feed
-      const feed = document.getElementById('predictionsFeed');
+      const feed = document.getElementById('checkInsFeed');
 
-      if (predictions.length === 0) {
-        feed.innerHTML = '<div class="empty-state">No predictions yet. Be the first!</div>';
+      if (checkIns.length === 0) {
+        feed.innerHTML = '<div class="empty-state">No check-ins yet. Be the first to share your progress!</div>';
         return;
       }
 
       // Sort by timestamp (newest first)
-      const sorted = [...predictions].sort((a, b) =>
+      const sorted = [...checkIns].sort((a, b) =>
         new Date(b.timestamp) - new Date(a.timestamp)
       );
 
-      feed.innerHTML = sorted.map(pred => `
+      feed.innerHTML = sorted.map(checkIn => `
         <div class="prediction-item">
-          <div class="prediction-author">${pred.author}</div>
-          <div class="prediction-text">${pred.text}</div>
+          <div class="prediction-author">${checkIn.author}</div>
+          <div class="prediction-text">${checkIn.text}</div>
+          ${checkIn.goals ? `<div style="font-size: 0.85rem; opacity: 0.7; margin-top: 5px;">
+            Goal: ${checkIn.goals.daily || checkIn.goals.weekly}
+          </div>` : ''}
           <div class="prediction-meta">
-            ${new Date(pred.timestamp).toLocaleString()}
-            ${pred.location.lat ? ` • ${pred.location.lat.toFixed(4)}, ${pred.location.lng.toFixed(4)}` : ''}
+            ${new Date(checkIn.timestamp).toLocaleString()}
+            ${checkIn.location.lat ? ` • ${checkIn.location.lat.toFixed(4)}, ${checkIn.location.lng.toFixed(4)}` : ''}
           </div>
         </div>
       `).join('');
     }
 
     // Auto-refresh feed every 10 seconds
-    setInterval(loadPredictions, 10000);
+    setInterval(loadCheckIns, 10000);
   </script>
 </body>
 </html>
