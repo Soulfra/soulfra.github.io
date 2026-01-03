@@ -241,7 +241,15 @@
       <div class="controls">
         <button id="stopBtn" class="btn btn-secondary" disabled>⏹ Stop Recording</button>
         <button id="downloadBtn" class="btn btn-primary hidden">⬇️ Download Recording</button>
+        <button id="uploadBtn" class="btn btn-primary hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🚀 Upload & Publish</button>
         <button id="resetBtn" class="btn btn-secondary hidden">🔄 Start Over</button>
+      </div>
+
+      <div id="progress" class="hidden" style="margin-top: 1rem; text-align: center;">
+        <div style="background: rgba(255,255,255,0.2); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 0.5rem;">
+          <div id="progressBar" style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.3s;"></div>
+        </div>
+        <div id="progressText" style="font-size: 0.875rem; opacity: 0.9;"></div>
       </div>
 
       <div id="alert" class="hidden"></div>
@@ -287,15 +295,22 @@
     let analyser;
     let dataArray;
     let animationId;
+    let recordedBlob = null;
 
     const recordBtn = document.getElementById('recordBtn');
     const stopBtn = document.getElementById('stopBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
     const resetBtn = document.getElementById('resetBtn');
     const timer = document.getElementById('timer');
     const status = document.getElementById('status');
     const waveform = document.getElementById('waveform');
     const alert = document.getElementById('alert');
+    const progress = document.getElementById('progress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    const API_URL = 'http://localhost:5002/api/upload-voice';
 
     // Create waveform bars
     for (let i = 0; i < 30; i++) {
@@ -310,7 +325,25 @@
     recordBtn.addEventListener('click', startRecording);
     stopBtn.addEventListener('click', stopRecording);
     downloadBtn.addEventListener('click', downloadRecording);
+    uploadBtn.addEventListener('click', uploadRecording);
     resetBtn.addEventListener('click', reset);
+
+    // Device fingerprint
+    function getDeviceFingerprint() {
+      let deviceId = localStorage.getItem('soulfra_device_id');
+      if (!deviceId) {
+        deviceId = 'web-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('soulfra_device_id', deviceId);
+      }
+
+      return {
+        local_storage_id: deviceId,
+        user_agent: navigator.userAgent,
+        screen_resolution: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        platform: navigator.platform
+      };
+    }
 
     async function startRecording() {
       try {
@@ -324,8 +357,8 @@
         };
 
         mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const audioUrl = URL.createObjectURL(audioBlob);
+          recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioUrl = URL.createObjectURL(recordedBlob);
           downloadBtn.onclick = () => {
             const a = document.createElement('a');
             a.href = audioUrl;
@@ -372,13 +405,14 @@
         recordBtn.classList.remove('recording');
         stopBtn.disabled = true;
         downloadBtn.classList.remove('hidden');
+        uploadBtn.classList.remove('hidden');
         resetBtn.classList.remove('hidden');
         status.textContent = '✅ Recording complete!';
 
         // Reset waveform
         bars.forEach(bar => bar.style.height = '4px');
 
-        showAlert('Recording saved! Click "Download Recording" to save the file.', 'success');
+        showAlert('Recording saved! Click "Upload & Publish" to publish to GitHub Pages, or "Download" to save locally.', 'success');
       }
     }
 
@@ -387,14 +421,86 @@
       showAlert('Download started! Follow the instructions below to publish your prediction.', 'success');
     }
 
+    async function uploadRecording() {
+      if (!recordedBlob) {
+        showAlert('No recording to upload', 'error');
+        return;
+      }
+
+      try {
+        // Show progress
+        progress.classList.remove('hidden');
+        uploadBtn.disabled = true;
+        downloadBtn.disabled = true;
+
+        progressBar.style.width = '10%';
+        progressText.textContent = '📡 Connecting to server...';
+
+        // Create form data
+        const formData = new FormData();
+        formData.append('file', recordedBlob, `prediction-${Date.now()}.webm`);
+        formData.append('fingerprint', JSON.stringify(getDeviceFingerprint()));
+
+        progressBar.style.width = '30%';
+        progressText.textContent = '📤 Uploading recording...';
+
+        // Upload to API
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
+        progressBar.style.width = '60%';
+        progressText.textContent = '🎧 Transcribing with Whisper...';
+
+        // Wait for transcription + AI debate + publish
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        progressBar.style.width = '80%';
+        progressText.textContent = '🤖 Debating with AI models...';
+
+        const result = await response.json();
+
+        progressBar.style.width = '100%';
+        progressText.textContent = '✅ Published to GitHub Pages!';
+
+        // Show success
+        showAlert(`✅ Published! View at: ${result.debate_url}`, 'success');
+
+        // Add clickable link
+        alert.innerHTML += `<br><a href="${result.debate_url}" target="_blank" style="color: white; text-decoration: underline; font-weight: 600;">${result.debate_url}</a>`;
+
+        status.textContent = `✅ Published as Device #${result.device_id}`;
+
+        // Disable upload button
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '✅ Published';
+
+      } catch (error) {
+        console.error('Upload error:', error);
+        showAlert(`❌ Upload failed: ${error.message}`, 'error');
+        uploadBtn.disabled = false;
+        downloadBtn.disabled = false;
+      }
+    }
+
     function reset() {
       audioChunks = [];
+      recordedBlob = null;
       timer.textContent = '00:00';
       status.textContent = 'Click to start recording';
       recordBtn.disabled = false;
       downloadBtn.classList.add('hidden');
+      uploadBtn.classList.add('hidden');
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = '🚀 Upload & Publish';
       resetBtn.classList.add('hidden');
       alert.classList.add('hidden');
+      progress.classList.add('hidden');
+      progressBar.style.width = '0%';
       bars.forEach(bar => bar.style.height = '4px');
     }
 
