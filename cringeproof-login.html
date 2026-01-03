@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Soulfra</title>
+    <title>Login - CringeProof</title>
     <style>
         * {
             margin: 0;
@@ -13,22 +13,48 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                linear-gradient(45deg, transparent 40%, #ff006e 40%, #ff006e 60%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, #00ffcc 40%, #00ffcc 60%, transparent 60%);
+            background-size: 100px 100px;
+            animation: slide 20s linear infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .login-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 0;
+            box-shadow: 
+                10px 10px 0 #ff006e,
+                -10px -10px 0 #00ffcc;
             padding: 50px;
             max-width: 450px;
             width: 100%;
             border: 5px solid #000;
+            position: relative;
+            z-index: 1;
         }
 
         .logo {
@@ -38,15 +64,18 @@
 
         .logo h1 {
             font-size: 3rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ff006e;
             margin-bottom: 10px;
+            text-shadow: 3px 3px 0 #000;
+            transform: rotate(-2deg);
         }
 
         .logo p {
             color: #666;
             font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .form-group {
@@ -56,58 +85,66 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
 
         .form-group input {
             width: 100%;
             padding: 15px;
-            border: 3px solid #000;
-            border-radius: 10px;
+            border: 5px solid #000;
+            border-radius: 0;
             font-size: 1rem;
             transition: all 0.2s;
-            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 5px 5px 0 rgba(255, 0, 110, 0.3);
         }
 
         .form-group input:focus {
             outline: none;
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 0 rgba(102, 126, 234, 0.3);
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 rgba(255, 0, 110, 0.5);
         }
 
         .btn {
             width: 100%;
             padding: 15px;
-            border: 3px solid #000;
-            border-radius: 10px;
+            border: 5px solid #000;
+            border-radius: 0;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ff006e;
             color: white;
             margin-bottom: 20px;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
         }
 
         .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+            transform: translate(0, 0);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
         }
 
         .divider {
             text-align: center;
             margin: 30px 0;
-            color: #999;
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             position: relative;
         }
 
@@ -117,8 +154,8 @@
             position: absolute;
             top: 50%;
             width: 40%;
-            height: 2px;
-            background: #ddd;
+            height: 3px;
+            background: #000;
         }
 
         .divider::before {
@@ -137,40 +174,32 @@
 
         .btn-oauth {
             background: white;
-            color: #333;
+            color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
-            border: 3px solid #000;
+            border: 5px solid #000;
+            box-shadow: 5px 5px 0 rgba(0, 255, 204, 0.3);
         }
 
         .btn-oauth:hover {
-            background: #f5f5f5;
-        }
-
-        .btn-google {
-            border-color: #4285f4;
-        }
-
-        .btn-github {
-            border-color: #333;
-        }
-
-        .btn-apple {
-            border-color: #000;
+            background: #f0f0f0;
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 rgba(0, 255, 204, 0.5);
         }
 
         .footer-links {
             margin-top: 25px;
             text-align: center;
             font-size: 0.9rem;
+            font-weight: 700;
         }
 
         .footer-links a {
-            color: #667eea;
+            color: #ff006e;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .footer-links a:hover {
@@ -179,21 +208,23 @@
 
         .error-message {
             background: #fee;
-            border: 3px solid #c00;
-            border-radius: 10px;
+            border: 5px solid #ff006e;
+            border-radius: 0;
             padding: 15px;
             margin-bottom: 20px;
-            color: #c00;
+            color: #ff006e;
+            font-weight: 700;
             display: none;
         }
 
         .success-message {
             background: #efe;
-            border: 3px solid #0c0;
-            border-radius: 10px;
+            border: 5px solid #00ffcc;
+            border-radius: 0;
             padding: 15px;
             margin-bottom: 20px;
-            color: #0c0;
+            color: #00ffcc;
+            font-weight: 700;
             display: none;
         }
 
@@ -220,8 +251,8 @@
 <body>
     <div class="login-container">
         <div class="logo">
-            <h1>🔐 Soulfra</h1>
-            <p>Decentralized AI Platform</p>
+            <h1>⚡ CringeProof</h1>
+            <p>Gaming & Community</p>
         </div>
 
         <div class="error-message" id="errorMessage"></div>
@@ -239,32 +270,31 @@
             </div>
 
             <button type="submit" class="btn btn-primary" id="loginButton">
-                Log In to Soulfra
+                Login
             </button>
         </form>
 
         <div class="divider">or</div>
 
         <div class="oauth-buttons">
-            <button class="btn btn-oauth btn-google" onclick="loginWithGoogle()">
+            <button class="btn btn-oauth" onclick="loginWithGoogle()">
                 <span>📧</span>
-                <span>Continue with Google</span>
+                <span>Google</span>
             </button>
 
-            <button class="btn btn-oauth btn-github" onclick="loginWithGitHub()">
+            <button class="btn btn-oauth" onclick="loginWithGitHub()">
                 <span>🐙</span>
-                <span>Continue with GitHub</span>
+                <span>GitHub</span>
             </button>
 
-            <button class="btn btn-oauth btn-apple" onclick="loginWithApple()">
+            <button class="btn btn-oauth" onclick="loginWithApple()">
                 <span>🍎</span>
-                <span>Continue with Apple</span>
+                <span>Apple</span>
             </button>
         </div>
 
         <div class="footer-links">
-            Don't have an account? <a href="signup.html">Sign up</a><br>
-            <a href="forgot-password.html">Forgot password?</a>
+            No account? <a href="cringeproof-signup.html">Sign up</a>
         </div>
     </div>
 
@@ -273,7 +303,7 @@
             ? 'http://localhost:5001'
             : 'https://soulfra-api.railway.app';
 
-        const DOMAIN = 'soulfra.com';
+        const DOMAIN = 'cringeproof.com';
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -305,18 +335,18 @@
                     showSuccess('Login successful! Redirecting...');
                     localStorage.setItem('user', JSON.stringify(data));
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'cringeproof-dashboard.html';
                     }, 1000);
                 } else {
                     showError(data.error || 'Login failed. Please try again.');
                     loginButton.classList.remove('loading');
-                    loginButton.innerHTML = 'Log In to Soulfra';
+                    loginButton.innerHTML = 'Login';
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 showError('Network error. Please check your connection.');
                 loginButton.classList.remove('loading');
-                loginButton.innerHTML = 'Log In to Soulfra';
+                loginButton.innerHTML = 'Login';
             }
         });
 
@@ -351,7 +381,7 @@
         if (urlParams.get('login') === 'success') {
             showSuccess('Login successful! Redirecting...');
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = 'cringeproof-dashboard.html';
             }, 1000);
         } else if (urlParams.get('error')) {
             showError(decodeURIComponent(urlParams.get('error')));
