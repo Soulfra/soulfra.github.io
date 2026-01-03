@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlameChain - Keep Them Honest</title>
-  <meta name="description" content="Accountability tracker for design promises. Did they deliver?">
+  <title>BlameChain - Hunt for Promises</title>
+  <meta name="description" content="Find hidden promises. Reward wild behavior. Keep them honest.">
 
   <style>
     :root {
@@ -15,6 +15,7 @@
       --success: #2ECC71;
       --pending: #F39C12;
       --failed: #E74C3C;
+      --gold: #FFD700;
     }
 
     * {
@@ -29,313 +30,667 @@
       color: var(--text);
       min-height: 100vh;
       padding: 20px;
+      overflow-x: hidden;
     }
 
-    header {
+    /* Cringe Scoreboard (BIG at top) */
+    .scoreboard {
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.1));
+      border: 3px solid var(--primary);
+      border-radius: 20px;
+      padding: 40px;
       text-align: center;
-      padding: 40px 20px;
-      border-bottom: 2px solid var(--primary);
       margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
     }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .scoreboard::before {
+      content: '🔥';
+      position: absolute;
+      font-size: 200px;
+      opacity: 0.05;
+      top: -50px;
+      right: -50px;
+      animation: pulse 3s ease-in-out infinite;
     }
 
-    .tagline {
-      font-size: 1.2rem;
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.05; }
+      50% { transform: scale(1.1); opacity: 0.08; }
+    }
+
+    .scoreboard h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
       opacity: 0.8;
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
+    .cringe-score-display {
+      font-size: 8rem;
+      font-weight: bold;
+      color: var(--primary);
+      text-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+      margin: 20px 0;
+      line-height: 1;
     }
 
-    .promise-card {
+    .cringe-score-label {
+      font-size: 1.5rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
+    .out-of-pocket-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+    }
+
+    /* Treasure Map */
+    .treasure-map {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      position: relative;
+      min-height: 600px;
+    }
+
+    .map-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--gold);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .treasure-zone {
       background: rgba(255, 255, 255, 0.05);
       border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      padding: 30px;
-      margin-bottom: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
     }
 
-    .promise-card:hover {
+    .treasure-zone:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
     }
 
-    .promise-card.delivered {
+    .treasure-zone.found {
       border-color: var(--success);
+      background: rgba(46, 204, 113, 0.1);
     }
 
-    .promise-card.pending {
-      border-color: var(--pending);
+    .treasure-zone.hidden {
+      opacity: 0.5;
     }
 
-    .promise-card.failed {
-      border-color: var(--failed);
+    .zone-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      filter: grayscale(50%);
+      transition: filter 0.3s ease;
     }
 
-    .promise-header {
-      display: flex;
-      justify-content: space-between;
+    .treasure-zone:hover .zone-icon {
+      filter: grayscale(0%);
+    }
+
+    .zone-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .zone-hint {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .zone-reward {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--gold);
+      color: #000;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* Promise Modal (I Spy style) */
+    .promise-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 15px;
+      z-index: 1000;
+      padding: 20px;
     }
 
-    .promise-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .status-badge {
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-
-    .status-delivered {
-      background: var(--success);
-      color: white;
-    }
-
-    .status-pending {
-      background: var(--pending);
-      color: white;
-    }
-
-    .status-failed {
-      background: var(--failed);
-      color: white;
-    }
-
-    .promise-meta {
+    .promise-modal.active {
       display: flex;
-      gap: 20px;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, var(--background), #0f0f1e);
+      border: 3px solid var(--gold);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
       opacity: 0.7;
     }
 
-    .promise-description {
+    .modal-close:hover {
+      opacity: 1;
+    }
+
+    .modal-title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--gold);
+    }
+
+    .modal-promise {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
       margin-bottom: 20px;
       line-height: 1.6;
     }
 
-    .prediction-summary {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-
-    .prediction-bar {
+    .modal-meta {
       display: flex;
-      height: 30px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 10px;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
-    .prediction-yes {
-      background: var(--success);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .prediction-no {
-      background: var(--failed);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .cringe-score {
-      background: rgba(231, 76, 60, 0.2);
-      border: 2px solid var(--failed);
-      border-radius: 12px;
-      padding: 30px;
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .cringe-score-value {
-      font-size: 4rem;
-      font-weight: bold;
-      color: var(--failed);
+    .out-of-pocket-meter {
       margin: 20px 0;
     }
 
-    .add-promise-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: block;
-      margin: 40px auto;
+    .meter-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .add-promise-btn:hover {
-      opacity: 0.8;
+    .meter-bar {
+      height: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--gold));
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: width 0.5s ease;
+    }
+
+    .claim-reward-btn {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .claim-reward-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Easter Eggs (Hidden) */
+    .easter-egg {
+      position: absolute;
+      font-size: 2rem;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .easter-egg:hover {
+      opacity: 1;
+      transform: scale(1.5) rotate(10deg);
+    }
+
+    .easter-egg.found {
+      animation: bounce 0.5s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(2) rotate(360deg); }
+    }
+
+    /* Stats Footer */
+    .stats-footer {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .stat-box {
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      opacity: 0.7;
     }
 
     footer {
       text-align: center;
       padding: 40px 20px;
       margin-top: 60px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
       opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .map-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .cringe-score-display {
+        font-size: 5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>⛓️ BlameChain</h1>
-    <p class="tagline">Keep Them Honest - Accountability On-Chain</p>
-  </header>
+  <!-- Big Cringe Scoreboard -->
+  <div class="scoreboard">
+    <h1>⛓️ BlameChain Scoreboard</h1>
+    <div class="cringe-score-display" id="cringeScore">12</div>
+    <div class="cringe-score-label">Calriven's Cringe Score</div>
+    <div class="out-of-pocket-badge">🔥 3 Out-of-Pocket Promises Found</div>
+  </div>
 
-  <div class="container">
-    <!-- Calriven's Promises -->
-    <h2 style="margin-bottom: 30px;">📋 Calriven's Promises</h2>
+  <!-- Treasure Hunt Map -->
+  <div class="treasure-map">
+    <h2 class="map-title">🗺️ Hunt for Hidden Promises</h2>
+    <p style="text-align: center; opacity: 0.8; margin-bottom: 30px;">
+      Click zones to find promises. Wild predictions earn 5-10x rewards.
+    </p>
 
-    <!-- Promise 1: Delivered -->
-    <div class="promise-card delivered">
-      <div class="promise-header">
-        <div class="promise-title">Ship New Brand System</div>
-        <div class="status-badge status-delivered">✅ DELIVERED</div>
+    <div class="map-grid">
+      <!-- Zone 1: Delivered Promise (Found) -->
+      <div class="treasure-zone found" onclick="showPromise('brand-system')">
+        <div class="zone-reward">+500 🪙</div>
+        <div class="zone-icon">✅</div>
+        <div class="zone-name">Brand System</div>
+        <div class="zone-hint">Delivered on time!</div>
       </div>
 
-      <div class="promise-meta">
-        <div>🗓️ Deadline: Q1 2026</div>
-        <div>📍 Status: Shipped on time</div>
-        <div>👤 By: Calriven</div>
+      <!-- Zone 2: Pending Promise -->
+      <div class="treasure-zone" onclick="showPromise('portfolio')">
+        <div class="zone-reward">+1000 🪙</div>
+        <div class="zone-icon">⏳</div>
+        <div class="zone-name">Portfolio Site</div>
+        <div class="zone-hint">45 days remaining...</div>
       </div>
 
-      <div class="promise-description">
+      <!-- Zone 3: Failed Promise (Out of Pocket) -->
+      <div class="treasure-zone" onclick="showPromise('homepage')">
+        <div class="zone-reward">🔥 +5000 🪙</div>
+        <div class="zone-icon">❌</div>
+        <div class="zone-name">Homepage Redesign</div>
+        <div class="zone-hint">"2 weeks" (took 5 weeks)</div>
+      </div>
+
+      <!-- Zone 4: Hidden Easter Egg -->
+      <div class="treasure-zone hidden" onclick="showPromise('secret')">
+        <div class="zone-reward">??? 🪙</div>
+        <div class="zone-icon">🎁</div>
+        <div class="zone-name">???</div>
+        <div class="zone-hint">Click to reveal...</div>
+      </div>
+
+      <!-- Zone 5: Wild Prediction -->
+      <div class="treasure-zone" onclick="showPromise('gme')">
+        <div class="zone-reward">🔥 +10000 🪙</div>
+        <div class="zone-icon">🚀</div>
+        <div class="zone-name">GME Prediction</div>
+        <div class="zone-hint">Insanely out of pocket</div>
+      </div>
+
+      <!-- Zone 6: Community Promise -->
+      <div class="treasure-zone" onclick="showPromise('community')">
+        <div class="zone-reward">+750 🪙</div>
+        <div class="zone-icon">👥</div>
+        <div class="zone-name">Community Goal</div>
+        <div class="zone-hint">58% think it'll happen</div>
+      </div>
+
+      <!-- Zone 7: Cosmetic Unlock -->
+      <div class="treasure-zone" onclick="showPromise('cosmetic')">
+        <div class="zone-reward">🎨 Skin</div>
+        <div class="zone-icon">💎</div>
+        <div class="zone-name">Diamond Hands</div>
+        <div class="zone-hint">Legendary cosmetic</div>
+      </div>
+
+      <!-- Zone 8: Mystery Zone -->
+      <div class="treasure-zone hidden" onclick="showPromise('mystery')">
+        <div class="zone-reward">??? 🪙</div>
+        <div class="zone-icon">🔮</div>
+        <div class="zone-name">Mystery</div>
+        <div class="zone-hint">I Spy with my little eye...</div>
+      </div>
+    </div>
+
+    <!-- Hidden Easter Eggs (Carmen Sandiego style) -->
+    <div class="easter-egg" style="top: 20px; left: 50px;" onclick="findEasterEgg(this, 100)">🔍</div>
+    <div class="easter-egg" style="top: 100px; right: 80px;" onclick="findEasterEgg(this, 250)">🎯</div>
+    <div class="easter-egg" style="bottom: 50px; left: 150px;" onclick="findEasterEgg(this, 500)">💰</div>
+  </div>
+
+  <!-- Stats Footer -->
+  <div class="stats-footer">
+    <div class="stat-box">
+      <div class="stat-value" id="promisesFound">3</div>
+      <div class="stat-label">Promises Found</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="totalRewards">6250</div>
+      <div class="stat-label">Tokens Earned</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="wildBehavior">3x</div>
+      <div class="stat-label">Wild Multiplier</div>
+    </div>
+  </div>
+
+  <!-- Promise Modal -->
+  <div class="promise-modal" id="promiseModal">
+    <div class="modal-content">
+      <div class="modal-close" onclick="closeModal()">✕</div>
+      <div class="modal-title" id="modalTitle">Promise Found!</div>
+
+      <div class="modal-promise" id="modalPromise">
         "I will ship a complete brand design system with logo, colors, typography, and component library by Q1 2026."
       </div>
 
-      <div class="prediction-summary">
-        <strong>Community Prediction:</strong> 72% thought he would deliver on time
+      <div class="modal-meta">
+        <div>🗓️ <span id="modalDeadline">Q1 2026</span></div>
+        <div>📍 <span id="modalStatus">Delivered</span></div>
+        <div>👤 <span id="modalAuthor">Calriven</span></div>
+      </div>
 
-        <div class="prediction-bar">
-          <div class="prediction-yes" style="width: 72%;">72% Yes</div>
-          <div class="prediction-no" style="width: 28%;">28% No</div>
+      <div class="out-of-pocket-meter">
+        <div class="meter-label">
+          <span>🔥 Out-of-Pocket Level</span>
+          <span id="outOfPocketMultiplier">1x</span>
         </div>
-
-        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
-          ✅ Prediction was accurate! Users who bet "yes" earned 100 tokens.
-        </p>
-      </div>
-    </div>
-
-    <!-- Promise 2: Pending -->
-    <div class="promise-card pending">
-      <div class="promise-header">
-        <div class="promise-title">Launch Calriven Portfolio Site</div>
-        <div class="status-badge status-pending">⏳ PENDING</div>
-      </div>
-
-      <div class="promise-meta">
-        <div>🗓️ Deadline: Q2 2026</div>
-        <div>📍 Status: 45 days remaining</div>
-        <div>👤 By: Calriven</div>
-      </div>
-
-      <div class="promise-description">
-        "I will launch a live portfolio site at calriven.com showcasing my design work, case studies, and process."
-      </div>
-
-      <div class="prediction-summary">
-        <strong>Community Prediction:</strong> 58% think he will deliver on time
-
-        <div class="prediction-bar">
-          <div class="prediction-yes" style="width: 58%;">58% Yes</div>
-          <div class="prediction-no" style="width: 42%;">42% No</div>
+        <div class="meter-bar">
+          <div class="meter-fill" id="outOfPocketFill" style="width: 20%;">20%</div>
         </div>
-
-        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
-          🔮 Vote now to earn tokens if you're right!
-        </p>
-      </div>
-    </div>
-
-    <!-- Promise 3: Failed -->
-    <div class="promise-card failed">
-      <div class="promise-header">
-        <div class="promise-title">Redesign Homepage in 2 Weeks</div>
-        <div class="status-badge status-failed">❌ FAILED</div>
       </div>
 
-      <div class="promise-meta">
-        <div>🗓️ Deadline: Dec 15, 2025</div>
-        <div>📍 Status: Delivered 3 weeks late</div>
-        <div>👤 By: Calriven</div>
-      </div>
-
-      <div class="promise-description">
-        "I will redesign the homepage in 2 weeks with new hero section, improved nav, and mobile responsive layout."
-      </div>
-
-      <div class="prediction-summary">
-        <strong>Community Prediction:</strong> 35% thought he would meet the 2-week deadline
-
-        <div class="prediction-bar">
-          <div class="prediction-yes" style="width: 35%;">35% Yes</div>
-          <div class="prediction-no" style="width: 65%;">65% No</div>
+      <div style="margin: 20px 0; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 10px; border: 1px solid var(--gold);">
+        <strong>🎯 Reward Breakdown:</strong>
+        <div style="margin-top: 10px;">
+          Base reward: <span id="baseReward">500</span> 🪙<br>
+          Wild multiplier: <span id="wildMultiplier">1x</span><br>
+          <strong>Total: <span id="totalReward">500</span> 🪙</strong>
         </div>
-
-        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
-          ❌ Prediction was accurate! Users who bet "no" earned 100 tokens. Calriven's cringe score increased.
-        </p>
       </div>
-    </div>
 
-    <!-- Cringe Score -->
-    <div class="cringe-score">
-      <h2>Calriven's Cringe Score</h2>
-      <div class="cringe-score-value">12 / 100</div>
-      <p>Lower is better. Score increases when promises are missed or delayed.</p>
-      <p style="margin-top: 10px; opacity: 0.7;">
-        Breakdown: +5 for late delivery, +7 for missed deadline
-      </p>
+      <button class="claim-reward-btn" onclick="claimReward()">
+        🎁 Claim Reward
+      </button>
     </div>
-
-    <!-- Add Promise Button -->
-    <button class="add-promise-btn" onclick="alert('Coming soon: Submit your own promises to BlameChain!')">
-      + Add Your Promise
-    </button>
   </div>
 
   <footer>
     <p>Built with ❤️ by roughsparks</p>
-    <p>Powered by Soulfra • Connected to CringeProof</p>
+    <p>🗺️ Treasure hunt mechanics • 🔥 Rewards wild behavior • ⛓️ Powered by Soulfra</p>
   </footer>
 
   <script>
-    // Auto-update pending promises with countdown
-    setInterval(() => {
-      const pendingCards = document.querySelectorAll('.promise-card.pending');
-      pendingCards.forEach(card => {
-        const metaDiv = card.querySelector('.promise-meta');
-        // Update countdown (mock for now)
-        console.log('Updating countdown...');
-      });
-    }, 60000); // Every minute
+    // Promise data
+    const promises = {
+      'brand-system': {
+        title: 'Brand System Delivered',
+        promise: '"I will ship a complete brand design system with logo, colors, typography, and component library by Q1 2026."',
+        deadline: 'Q1 2026',
+        status: '✅ Delivered on time',
+        author: 'Calriven',
+        outOfPocket: 20, // 1x multiplier (normal)
+        baseReward: 500
+      },
+      'portfolio': {
+        title: 'Portfolio Site Promise',
+        promise: '"I will launch a live portfolio site at calriven.com showcasing my design work, case studies, and process by Q2 2026."',
+        deadline: 'Q2 2026',
+        status: '⏳ 45 days remaining',
+        author: 'Calriven',
+        outOfPocket: 35,
+        baseReward: 1000
+      },
+      'homepage': {
+        title: 'Homepage Redesign (Failed)',
+        promise: '"I will redesign the homepage in 2 WEEKS with new hero section, improved nav, and mobile responsive layout."',
+        deadline: 'Dec 15, 2025',
+        status: '❌ Delivered 3 weeks late',
+        author: 'Calriven',
+        outOfPocket: 85, // 5x multiplier (out of pocket - said 2 weeks!)
+        baseReward: 1000
+      },
+      'secret': {
+        title: '🎁 Secret Promise Found!',
+        promise: '"If GME hits $100 by Q4 2026, I will livestream myself eating a purple crayon while wearing diamond hands gloves."',
+        deadline: 'Q4 2026',
+        status: '🔮 Pending',
+        author: 'Calriven',
+        outOfPocket: 95, // 8x multiplier (INSANE)
+        baseReward: 2000
+      },
+      'gme': {
+        title: 'GME Prediction (WILD)',
+        promise: '"GME will hit $1000/share by Q2 2026 when the shorts finally close their positions. DRS is the way."',
+        deadline: 'Q2 2026',
+        status: '🚀 Community prediction',
+        author: 'roughsparks',
+        outOfPocket: 99, // 10x multiplier (MAX OUT OF POCKET)
+        baseReward: 1000
+      },
+      'community': {
+        title: 'Community Goal',
+        promise: '"We will reach 10,000 active CringeProof users by Q3 2026."',
+        deadline: 'Q3 2026',
+        status: '👥 58% think we\'ll make it',
+        author: 'Community',
+        outOfPocket: 40,
+        baseReward: 750
+      },
+      'cosmetic': {
+        title: '💎 Diamond Hands Cosmetic',
+        promise: 'Unlock legendary "Diamond Hands" avatar skin by holding GME predictions for 6+ months.',
+        deadline: 'Ongoing',
+        status: '🎨 Cosmetic unlock',
+        author: 'System',
+        outOfPocket: 50,
+        baseReward: 0
+      },
+      'mystery': {
+        title: '🔮 Mystery Promise',
+        promise: '"I Spy with my little eye... something beginning with C. (Hint: It starts with Cringe and ends with Proof)"',
+        deadline: 'Now',
+        status: '🕵️ Easter egg found!',
+        author: '???',
+        outOfPocket: 75,
+        baseReward: 1500
+      }
+    };
+
+    // Calculate wild multiplier
+    function getWildMultiplier(outOfPocket) {
+      if (outOfPocket >= 90) return 10; // MAX
+      if (outOfPocket >= 80) return 8;
+      if (outOfPocket >= 70) return 5;
+      if (outOfPocket >= 50) return 3;
+      if (outOfPocket >= 30) return 2;
+      return 1;
+    }
+
+    // Show promise modal
+    function showPromise(promiseId) {
+      const promise = promises[promiseId];
+      if (!promise) return;
+
+      document.getElementById('modalTitle').textContent = promise.title;
+      document.getElementById('modalPromise').textContent = promise.promise;
+      document.getElementById('modalDeadline').textContent = promise.deadline;
+      document.getElementById('modalStatus').textContent = promise.status;
+      document.getElementById('modalAuthor').textContent = promise.author;
+
+      const multiplier = getWildMultiplier(promise.outOfPocket);
+      const totalReward = promise.baseReward * multiplier;
+
+      document.getElementById('outOfPocketFill').style.width = promise.outOfPocket + '%';
+      document.getElementById('outOfPocketFill').textContent = promise.outOfPocket + '%';
+      document.getElementById('outOfPocketMultiplier').textContent = multiplier + 'x';
+
+      document.getElementById('baseReward').textContent = promise.baseReward;
+      document.getElementById('wildMultiplier').textContent = multiplier + 'x';
+      document.getElementById('totalReward').textContent = totalReward;
+
+      document.getElementById('promiseModal').classList.add('active');
+
+      // Store current promise for claiming
+      window.currentPromise = { id: promiseId, reward: totalReward };
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('promiseModal').classList.remove('active');
+    }
+
+    // Claim reward
+    function claimReward() {
+      if (!window.currentPromise) return;
+
+      const currentTotal = parseInt(document.getElementById('totalRewards').textContent);
+      const newTotal = currentTotal + window.currentPromise.reward;
+      document.getElementById('totalRewards').textContent = newTotal;
+
+      const promisesFound = parseInt(document.getElementById('promisesFound').textContent);
+      document.getElementById('promisesFound').textContent = promisesFound + 1;
+
+      alert(`🎉 Claimed ${window.currentPromise.reward} tokens!\n\nTotal earnings: ${newTotal} tokens`);
+      closeModal();
+    }
+
+    // Find Easter egg
+    let easterEggsFound = 0;
+    function findEasterEgg(element, reward) {
+      element.classList.add('found');
+      easterEggsFound++;
+
+      const currentTotal = parseInt(document.getElementById('totalRewards').textContent);
+      const newTotal = currentTotal + reward;
+      document.getElementById('totalRewards').textContent = newTotal;
+
+      setTimeout(() => {
+        alert(`🔍 Easter egg found! +${reward} tokens!\n\nTotal: ${newTotal} tokens`);
+      }, 300);
+    }
+
+    // Close modal on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Click outside modal to close
+    document.getElementById('promiseModal').addEventListener('click', (e) => {
+      if (e.target.id === 'promiseModal') closeModal();
+    });
   </script>
 </body>
 </html>
