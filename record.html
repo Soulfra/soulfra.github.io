@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Your Prediction - Soulfra</title>
+  <meta name="description" content="Record a voice prediction. We'll hash it, timestamp it, and make it immutable.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
+
+    .recorder-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 3rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .record-button {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff4081 0%, #ff6b9d 100%);
+      border: none;
+      font-size: 5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 2rem auto;
+      display: block;
+      box-shadow: 0 8px 30px rgba(255, 64, 129, 0.5);
+    }
+
+    .record-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 40px rgba(255, 64, 129, 0.7);
+    }
+
+    .record-button:active {
+      transform: scale(0.95);
+    }
+
+    .record-button.recording {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .status {
+      font-size: 1.25rem;
+      margin: 1rem 0;
+      opacity: 0.9;
+    }
+
+    .waveform {
+      height: 80px;
+      margin: 2rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .waveform-bar {
+      width: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 2px;
+      transition: height 0.1s ease;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: rgba(255, 255, 255, 0.9);
+      color: #764ba2;
+    }
+
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .instructions h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .instructions ol {
+      margin-left: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .instructions li {
+      margin-bottom: 0.5rem;
+    }
+
+    .instructions code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="back-link">← Back to Hub</a>
+      <h1>🎤 Record Your Prediction</h1>
+      <p class="subtitle">Make your voice prediction immutable. We'll hash it, timestamp it, publish it.</p>
+    </header>
+
+    <div class="recorder-card">
+      <button id="recordBtn" class="record-button">🎙️</button>
+      <div class="timer" id="timer">00:00</div>
+      <div class="status" id="status">Click to start recording</div>
+
+      <div class="waveform" id="waveform">
+        <!-- Waveform bars will be generated here -->
+      </div>
+
+      <div class="controls">
+        <button id="stopBtn" class="btn btn-secondary" disabled>⏹ Stop Recording</button>
+        <button id="downloadBtn" class="btn btn-primary hidden">⬇️ Download Recording</button>
+        <button id="resetBtn" class="btn btn-secondary hidden">🔄 Start Over</button>
+      </div>
+
+      <div id="alert" class="hidden"></div>
+    </div>
+
+    <div class="instructions">
+      <h2>📋 What to Do After Recording</h2>
+      <ol>
+        <li>Click <strong>Download Recording</strong> to save your .webm file</li>
+        <li><strong>iPhone users:</strong> AirDrop the file to your Mac</li>
+        <li><strong>On Mac:</strong> Run this command:
+          <br><code>python3 import_voice_memo.py ~/Downloads/your-recording.webm</code>
+        </li>
+        <li>Your prediction will be:
+          <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+            <li>✅ Transcribed automatically</li>
+            <li>🔐 Hashed with SHA-256</li>
+            <li>📊 Routed to brand (CalRiven, DeathToData, or Soulfra)</li>
+            <li>🌐 Published to GitHub Pages</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="instructions">
+      <h2>💡 Tips for Great Predictions</h2>
+      <ul style="margin-left: 1.5rem; line-height: 1.8;">
+        <li>Speak clearly and at a normal pace</li>
+        <li>State what you're predicting and when you think it'll happen</li>
+        <li>Include your reasoning (makes it more interesting later)</li>
+        <li>Keep it under 2 minutes for best results</li>
+        <li>Examples: "I predict Bitcoin will hit $100k by March 2026 because..."</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let startTime;
+    let timerInterval;
+    let audioContext;
+    let analyser;
+    let dataArray;
+    let animationId;
+
+    const recordBtn = document.getElementById('recordBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const timer = document.getElementById('timer');
+    const status = document.getElementById('status');
+    const waveform = document.getElementById('waveform');
+    const alert = document.getElementById('alert');
+
+    // Create waveform bars
+    for (let i = 0; i < 30; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'waveform-bar';
+      bar.style.height = '4px';
+      waveform.appendChild(bar);
+    }
+
+    const bars = document.querySelectorAll('.waveform-bar');
+
+    recordBtn.addEventListener('click', startRecording);
+    stopBtn.addEventListener('click', stopRecording);
+    downloadBtn.addEventListener('click', downloadRecording);
+    resetBtn.addEventListener('click', reset);
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          downloadBtn.onclick = () => {
+            const a = document.createElement('a');
+            a.href = audioUrl;
+            a.download = `voice-prediction-${Date.now()}.webm`;
+            a.click();
+          };
+        };
+
+        // Setup audio visualization
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 64;
+        source.connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        mediaRecorder.start();
+        startTime = Date.now();
+
+        recordBtn.classList.add('recording');
+        recordBtn.disabled = true;
+        stopBtn.disabled = false;
+        status.textContent = '🔴 Recording...';
+
+        timerInterval = setInterval(updateTimer, 100);
+        visualize();
+
+        showAlert('Recording started! Speak your prediction.', 'success');
+
+      } catch (err) {
+        showAlert('Error: Could not access microphone. Please allow microphone access.', 'error');
+        console.error('Error accessing microphone:', err);
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+
+        clearInterval(timerInterval);
+        cancelAnimationFrame(animationId);
+
+        recordBtn.classList.remove('recording');
+        stopBtn.disabled = true;
+        downloadBtn.classList.remove('hidden');
+        resetBtn.classList.remove('hidden');
+        status.textContent = '✅ Recording complete!';
+
+        // Reset waveform
+        bars.forEach(bar => bar.style.height = '4px');
+
+        showAlert('Recording saved! Click "Download Recording" to save the file.', 'success');
+      }
+    }
+
+    function downloadRecording() {
+      // Triggered by onclick set in onstop
+      showAlert('Download started! Follow the instructions below to publish your prediction.', 'success');
+    }
+
+    function reset() {
+      audioChunks = [];
+      timer.textContent = '00:00';
+      status.textContent = 'Click to start recording';
+      recordBtn.disabled = false;
+      downloadBtn.classList.add('hidden');
+      resetBtn.classList.add('hidden');
+      alert.classList.add('hidden');
+      bars.forEach(bar => bar.style.height = '4px');
+    }
+
+    function updateTimer() {
+      const elapsed = Date.now() - startTime;
+      const minutes = Math.floor(elapsed / 60000);
+      const seconds = Math.floor((elapsed % 60000) / 1000);
+      timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function visualize() {
+      analyser.getByteFrequencyData(dataArray);
+
+      bars.forEach((bar, index) => {
+        const value = dataArray[index * 2] || 0;
+        const height = (value / 255) * 60 + 4;
+        bar.style.height = `${height}px`;
+      });
+
+      animationId = requestAnimationFrame(visualize);
+    }
+
+    function showAlert(message, type) {
+      alert.textContent = message;
+      alert.className = `alert alert-${type}`;
+      alert.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
