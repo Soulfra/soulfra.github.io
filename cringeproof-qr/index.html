@@ -236,7 +236,7 @@
   </div>
 
   <script>
-    function generateCard() {
+    async function generateCard() {
       const email = document.getElementById('emailInput').value;
       const vertical = document.getElementById('verticalSelect').value;
 
@@ -245,18 +245,90 @@
         return;
       }
 
-      // Call QR generator API
-      alert(`Generating QR card for ${email} (${vertical} theme)...\n\nIn production, this would:\n1. Call: POST /api/qr/generate\n2. Generate QR code with transparent background\n3. Return card HTML with embedded QR\n4. Update cards-grid with new card`);
+      // Get API base URL (localhost for development, adjust for production)
+      const apiBase = window.location.hostname === 'soulfra.github.io'
+        ? 'https://cringeproof-api.your-domain.com'  // TODO: Replace with your production API
+        : 'http://localhost:3001';
 
-      // For demo, you would actually call:
-      // fetch('/api/qr/generate', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, vertical })
-      // }).then(res => res.json())
-      //   .then(data => {
-      //     // Add new card to grid
-      //   });
+      try {
+        // Show loading state
+        const button = event.target;
+        button.textContent = 'Generating...';
+        button.disabled = true;
+
+        // Call QR generator API
+        const response = await fetch(`${apiBase}/api/qr/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, vertical })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Create new card element
+        const cardHTML = createCardHTML(data.qr, vertical);
+
+        // Add to grid
+        const cardsContainer = document.getElementById('cardsContainer');
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = cardHTML;
+        cardsContainer.insertBefore(tempDiv.firstElementChild, cardsContainer.firstChild);
+
+        // Reset button
+        button.textContent = 'Generate QR Card';
+        button.disabled = false;
+
+        // Clear input
+        document.getElementById('emailInput').value = '';
+
+        // Show privacy info
+        console.log('Privacy:', data.privacy);
+
+      } catch (error) {
+        alert(`Failed to generate QR code: ${error.message}\n\nMake sure API server is running:\nnpm start`);
+
+        // Reset button
+        const button = event.target;
+        button.textContent = 'Generate QR Card';
+        button.disabled = false;
+      }
+    }
+
+    function createCardHTML(qrData, vertical) {
+      const themeClass = `qr-card--${vertical}`;
+
+      return `
+        <div class="qr-card ${themeClass}">
+          <div class="qr-card__background"></div>
+          <div class="qr-card__pattern"></div>
+          <div class="qr-card__content">
+            <div class="qr-card__header">
+              <div class="qr-card__logo">CringeProof</div>
+              <div class="qr-card__tagline">${qrData.tagline}</div>
+            </div>
+            <div class="qr-card__qr-container">
+              <div class="qr-card__qr-wrapper">
+                <img
+                  src="${qrData.base64}"
+                  alt="QR Code"
+                  class="qr-card__qr-code"
+                >
+              </div>
+            </div>
+            <div class="qr-card__footer">
+              <div class="qr-card__user-info">
+                <div class="qr-card__username">${qrData.email}</div>
+                <div class="qr-card__referral-code">${qrData.referralCode}</div>
+              </div>
+              <div class="qr-card__cta">Scan to Join</div>
+            </div>
+          </div>
+        </div>
+      `;
     }
   </script>
 </body>
