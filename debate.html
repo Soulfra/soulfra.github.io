@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Debate - Soulfra</title>
+  <meta name="description" content="Voice prediction debated by AI models">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .debate-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 3rem;
+      margin-bottom: 2rem;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .debate-content {
+      line-height: 1.8;
+    }
+
+    .debate-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .debate-content h2 {
+      font-size: 1.75rem;
+      margin: 2rem 0 1rem;
+      color: #ffffff;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 0.5rem;
+    }
+
+    .debate-content h3 {
+      font-size: 1.5rem;
+      margin: 1.5rem 0 0.75rem;
+      color: #ffffff;
+    }
+
+    .debate-content p {
+      margin-bottom: 1rem;
+      opacity: 0.95;
+    }
+
+    .debate-content blockquote {
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
+      padding-left: 1.5rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
+
+    .debate-content ul, .debate-content ol {
+      margin: 1rem 0 1rem 2rem;
+    }
+
+    .debate-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .debate-content code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+
+    .debate-content pre {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .debate-content details {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .debate-content summary {
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .debate-content hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin: 2rem 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: rgba(255, 255, 255, 0.9);
+      color: #764ba2;
+    }
+
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.25rem;
+      opacity: 0.8;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .debate-card { padding: 1.5rem; }
+      .debate-content h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/debates/" class="back-link">← Back to All Debates</a>
+
+    <div id="debate-container"></div>
+  </div>
+
+  <script>
+    // Get debate file from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const debateFile = urlParams.get('file');
+
+    const container = document.getElementById('debate-container');
+
+    if (!debateFile) {
+      container.innerHTML = `
+        <div class="error">
+          <h2>No debate specified</h2>
+          <p>Please provide a file parameter in the URL.</p>
+          <p>Example: <code>debate.html?file=2026-01-03-my-debate.md</code></p>
+        </div>
+      `;
+    } else {
+      // Load and render markdown
+      container.innerHTML = '<div class="loading">📄 Loading debate...</div>';
+
+      fetch(`/debates/${debateFile}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(markdown => {
+          // Parse markdown to HTML
+          const html = marked.parse(markdown);
+
+          // Render in card
+          container.innerHTML = `
+            <div class="debate-card">
+              <div class="debate-content">
+                ${html}
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" onclick="shareDebate()">📤 Share</button>
+                <button class="btn btn-secondary" onclick="voteDebate('up')">👍 Upvote</button>
+                <button class="btn btn-secondary" onclick="voteDebate('down')">👎 Downvote</button>
+                <a href="/debates/${debateFile}" class="btn btn-secondary" download>⬇️ Download Markdown</a>
+              </div>
+            </div>
+          `;
+        })
+        .catch(error => {
+          container.innerHTML = `
+            <div class="error">
+              <h2>Failed to load debate</h2>
+              <p><strong>Error:</strong> ${error.message}</p>
+              <p><strong>File:</strong> ${debateFile}</p>
+              <p>Make sure the file exists at: <code>/debates/${debateFile}</code></p>
+            </div>
+          `;
+          console.error('Error loading debate:', error);
+        });
+    }
+
+    function shareDebate() {
+      const url = window.location.href;
+      if (navigator.share) {
+        navigator.share({
+          title: 'AI Debate - Soulfra',
+          url: url
+        }).catch(err => console.log('Share cancelled'));
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      }
+    }
+
+    function voteDebate(direction) {
+      // TODO: Send vote to API
+      alert(`Vote ${direction} recorded! (Coming soon: user accounts required)`);
+    }
+  </script>
+</body>
+</html>
