@@ -459,12 +459,20 @@
           </div>
         `;
 
-        // Path 3: Pay
-        const price = zone.requirements.tier === 'pro' ? '$29/month' : '$50/month';
+        // Path 3: Free Access (MVP)
         unlockPaths.innerHTML += `
-          <div class="unlock-path">
-            <div class="path-name">💳 Pay ${price} (Instant)</div>
-            <p style="margin-top: 10px;">Skip the grind, unlock immediately via Stripe</p>
+          <div class="unlock-path available">
+            <div class="path-name">✅ Free Access (MVP)</div>
+            <p style="margin-top: 10px;">Enter your email to unlock all zones for free during MVP</p>
+            <input id="signup-email" type="email" placeholder="your@email.com" style="
+              width: 100%;
+              padding: 10px;
+              margin-top: 10px;
+              border: 1px solid rgba(255,255,255,0.2);
+              background: rgba(0,0,0,0.3);
+              color: white;
+              border-radius: 8px;
+            ">
             <button style="
               background: var(--primary-color);
               color: white;
@@ -473,8 +481,9 @@
               border-radius: 8px;
               cursor: pointer;
               margin-top: 10px;
-            " onclick="alert('Stripe integration coming soon!')">
-              Upgrade Now
+              width: 100%;
+            " onclick="freeSignup()">
+              Get Free Access 🎉
             </button>
           </div>
         `;
@@ -491,6 +500,64 @@
     document.getElementById('user-tier').textContent = user.tier.charAt(0).toUpperCase() + user.tier.slice(1);
     document.getElementById('user-tokens').textContent = user.tokens;
     document.getElementById('user-reputation').textContent = user.reputation;
+
+    // Free signup (no payment needed)
+    const API_URL = 'http://localhost:3001';
+
+    async function freeSignup() {
+      const emailInput = document.getElementById('signup-email');
+      const email = emailInput ? emailInput.value : '';
+
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/free-signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          alert(`Error: ${data.error}`);
+          return;
+        }
+
+        // Update user stats with unlimited access
+        user.tier = 'unlimited';
+        user.tokens = 10000;
+        user.reputation = 500;
+
+        document.getElementById('user-tier').textContent = 'Unlimited';
+        document.getElementById('user-tokens').textContent = '10000';
+        document.getElementById('user-reputation').textContent = '500';
+
+        // Close modal and show success
+        closeModal();
+        alert(`🎉 ${data.user.message}\n\nYou now have:\n• Unlimited tier access\n• 10,000 tokens\n• 500 reputation\n\nAll zones unlocked!`);
+
+        // Unlock all zones visually
+        document.querySelectorAll('.zone').forEach(zone => {
+          zone.classList.add('unlocked');
+          const status = zone.querySelector('.zone-status');
+          if (status) {
+            status.textContent = '✅ Unlocked';
+            status.classList.remove('zone-locked');
+            status.classList.add('zone-unlocked');
+          }
+        });
+
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert('Failed to sign up. Make sure API server is running on http://localhost:3001');
+      }
+    }
   </script>
 </body>
 </html>

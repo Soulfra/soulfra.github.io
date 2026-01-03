@@ -1,0 +1,329 @@
+/**
+ * QR Card Component - Transparent Layering System
+ *
+ * Layers (bottom to top):
+ * 1. Background gradient
+ * 2. Pattern overlay (optional)
+ * 3. Content container
+ * 4. QR code (transparent background)
+ * 5. Text overlay
+ * 6. Border/glow effects
+ */
+
+:root {
+  /* QR Card Colors */
+  --qr-primary: #9B59B6;
+  --qr-secondary: #8E44AD;
+  --qr-accent: #00C49A;
+  --qr-text: #ffffff;
+  --qr-text-dim: rgba(255, 255, 255, 0.7);
+  --qr-background: #1a1a2e;
+  --qr-overlay: rgba(0, 0, 0, 0.3);
+
+  /* Vertical-specific colors */
+  --purple-primary: #9B59B6;
+  --crypto-primary: #F7931A;
+  --sports-primary: #FF4136;
+  --general-primary: #00C49A;
+
+  /* Card dimensions */
+  --card-width: 350px;
+  --card-height: 500px;
+  --card-padding: 24px;
+  --card-border-radius: 16px;
+
+  /* QR Code dimensions */
+  --qr-size: 200px;
+  --qr-border-width: 8px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 1: Card Container (Base)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.qr-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 30px rgba(155, 89, 182, 0.3);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 2: Background Gradient
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--qr-primary) 0%,
+    var(--qr-secondary) 50%,
+    var(--qr-background) 100%
+  );
+  z-index: 1;
+}
+
+/* Vertical-specific backgrounds */
+.qr-card--purple .qr-card__background {
+  background: linear-gradient(
+    135deg,
+    #9B59B6 0%,
+    #8E44AD 50%,
+    #1a1a2e 100%
+  );
+}
+
+.qr-card--crypto .qr-card__background {
+  background: linear-gradient(
+    135deg,
+    #F7931A 0%,
+    #E67E22 50%,
+    #1a1a2e 100%
+  );
+}
+
+.qr-card--sports .qr-card__background {
+  background: linear-gradient(
+    135deg,
+    #FF4136 0%,
+    #E74C3C 50%,
+    #1a1a2e 100%
+  );
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 3: Pattern Overlay (Optional)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.02) 10px,
+      rgba(255, 255, 255, 0.02) 20px
+    );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 4: Content Container
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 5: Header Section
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.qr-card__logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--qr-text);
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.qr-card__tagline {
+  font-size: 12px;
+  color: var(--qr-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 6: QR Code Section (TRANSPARENT BACKGROUND)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__qr-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.qr-card__qr-wrapper {
+  position: relative;
+  background: white;  /* White background behind QR */
+  border-radius: 12px;
+  padding: var(--qr-border-width);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.qr-card__qr-code {
+  display: block;
+  width: var(--qr-size);
+  height: var(--qr-size);
+  /* QR code PNG has transparent background, black dots show on white */
+}
+
+/* Glow effect around QR code */
+.qr-card__qr-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    135deg,
+    var(--qr-primary),
+    var(--qr-accent)
+  );
+  border-radius: 14px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.qr-card:hover .qr-card__qr-wrapper::after {
+  opacity: 0.5;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Layer 7: Footer Section
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.qr-card__footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.qr-card__user-info {
+  margin-bottom: 12px;
+}
+
+.qr-card__username {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--qr-text);
+  margin-bottom: 4px;
+}
+
+.qr-card__referral-code {
+  font-size: 14px;
+  color: var(--qr-text-dim);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+
+.qr-card__cta {
+  font-size: 12px;
+  color: var(--qr-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Print Styles (Business Card Size: 3.5" x 2")
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@media print {
+  .qr-card {
+    width: 3.5in;
+    height: 2in;
+    page-break-after: always;
+    box-shadow: none;
+  }
+
+  .qr-card__qr-wrapper {
+    padding: 4px;
+  }
+
+  .qr-card__qr-code {
+    width: 1.5in;
+    height: 1.5in;
+  }
+
+  .qr-card__logo {
+    font-size: 16px;
+  }
+
+  .qr-card__footer {
+    margin-top: 8px;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Responsive (Mobile)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@media (max-width: 480px) {
+  .qr-card {
+    width: calc(100vw - 40px);
+    max-width: 350px;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Animations
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qr-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Scan animation (pulse effect) */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.qr-card__qr-wrapper:hover {
+  animation: pulse 2s ease-in-out infinite;
+}
