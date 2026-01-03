@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CringeProof LIVE - Watch Predictions Unfold</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 2px solid #9B59B6;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #9B59B6, #8E44AD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 0, 0, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin-top: 15px;
+      border: 1px solid #ff0000;
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #ff0000;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #9B59B6;
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .panel h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #9B59B6;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #9B59B6, #8E44AD);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(155, 89, 182, 0.5);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #9B59B6;
+    }
+
+    .qr-display {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .qr-code {
+      margin: 0 auto;
+    }
+
+    .user-info {
+      background: rgba(155, 89, 182, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .user-email {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #9B59B6;
+    }
+
+    .voice-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .voice-controls button {
+      flex: 1;
+    }
+
+    .recording {
+      background: linear-gradient(135deg, #ff0000, #cc0000) !important;
+    }
+
+    .prediction-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #9B59B6;
+    }
+
+    .prediction-author {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-bottom: 8px;
+    }
+
+    .prediction-text {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .prediction-meta {
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      opacity: 0.6;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      flex: 1;
+      background: rgba(155, 89, 182, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #9B59B6;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CringeProof LIVE</h1>
+      <p class="tagline">Will Your Takes Age Well?</p>
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <span>LIVE NOW</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Left Panel: Your Identity & Actions -->
+      <div class="panel">
+        <h2>Your Identity</h2>
+
+        <!-- QR Faucet -->
+        <div id="faucetSection" class="section">
+          <button id="claimQrBtn">Claim Your QR Code</button>
+          <p style="opacity: 0.7; margin-top: 10px; font-size: 0.9rem;">
+            Get your unique QR code to participate
+          </p>
+        </div>
+
+        <div id="userSection" class="section hidden">
+          <div class="user-info">
+            <div class="user-email" id="userEmail"></div>
+            <div style="margin-top: 5px; font-size: 0.9rem; opacity: 0.8;">
+              Code: <span id="userCode"></span>
+            </div>
+          </div>
+          <div class="qr-display">
+            <div id="qrCode" class="qr-code"></div>
+          </div>
+        </div>
+
+        <!-- Voice Input -->
+        <div id="voiceSection" class="section hidden">
+          <h3 style="margin-bottom: 15px;">Make Prediction</h3>
+          <textarea
+            id="predictionText"
+            placeholder="Type or use voice: 'GME will hit $100 by Q4 2026'"
+            rows="3"
+          ></textarea>
+          <div class="voice-controls">
+            <button id="recordBtn">🎤 Record</button>
+            <button id="submitBtn">Submit Prediction</button>
+          </div>
+          <p style="opacity: 0.6; margin-top: 10px; font-size: 0.85rem;">
+            Click record and speak your prediction
+          </p>
+        </div>
+
+        <!-- Stats -->
+        <div id="statsSection" class="section hidden">
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-value" id="predictionCount">0</div>
+              <div class="stat-label">Predictions</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="liveCount">0</div>
+              <div class="stat-label">Live Now</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Live Feed -->
+      <div class="panel">
+        <h2>Live Predictions Feed</h2>
+        <div id="predictionsFeed">
+          <div class="empty-state">
+            No predictions yet. Be the first!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentUser = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let predictions = [];
+
+    // Initialize
+    loadUserFromStorage();
+
+    // Claim QR Code
+    document.getElementById('claimQrBtn').addEventListener('click', claimQRCode);
+
+    function claimQRCode() {
+      // Generate random name (or let user input)
+      const names = ['alice', 'bob', 'charlie', 'diana', 'eve', 'frank'];
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const randomNum = Math.random().toString(36).substr(2, 6).toUpperCase();
+      const code = `${randomName.toUpperCase()}${randomNum}`;
+      const email = `${randomName}@cringeproof.com`;
+
+      // Create user
+      currentUser = {
+        email,
+        code,
+        domain: 'cringeproof.com',
+        claimedAt: new Date().toISOString()
+      };
+
+      // Save to storage
+      localStorage.setItem('cringeproof_user', JSON.stringify(currentUser));
+
+      // Show user section
+      showUserSection();
+    }
+
+    function loadUserFromStorage() {
+      const stored = localStorage.getItem('cringeproof_user');
+      if (stored) {
+        currentUser = JSON.parse(stored);
+        showUserSection();
+      }
+    }
+
+    function showUserSection() {
+      document.getElementById('faucetSection').classList.add('hidden');
+      document.getElementById('userSection').classList.remove('hidden');
+      document.getElementById('voiceSection').classList.remove('hidden');
+      document.getElementById('statsSection').classList.remove('hidden');
+
+      // Display user info
+      document.getElementById('userEmail').textContent = currentUser.email;
+      document.getElementById('userCode').textContent = currentUser.code;
+
+      // Generate QR code
+      document.getElementById('qrCode').innerHTML = '';
+      new QRCode(document.getElementById('qrCode'), {
+        text: `https://soulfra.com/r/${currentUser.code}`,
+        width: 200,
+        height: 200
+      });
+
+      // Load predictions
+      loadPredictions();
+    }
+
+    // Voice Recording
+    document.getElementById('recordBtn').addEventListener('click', toggleRecording);
+
+    async function toggleRecording() {
+      const btn = document.getElementById('recordBtn');
+
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        // Start recording
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+
+          audioChunks = [];
+          mediaRecorder.ondataavailable = (e) => {
+            audioChunks.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            await transcribeAudio(audioBlob);
+          };
+
+          mediaRecorder.start();
+          btn.textContent = '⏹ Stop Recording';
+          btn.classList.add('recording');
+        } catch (error) {
+          console.error('Microphone error:', error);
+          alert('Could not access microphone');
+        }
+      } else {
+        // Stop recording
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        btn.textContent = '🎤 Record';
+        btn.classList.remove('recording');
+      }
+    }
+
+    async function transcribeAudio(audioBlob) {
+      // Use browser Speech Recognition API (if available)
+      if ('webkitSpeechRecognition' in window) {
+        alert('Transcription would happen here. For now, type your prediction manually.');
+      } else {
+        alert('Voice transcription not supported in this browser. Please type your prediction.');
+      }
+    }
+
+    // Submit Prediction
+    document.getElementById('submitBtn').addEventListener('click', submitPrediction);
+
+    async function submitPrediction() {
+      const text = document.getElementById('predictionText').value.trim();
+
+      if (!text) {
+        alert('Please enter or record a prediction');
+        return;
+      }
+
+      if (!currentUser) {
+        alert('Please claim your QR code first');
+        return;
+      }
+
+      // Create prediction
+      const prediction = {
+        id: `pred_${Date.now()}`,
+        author: currentUser.email,
+        code: currentUser.code,
+        text,
+        timestamp: new Date().toISOString(),
+        location: await getLocation()
+      };
+
+      // Save locally (in real app, send to API)
+      predictions.push(prediction);
+      localStorage.setItem('cringeproof_predictions', JSON.stringify(predictions));
+
+      // Update feed
+      loadPredictions();
+
+      // Clear input
+      document.getElementById('predictionText').value = '';
+
+      alert('Prediction submitted!');
+    }
+
+    async function getLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve({ lat: null, lng: null });
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+          },
+          () => {
+            resolve({ lat: null, lng: null });
+          }
+        );
+      });
+    }
+
+    function loadPredictions() {
+      const stored = localStorage.getItem('cringeproof_predictions');
+      if (stored) {
+        predictions = JSON.parse(stored);
+      }
+
+      // Update stats
+      document.getElementById('predictionCount').textContent = predictions.length;
+      document.getElementById('liveCount').textContent = predictions.length;
+
+      // Render feed
+      const feed = document.getElementById('predictionsFeed');
+
+      if (predictions.length === 0) {
+        feed.innerHTML = '<div class="empty-state">No predictions yet. Be the first!</div>';
+        return;
+      }
+
+      // Sort by timestamp (newest first)
+      const sorted = [...predictions].sort((a, b) =>
+        new Date(b.timestamp) - new Date(a.timestamp)
+      );
+
+      feed.innerHTML = sorted.map(pred => `
+        <div class="prediction-item">
+          <div class="prediction-author">${pred.author}</div>
+          <div class="prediction-text">${pred.text}</div>
+          <div class="prediction-meta">
+            ${new Date(pred.timestamp).toLocaleString()}
+            ${pred.location.lat ? ` • ${pred.location.lat.toFixed(4)}, ${pred.location.lng.toFixed(4)}` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Auto-refresh feed every 10 seconds
+    setInterval(loadPredictions, 10000);
+  </script>
+</body>
+</html>

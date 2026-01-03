@@ -328,41 +328,85 @@
       return null;
     }
 
+    // SHA-256 hash function
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Get location (with permission)
+    async function getLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve({ lat: null, lng: null, error: 'Geolocation not supported' });
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              accuracy: position.coords.accuracy
+            });
+          },
+          (error) => {
+            resolve({ lat: null, lng: null, error: error.message });
+          }
+        );
+      });
+    }
+
     // Handle scanned QR code
     async function handleQRCode(qrData) {
       try {
         showState('processing');
 
-        const data = JSON.parse(qrData);
-
-        if (!data.sessionId) {
-          throw new Error('Invalid QR code - missing session ID');
+        // Parse QR data (could be JSON or just a code)
+        let code;
+        try {
+          const data = JSON.parse(qrData);
+          code = data.sessionId || data.code || qrData;
+        } catch {
+          // Not JSON, use as-is
+          code = qrData.trim();
         }
 
-        // Get user identity
-        const fingerprint = window.CalOSIdentity?.fingerprint || 'unknown';
-        const userId = localStorage.getItem('calos_user_id') || fingerprint;
+        // Extract email from code (e.g., "ALICE36212b" → "alice@cringeproof.com")
+        const namePart = code.split(/[0-9]/)[0].toLowerCase();
+        const email = `${namePart}@cringeproof.com`;
 
-        // Verify login with backend
-        const baseURL = window.location.hostname === 'localhost'
-          ? 'http://localhost:5001'
-          : 'https://api.calos.dev';
+        // Get location + timestamp
+        const location = await getLocation();
+        const timestamp = Date.now();
 
-        const response = await fetch(`${baseURL}/api/auth/qr/verify`, {
+        // Create Merkle hash (location + timestamp + code)
+        const merkleData = JSON.stringify({ email, location, timestamp, code });
+        const merkleHash = await sha256(merkleData);
+
+        // Send to email friends API
+        const apiURL = window.location.hostname === 'localhost'
+          ? 'http://192.168.1.87:3001'
+          : 'https://api.soulfra.com';
+
+        const response = await fetch(`${apiURL}/api/friends/signup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sessionId: data.sessionId,
-            userId: userId,
-            deviceId: navigator.userAgent,
-            fingerprintId: fingerprint,
-            authMethod: 'qr-scan'
+            email,
+            domain: 'cringeproof.com',
+            code,
+            location,
+            timestamp,
+            merkleHash
           })
         });
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.error || 'Verification failed');
+          throw new Error(error.error || 'Signup failed');
         }
 
         const result = await response.json();
@@ -371,15 +415,17 @@
           // Success!
           showState('success');
 
-          // Store user ID for future logins
-          localStorage.setItem('calos_user_id', userId);
+          // Store for future use
+          localStorage.setItem('cringeproof_email', email);
+          localStorage.setItem('cringeproof_code', code);
 
           // Auto-close after 3 seconds
           setTimeout(() => {
-            window.close(); // Close scanner page
+            // Redirect to friends dashboard
+            window.location.href = `/email-friends-signup.html?email=${encodeURIComponent(email)}`;
           }, 3000);
         } else {
-          throw new Error('Verification failed');
+          throw new Error('Signup failed');
         }
 
       } catch (error) {
