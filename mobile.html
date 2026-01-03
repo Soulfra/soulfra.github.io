@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>CringeProof - Daily Goals</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: #1a1a1a;
+      padding: 15px 20px;
+      z-index: 100;
+      border-bottom: 1px solid #333;
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      margin-top: 3px;
+    }
+
+    /* Feed */
+    .feed {
+      padding: 0;
+    }
+
+    .post {
+      background: #111;
+      padding: 15px 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #667eea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .post-author {
+      flex: 1;
+    }
+
+    .author-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .post-time {
+      font-size: 0.75rem;
+      opacity: 0.5;
+    }
+
+    .post-streak {
+      background: rgba(255,107,107,0.2);
+      color: #ff6b6b;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .post-content {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 8px 0;
+    }
+
+    .post-goal {
+      background: rgba(102,126,234,0.15);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      color: #9ba9ff;
+    }
+
+    /* Bottom Action Bar */
+    .action-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1a1a1a;
+      border-top: 1px solid #333;
+      padding: 12px 20px;
+    }
+
+    .btn-record {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #667eea;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    .btn-record:active {
+      background: #5568d3;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0a0a0a;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-header {
+      background: #1a1a1a;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #333;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #667eea;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .step {
+      margin-bottom: 25px;
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.5;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .voice-btn {
+      width: 100%;
+      padding: 50px 20px;
+      background: #1a1a1a;
+      border: 2px dashed #333;
+      border-radius: 12px;
+      color: #999;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 15px;
+    }
+
+    .voice-btn.recording {
+      background: rgba(255,107,107,0.1);
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .voice-btn .icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .voice-btn .status {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .publish-btn {
+      width: 100%;
+      padding: 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .publish-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      opacity: 0.4;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .draft-badge {
+      display: inline-block;
+      background: rgba(255,193,7,0.2);
+      color: #ffc107;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>Daily Goals</h1>
+    <p>Track your progress</p>
+  </div>
+
+  <!-- Feed -->
+  <div class="feed" id="feed">
+    <div class="empty-state">
+      <div class="empty-state-icon">💬</div>
+      <div>No check-ins yet</div>
+      <div style="font-size: 0.85rem; margin-top: 8px; opacity: 0.6;">Tap below to start</div>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="action-bar">
+    <button class="btn-record" id="openRecordBtn">+ New Check-In</button>
+  </div>
+
+  <!-- Record Modal -->
+  <div class="modal" id="recordModal">
+    <div class="modal-header">
+      <div class="modal-title">New Check-In</div>
+      <button class="close-btn" id="closeModalBtn">Cancel</button>
+    </div>
+    <div class="modal-content">
+      <!-- Step 1: Goal (optional) -->
+      <div class="step">
+        <div class="step-label">Goal (optional)</div>
+        <textarea id="goalInput" placeholder="e.g., Read 10 pages, Walk 5k steps" rows="2"></textarea>
+      </div>
+
+      <!-- Step 2: Voice Recording -->
+      <div class="step">
+        <div class="step-label">Record Voice</div>
+        <button class="voice-btn" id="voiceBtn">
+          <div class="icon">🎤</div>
+          <div class="status" id="voiceStatus">Tap to record</div>
+        </button>
+      </div>
+
+      <!-- Step 3: Edit Transcript -->
+      <div class="step">
+        <div class="step-label">Edit Transcript</div>
+        <textarea id="transcriptInput" placeholder="Transcript will appear here..." rows="4"></textarea>
+      </div>
+
+      <!-- Publish Button -->
+      <button class="publish-btn" id="publishBtn" disabled>Publish to Feed</button>
+    </div>
+  </div>
+
+  <script>
+    let checkIns = [];
+    let recording = false;
+    let mediaRecorder = null;
+    let audioChunks = [];
+
+    // Get API URL
+    const apiURL = window.location.hostname === 'localhost'
+      ? 'http://192.168.1.87:3001'
+      : 'https://api.soulfra.com';
+
+    // Load check-ins
+    function loadCheckIns() {
+      const stored = localStorage.getItem('checkins');
+      if (stored) {
+        checkIns = JSON.parse(stored);
+      }
+      renderFeed();
+    }
+
+    // Render feed
+    function renderFeed() {
+      const feed = document.getElementById('feed');
+
+      if (checkIns.length === 0) {
+        feed.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <div>No check-ins yet</div>
+            <div style="font-size: 0.85rem; margin-top: 8px; opacity: 0.6;">Tap below to start</div>
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = [...checkIns].sort((a, b) => new Date(b.time) - new Date(a.time));
+
+      feed.innerHTML = sorted.map(checkIn => {
+        const initial = checkIn.user ? checkIn.user[0].toUpperCase() : '?';
+        const timeAgo = getTimeAgo(checkIn.time);
+
+        return `
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar">${initial}</div>
+              <div class="post-author">
+                <div class="author-name">${checkIn.user || 'You'}</div>
+                <div class="post-time">${timeAgo}</div>
+              </div>
+              ${checkIn.streak ? `<div class="post-streak">🔥 ${checkIn.streak}d</div>` : ''}
+            </div>
+            <div class="post-content">${checkIn.text}</div>
+            ${checkIn.goal ? `<div class="post-goal">Goal: ${checkIn.goal}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTimeAgo(timestamp) {
+      const seconds = Math.floor((Date.now() - new Date(timestamp)) / 1000);
+      if (seconds < 60) return 'Just now';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ago`;
+    }
+
+    // Modal controls
+    document.getElementById('openRecordBtn').addEventListener('click', () => {
+      document.getElementById('recordModal').classList.add('active');
+    });
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      document.getElementById('recordModal').classList.remove('active');
+      resetModal();
+    });
+
+    function resetModal() {
+      document.getElementById('goalInput').value = '';
+      document.getElementById('transcriptInput').value = '';
+      document.getElementById('voiceStatus').textContent = 'Tap to record';
+      document.getElementById('voiceBtn').classList.remove('recording');
+      document.getElementById('publishBtn').disabled = true;
+      recording = false;
+      audioChunks = [];
+    }
+
+    // Voice recording
+    document.getElementById('voiceBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('voiceBtn');
+      const status = document.getElementById('voiceStatus');
+
+      if (!recording) {
+        try {
+          // Start recording
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            await uploadVoice(audioBlob);
+          };
+
+          mediaRecorder.start();
+          recording = true;
+          btn.classList.add('recording');
+          status.textContent = '⏹ Tap to stop';
+        } catch (error) {
+          console.error('Mic access denied:', error);
+          status.textContent = 'Mic access denied';
+        }
+      } else {
+        // Stop recording
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        recording = false;
+        btn.classList.remove('recording');
+        status.textContent = 'Processing...';
+      }
+    });
+
+    // Upload voice and get transcript
+    async function uploadVoice(audioBlob) {
+      const status = document.getElementById('voiceStatus');
+      const transcriptInput = document.getElementById('transcriptInput');
+
+      try {
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'voice.webm');
+
+        const response = await fetch(`${apiURL}/api/voice/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+
+        const result = await response.json();
+
+        // Set transcript
+        transcriptInput.value = result.transcript || 'Voice recording saved';
+        status.textContent = '✓ Recorded';
+
+        // Enable publish button
+        document.getElementById('publishBtn').disabled = false;
+
+      } catch (error) {
+        console.error('Upload error:', error);
+        status.textContent = 'Upload failed';
+
+        // Fallback: allow manual entry
+        transcriptInput.value = '';
+        transcriptInput.placeholder = 'Upload failed - type your check-in manually';
+        document.getElementById('publishBtn').disabled = false;
+      }
+    }
+
+    // Publish check-in
+    document.getElementById('publishBtn').addEventListener('click', () => {
+      const goal = document.getElementById('goalInput').value.trim();
+      const text = document.getElementById('transcriptInput').value.trim();
+
+      if (!text) {
+        alert('Please record or type your check-in');
+        return;
+      }
+
+      // Get user from localStorage or email
+      let user = localStorage.getItem('cringeproof_email') || localStorage.getItem('username');
+      if (!user) {
+        user = 'You';
+        localStorage.setItem('username', user);
+      }
+
+      // Calculate streak
+      const userCheckIns = checkIns.filter(c => c.user === user);
+      let streak = 1;
+      if (userCheckIns.length > 0) {
+        const lastCheckIn = new Date(userCheckIns[0].time);
+        const today = new Date();
+        const daysDiff = Math.floor((today - lastCheckIn) / (1000 * 60 * 60 * 24));
+        if (daysDiff <= 1) {
+          streak = (userCheckIns[0].streak || 1) + 1;
+        }
+      }
+
+      // Create check-in
+      const checkIn = {
+        user,
+        text,
+        goal: goal || null,
+        time: new Date().toISOString(),
+        streak
+      };
+
+      checkIns.unshift(checkIn);
+      localStorage.setItem('checkins', JSON.stringify(checkIns));
+
+      // Close modal and refresh
+      document.getElementById('recordModal').classList.remove('active');
+      resetModal();
+      renderFeed();
+    });
+
+    // Allow manual transcript editing
+    document.getElementById('transcriptInput').addEventListener('input', (e) => {
+      document.getElementById('publishBtn').disabled = !e.target.value.trim();
+    });
+
+    // Initialize
+    loadCheckIns();
+  </script>
+</body>
+</html>
