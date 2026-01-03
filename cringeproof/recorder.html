@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Recorder - CringeProof</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #9B59B6, #00C49A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      opacity: 0.7;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .record-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .record-button {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #9B59B6, #8E44AD);
+      color: white;
+      font-size: 60px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .record-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 30px rgba(155, 89, 182, 0.6);
+    }
+
+    .record-button:active {
+      transform: scale(0.95);
+    }
+
+    .record-button.recording {
+      background: linear-gradient(135deg, #FF4136, #E74C3C);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    .status {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .status.recording {
+      color: #FF4136;
+      font-weight: 600;
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00C49A;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .recordings {
+      margin-top: 40px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .recordings h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #00C49A;
+    }
+
+    .recording-item {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .recording-item audio {
+      flex: 1;
+      height: 40px;
+    }
+
+    .recording-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #00C49A, #00A67E);
+      color: white;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 196, 154, 0.4);
+    }
+
+    .btn-delete {
+      background: rgba(255, 65, 54, 0.2);
+      color: #FF4136;
+    }
+
+    .btn-delete:hover {
+      background: rgba(255, 65, 54, 0.3);
+    }
+
+    .instructions {
+      background: rgba(0, 196, 154, 0.1);
+      border-left: 4px solid #00C49A;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .instructions h3 {
+      color: #00C49A;
+      margin-bottom: 10px;
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+      opacity: 0.9;
+    }
+
+    .instructions li {
+      margin: 8px 0;
+    }
+
+    .recording-info {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 480px) {
+      .record-button {
+        width: 120px;
+        height: 120px;
+        font-size: 50px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🎤 Voice Recorder</h1>
+      <p class="subtitle">Record voice samples for cloning</p>
+
+      <div class="record-section">
+        <button class="record-button" id="recordButton">🎤</button>
+        <div class="status" id="status">Click to start recording</div>
+        <div class="timer" id="timer">00:00</div>
+      </div>
+
+      <div class="recordings" id="recordingsSection" style="display: none;">
+        <h2>📼 Recordings (<span id="recordingCount">0</span>)</h2>
+        <div id="recordingsList"></div>
+      </div>
+
+      <div class="instructions">
+        <h3>How to Record Voice Samples</h3>
+        <ol>
+          <li>Click the microphone button to start recording</li>
+          <li>Speak clearly for 30-60 seconds (read varied sentences)</li>
+          <li>Click again to stop</li>
+          <li>Download recordings as .webm files</li>
+          <li>Use these files with F5-TTS or OpenVoice for voice cloning</li>
+        </ol>
+        <p style="margin-top: 15px; opacity: 0.8;">
+          💡 <strong>Tip:</strong> Record multiple samples (2-5 minutes total) for better voice cloning quality.
+          Read different types of content: casual speech, formal speech, questions, emotions.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // API Configuration
+    const API_URL = window.location.hostname === 'localhost'
+      ? 'http://localhost:3002'
+      : 'https://api.soulfra.com';
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordingTimer = null;
+    let recordingStartTime = 0;
+    let recordings = [];
+
+    // Load existing voice memos from API
+    async function loadExistingMemos() {
+      try {
+        const response = await fetch(`${API_URL}/api/cringeproof/voice/list`);
+        const memos = await response.json();
+
+        console.log(`📼 Loaded ${memos.length} existing voice memos`);
+
+        if (memos.length > 0) {
+          const recordingsSection = document.getElementById('recordingsSection');
+          const recordingsList = document.getElementById('recordingsList');
+          const recordingCount = document.getElementById('recordingCount');
+
+          recordingsSection.style.display = 'block';
+          recordingCount.textContent = memos.length;
+
+          recordingsList.innerHTML = memos.map(memo => {
+            const date = new Date(memo.created_at);
+            const size = (memo.size / 1024).toFixed(1);
+
+            return `
+              <div class="recording-item">
+                <div style="flex: 1;">
+                  <audio controls src="${memo.audio_url}"></audio>
+                  <div class="recording-info">
+                    ${memo.title} • ${date.toLocaleString()} • ${size}KB
+                  </div>
+                </div>
+                <div class="recording-actions">
+                  <a href="${memo.audio_url}" download="${memo.filename}" class="btn btn-download">📥 Download</a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (error) {
+        console.error('Failed to load existing memos:', error);
+      }
+    }
+
+    // Upload recording to API
+    async function uploadToAPI(blob, filename) {
+      const statusEl = document.getElementById('status');
+
+      try {
+        const formData = new FormData();
+        formData.append('audio', blob, filename);
+        formData.append('title', filename.replace('.webm', ''));
+
+        statusEl.textContent = 'Uploading to server...';
+
+        const response = await fetch(`${API_URL}/api/cringeproof/voice/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
+        const result = await response.json();
+        console.log('✅ Uploaded:', result);
+
+        statusEl.textContent = '✅ Uploaded successfully!';
+
+        // Reload memos list
+        setTimeout(() => {
+          loadExistingMemos();
+          statusEl.textContent = 'Click to start recording';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Upload error:', error);
+        statusEl.textContent = '❌ Upload failed';
+        setTimeout(() => {
+          statusEl.textContent = 'Click to start recording';
+        }, 3000);
+      }
+    }
+
+    // Load existing memos on page load
+    window.addEventListener('DOMContentLoaded', loadExistingMemos);
+
+    const recordButton = document.getElementById('recordButton');
+    const statusEl = document.getElementById('status');
+    const timerEl = document.getElementById('timer');
+    const recordingsSection = document.getElementById('recordingsSection');
+    const recordingsList = document.getElementById('recordingsList');
+    const recordingCount = document.getElementById('recordingCount');
+
+    // Record button click
+    recordButton.addEventListener('click', async () => {
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        await startRecording();
+      } else {
+        stopRecording();
+      }
+    });
+
+    // Start recording
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100
+          }
+        });
+
+        // Try to use best available codec
+        let mimeType = 'audio/webm';
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          mimeType = 'audio/webm;codecs=opus';
+        }
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+        audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        });
+
+        mediaRecorder.addEventListener('stop', () => {
+          const audioBlob = new Blob(audioChunks, { type: mimeType });
+          saveRecording(audioBlob);
+
+          // Stop all tracks
+          stream.getTracks().forEach(track => track.stop());
+        });
+
+        mediaRecorder.start();
+
+        // Update UI
+        recordButton.classList.add('recording');
+        recordButton.textContent = '⏹';
+        statusEl.classList.add('recording');
+        statusEl.textContent = 'Recording... (click to stop)';
+
+        // Start timer
+        recordingStartTime = Date.now();
+        recordingTimer = setInterval(updateTimer, 100);
+
+      } catch (error) {
+        alert('Microphone access denied! Please allow microphone access and try again.');
+        console.error('Error accessing microphone:', error);
+      }
+    }
+
+    // Stop recording
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+
+        // Update UI
+        recordButton.classList.remove('recording');
+        recordButton.textContent = '🎤';
+        statusEl.classList.remove('recording');
+        statusEl.textContent = 'Click to start recording';
+
+        clearInterval(recordingTimer);
+        timerEl.textContent = '00:00';
+      }
+    }
+
+    // Update timer
+    function updateTimer() {
+      const elapsed = Date.now() - recordingStartTime;
+      const minutes = Math.floor(elapsed / 60000);
+      const seconds = Math.floor((elapsed % 60000) / 1000);
+      timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Save recording
+    function saveRecording(blob) {
+      const timestamp = new Date();
+      const filename = `voice-sample-${Date.now()}.webm`;
+
+      // Upload to API immediately
+      uploadToAPI(blob, filename);
+
+      // Also save locally for immediate playback
+      const recording = {
+        id: Date.now(),
+        blob: blob,
+        url: URL.createObjectURL(blob),
+        timestamp: timestamp,
+        size: blob.size,
+        duration: Date.now() - recordingStartTime
+      };
+
+      recordings.push(recording);
+      updateRecordingsList();
+    }
+
+    // Update recordings list
+    function updateRecordingsList() {
+      if (recordings.length === 0) {
+        recordingsSection.style.display = 'none';
+        return;
+      }
+
+      recordingsSection.style.display = 'block';
+      recordingCount.textContent = recordings.length;
+
+      recordingsList.innerHTML = recordings.map((rec, index) => {
+        const duration = Math.floor(rec.duration / 1000);
+        const size = (rec.size / 1024).toFixed(1);
+        const filename = `voice-sample-${rec.id}.webm`;
+
+        return `
+          <div class="recording-item">
+            <div style="flex: 1;">
+              <audio controls src="${rec.url}"></audio>
+              <div class="recording-info">
+                ${rec.timestamp.toLocaleTimeString()} • ${duration}s • ${size}KB
+              </div>
+            </div>
+            <div class="recording-actions">
+              <button class="btn btn-download" onclick="downloadRecording(${index})">
+                💾 Download
+              </button>
+              <button class="btn btn-delete" onclick="deleteRecording(${index})">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Download recording
+    window.downloadRecording = function(index) {
+      const recording = recordings[index];
+      const filename = `voice-sample-${recording.id}.webm`;
+
+      const a = document.createElement('a');
+      a.href = recording.url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+
+    // Delete recording
+    window.deleteRecording = function(index) {
+      if (confirm('Delete this recording?')) {
+        URL.revokeObjectURL(recordings[index].url);
+        recordings.splice(index, 1);
+        updateRecordingsList();
+      }
+    };
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      recordings.forEach(rec => URL.revokeObjectURL(rec.url));
+    });
+  </script>
+</body>
+</html>
