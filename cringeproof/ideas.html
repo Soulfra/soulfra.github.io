@@ -196,6 +196,73 @@
       opacity: 0.7;
       font-size: 0.9rem;
     }
+
+    .domain-filter {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .domain-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .domain-badge:hover {
+      transform: scale(1.05);
+    }
+
+    .domain-badge.active {
+      border-color: white;
+      font-weight: bold;
+    }
+
+    .domain-badge.all {
+      background: rgba(155, 89, 182, 0.5);
+    }
+
+    .domain-badge.soulfra {
+      background: rgba(26, 26, 46, 0.8);
+    }
+
+    .domain-badge.calriven {
+      background: rgba(106, 13, 173, 0.6);
+    }
+
+    .domain-badge.cringeproof {
+      background: rgba(155, 89, 182, 0.6);
+    }
+
+    .domain-badge.finishthisrepo {
+      background: rgba(0, 196, 154, 0.6);
+    }
+
+    .domain-badge.finishthisidea {
+      background: rgba(231, 76, 60, 0.6);
+    }
+
+    .memo-domain {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
@@ -218,6 +285,16 @@
         <div class="stat-value" id="somedayCount">0</div>
         <div class="stat-label">Someday</div>
       </div>
+    </div>
+
+    <div class="domain-filter">
+      <div class="filter-label">Filter by Domain:</div>
+      <div class="domain-badge all active" onclick="filterDomain('all')">All</div>
+      <div class="domain-badge soulfra" onclick="filterDomain('soulfra.com')">🔐 Soulfra</div>
+      <div class="domain-badge calriven" onclick="filterDomain('calriven.com')">🤖 Calriven</div>
+      <div class="domain-badge cringeproof" onclick="filterDomain('cringeproof.com')">🎤 CringeProof</div>
+      <div class="domain-badge finishthisrepo" onclick="filterDomain('finishthisrepo.com')">💻 FinishThisRepo</div>
+      <div class="domain-badge finishthisidea" onclick="filterDomain('finishthisidea.com')">💡 FinishThisIdea</div>
     </div>
 
     <div class="tier-container">
@@ -261,6 +338,18 @@
       : 'https://api.soulfra.com';
 
     let memos = [];
+    let currentFilter = 'all';
+
+    const DOMAIN_COLORS = {
+      'soulfra.com': '#1a1a2e',
+      'calriven.com': '#6a0dad',
+      'cringeproof.com': '#9B59B6',
+      'finishthisrepo.com': '#00C49A',
+      'finishthisidea.com': '#E74C3C',
+      'dealordelete.com': '#F39C12',
+      'saveorsink.com': '#3498DB',
+      'shiprekt.com': '#95A5A6'
+    };
 
     async function loadMemos() {
       try {
@@ -301,8 +390,13 @@
       // Clear all tiers
       Object.values(tiers).forEach(tier => tier.innerHTML = '');
 
-      // Group memos by tier
-      const grouped = memos.reduce((acc, memo) => {
+      // Filter memos by domain
+      const filteredMemos = currentFilter === 'all'
+        ? memos
+        : memos.filter(m => m.primaryDomain === currentFilter);
+
+      // Group filtered memos by tier
+      const grouped = filteredMemos.reduce((acc, memo) => {
         acc[memo.tier] = acc[memo.tier] || [];
         acc[memo.tier].push(memo);
         return acc;
@@ -315,24 +409,31 @@
         if (tierMemos.length === 0) {
           tiers[tier].innerHTML = '<div class="empty-tier">No items yet</div>';
         } else {
-          tiers[tier].innerHTML = tierMemos.map(memo => `
+          tiers[tier].innerHTML = tierMemos.map(memo => {
+            const domainColor = DOMAIN_COLORS[memo.primaryDomain] || '#666';
+            const domainName = memo.primaryDomain ? memo.primaryDomain.replace('.com', '') : 'untagged';
+
+            return `
             <div class="memo-card" data-id="${memo.id}">
+              ${memo.primaryDomain ? `<div class="memo-domain" style="background: ${domainColor}">${domainName}</div>` : ''}
               <div class="memo-title">${memo.title}</div>
               <div class="memo-date">${new Date(memo.created_at).toLocaleString()}</div>
               <audio controls src="${memo.audio_url}"></audio>
               ${memo.transcript ? `<div class="memo-transcript">"${memo.transcript}"</div>` : ''}
+              ${memo.matchedKeywords && memo.matchedKeywords.length ? `<div style="font-size: 0.8rem; opacity: 0.7; margin-top: 8px;">Keywords: ${memo.matchedKeywords.join(', ')}</div>` : ''}
               <div class="memo-actions">
                 ${tier !== 'urgent' ? `<button class="btn btn-urgent" onclick="moveTo('${memo.id}', 'urgent')">🔥 Urgent</button>` : ''}
                 ${tier !== 'someday' ? `<button class="btn btn-someday" onclick="moveTo('${memo.id}', 'someday')">💡 Someday</button>` : ''}
                 ${tier !== 'archive' ? `<button class="btn btn-archive" onclick="moveTo('${memo.id}', 'archive')">📦 Archive</button>` : ''}
               </div>
             </div>
-          `).join('');
+          `;
+          }).join('');
         }
       });
 
       // Update counts
-      document.getElementById('totalMemos').textContent = memos.length;
+      document.getElementById('totalMemos').textContent = filteredMemos.length;
       document.getElementById('inboxCount').textContent = (grouped.inbox || []).length;
       document.getElementById('urgentCount').textContent = (grouped.urgent || []).length;
       document.getElementById('urgentCountBadge').textContent = (grouped.urgent || []).length;
@@ -341,16 +442,41 @@
       document.getElementById('archiveCount').textContent = (grouped.archive || []).length;
     }
 
-    function moveTo(memoId, newTier) {
+    async function moveTo(memoId, newTier) {
       const memo = memos.find(m => m.id === memoId);
       if (memo) {
         memo.tier = newTier;
         console.log(`Moved "${memo.title}" to ${newTier}`);
 
-        // TODO: Save to backend
-        // For now, just update UI
+        // Save to backend
+        try {
+          await fetch(`${API_URL}/api/cringeproof/voice/${memoId}/tier`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include', // Send cookies
+            body: JSON.stringify({ tier: newTier })
+          });
+        } catch (error) {
+          console.error('Failed to save tier change:', error);
+        }
+
         renderMemos();
       }
+    }
+
+    function filterDomain(domain) {
+      currentFilter = domain;
+      console.log(`Filtering by: ${domain}`);
+
+      // Update active badge
+      document.querySelectorAll('.domain-badge').forEach(badge => {
+        badge.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      renderMemos();
     }
 
     // Load memos on page load
