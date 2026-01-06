@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Projects - Live Build Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      opacity: 0.7;
+      margin-bottom: 1rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      background: rgba(102, 126, 234, 0.1);
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .section-header.active { border-left-color: #00ff88; }
+    .section-header.experiments { border-left-color: #ffaa00; }
+    .section-header.archived { border-left-color: #666; }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .section-count {
+      opacity: 0.7;
+      font-size: 1rem;
+    }
+
+    .repos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .repo-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .repo-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: #667eea;
+    }
+
+    .repo-card.private::before {
+      content: '🔒 PRIVATE';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      background: rgba(255, 0, 110, 0.2);
+      border: 1px solid #ff006e;
+      border-radius: 4px;
+      color: #ff006e;
+    }
+
+    .repo-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #667eea;
+    }
+
+    .repo-name.codename {
+      color: #ff006e;
+      font-family: 'Courier New', monospace;
+    }
+
+    .repo-description {
+      opacity: 0.8;
+      margin-bottom: 1rem;
+      min-height: 2.5rem;
+      font-size: 0.95rem;
+    }
+
+    .repo-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      opacity: 0.7;
+    }
+
+    .language-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+
+    .error {
+      background: rgba(255, 0, 110, 0.1);
+      border: 1px solid #ff006e;
+      padding: 1.5rem;
+      border-radius: 8px;
+      color: #ff006e;
+      text-align: center;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #667eea;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: rgba(102, 126, 234, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/index.html" class="back-link">← Back to Brands</a>
+
+    <header>
+      <h1>🚀 Soulfra Project Dashboard</h1>
+      <div class="tagline">Live view of what's being built</div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="totalCount">-</div>
+          <div class="stat-label">Total Projects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="activeCount">-</div>
+          <div class="stat-label">Active (30d)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="experimentCount">-</div>
+          <div class="stat-label">Experiments</div>
+        </div>
+      </div>
+    </header>
+
+    <div id="loading" class="loading">Loading projects from GitHub...</div>
+    <div id="error" style="display: none;"></div>
+
+    <div id="activeSection" class="section" style="display: none;">
+      <div class="section-header active">
+        <div class="section-title">🔥 Active Projects</div>
+        <div class="section-count" id="activeSectionCount"></div>
+      </div>
+      <div class="repos" id="activeRepos"></div>
+    </div>
+
+    <div id="experimentsSection" class="section" style="display: none;">
+      <div class="section-header experiments">
+        <div class="section-title">🧪 Experiments</div>
+        <div class="section-count" id="experimentsSectionCount"></div>
+      </div>
+      <div class="repos" id="experimentsRepos"></div>
+    </div>
+
+    <div id="archivedSection" class="section" style="display: none;">
+      <div class="section-header archived">
+        <div class="section-title">📦 Archived</div>
+        <div class="section-count" id="archivedSectionCount"></div>
+      </div>
+      <div class="repos" id="archivedRepos"></div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch projects from Flask backend
+    async function loadProjects() {
+      try {
+        const response = await fetch('https://192.168.1.87:5002/api/debug/github-repos');
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown error');
+        }
+
+        // Update stats
+        document.getElementById('totalCount').textContent = data.total_repos;
+        document.getElementById('activeCount').textContent = data.active.length;
+        document.getElementById('experimentCount').textContent = data.experiments.length;
+
+        // Render sections
+        renderRepos('active', data.active);
+        renderRepos('experiments', data.experiments);
+        renderRepos('archived', data.archived);
+
+        // Hide loading
+        document.getElementById('loading').style.display = 'none';
+
+      } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        const errorDiv = document.getElementById('error');
+        errorDiv.style.display = 'block';
+        errorDiv.className = 'error';
+        errorDiv.innerHTML = `
+          <strong>Failed to load projects</strong><br>
+          ${error.message}<br><br>
+          Make sure Flask is running at https://192.168.1.87:5002
+        `;
+      }
+    }
+
+    function renderRepos(section, repos) {
+      if (repos.length === 0) return;
+
+      const sectionDiv = document.getElementById(`${section}Section`);
+      const reposDiv = document.getElementById(`${section}Repos`);
+      const countSpan = document.getElementById(`${section}SectionCount`);
+
+      sectionDiv.style.display = 'block';
+      countSpan.textContent = `(${repos.length} projects)`;
+
+      reposDiv.innerHTML = repos.map(repo => {
+        const isCodename = repo.is_private;
+        const repoName = repo.name;
+        const url = repo.url || '#';
+
+        return `
+          <div class="repo-card ${repo.is_private ? 'private' : ''}">
+            <div class="repo-name ${isCodename ? 'codename' : ''}">
+              ${isCodename ? '🔒 ' : ''}${repoName}
+            </div>
+            <div class="repo-description">
+              ${repo.description || 'No description'}
+            </div>
+            <div class="repo-meta">
+              ${repo.language ? `<span class="language-badge">${repo.language}</span>` : ''}
+              ${repo.stars > 0 ? `<span class="meta-item">⭐ ${repo.stars}</span>` : ''}
+              ${repo.is_fork ? `<span class="meta-item">🍴 Fork</span>` : ''}
+              ${repo.pushed_at ? `<span class="meta-item">📅 ${new Date(repo.pushed_at).toLocaleDateString()}</span>` : ''}
+              ${!repo.is_private ? `<a href="${url}" target="_blank" style="color: #667eea; text-decoration: none;">View on GitHub →</a>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Load on page load
+    loadProjects();
+
+    // Auto-refresh every 60 seconds
+    setInterval(loadProjects, 60000);
+  </script>
+</body>
+</html>

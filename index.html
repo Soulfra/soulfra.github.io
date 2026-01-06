@@ -3,320 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soulfra - Voice Predictions & Community Brands</title>
-  <meta name="description" content="Content-addressed voice predictions, community-driven brands, and authentic conversation.">
+  <title>Soulfra - All Brands</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #ffffff;
-      min-height: 100vh;
+      color: white;
       padding: 2rem;
+      min-height: 100vh;
     }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
-
-    h1 {
-      font-size: 4rem;
-      font-weight: 900;
-      margin-bottom: 1rem;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .tagline {
-      font-size: 1.5rem;
-      opacity: 0.95;
-      margin-bottom: 2rem;
-    }
-
-    .section {
-      margin-bottom: 4rem;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 2rem;
-    }
-
-    .card {
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 3rem; text-align: center; margin-bottom: 3rem; }
+    .brands { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .brand-card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 2rem;
-      transition: all 0.3s ease;
-      border: 2px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid;
+      transition: transform 0.3s;
     }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .card-icon {
-      font-size: 2.5rem;
-    }
-
-    .card-title {
-      font-size: 1.75rem;
-      font-weight: 700;
-    }
-
-    .card-description {
-      line-height: 1.6;
-      opacity: 0.9;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-link {
+    .brand-card:hover { transform: translateY(-5px); }
+    .brand-card h2 { margin-bottom: 1rem; }
+    .brand-card p { opacity: 0.9; margin-bottom: 1rem; }
+    .brand-card a {
       display: inline-block;
+      padding: 0.5rem 1.5rem;
       background: rgba(255, 255, 255, 0.2);
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      color: white;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .card-link:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.05);
-    }
-
-    .featured-card {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .brand-calriven { border-left: 4px solid #3b82f6; }
-    .brand-deathtodata { border-left: 4px solid #ef4444; }
-    .brand-soulfra { border-left: 4px solid #8b5cf6; }
-    .brand-howtocookathome { border-left: 4px solid #f59e0b; }
-
-    footer {
-      text-align: center;
-      padding: 3rem 0;
-      opacity: 0.8;
-      margin-top: 4rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    footer a {
+      border-radius: 50px;
       color: white;
       text-decoration: none;
-      font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 2.5rem; }
-      .tagline { font-size: 1.25rem; }
-      .grid { grid-template-columns: 1fr; }
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🎤 Soulfra</h1>
-      <p class="tagline">Voice Predictions, Content-Addressed Storage, and Community-Driven Brands</p>
-    </header>
+    <h1>🌐 Soulfra Brands</h1>
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <a href="/projects.html" style="display: inline-block; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.2); border-radius: 50px; color: white; text-decoration: none; font-weight: bold; border: 2px solid rgba(255, 255, 255, 0.3); transition: all 0.3s;">
+        🚀 View All Projects & What's Being Built
+      </a>
+    </div>
+    <div class="brands">
 
-    <!-- Featured: Voice Archive -->
-    <section class="section">
-      <div class="grid">
-        <div class="card featured-card">
-          <div class="card-header">
-            <span class="card-icon">🎙️</span>
-            <h2 class="card-title">Voice Predictions Archive</h2>
-          </div>
-          <p class="card-description">
-            Content-addressed voice recordings with SHA-256 verification. Record your predictions,
-            ideas, and hot takes - all cryptographically signed and immutable. See who ages badly.
-          </p>
-          <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-            <a href="/record" class="card-link" style="background: rgba(255, 64, 129, 0.3); border: 2px solid rgba(255, 64, 129, 0.6);">📢 Make a Prediction</a>
-            <a href="/voice-archive/" class="card-link">View Archive →</a>
-            <a href="/debates/" class="card-link" style="background: rgba(139, 92, 246, 0.3); border: 2px solid rgba(139, 92, 246, 0.6);">🤖 AI Debates</a>
-          </div>
-        </div>
+      <div class="brand-card" style="border-color: #FF006E;">
+        <h2 style="color: #FF006E;">CringeProof</h2>
+        <p>Call out the cringe</p>
+        <p style="font-size: 0.9rem; opacity: 0.7;">Authentic conversation, no performative BS</p>
+        <a href="/cringeproof/">Visit Site →</a>
       </div>
-    </section>
 
-    <!-- Brand Network -->
-    <section class="section">
-      <h2 class="section-title">Community Brands</h2>
-      <div class="grid">
-
-        <!-- CalRiven -->
-        <div class="card brand-calriven">
-          <div class="card-header">
-            <span class="card-icon">📊</span>
-            <h3 class="card-title">CalRiven</h3>
-          </div>
-          <p class="card-description">
-            Data-driven analysis, metrics, proof, and game theory. News scraping, article analysis, and CringeProof predictions.
-          </p>
-          <a href="https://calriven.com" class="card-link">Visit CalRiven →</a>
-        </div>
-
-        <!-- DeathToData -->
-        <div class="card brand-deathtodata">
-          <div class="card-header">
-            <span class="card-icon">🔥</span>
-            <h3 class="card-title">DeathToData</h3>
-          </div>
-          <p class="card-description">
-            Call out the cringe, the fake, and the corrupt. Burn down broken systems. No bullshit allowed.
-          </p>
-          <a href="https://deathtodata.com" class="card-link">Visit DeathToData →</a>
-        </div>
-
-        <!-- Soulfra (Core) -->
-        <div class="card brand-soulfra">
-          <div class="card-header">
-            <span class="card-icon">💜</span>
-            <h3 class="card-title">Soulfra Core</h3>
-          </div>
-          <p class="card-description">
-            Authentic community, trust, genuine connection, and vulnerable conversation. The heart of the network.
-          </p>
-          <a href="https://soulfra.com" class="card-link">Visit Soulfra →</a>
-        </div>
-
-        <!-- HowToCookAtHome -->
-        <div class="card brand-howtocookathome">
-          <div class="card-header">
-            <span class="card-icon">🍳</span>
-            <h3 class="card-title">HowToCookAtHome</h3>
-          </div>
-          <p class="card-description">
-            Simple recipes, cooking tips, and home kitchen hacks. No fancy equipment, no pretentious nonsense.
-          </p>
-          <a href="https://howtocookathome.com" class="card-link">Visit HowToCookAtHome →</a>
-        </div>
-
-        <!-- StPetePros -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">🏝️</span>
-            <h3 class="card-title">StPetePros</h3>
-          </div>
-          <p class="card-description">
-            St. Petersburg, FL local community, services, and neighborhood insights.
-          </p>
-          <a href="https://stpetepros.com" class="card-link">Visit StPetePros →</a>
-        </div>
-
-        <!-- Hollowtown -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">🌙</span>
-            <h3 class="card-title">Hollowtown</h3>
-          </div>
-          <p class="card-description">
-            Creative fiction, strange stories, and experimental content.
-          </p>
-          <a href="https://hollowtown.com" class="card-link">Visit Hollowtown →</a>
-        </div>
-
-        <!-- Niceleak -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">💧</span>
-            <h3 class="card-title">Niceleak</h3>
-          </div>
-          <p class="card-description">
-            Gentle whistle-blowing, kind transparency, and positive accountability.
-          </p>
-          <a href="https://niceleak.com" class="card-link">Visit Niceleak →</a>
-        </div>
-
-        <!-- Oofbox -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">📦</span>
-            <h3 class="card-title">Oofbox</h3>
-          </div>
-          <p class="card-description">
-            Curated collection of mistakes, lessons learned, and embarrassing fails.
-          </p>
-          <a href="https://oofbox.com" class="card-link">Visit Oofbox →</a>
-        </div>
-
+      <div class="brand-card" style="border-color: #0066FF;">
+        <h2 style="color: #0066FF;">DeathToData</h2>
+        <p>Search + VIBES economy</p>
+        <p style="font-size: 0.9rem; opacity: 0.7;">Get paid for your data, keep your privacy</p>
+        <a href="/deathtodata/">Visit Site →</a>
       </div>
-    </section>
 
-    <!-- How It Works -->
-    <section class="section">
-      <h2 class="section-title">How Voice Predictions Work</h2>
-      <div class="grid">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">1️⃣</span>
-            <h3 class="card-title">Record</h3>
-          </div>
-          <p class="card-description">
-            Use Voice Memos app on iPhone. AirDrop to Mac. Simple as a text message.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">2️⃣</span>
-            <h3 class="card-title">Import</h3>
-          </div>
-          <p class="card-description">
-            Run import_voice_memo.py. Auto-transcribes with Whisper, calculates SHA-256 hash.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-icon">3️⃣</span>
-            <h3 class="card-title">Publish</h3>
-          </div>
-          <p class="card-description">
-            Git push to GitHub Pages. Static site, no server needed. Immutable record.
-          </p>
-        </div>
+      <div class="brand-card" style="border-color: #BDB2FF;">
+        <h2 style="color: #BDB2FF;">Soulfra</h2>
+        <p>Building the non-typing internet</p>
+        <p style="font-size: 0.9rem; opacity: 0.7;">Voice memos, QR scans, emoji navigation. Just login, scan, and go.</p>
+        <a href="/soulfra/">Visit Site →</a>
       </div>
-    </section>
 
-    <footer>
-      <p>Decentralized network - <a href="https://github.com/Soulfra">Fork on GitHub</a></p>
-      <p style="margin-top: 0.5rem; opacity: 0.6;">No Archive.org needed - you own the source</p>
-    </footer>
+      <div class="brand-card" style="border-color: #06FFA5;">
+        <h2 style="color: #06FFA5;">CalRiven</h2>
+        <p>Federated publishing for creators</p>
+        <p style="font-size: 0.9rem; opacity: 0.7;">Multi-domain distribution with cross-linking and SEO optimization</p>
+        <a href="/calriven/">Visit Site →</a>
+      </div>
+
+    </div>
   </div>
 </body>
 </html>
