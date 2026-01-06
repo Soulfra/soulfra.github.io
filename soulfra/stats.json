@@ -1,0 +1,46 @@
+{
+  "domain": "soulfra",
+  "type": "NEUTRAL",
+  "icon": "\ud83d\udc9c",
+  "repos": [
+    {
+      "repo": "soulfra-content",
+      "stats": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "commits_last_week": 0,
+        "contributors": 0,
+        "last_push": "",
+        "created_at": "",
+        "size_kb": 0,
+        "placeholder": true
+      }
+    },
+    {
+      "repo": "soulfra-data",
+      "stats": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "commits_last_week": 0,
+        "contributors": 0,
+        "last_push": "",
+        "created_at": "",
+        "size_kb": 0,
+        "placeholder": true
+      }
+    }
+  ],
+  "total_stars": 0,
+  "total_watchers": 0,
+  "total_commits_last_week": 0,
+  "total_contributors": 0,
+  "total_open_issues": 0,
+  "activity_score": 0,
+  "allocation_priority": 4,
+  "timestamp": "2026-01-06T18:10:01.331509Z",
+  "allocation_percent": 10.0
+}

@@ -1,0 +1,46 @@
+{
+  "domain": "cringeproof",
+  "type": "SHADOW",
+  "icon": "\ud83c\udfad",
+  "repos": [
+    {
+      "repo": "cringeproof-content",
+      "stats": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "commits_last_week": 0,
+        "contributors": 0,
+        "last_push": "",
+        "created_at": "",
+        "size_kb": 0,
+        "placeholder": true
+      }
+    },
+    {
+      "repo": "cringeproof-data",
+      "stats": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "commits_last_week": 0,
+        "contributors": 0,
+        "last_push": "",
+        "created_at": "",
+        "size_kb": 0,
+        "placeholder": true
+      }
+    }
+  ],
+  "total_stars": 0,
+  "total_watchers": 0,
+  "total_commits_last_week": 0,
+  "total_contributors": 0,
+  "total_open_issues": 0,
+  "activity_score": 0,
+  "allocation_priority": 2,
+  "timestamp": "2026-01-06T18:10:00.619673Z",
+  "allocation_percent": 30.0
+}

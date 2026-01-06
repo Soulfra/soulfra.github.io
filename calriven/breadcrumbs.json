@@ -1,0 +1,44 @@
+{
+  "domain": "calriven",
+  "priority": 1,
+  "allocation_percent": 40.0,
+  "breadcrumb_links": [
+    {
+      "domain": "cringeproof",
+      "reason": "explore_network",
+      "cta": "Explore Cringeproof",
+      "icon": "\ud83c\udfad",
+      "type": "SHADOW",
+      "url": "https://cringeproof.com",
+      "github_page": "cringeproof/index.html",
+      "priority": 2,
+      "allocation_percent": 30.0,
+      "activity_score": 0
+    },
+    {
+      "domain": "deathtodata",
+      "reason": "explore_network",
+      "cta": "Explore Deathtodata",
+      "icon": "\ud83d\udd25",
+      "type": "LIGHT",
+      "url": "https://deathtodata.com",
+      "github_page": "deathtodata/index.html",
+      "priority": 3,
+      "allocation_percent": 20.0,
+      "activity_score": 0
+    },
+    {
+      "domain": "soulfra",
+      "reason": "explore_network",
+      "cta": "Explore Soulfra",
+      "icon": "\ud83d\udc9c",
+      "type": "NEUTRAL",
+      "url": "https://soulfra.com",
+      "github_page": "soulfra/index.html",
+      "priority": 4,
+      "allocation_percent": 10.0,
+      "activity_score": 0
+    }
+  ],
+  "generated_at": "2026-01-06T18:17:14.723761Z"
+}

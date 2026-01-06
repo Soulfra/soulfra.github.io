@@ -1,0 +1,86 @@
+name: Update Domain Stats
+
+on:
+  schedule:
+    # Run every hour at the top of the hour
+    - cron: '0 * * * *'
+
+  workflow_dispatch:  # Allow manual trigger
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/update-domain-stats.yml'
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run GitHub domain scraper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/github_domain_scraper.py
+
+      - name: Run breadcrumb router
+        run: |
+          python3 scripts/breadcrumb_router.py
+
+      - name: Run OSS leaderboard generator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/oss_leaderboard.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push updates
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git add '*/stats.json' '*/breadcrumbs.json' '*/breadcrumb-nav.html' '*/leaderboard.json' 'domain-stats.json' 'breadcrumb-map.json' 'global-leaderboard.json' 'BREADCRUMB_ROUTING.md'
+          git commit -m "🤖 Update domain stats [automated] $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+
+      - name: No changes
+        if: steps.check_changes.outputs.changed == 'false'
+        run: echo "No changes to commit - stats unchanged"
+
+      - name: Summary
+        run: |
+          echo "## 🎮 Domain Resource Allocation Update" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Updated Files:" >> $GITHUB_STEP_SUMMARY
+          echo "- Domain stats (domain-stats.json)" >> $GITHUB_STEP_SUMMARY
+          echo "- Breadcrumb routes (breadcrumb-map.json)" >> $GITHUB_STEP_SUMMARY
+          echo "- OSS leaderboards (global-leaderboard.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Domain Rankings:" >> $GITHUB_STEP_SUMMARY
+          python3 -c "import json; data = json.load(open('domain-stats.json')); [print(f'- #{d[\"allocation_priority\"]} {d[\"icon\"]} **{d[\"domain\"].upper()}** ({d[\"allocation_percent\"]}% allocation)') for d in data['domains']]" >> $GITHUB_STEP_SUMMARY

@@ -173,46 +173,24 @@
       </div>
     </section>
 
-    <!-- Brand Network -->
+    <!-- Brand Network (Dynamic from GitHub Stats) -->
     <section class="section">
-      <h2 class="section-title">Community Brands</h2>
+      <h2 class="section-title">🎮 Resource Allocation Game - Active Domains</h2>
+      <p style="text-align: center; opacity: 0.9; margin-bottom: 2rem;">
+        Domains ranked by GitHub activity (stars, commits, contributors, issues). Updated hourly.
+      </p>
+      <div class="grid" id="domains-container">
+        <!-- Domains loaded dynamically from domain-stats.json -->
+        <div class="card" style="text-align: center; opacity: 0.6;">
+          <p>Loading domain stats...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Brands -->
+    <section class="section">
+      <h2 class="section-title">Other Brands</h2>
       <div class="grid">
-
-        <!-- CalRiven -->
-        <div class="card brand-calriven">
-          <div class="card-header">
-            <span class="card-icon">📊</span>
-            <h3 class="card-title">CalRiven</h3>
-          </div>
-          <p class="card-description">
-            Data-driven analysis, metrics, proof, and game theory. News scraping, article analysis, and CringeProof predictions.
-          </p>
-          <a href="https://calriven.com" class="card-link">Visit CalRiven →</a>
-        </div>
-
-        <!-- DeathToData -->
-        <div class="card brand-deathtodata">
-          <div class="card-header">
-            <span class="card-icon">🔥</span>
-            <h3 class="card-title">DeathToData</h3>
-          </div>
-          <p class="card-description">
-            Call out the cringe, the fake, and the corrupt. Burn down broken systems. No bullshit allowed.
-          </p>
-          <a href="https://deathtodata.com" class="card-link">Visit DeathToData →</a>
-        </div>
-
-        <!-- Soulfra (Core) -->
-        <div class="card brand-soulfra">
-          <div class="card-header">
-            <span class="card-icon">💜</span>
-            <h3 class="card-title">Soulfra Core</h3>
-          </div>
-          <p class="card-description">
-            Authentic community, trust, genuine connection, and vulnerable conversation. The heart of the network.
-          </p>
-          <a href="https://soulfra.com" class="card-link">Visit Soulfra →</a>
-        </div>
 
         <!-- HowToCookAtHome -->
         <div class="card brand-howtocookathome">
@@ -318,5 +296,113 @@
       <p style="margin-top: 0.5rem; opacity: 0.6;">No Archive.org needed - you own the source</p>
     </footer>
   </div>
+
+  <script>
+    // Load domain stats from GitHub scraper output
+    fetch('domain-stats.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Stats not available');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const container = document.getElementById('domains-container');
+        container.innerHTML = ''; // Clear loading message
+
+        // Domains are already sorted by allocation_priority (1 = hottest)
+        const domains = data.domains;
+
+        // Domain descriptions
+        const descriptions = {
+          'calriven': 'Data-driven analysis, metrics, proof, and game theory. Work and technical execution.',
+          'cringeproof': 'Creative vision, viral ideas, and experimental content. The Shadow path.',
+          'deathtodata': 'Privacy-first, security-focused, and protection tools. Call out the cringe.',
+          'soulfra': 'Personal reflections, spiritual hub, authentic community. The heart of the network.'
+        };
+
+        // Domain URLs
+        const urls = {
+          'calriven': 'https://calriven.com',
+          'cringeproof': 'https://cringeproof.com',
+          'deathtodata': 'https://deathtodata.com',
+          'soulfra': 'https://soulfra.com'
+        };
+
+        // Priority colors
+        const priorityColors = {
+          1: 'rgba(59, 130, 246, 0.3)', // Blue - hottest
+          2: 'rgba(139, 92, 246, 0.3)', // Purple
+          3: 'rgba(239, 68, 68, 0.3)',  // Red
+          4: 'rgba(245, 158, 11, 0.3)'  // Orange - coldest
+        };
+
+        domains.forEach(domain => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.style.background = priorityColors[domain.allocation_priority] || 'rgba(255, 255, 255, 0.1)';
+          card.style.border = `2px solid ${priorityColors[domain.allocation_priority] || 'rgba(255, 255, 255, 0.1)'}`;
+
+          // Priority badge
+          const priorityBadge = domain.allocation_priority === 1
+            ? '<span style="background: rgba(255, 215, 0, 0.3); padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700;">🔥 HOTTEST</span>'
+            : `<span style="opacity: 0.7; font-size: 0.9rem;">Priority #${domain.allocation_priority}</span>`;
+
+          card.innerHTML = `
+            <div class="card-header">
+              <span class="card-icon">${domain.icon}</span>
+              <div style="flex: 1;">
+                <h3 class="card-title">${domain.domain.toUpperCase()}</h3>
+                ${priorityBadge}
+              </div>
+            </div>
+            <p class="card-description">
+              ${descriptions[domain.domain] || 'Domain description'}
+            </p>
+            <div style="margin: 1rem 0; padding: 1rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px; font-size: 0.9rem;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <div>⭐ <strong>${domain.total_stars}</strong> stars</div>
+                <div>💻 <strong>${domain.total_commits_last_week}</strong> commits (7d)</div>
+                <div>👥 <strong>${domain.total_contributors}</strong> contributors</div>
+                <div>🐛 <strong>${domain.total_open_issues}</strong> issues</div>
+              </div>
+              <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                📊 Activity Score: <strong>${domain.activity_score}</strong> |
+                ⏰ <strong>${domain.allocation_percent}%</strong> time allocation
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <a href="${urls[domain.domain] || '#'}" class="card-link">Visit ${domain.domain} →</a>
+              <a href="${domain.domain}/index.html" class="card-link" style="background: rgba(255, 255, 255, 0.1);">GitHub Page →</a>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+
+        // Add timestamp footer
+        const timestamp = new Date(data.generated_at).toLocaleString();
+        const nextUpdate = new Date(data.next_update).toLocaleTimeString();
+        const timestampDiv = document.createElement('div');
+        timestampDiv.style.textAlign = 'center';
+        timestampDiv.style.marginTop = '2rem';
+        timestampDiv.style.opacity = '0.7';
+        timestampDiv.style.fontSize = '0.9rem';
+        timestampDiv.innerHTML = `
+          <p>📊 Stats updated: ${timestamp}</p>
+          <p style="margin-top: 0.5rem;">⏰ Next update: ${nextUpdate}</p>
+        `;
+        document.querySelector('#domains-container').parentElement.appendChild(timestampDiv);
+      })
+      .catch(error => {
+        console.error('Error loading domain stats:', error);
+        const container = document.getElementById('domains-container');
+        container.innerHTML = `
+          <div class="card" style="text-align: center; opacity: 0.8;">
+            <p>⚠️ Unable to load domain stats. Run <code>python3 github_domain_scraper.py</code> to generate stats.</p>
+          </div>
+        `;
+      });
+  </script>
 </body>
 </html>

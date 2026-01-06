@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Projects - Live Build Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      opacity: 0.7;
+      margin-bottom: 1rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      background: rgba(102, 126, 234, 0.1);
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+
+    .project-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-left: 1rem;
+      border-left: 4px solid #667eea;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon {
+      font-size: 2rem;
+    }
+
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .project-status {
+      margin-left: auto;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-live {
+      background: rgba(6, 255, 165, 0.2);
+      color: #06FFA5;
+      border: 1px solid rgba(6, 255, 165, 0.4);
+    }
+
+    .status-building {
+      background: rgba(255, 193, 7, 0.2);
+      color: #FFC107;
+      border: 1px solid rgba(255, 193, 7, 0.4);
+    }
+
+    .status-planning {
+      background: rgba(102, 126, 234, 0.2);
+      color: #667eea;
+      border: 1px solid rgba(102, 126, 234, 0.4);
+    }
+
+    .project-description {
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tech-tag {
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .project-link {
+      padding: 0.5rem 1rem;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 8px;
+      text-decoration: none;
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .project-link:hover {
+      background: rgba(102, 126, 234, 0.3);
+      transform: scale(1.05);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 8px;
+      text-decoration: none;
+      color: #e0e0e0;
+      font-weight: 600;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+    }
+
+    .back-link:hover {
+      background: rgba(102, 126, 234, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .stats { flex-direction: column; gap: 1rem; }
+      .project-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 Soulfra Projects</h1>
+      <p class="tagline">Building the non-typing internet - Voice, QR, AI, Open Source</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="live-count">4</div>
+          <div class="stat-label">🟢 Live Projects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="building-count">8</div>
+          <div class="stat-label">🟡 Building</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="total-count">15+</div>
+          <div class="stat-label">📦 Total Ideas</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Live Projects -->
+    <section class="project-section">
+      <h2 class="section-title">🟢 Live & Deployed</h2>
+      <div class="project-grid">
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">📊</span>
+            <h3 class="project-title">CalRiven</h3>
+            <span class="project-status status-live">🟢 LIVE</span>
+          </div>
+          <p class="project-description">
+            AI-powered technical blog. Voice memos → Whisper transcription → Ollama analysis → Published markdown.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Whisper</span>
+            <span class="tech-tag">Ollama</span>
+            <span class="tech-tag">GitHub Pages</span>
+          </div>
+          <div class="project-links">
+            <a href="/calriven/" class="project-link">📚 View Blog</a>
+            <a href="https://github.com/Soulfra/calriven" class="project-link">💻 Source</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🎭</span>
+            <h3 class="project-title">CringeProof</h3>
+            <span class="project-status status-live">🟢 LIVE</span>
+          </div>
+          <p class="project-description">
+            Call out the cringe. Authentic conversation, no performative BS. Community moderation.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Flask</span>
+            <span class="tech-tag">SQLite</span>
+            <span class="tech-tag">OAuth</span>
+          </div>
+          <div class="project-links">
+            <a href="/cringeproof/" class="project-link">🎭 Visit Site</a>
+            <a href="https://github.com/Soulfra/cringeproof" class="project-link">💻 Source</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🔥</span>
+            <h3 class="project-title">DeathToData</h3>
+            <span class="project-status status-live">🟢 LIVE</span>
+          </div>
+          <p class="project-description">
+            Privacy-first vibes economy. Get paid for your data, keep your privacy. Search with boundaries.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Privacy</span>
+            <span class="tech-tag">Encryption</span>
+            <span class="tech-tag">Local-First</span>
+          </div>
+          <div class="project-links">
+            <a href="/deathtodata/" class="project-link">🔥 Visit Site</a>
+            <a href="https://github.com/Soulfra/deathtodata" class="project-link">💻 Source</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">💜</span>
+            <h3 class="project-title">Soulfra Hub</h3>
+            <span class="project-status status-live">🟢 LIVE</span>
+          </div>
+          <p class="project-description">
+            Central authentication hub. QR login, voice predictions, cross-domain identity. GitHub Actions automation.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Flask</span>
+            <span class="tech-tag">QR Auth</span>
+            <span class="tech-tag">SHA-256</span>
+            <span class="tech-tag">GitHub API</span>
+          </div>
+          <div class="project-links">
+            <a href="/" class="project-link">🏠 Home</a>
+            <a href="https://github.com/Soulfra/soulfra.github.io" class="project-link">💻 Source</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Building Now -->
+    <section class="project-section">
+      <h2 class="section-title">🟡 Currently Building</h2>
+      <div class="project-grid">
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🎮</span>
+            <h3 class="project-title">Resource Allocation Game</h3>
+            <span class="project-status status-building">🟡 BUILDING</span>
+          </div>
+          <p class="project-description">
+            Domains compete for dev time based on GitHub activity. Automated breadcrumb routing, OSS leaderboards.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">GitHub API</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Cron</span>
+            <span class="tech-tag">GitHub Actions</span>
+          </div>
+          <div class="project-links">
+            <a href="/domain-stats.json" class="project-link">📊 Stats JSON</a>
+            <a href="/.github/workflows/update-domain-stats.yml" class="project-link">⚙️ Workflow</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">📱</span>
+            <h3 class="project-title">QR Instant Auth</h3>
+            <span class="project-status status-building">🟡 BUILDING</span>
+          </div>
+          <p class="project-description">
+            Scan QR → Instant demo access. No passwords, no emails. Device fingerprinting + hardware auth.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">QR Codes</span>
+            <span class="tech-tag">WebAuthn</span>
+            <span class="tech-tag">Device Fingerprint</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🎙️</span>
+            <h3 class="project-title">Voice Prediction Archive</h3>
+            <span class="project-status status-building">🟡 BUILDING</span>
+          </div>
+          <p class="project-description">
+            Content-addressed voice recordings. Make predictions, lock them, see who ages badly. SHA-256 verification.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Whisper</span>
+            <span class="tech-tag">Content-Addressing</span>
+            <span class="tech-tag">Immutable Logs</span>
+          </div>
+          <div class="project-links">
+            <a href="/debates/" class="project-link">🤖 AI Debates</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🍳</span>
+            <h3 class="project-title">HowToCookAtHome</h3>
+            <span class="project-status status-building">🟡 BUILDING</span>
+          </div>
+          <p class="project-description">
+            Home-cooked software. Simple recipes for coding, privacy, self-hosting. No cloud required.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Local-First</span>
+            <span class="tech-tag">Self-Hosted</span>
+            <span class="tech-tag">Tutorials</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🤖</span>
+            <h3 class="project-title">Free AI Publishing</h3>
+            <span class="project-status status-building">🟡 BUILDING</span>
+          </div>
+          <p class="project-description">
+            Medium/Substack alternative using Ollama. Free AI, no API costs. Export to any format (HTML, WebM, Verilog).
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Ollama</span>
+            <span class="tech-tag">Markdown</span>
+            <span class="tech-tag">Multi-Format</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Planning Phase -->
+    <section class="project-section">
+      <h2 class="section-title">🔵 In Planning</h2>
+      <div class="project-grid">
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">📦</span>
+            <h3 class="project-title">Drop System</h3>
+            <span class="project-status status-planning">🔵 PLANNING</span>
+          </div>
+          <p class="project-description">
+            Instant site generation. Type prompt → Get full HTML site in seconds. Like Vercel but with QR login.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">LLM</span>
+            <span class="tech-tag">Templates</span>
+            <span class="tech-tag">Static Gen</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">⚖️</span>
+            <h3 class="project-title">BlameChain</h3>
+            <span class="project-status status-planning">🔵 PLANNING</span>
+          </div>
+          <p class="project-description">
+            Accountability without blockchain BS. Track promises, verify receipts, call out failures.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Merkle Trees</span>
+            <span class="tech-tag">Git-based</span>
+            <span class="tech-tag">Verifiable</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-icon">🌐</span>
+            <h3 class="project-title">Federated Publishing</h3>
+            <span class="project-status status-planning">🔵 PLANNING</span>
+          </div>
+          <p class="project-description">
+            Cross-post to all domains automatically. Write once, publish everywhere with domain-specific styling.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">RSS</span>
+            <span class="tech-tag">ActivityPub</span>
+            <span class="tech-tag">Syndication</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div style="text-align: center;">
+      <a href="/" class="back-link">← Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    // Try to load domain stats for accurate counts
+    fetch('/domain-stats.json')
+      .then(r => r.json())
+      .then(data => {
+        // Could update counts based on actual data
+        console.log('📊 Domain stats loaded:', data);
+      })
+      .catch(e => console.log('Stats not available yet'));
+  </script>
+</body>
+</html>
