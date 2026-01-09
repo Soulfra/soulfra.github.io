@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra QR Router</title>
+  <script src="/session/auth.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .router-container {
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .status {
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .session-info {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: left;
+    }
+
+    .session-info h3 {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .session-info p {
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      background: rgba(255, 107, 107, 0.2);
+      border: 2px solid rgba(255, 107, 107, 0.5);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="router-container">
+    <h1>🔗 QR Router</h1>
+    <div class="spinner"></div>
+    <p class="status" id="status">Processing QR code...</p>
+    <div id="session-info"></div>
+  </div>
+
+  <script>
+    // Handle QR scan and route appropriately
+    (async function() {
+      const statusEl = document.getElementById('status');
+      const sessionInfoEl = document.getElementById('session-info');
+
+      try {
+        // Parse QR code from URL
+        const result = SimpleSession.handleQRScan();
+
+        if (!result) {
+          // No QR parameters - create session and show info
+          const session = SimpleSession.getOrCreateSession();
+
+          statusEl.textContent = 'Session ready!';
+          sessionInfoEl.innerHTML = `
+            <div class="session-info">
+              <h3>✅ Session Created</h3>
+              <p><strong>ID:</strong> ${session.id}</p>
+              <p><strong>Device:</strong> ${session.user.deviceType}</p>
+              <p><strong>Created:</strong> ${new Date(session.created).toLocaleString()}</p>
+            </div>
+            <p style="opacity: 0.8; margin-top: 1rem;">
+              Redirecting to chat...
+            </p>
+          `;
+
+          // Redirect to chatbox after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/pages/chat/chatbox.html';
+          }, 2000);
+
+          return;
+        }
+
+        // QR scan successful
+        const { session, routing } = result;
+
+        statusEl.textContent = 'QR scan successful!';
+        sessionInfoEl.innerHTML = `
+          <div class="session-info">
+            <h3>✅ QR Scanned</h3>
+            <p><strong>Session ID:</strong> ${session.id}</p>
+            <p><strong>Device:</strong> ${session.user.deviceType}</p>
+            <p><strong>Domain:</strong> ${routing.domain || 'default'}</p>
+            <p><strong>Action:</strong> ${routing.action || 'none'}</p>
+          </div>
+        `;
+
+        // Route based on params
+        let targetUrl = '/pages/chat/chatbox.html'; // Default
+
+        if (routing.page) {
+          // Direct page routing
+          targetUrl = routing.page;
+        } else if (routing.domain && routing.action) {
+          // Domain + action routing
+          const routes = {
+            'calriven': {
+              'chat': '/pages/chat/chatbox.html',
+              'blog': '/calriven/index.html',
+              'record': '/pages/chat/chatbox.html?voice=true'
+            },
+            'cringeproof': {
+              'record': '/pages/chat/chatbox.html?voice=true',
+              'ideas': '/cringeproof/ideas.html',
+              'feed': '/cringeproof/index.html'
+            },
+            'deathtodata': {
+              'search': '/pages/chat/chatbox.html?mode=search',
+              'privacy': '/deathtodata/index.html'
+            },
+            'soulfra': {
+              'chat': '/pages/chat/chatbox.html',
+              'ollama': '/pages/demos/ollama-demo.html',
+              'projects': '/projects.html'
+            }
+          };
+
+          const domainRoutes = routes[routing.domain];
+          if (domainRoutes && domainRoutes[routing.action]) {
+            targetUrl = domainRoutes[routing.action];
+          }
+        }
+
+        // Show routing info
+        statusEl.innerHTML += `<br><small>Routing to: ${targetUrl}</small>`;
+
+        // Redirect after 1.5 seconds
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 1500);
+
+      } catch (error) {
+        console.error('QR routing error:', error);
+        statusEl.textContent = 'Error processing QR code';
+        sessionInfoEl.innerHTML = `
+          <div class="error">
+            <h3>❌ Error</h3>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    })();
+  </script>
+</body>
+</html>

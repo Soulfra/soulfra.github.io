@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:11434; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>Soulfra Chat - Conversation Parser</title>
+  <meta name="description" content="Chat with Ollama and parse conversations">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(26, 26, 46, 0.9);
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid #333;
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 1.5rem;
+      padding-bottom: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Message Bubble */
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.25rem;
+      border-radius: 18px;
+      line-height: 1.5;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.bot {
+      background: rgba(102, 126, 234, 0.15);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      align-self: flex-start;
+    }
+
+    .message.user {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      align-self: flex-end;
+    }
+
+    .message.system {
+      background: rgba(255, 107, 107, 0.15);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      align-self: center;
+      text-align: center;
+      max-width: 90%;
+      font-size: 0.9rem;
+    }
+
+    .message.routing {
+      background: linear-gradient(135deg, rgba(0, 255, 204, 0.2) 0%, rgba(102, 126, 234, 0.2) 100%);
+      border: 2px solid rgba(0, 255, 204, 0.4);
+      align-self: center;
+      text-align: center;
+      max-width: 90%;
+      font-weight: 600;
+    }
+
+    /* Quick Reply Chips */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      animation: slideIn 0.4s ease-out 0.2s both;
+    }
+
+    .quick-reply {
+      background: rgba(102, 126, 234, 0.2);
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      padding: 0.75rem 1.25rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+    }
+
+    .quick-reply:hover {
+      background: rgba(102, 126, 234, 0.4);
+      transform: scale(1.05);
+    }
+
+    .quick-reply:active {
+      transform: scale(0.95);
+    }
+
+    /* Input Bar */
+    .input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.95);
+      border-top: 2px solid #333;
+      padding: 1rem 1.5rem;
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .input-field {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 0.875rem 1.25rem;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-field:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(102, 126, 234, 0.6);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-send {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-send:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-send:active {
+      transform: scale(0.95);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background: rgba(102, 126, 234, 0.15);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      padding: 1rem 1.5rem;
+      border-radius: 18px;
+      max-width: 80px;
+    }
+
+    .typing-indicator.active {
+      display: flex;
+      gap: 6px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(102, 126, 234, 0.8);
+      border-radius: 50%;
+      animation: typingPulse 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingPulse {
+      0%, 60%, 100% { opacity: 0.4; transform: scale(0.8); }
+      30% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Loading State */
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Age Verification Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%);
+      border: 3px solid rgba(102, 126, 234, 0.5);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-content p {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn-modal {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: 2px solid;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal.yes {
+      background: rgba(102, 126, 234, 0.3);
+      border-color: rgba(102, 126, 234, 0.6);
+      color: white;
+    }
+
+    .btn-modal.yes:hover {
+      background: rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-modal.no {
+      background: rgba(255, 107, 107, 0.3);
+      border-color: rgba(255, 107, 107, 0.6);
+      color: white;
+    }
+
+    .btn-modal.no:hover {
+      background: rgba(255, 107, 107, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .message {
+        max-width: 90%;
+      }
+
+      .header h1 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>🤖 Soulfra Chat</h1>
+    <p>Chat with Ollama - Session: <span id="sessionId">Loading...</span></p>
+    <button onclick="toggleDebug()" style="position: absolute; right: 9rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); border-radius: 8px; color: white; cursor: pointer;">
+      🐛 Debug
+    </button>
+    <button onclick="toggleVoiceMode()" style="position: absolute; right: 1rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.4); border-radius: 8px; color: #f66; cursor: pointer;">
+      🎤 Voice
+    </button>
+  </div>
+
+  <!-- Debug Panel (hidden by default) -->
+  <div id="debugPanel" style="display: none; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 0.8rem; padding: 1rem; max-height: 300px; overflow-y: auto; border-bottom: 2px solid #333;">
+    <h3 style="color: #0ff; margin-bottom: 0.5rem;">🐛 DEBUG MODE</h3>
+    <div id="debugContent">
+      <p style="color: #888;">Send a message to see debug info...</p>
+    </div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container" id="chatContainer">
+    <!-- Initial bot message -->
+    <div class="message bot">
+      Hey! I'm connected to Ollama running on your laptop. Chat with me and I'll parse your conversations for sentiment, key points, and action items.
+      <div class="quick-replies">
+        <button class="quick-reply" onclick="quickReply('Tell me how this works')">ℹ️ How it works</button>
+        <button class="quick-reply" onclick="quickReply('Parse this: I need to fix the auth bug and deploy by Friday')">🧪 Test parsing</button>
+        <button class="quick-reply" onclick="quickReply('What can you help me with?')">💬 What can you do?</button>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  </div>
+
+  <!-- Input Bar -->
+  <div class="input-bar">
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; justify-content: center;">
+      <button onclick="exportConversation()" style="padding: 0.4rem 0.8rem; background: rgba(0,255,0,0.2); border: 1px solid rgba(0,255,0,0.4); border-radius: 6px; color: #0f0; cursor: pointer; font-size: 0.8rem;">
+        💾 Export Log
+      </button>
+      <button onclick="importConversation()" style="padding: 0.4rem 0.8rem; background: rgba(0,150,255,0.2); border: 1px solid rgba(0,150,255,0.4); border-radius: 6px; color: #09f; cursor: pointer; font-size: 0.8rem;">
+        📥 Import Log
+      </button>
+      <button onclick="clearConversation()" style="padding: 0.4rem 0.8rem; background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.4); border-radius: 6px; color: #f66; cursor: pointer; font-size: 0.8rem;">
+        🗑️ Clear
+      </button>
+    </div>
+    <div class="input-container">
+      <input
+        type="text"
+        class="input-field"
+        id="messageInput"
+        placeholder="Type what you're looking for..."
+        autocomplete="off"
+      >
+      <button class="btn-voice" id="voiceButton" onclick="toggleVoiceRecording()" style="background: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.4); border-radius: 12px; padding: 0.75rem 1.25rem; color: #f66; cursor: pointer; margin-right: 0.5rem; display: none;">
+        🎤
+      </button>
+      <button class="btn-send" id="sendButton" onclick="sendMessage()">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <!-- Age Verification Modal -->
+  <div class="modal" id="ageModal">
+    <div class="modal-content">
+      <h2>🔞 Age Verification</h2>
+      <p id="ageModalMessage">This content requires age verification. Are you 18 or older?</p>
+      <div class="modal-buttons">
+        <button class="btn-modal yes" onclick="confirmAge(true)">Yes, I'm 18+</button>
+        <button class="btn-modal no" onclick="confirmAge(false)">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // BLOCK CRYPTO WALLET EXTENSION INTERFERENCE
+    // ============================================
+    // Catch and ignore MetaMask/crypto extension errors
+    window.addEventListener('error', function(e) {
+      if (e.message && (
+        e.message.includes('ethereum') ||
+        e.message.includes('MetaMask') ||
+        e.message.includes('evmAsk')
+      )) {
+        console.warn('🚫 Blocked crypto extension error:', e.message);
+        e.preventDefault();
+        return true;
+      }
+    }, true);
+
+    // ============================================
+    // INLINE SESSION IMPLEMENTATION
+    // ============================================
+    // Simple session manager - inline, no external dependencies
+    window.SimpleSession = {
+      sessionKey: 'soulfra_session_id',
+      userKey: 'soulfra_user_data',
+
+      generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      },
+
+      detectDevice() {
+        const ua = navigator.userAgent;
+        if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
+        if (/Android/.test(ua)) return 'Android';
+        if (/Macintosh/.test(ua)) return 'Mac';
+        if (/Windows/.test(ua)) return 'Windows';
+        if (/Linux/.test(ua)) return 'Linux';
+        return 'Unknown';
+      },
+
+      getOrCreateSession() {
+        const sessionId = localStorage.getItem(this.sessionKey);
+
+        if (sessionId) {
+          const sessionData = localStorage.getItem(this.userKey);
+          if (sessionData) {
+            const session = JSON.parse(sessionData);
+            session.lastActive = new Date().toISOString();
+            localStorage.setItem(this.userKey, JSON.stringify(session));
+            return session;
+          }
+        }
+
+        // Create new session
+        const newSessionId = this.generateUUID();
+        const session = {
+          id: newSessionId,
+          created: new Date().toISOString(),
+          lastActive: new Date().toISOString(),
+          user: {
+            deviceType: this.detectDevice(),
+            userAgent: navigator.userAgent
+          }
+        };
+
+        localStorage.setItem(this.sessionKey, newSessionId);
+        localStorage.setItem(this.userKey, JSON.stringify(session));
+
+        console.log('✅ Session created:', newSessionId);
+        return session;
+      }
+    };
+
+    console.log('✅ SimpleSession initialized (inline)');
+
+    // ============================================
+    // CONFIGURATION - DECLARE FIRST!
+    // ============================================
+    const OLLAMA_URL = 'http://localhost:11434';
+    const OLLAMA_MODEL = 'mistral'; // Change this to use different model
+
+    // DOM elements (set after page loads)
+    let chatContainer, messageInput, sendButton, typingIndicator, ageModal, sessionIdEl;
+
+    // State variables
+    let conversationHistory = [];
+    let ollamaStatus = 'unknown';
+    let sessionReady = false;
+
+    // Message queues (inbox/outbox architecture)
+    let outbox = [];  // Messages sent to Ollama
+    let inbox = [];   // Responses from Ollama
+    let spam = [];    // Rejected/invalid responses
+
+    // Analytics Database (payment processor style)
+    const AnalyticsDB = {
+      STORAGE_KEY: 'soulfra_analytics',
+      MAX_TRANSACTIONS: 1000, // Keep last 1000 messages
+
+      // Generate unique transaction ID
+      generateTransactionId() {
+        return `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      },
+
+      // Get all transactions from localStorage
+      getTransactions() {
+        try {
+          const data = localStorage.getItem(this.STORAGE_KEY);
+          return data ? JSON.parse(data) : [];
+        } catch (e) {
+          console.error('Error loading analytics:', e);
+          return [];
+        }
+      },
+
+      // Save transaction (like payment receipt)
+      saveTransaction(transaction) {
+        try {
+          const transactions = this.getTransactions();
+
+          // Add transaction with full audit trail
+          transactions.push({
+            id: this.generateTransactionId(),
+            timestamp: new Date().toISOString(),
+            ...transaction
+          });
+
+          // Keep only last MAX_TRANSACTIONS (FIFO)
+          if (transactions.length > this.MAX_TRANSACTIONS) {
+            transactions.splice(0, transactions.length - this.MAX_TRANSACTIONS);
+          }
+
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(transactions));
+          return true;
+        } catch (e) {
+          console.error('Error saving transaction:', e);
+          return false;
+        }
+      },
+
+      // Query transactions (SQL-like filtering)
+      query(filters = {}) {
+        const transactions = this.getTransactions();
+        let results = [...transactions];
+
+        // Filter by date range
+        if (filters.startDate) {
+          results = results.filter(t => new Date(t.timestamp) >= new Date(filters.startDate));
+        }
+        if (filters.endDate) {
+          results = results.filter(t => new Date(t.timestamp) <= new Date(filters.endDate));
+        }
+
+        // Filter by sentiment
+        if (filters.sentiment) {
+          results = results.filter(t => t.sentiment === filters.sentiment);
+        }
+
+        // Filter by validation status
+        if (filters.status) {
+          results = results.filter(t => t.status === filters.status);
+        }
+
+        // Search by keywords
+        if (filters.keyword) {
+          const keyword = filters.keyword.toLowerCase();
+          results = results.filter(t => t.message?.toLowerCase().includes(keyword));
+        }
+
+        return results;
+      },
+
+      // Get analytics metrics (like Stripe dashboard)
+      getMetrics() {
+        const transactions = this.getTransactions();
+        if (transactions.length === 0) {
+          return {
+            total: 0,
+            successRate: 0,
+            sentimentBreakdown: {},
+            avgProcessingTime: 0,
+            commonFailures: []
+          };
+        }
+
+        // Calculate metrics
+        const total = transactions.length;
+        const valid = transactions.filter(t => t.status === 'valid').length;
+        const fallback = transactions.filter(t => t.status === 'fallback').length;
+        const spam = transactions.filter(t => t.status === 'spam').length;
+
+        // Sentiment breakdown
+        const sentimentBreakdown = transactions.reduce((acc, t) => {
+          acc[t.sentiment] = (acc[t.sentiment] || 0) + 1;
+          return acc;
+        }, {});
+
+        // Average processing time
+        const avgProcessingTime = transactions
+          .filter(t => t.processingTime)
+          .reduce((sum, t) => sum + t.processingTime, 0) / total || 0;
+
+        // Common failure reasons
+        const failureReasons = transactions
+          .filter(t => t.failureReasons && t.failureReasons.length > 0)
+          .flatMap(t => t.failureReasons);
+
+        const commonFailures = failureReasons.reduce((acc, reason) => {
+          acc[reason] = (acc[reason] || 0) + 1;
+          return acc;
+        }, {});
+
+        return {
+          total,
+          valid,
+          fallback,
+          spam,
+          successRate: (valid / total * 100).toFixed(1),
+          fallbackRate: (fallback / total * 100).toFixed(1),
+          spamRate: (spam / total * 100).toFixed(1),
+          sentimentBreakdown,
+          avgProcessingTime: Math.round(avgProcessingTime),
+          commonFailures: Object.entries(commonFailures)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([reason, count]) => ({ reason, count }))
+        };
+      },
+
+      // Clear all analytics (like clearing payment history)
+      clear() {
+        localStorage.removeItem(this.STORAGE_KEY);
+        console.log('✅ Analytics cleared');
+      },
+
+      // Export analytics to CSV (like payment report)
+      exportToCSV() {
+        const transactions = this.getTransactions();
+        if (transactions.length === 0) return null;
+
+        const headers = ['ID', 'Timestamp', 'Message', 'Sentiment', 'Status', 'Processing Time', 'Failure Reasons'];
+        const rows = transactions.map(t => [
+          t.id,
+          t.timestamp,
+          t.message?.replace(/"/g, '""'),
+          t.sentiment,
+          t.status,
+          t.processingTime || 0,
+          (t.failureReasons || []).join('; ')
+        ]);
+
+        const csv = [
+          headers.join(','),
+          ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+        ].join('\n');
+
+        return csv;
+      }
+    };
+
+    // Restore queues from localStorage on page load
+    function restoreQueuesFromStorage() {
+      try {
+        const savedOutbox = localStorage.getItem('soulfra_outbox');
+        const savedInbox = localStorage.getItem('soulfra_inbox');
+        const savedSpam = localStorage.getItem('soulfra_spam');
+
+        if (savedOutbox) outbox = JSON.parse(savedOutbox);
+        if (savedInbox) inbox = JSON.parse(savedInbox);
+        if (savedSpam) spam = JSON.parse(savedSpam);
+
+        console.log(`📥 Restored queues: ${outbox.length} outbox, ${inbox.length} inbox, ${spam.length} spam`);
+      } catch (e) {
+        console.warn('Error restoring queues:', e);
+      }
+    }
+
+    // Save queues to localStorage
+    function saveQueuesToStorage() {
+      try {
+        localStorage.setItem('soulfra_outbox', JSON.stringify(outbox));
+        localStorage.setItem('soulfra_inbox', JSON.stringify(inbox));
+        localStorage.setItem('soulfra_spam', JSON.stringify(spam));
+      } catch (e) {
+        console.error('Error saving queues:', e);
+      }
+    }
+
+    // Debug banner (NOW can use constants)
+    console.log('');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🤖 SOULFRA CHATBOX - DEBUG MODE');
+    console.log(`📍 Ollama URL: ${OLLAMA_URL}`);
+    console.log(`🎯 Model: ${OLLAMA_MODEL}`);
+    console.log('💡 If Ollama not running: ollama serve');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('');
+
+    // Browser-compatible Ollama client
+    const OllamaClient = {
+      async checkStatus() {
+        try {
+          console.log(`🔗 Checking ${OLLAMA_URL}/api/tags ...`);
+          const response = await fetch(`${OLLAMA_URL}/api/tags`, {
+            method: 'GET',
+            signal: AbortSignal.timeout(2000)
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ Ollama responding. Available models:', data.models?.map(m => m.name));
+            return true;
+          } else {
+            console.log('❌ Ollama returned status:', response.status);
+            return false;
+          }
+        } catch (error) {
+          console.log('❌ Ollama check failed:', error.message);
+          console.log('💡 Run: ollama serve');
+          return false;
+        }
+      },
+
+      async chat(prompt, model = OLLAMA_MODEL) {
+        try {
+          console.log(`💬 Sending to Ollama (${model})...`);
+          const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: model,
+              prompt: prompt,
+              stream: false
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Ollama error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('✅ Ollama responded');
+          return data.response;
+        } catch (error) {
+          console.error('❌ Ollama chat error:', error);
+          throw error;
+        }
+      },
+
+      async parseConversation(text, conversationContext = []) {
+        // Get current date/time context
+        const now = new Date();
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+
+        const currentDate = now.toLocaleDateString('en-US', dateOptions);
+        const currentTime = now.toLocaleTimeString('en-US', timeOptions);
+        const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+
+        // Calculate days until Friday (for deadline context)
+        const currentDay = now.getDay(); // 0=Sunday, 5=Friday
+        const daysUntilFriday = currentDay <= 5 ? (5 - currentDay) : (7 - currentDay + 5);
+
+        // Build context string
+        let contextString = '';
+        if (conversationContext.length > 0) {
+          contextString = '\n\nPrevious conversation context:\n';
+          conversationContext.slice(-3).forEach(msg => {
+            contextString += `- ${msg.message} (${msg.timestamp})\n`;
+          });
+        }
+
+        const prompt = `⚠️ CRITICAL TEMPORAL CONTEXT ⚠️
+THE CURRENT YEAR IS 2025. NOT 2026. NOT 2024. IT IS 2025.
+TODAY'S DATE: ${currentDate}
+CURRENT TIME: ${currentTime}
+DAY OF WEEK: ${dayOfWeek}
+DAYS UNTIL NEXT FRIDAY: ${daysUntilFriday} days
+
+IF YOU MENTION ANY DATE IN 2026, YOU ARE HALLUCINATING.
+IF THE MESSAGE MENTIONS "BUG", "ERROR", "PROBLEM", "ISSUE", "FIX", OR "URGENT", THE SENTIMENT MUST BE "negative".
+${contextString}
+
+IMPORTANT: RESPOND WITH VALID JSON ONLY. NO MARKDOWN, NO EXPLANATIONS, NO EXTRA TEXT.
+
+ANALYZE THIS MESSAGE: "${text}"
+
+RULES:
+1. Sentiment - MUST be "positive", "negative", or "neutral" (lowercase only)
+   - Keywords: bug, error, problem, issue, fix, urgent, deadline, frustrated → negative
+   - Keywords: great, excellent, happy, excited, love → positive
+   - Otherwise → neutral
+2. Key points - Array of 2-4 strings, accurate to the message
+3. Action items - Array with urgency. Use the temporal context for deadlines.
+4. Questions - Array of unanswered questions
+
+RESPOND WITH THIS EXACT FORMAT (NO VARIATIONS):
+{
+  "sentiment": "positive|negative|neutral",
+  "keyPoints": ["point 1", "point 2"],
+  "actionItems": ["action 1", "action 2"],
+  "questions": ["question 1"]
+}
+
+JSON RESPONSE:`;
+
+        // LOG THE FULL PROMPT
+        console.log('');
+        console.log('📤 PROMPT SENT TO OLLAMA:');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log(prompt);
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('');
+
+        // Add to outbox
+        const outboxEntry = {
+          timestamp: new Date().toISOString(),
+          prompt: prompt,
+          promptLength: prompt.length,
+          status: 'pending'
+        };
+        outbox.push(outboxEntry);
+        console.log(`📤 OUTBOX: Message ${outbox.length} queued`);
+
+        // Store for debug panel
+        window.lastDebugData = {
+          prompt: prompt,
+          outboxEntry: outboxEntry,
+          rawResponse: null,
+          extractedJSON: null,
+          parsed: null,
+          parseError: null,
+          validationStatus: null
+        };
+
+        // Track processing time
+        const startTime = Date.now();
+
+        try {
+          const response = await this.chat(prompt);
+          outboxEntry.status = 'sent';
+
+          // Store raw response
+          window.lastDebugData.rawResponse = response;
+
+          // LOG THE RAW RESPONSE
+          console.log('📥 RAW OLLAMA RESPONSE:');
+          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+          console.log(response);
+          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+          console.log('');
+
+          console.log('🤖 Using Ollama parsing (with temporal context)');
+          const parsed = this.parseResponse(response, text);
+
+          console.log('✅ PARSED RESULT:');
+          console.log(parsed);
+          console.log('');
+
+          // Validate response with detailed logging
+          console.log('');
+          console.group('🔍 VALIDATION');
+          console.log('📝 Original message:', text);
+          console.log('');
+
+          const validation = this.validateResponse(parsed, text);
+          window.lastDebugData.validationStatus = validation;
+
+          // Show keyword detection
+          if (validation.details.detectedKeywords) {
+            console.log('🔎 KEYWORD DETECTION:');
+            console.log('  Negative keywords found:', validation.details.detectedKeywords.negative);
+            console.log('  Positive keywords found:', validation.details.detectedKeywords.positive);
+            console.log('');
+          }
+
+          // Show validation checks
+          console.log('📋 VALIDATION CHECKS:');
+          const checks = [
+            { name: 'Sentiment', pass: validation.checks.sentiment },
+            { name: 'Year (no 2026)', pass: validation.checks.year },
+            { name: 'Required fields', pass: validation.checks.fields },
+            { name: 'Valid sentiment value', pass: validation.checks.validSentiment }
+          ];
+          checks.forEach(check => {
+            console.log(`  ${check.pass ? '✅' : '❌'} ${check.name}`);
+          });
+          const passedChecks = checks.filter(c => c.pass).length;
+          console.log(`\n  Result: ${passedChecks}/4 checks passed`);
+          console.log('');
+
+          let finalResult = parsed;
+          let usedFallback = false;
+
+          if (!validation.isValid) {
+            console.warn('❌ VALIDATION FAILED');
+            console.log('');
+            console.log('⚠️ REJECTION REASONS:');
+            validation.reasons.forEach((reason, i) => {
+              console.log(`  ${i + 1}. ${reason}`);
+            });
+            console.log('');
+
+            // Show expected vs actual for failed checks
+            if (Object.keys(validation.details.expectedVsActual).length > 0) {
+              console.log('📊 EXPECTED VS ACTUAL:');
+              Object.entries(validation.details.expectedVsActual).forEach(([check, data]) => {
+                console.log(`  ${check}:`);
+                console.log(`    Expected: ${data.expected}`);
+                console.log(`    Actual:   ${data.actual}`);
+                console.log(`    Reason:   ${data.reason}`);
+              });
+              console.log('');
+            }
+
+            spam.push({
+              timestamp: new Date().toISOString(),
+              response: parsed,
+              reasons: validation.reasons
+            });
+            console.log(`🗑️ Moved to spam queue (#${spam.length})`);
+            console.log('');
+
+            // Use localParse fallback for reliable result
+            console.log('🔄 FALLBACK: Using localParse for deterministic result');
+            finalResult = this.localParse(text);
+            usedFallback = true;
+            console.log('');
+
+            // Show comparison table
+            console.groupCollapsed('📊 COMPARISON: Ollama vs LocalParse');
+            console.table({
+              'Ollama (rejected)': {
+                sentiment: parsed.sentiment || 'N/A',
+                keyPoints: parsed.keyPoints?.length || 0,
+                actionItems: parsed.actionItems?.length || 0,
+                questions: parsed.questions?.length || 0
+              },
+              'LocalParse (used)': {
+                sentiment: finalResult.sentiment,
+                keyPoints: finalResult.keyPoints?.length || 0,
+                actionItems: finalResult.actionItems?.length || 0,
+                questions: finalResult.questions?.length || 0
+              }
+            });
+            console.groupEnd();
+            console.log('');
+
+            console.log('✅ USING FALLBACK RESULT');
+          } else {
+            console.log('✅ VALIDATION PASSED - Using Ollama result');
+          }
+
+          console.groupEnd();
+          console.log('');
+
+          // Add to inbox
+          const inboxEntry = {
+            timestamp: new Date().toISOString(),
+            response: finalResult,
+            validationStatus: validation,
+            isSpam: !validation.isValid,
+            usedFallback: usedFallback,
+            originalResponse: usedFallback ? parsed : null
+          };
+          inbox.push(inboxEntry);
+
+          // Store parsed result
+          window.lastDebugData.parsed = finalResult;
+          window.lastDebugData.inboxEntry = inboxEntry;
+          window.lastDebugData.usedFallback = usedFallback;
+          window.lastDebugData.ollamaHallucination = usedFallback ? parsed : null;
+
+          // Calculate processing time
+          const processingTime = Date.now() - startTime;
+
+          // Save to analytics database (payment receipt)
+          const transaction = {
+            message: text,
+            sentiment: finalResult.sentiment,
+            status: validation.isValid ? 'valid' : (usedFallback ? 'fallback' : 'spam'),
+            processingTime: processingTime,
+            keyPointsCount: finalResult.keyPoints?.length || 0,
+            actionItemsCount: finalResult.actionItems?.length || 0,
+            questionsCount: finalResult.questions?.length || 0,
+            failureReasons: validation.isValid ? [] : validation.reasons,
+            usedFallback: usedFallback,
+            ollamaResponse: usedFallback ? parsed : null,
+            validationChecks: validation.checks
+          };
+
+          const saved = AnalyticsDB.saveTransaction(transaction);
+          if (saved) {
+            console.log('💾 Transaction saved to analytics DB');
+          }
+
+          // Save queues to localStorage
+          saveQueuesToStorage();
+
+          // Final summary
+          console.log('');
+          console.log('═══════════════════════════════════════════════════════');
+          console.log('📊 MESSAGE PROCESSING SUMMARY');
+          console.log('═══════════════════════════════════════════════════════');
+          console.log(`Status: ${validation.isValid ? '✅ VALID' : usedFallback ? '🔄 FALLBACK' : '🗑️ SPAM'}`);
+          console.log(`Validation: ${passedChecks}/4 checks passed`);
+          console.log(`Source: ${validation.isValid ? 'Ollama' : 'LocalParse (deterministic)'}`);
+          console.log(`Processing time: ${processingTime}ms`);
+          console.log(`Inbox: ${inbox.length} total messages`);
+          console.log(`Spam: ${spam.length} rejected responses`);
+          console.log(`Analytics DB: ${AnalyticsDB.getTransactions().length} total transactions`);
+          console.log('═══════════════════════════════════════════════════════');
+          console.log('');
+
+          return finalResult;
+        } catch (error) {
+          console.log('⚠️ Ollama failed, using local fallback parsing');
+          return this.localParse(text);
+        }
+      },
+
+      parseResponse(response, originalText) {
+        try {
+          // Try to extract JSON from response
+          const jsonMatch = response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const extractedJSON = jsonMatch[0];
+            // Store extracted JSON for debug
+            if (window.lastDebugData) {
+              window.lastDebugData.extractedJSON = extractedJSON;
+            }
+            const parsed = JSON.parse(extractedJSON);
+            console.log('✅ JSON extraction successful');
+            return parsed;
+          } else {
+            console.warn('❌ No JSON found in response');
+            if (window.lastDebugData) {
+              window.lastDebugData.parseError = 'No JSON found in response';
+            }
+          }
+        } catch (e) {
+          console.warn('❌ JSON parse error:', e.message);
+          if (window.lastDebugData) {
+            window.lastDebugData.parseError = e.message;
+          }
+        }
+
+        // Fallback parsing
+        console.log('🔄 Using local fallback parsing');
+        return this.localParse(originalText);
+      },
+
+      validateResponse(parsed, originalText) {
+        const reasons = [];
+        const lowerText = originalText.toLowerCase();
+        const details = {
+          detectedKeywords: [],
+          expectedVsActual: {}
+        };
+
+        // Check 1: Sentiment validation
+        const negativeKeywords = ['bug', 'error', 'problem', 'issue', 'fix', 'urgent', 'frustrated', 'angry', 'broken', 'fail'];
+        const positiveKeywords = ['good', 'great', 'excellent', 'happy', 'pleased', 'excited', 'love', 'amazing'];
+
+        const foundNegativeKeywords = negativeKeywords.filter(kw => lowerText.includes(kw));
+        const foundPositiveKeywords = positiveKeywords.filter(kw => lowerText.includes(kw));
+        const hasNegativeKeywords = foundNegativeKeywords.length > 0;
+
+        details.detectedKeywords = {
+          negative: foundNegativeKeywords,
+          positive: foundPositiveKeywords
+        };
+
+        if (hasNegativeKeywords && parsed.sentiment !== 'negative') {
+          reasons.push(`Sentiment should be negative (found keywords: ${foundNegativeKeywords.join(', ')})`);
+          details.expectedVsActual.sentiment = {
+            expected: 'negative',
+            actual: parsed.sentiment,
+            reason: `Found negative keywords: ${foundNegativeKeywords.join(', ')}`
+          };
+        }
+
+        // Check 2: Year validation (no 2026!)
+        const responseStr = JSON.stringify(parsed);
+        if (responseStr.includes('2026')) {
+          reasons.push('Response contains 2026 (current year is 2025)');
+          details.expectedVsActual.year = {
+            expected: '2025',
+            actual: '2026',
+            reason: 'Response mentions year 2026 (hallucination)'
+          };
+        }
+
+        // Check 3: Required fields
+        const missingFields = [];
+        if (!parsed.sentiment) missingFields.push('sentiment');
+        if (!parsed.keyPoints) missingFields.push('keyPoints');
+        if (!parsed.actionItems) missingFields.push('actionItems');
+        if (!parsed.questions) missingFields.push('questions');
+
+        if (missingFields.length > 0) {
+          reasons.push(`Missing required fields: ${missingFields.join(', ')}`);
+          details.expectedVsActual.fields = {
+            expected: 'All 4 fields (sentiment, keyPoints, actionItems, questions)',
+            actual: `Missing: ${missingFields.join(', ')}`,
+            reason: 'Incomplete response'
+          };
+        }
+
+        // Check 4: Valid sentiment value
+        if (!['positive', 'negative', 'neutral'].includes(parsed.sentiment)) {
+          reasons.push(`Invalid sentiment value: "${parsed.sentiment}"`);
+          details.expectedVsActual.validSentiment = {
+            expected: 'One of: positive, negative, neutral',
+            actual: parsed.sentiment,
+            reason: 'Invalid enum value'
+          };
+        }
+
+        return {
+          isValid: reasons.length === 0,
+          reasons: reasons,
+          details: details,
+          checks: {
+            sentiment: !reasons.some(r => r.includes('Sentiment')),
+            year: !reasons.some(r => r.includes('2026')),
+            fields: !reasons.some(r => r.includes('Missing')),
+            validSentiment: ['positive', 'negative', 'neutral'].includes(parsed.sentiment)
+          }
+        };
+      },
+
+      localParse(text) {
+        const lowerText = text.toLowerCase();
+
+        // Sentiment - Enhanced negative keyword detection
+        const positiveWords = ['good', 'great', 'excellent', 'happy', 'pleased', 'excited', 'love', 'amazing'];
+        const negativeWords = ['bad', 'poor', 'unhappy', 'frustrated', 'angry', 'disappointed', 'bug', 'error', 'problem', 'issue', 'fix', 'urgent', 'deadline', 'fail', 'broken'];
+        const positiveCount = positiveWords.filter(w => lowerText.includes(w)).length;
+        const negativeCount = negativeWords.filter(w => lowerText.includes(w)).length;
+        const sentiment = positiveCount > negativeCount ? 'positive' :
+                         negativeCount > positiveCount ? 'negative' : 'neutral';
+
+        // Key points (sentences)
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
+        const keyPoints = sentences.slice(0, 3).map(s => s.trim());
+
+        // Action items
+        const actionWords = ['need to', 'should', 'must', 'will', 'todo', 'have to'];
+        const actionItems = sentences.filter(s =>
+          actionWords.some(word => s.toLowerCase().includes(word))
+        ).map(s => s.trim());
+
+        // Questions
+        const questions = text.match(/[^.!?]*\?/g) || [];
+
+        return {
+          sentiment,
+          keyPoints: keyPoints.length > 0 ? keyPoints : ['No clear key points'],
+          actionItems: actionItems.length > 0 ? actionItems : [],
+          questions: questions.map(q => q.trim())
+        };
+      }
+    };
+
+    // Initialize on page load
+    async function initialize() {
+      try {
+        console.log('🚀 Initializing chatbox...');
+
+        // Set DOM elements (must happen after DOM loads)
+        chatContainer = document.getElementById('chatContainer');
+        messageInput = document.getElementById('messageInput');
+        sendButton = document.getElementById('sendButton');
+        typingIndicator = document.getElementById('typingIndicator');
+        ageModal = document.getElementById('ageModal');
+        sessionIdEl = document.getElementById('sessionId');
+
+        console.log('✅ DOM elements loaded');
+
+        // Get or create session
+        const session = SimpleSession.getOrCreateSession();
+        sessionIdEl.textContent = session.id.substring(0, 8) + '...';
+        console.log('✅ Session:', session.id);
+
+        // Restore queues from localStorage
+        restoreQueuesFromStorage();
+
+        // Show analytics on startup
+        const metrics = AnalyticsDB.getMetrics();
+        console.log('📊 Analytics loaded:', metrics.total, 'total transactions');
+        if (metrics.total > 0) {
+          console.log(`   Success rate: ${metrics.successRate}%`);
+          console.log(`   Fallback rate: ${metrics.fallbackRate}%`);
+        }
+
+        // Check Ollama status
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        const isOllamaRunning = await OllamaClient.checkStatus();
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+        if (isOllamaRunning) {
+          ollamaStatus = 'ollama';
+          console.log(`✅ MODE: OLLAMA (${OLLAMA_MODEL})`);
+          addMessage(`✅ Connected to Ollama (${OLLAMA_MODEL})! Ready to chat.`, 'system');
+        } else {
+          ollamaStatus = 'local';
+          console.log('⚠️ MODE: LOCAL FALLBACK');
+          addMessage('⚠️ Ollama not running. Using local fallback.', 'system');
+        }
+
+        sessionReady = true;
+        console.log('✅ Chatbox ready!');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+        // Set up event listeners AFTER DOM elements loaded
+        messageInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') sendMessage();
+        });
+
+        // Focus input field
+        messageInput.focus();
+        console.log('✅ Event listeners attached');
+
+        // Check for voice mode from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const voiceMode = urlParams.get('voice') === 'true';
+
+        if (voiceMode) {
+          enableVoiceMode();
+        }
+
+      } catch (error) {
+        console.error('❌ Init error:', error);
+        console.error('Stack:', error.stack);
+        addMessage('❌ Error: ' + error.message, 'system');
+        ollamaStatus = 'local';
+        sessionReady = true; // Allow fallback
+      }
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // VOICE MEMO RECORDING (Web Speech API)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    let voiceRecognition = null;
+    let isRecording = false;
+    let voiceTranscript = '';
+
+    // Enable voice mode (show voice button)
+    function enableVoiceMode() {
+      const voiceButton = document.getElementById('voiceButton');
+      voiceButton.style.display = 'inline-block';
+
+      // Check if Web Speech API is available
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        voiceRecognition = new SpeechRecognition();
+
+        voiceRecognition.continuous = false;  // Stop after one phrase
+        voiceRecognition.interimResults = true;  // Show results as speaking
+        voiceRecognition.lang = 'en-US';
+
+        // Voice recognition event handlers
+        voiceRecognition.onstart = () => {
+          console.log('🎤 Voice recognition started');
+          isRecording = true;
+          voiceTranscript = '';
+
+          // Update UI
+          const voiceButton = document.getElementById('voiceButton');
+          voiceButton.style.background = 'rgba(255,100,100,0.5)';
+          voiceButton.innerHTML = '⏺️';
+
+          messageInput.placeholder = 'Listening...';
+          messageInput.value = '';
+        };
+
+        voiceRecognition.onresult = (event) => {
+          let interim = '';
+          let final = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              final += transcript + ' ';
+            } else {
+              interim += transcript;
+            }
+          }
+
+          // Update input field with interim results
+          if (interim) {
+            messageInput.value = voiceTranscript + interim;
+          }
+
+          // Store final results
+          if (final) {
+            voiceTranscript += final;
+            messageInput.value = voiceTranscript.trim();
+            console.log('🎤 Final transcript:', final);
+          }
+        };
+
+        voiceRecognition.onend = () => {
+          console.log('🎤 Voice recognition ended');
+          isRecording = false;
+
+          // Update UI
+          const voiceButton = document.getElementById('voiceButton');
+          voiceButton.style.background = 'rgba(255,100,100,0.2)';
+          voiceButton.innerHTML = '🎤';
+
+          messageInput.placeholder = 'Type what you\'re looking for...';
+
+          // Auto-send if we got a transcript
+          if (voiceTranscript.trim().length > 0) {
+            console.log('🎤 Auto-sending voice transcript:', voiceTranscript);
+            setTimeout(() => sendMessage(), 500);
+          }
+        };
+
+        voiceRecognition.onerror = (event) => {
+          console.error('🎤 Voice recognition error:', event.error);
+          isRecording = false;
+
+          // Update UI
+          const voiceButton = document.getElementById('voiceButton');
+          voiceButton.style.background = 'rgba(255,100,100,0.2)';
+          voiceButton.innerHTML = '🎤';
+
+          messageInput.placeholder = 'Type what you\'re looking for...';
+
+          if (event.error === 'no-speech') {
+            addMessage('⚠️ No speech detected. Try again.', 'system');
+          } else if (event.error === 'not-allowed') {
+            addMessage('❌ Microphone access denied. Please enable microphone permissions.', 'system');
+          } else {
+            addMessage(`❌ Voice error: ${event.error}`, 'system');
+          }
+        };
+
+        console.log('✅ Voice recognition initialized');
+        addMessage('🎤 Voice mode enabled! Click the microphone button to record.', 'system');
+      } else {
+        console.warn('⚠️ Web Speech API not supported');
+        voiceButton.style.display = 'none';
+        addMessage('⚠️ Voice input not supported in this browser. Try Chrome/Edge.', 'system');
+      }
+    }
+
+    // Toggle voice recording on/off
+    function toggleVoiceRecording() {
+      if (!voiceRecognition) {
+        addMessage('❌ Voice recognition not initialized', 'system');
+        return;
+      }
+
+      if (isRecording) {
+        // Stop recording
+        voiceRecognition.stop();
+      } else {
+        // Start recording
+        try {
+          voiceRecognition.start();
+        } catch (e) {
+          console.error('Error starting voice recognition:', e);
+          addMessage('❌ Could not start voice recording', 'system');
+        }
+      }
+    }
+
+    // Toggle voice mode on/off
+    function toggleVoiceMode() {
+      const voiceButton = document.getElementById('voiceButton');
+      if (voiceButton.style.display === 'none' || voiceButton.style.display === '') {
+        // Enable voice mode
+        enableVoiceMode();
+      } else {
+        // Disable voice mode
+        voiceButton.style.display = 'none';
+        if (isRecording) {
+          voiceRecognition.stop();
+        }
+        addMessage('🎤 Voice mode disabled', 'system');
+        console.log('🎤 Voice mode disabled');
+      }
+    }
+
+    // Add message to chat
+    function addMessage(text, type = 'bot', data = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+
+      if (data && typeof data === 'object') {
+        // Display parsed conversation data with timestamp
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        let html = `<small style="opacity: 0.6;">${timeStr}</small><br>`;
+        html += `<strong>Message:</strong> ${text}<br><br>`;
+
+        if (data.sentiment) {
+          const emoji = data.sentiment === 'positive' ? '😊' : data.sentiment === 'negative' ? '😟' : '😐';
+          const sentimentColor = data.sentiment === 'positive' ? 'rgba(0,255,0,0.3)' :
+                                 data.sentiment === 'negative' ? 'rgba(255,0,0,0.3)' : 'rgba(128,128,128,0.3)';
+          const textColor = data.sentiment === 'positive' ? '#0f0' :
+                            data.sentiment === 'negative' ? '#f66' : '#888';
+          html += `<div style="background: ${sentimentColor}; padding: 0.5rem; border-radius: 8px; margin: 0.5rem 0;">
+            <strong style="color: ${textColor};">${emoji} Sentiment:</strong>
+            <span style="color: ${textColor}; font-weight: bold;">${data.sentiment.toUpperCase()}</span>
+          </div>`;
+        }
+
+        if (data.keyPoints && data.keyPoints.length > 0) {
+          html += `<strong>📌 Key Points:</strong><br>`;
+          data.keyPoints.forEach(point => {
+            html += `• ${point}<br>`;
+          });
+          html += '<br>';
+        }
+
+        if (data.actionItems && data.actionItems.length > 0) {
+          html += `<strong>✅ Action Items:</strong><br>`;
+          data.actionItems.forEach(item => {
+            html += `• ${item}<br>`;
+          });
+          html += '<br>';
+        }
+
+        if (data.questions && data.questions.length > 0) {
+          html += `<strong>❓ Questions:</strong><br>`;
+          data.questions.forEach(q => {
+            html += `• ${q}<br>`;
+          });
+        }
+
+        messageDiv.innerHTML = html;
+      } else {
+        messageDiv.textContent = text;
+      }
+
+      chatContainer.insertBefore(messageDiv, typingIndicator);
+      scrollToBottom();
+
+      return messageDiv;
+    }
+
+    // Quick reply handler
+    function quickReply(text) {
+      sendMessage(text);
+    }
+
+    // Scroll to bottom
+    function scrollToBottom() {
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
+    }
+
+    // Show typing indicator
+    function showTyping(show = true) {
+      typingIndicator.classList.toggle('active', show);
+      if (show) scrollToBottom();
+    }
+
+    // Process message with Ollama
+    async function processMessage(userMessage) {
+      try {
+        // Check for help commands
+        if (userMessage.toLowerCase().includes('how') && userMessage.toLowerCase().includes('work')) {
+          addMessage(
+            'I analyze your messages using Ollama (running locally on your laptop). ' +
+            'I extract sentiment (positive/negative/neutral), key points, action items, and questions. ' +
+            'Try typing a message about a task or project!',
+            'bot'
+          );
+          return;
+        }
+
+        if (userMessage.toLowerCase().includes('what can you')) {
+          addMessage(
+            'I can:\n' +
+            '• Analyze sentiment in conversations\n' +
+            '• Extract key points from your messages\n' +
+            '• Identify action items and todos\n' +
+            '• Find unanswered questions\n\n' +
+            'Just chat naturally and I\'ll parse your messages!',
+            'bot'
+          );
+          return;
+        }
+
+        // Parse conversation with Ollama (pass history for context)
+        const result = await OllamaClient.parseConversation(userMessage, conversationHistory);
+
+        // Display parsed results with timestamp
+        addMessage(userMessage, 'bot', result);
+
+        // Store in history with formatted timestamp
+        const now = new Date();
+        conversationHistory.push({
+          timestamp: now.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          message: userMessage,
+          parsed: result,
+          mode: ollamaStatus
+        });
+
+        console.log('💾 Conversation parsed:', result);
+        console.log('📝 Conversation history:', conversationHistory.length, 'messages');
+
+        // Update debug panel with last prompt/response
+        if (window.lastDebugData) {
+          updateDebugPanel(window.lastDebugData);
+        }
+
+      } catch (error) {
+        console.error('Processing error:', error);
+        addMessage(`Error processing message: ${error.message}`, 'system');
+      }
+    }
+
+    // Send message
+    async function sendMessage(messageText = null) {
+      const text = messageText || messageInput.value.trim();
+      if (!text) return;
+
+      if (!sessionReady) {
+        addMessage('⚠️ Session not ready yet. Please wait...', 'system');
+        return;
+      }
+
+      // Clear input
+      messageInput.value = '';
+
+      // Add user message
+      addMessage(text, 'user');
+
+      // Show typing
+      showTyping(true);
+      sendButton.disabled = true;
+
+      try {
+        // Process with Ollama
+        await processMessage(text);
+      } catch (error) {
+        console.error('Send error:', error);
+        addMessage('❌ Error sending message', 'system');
+      } finally {
+        showTyping(false);
+        sendButton.disabled = false;
+      }
+    }
+
+    // Dummy confirmAge function (age modal not used for chatbox)
+    function confirmAge(over18) {
+      ageModal.classList.remove('active');
+      console.log('Age verification:', over18);
+    }
+
+    // Export conversation to JSON file
+    function exportConversation() {
+      const exportData = {
+        session: SimpleSession.getSession(),
+        conversationHistory: conversationHistory,
+        exportedAt: new Date().toISOString(),
+        ollamaStatus: ollamaStatus
+      };
+
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `soulfra-chat-${Date.now()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      console.log('💾 Conversation exported:', conversationHistory.length, 'messages');
+      addMessage(`💾 Exported ${conversationHistory.length} messages to file`, 'system');
+    }
+
+    // Import conversation from JSON file
+    function importConversation() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const imported = JSON.parse(event.target.result);
+            conversationHistory = imported.conversationHistory || [];
+            console.log('📥 Conversation imported:', conversationHistory.length, 'messages');
+            addMessage(`📥 Imported ${conversationHistory.length} messages from file`, 'system');
+          } catch (error) {
+            console.error('Import error:', error);
+            addMessage('❌ Failed to import: Invalid file format', 'system');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    // Clear conversation history
+    function clearConversation() {
+      if (confirm('Clear all conversation history? This cannot be undone.')) {
+        conversationHistory = [];
+        console.log('🗑️ Conversation history cleared');
+        addMessage('🗑️ Conversation history cleared', 'system');
+      }
+    }
+
+    // Toggle debug panel
+    function toggleDebug() {
+      const panel = document.getElementById('debugPanel');
+      if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    // Update debug panel
+    function updateDebugPanel(data) {
+      const debugContent = document.getElementById('debugContent');
+      if (!debugContent) return;
+
+      const now = new Date();
+      const currentDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const currentDay = now.getDay();
+      const daysUntilFriday = currentDay <= 5 ? (5 - currentDay) : (7 - currentDay + 5);
+
+      let html = `<div style="border-bottom: 1px solid #333; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+        <strong style="color: #ff0;">📅 TEMPORAL CONTEXT</strong><br>
+        Today: ${currentDate}<br>
+        Time: ${currentTime}<br>
+        Day: ${dayOfWeek}<br>
+        Days until Friday: ${daysUntilFriday}<br>
+        <br>
+        <strong style="color: #0ff;">MESSAGE QUEUES:</strong><br>
+        📤 Outbox: ${outbox.length} sent<br>
+        📥 Inbox: ${inbox.length} received<br>
+        🗑️ Spam: ${spam.length} rejected<br>
+      </div>`;
+
+      if (data.outboxEntry) {
+        html += `<div style="margin-bottom: 0.5rem; border: 1px solid #0ff; padding: 0.5rem; background: rgba(0,255,255,0.1);">
+          <strong style="color: #0ff;">📤 OUTBOX (#${outbox.length}):</strong><br>
+          Status: <span style="color: ${data.outboxEntry.status === 'sent' ? '#0f0' : '#fa0'};">${data.outboxEntry.status}</span><br>
+          Length: ${data.outboxEntry.promptLength} chars<br>
+          Time: ${new Date(data.outboxEntry.timestamp).toLocaleTimeString()}<br>
+        </div>`;
+      }
+
+      if (data.prompt) {
+        html += `<div style="margin-bottom: 0.5rem;">
+          <strong style="color: #0ff;">📤 PROMPT SENT (${data.prompt.length} chars):</strong><br>
+          <pre style="white-space: pre-wrap; color: #0f0; margin: 0.5rem 0; font-size: 0.7rem;">${data.prompt.substring(0, 300)}...</pre>
+        </div>`;
+      }
+
+      if (data.rawResponse) {
+        html += `<div style="margin-bottom: 0.5rem; border: 1px solid #f90; padding: 0.5rem; background: rgba(255,153,0,0.1);">
+          <strong style="color: #f90;">📥 RAW OLLAMA RESPONSE:</strong><br>
+          <pre style="white-space: pre-wrap; color: #fa0; margin: 0.5rem 0; font-size: 0.75rem;">${data.rawResponse}</pre>
+        </div>`;
+      }
+
+      if (data.extractedJSON) {
+        html += `<div style="margin-bottom: 0.5rem; border: 1px solid #0f0; padding: 0.5rem; background: rgba(0,255,0,0.1);">
+          <strong style="color: #0f0;">✅ EXTRACTED JSON:</strong><br>
+          <pre style="white-space: pre-wrap; color: #0f0; margin: 0.5rem 0;">${data.extractedJSON}</pre>
+        </div>`;
+      }
+
+      if (data.parseError) {
+        html += `<div style="margin-bottom: 0.5rem; border: 1px solid #f00; padding: 0.5rem; background: rgba(255,0,0,0.1);">
+          <strong style="color: #f00;">❌ PARSE ERROR:</strong><br>
+          <pre style="white-space: pre-wrap; color: #f00; margin: 0.5rem 0;">${data.parseError}</pre>
+        </div>`;
+      }
+
+      if (data.parsed) {
+        const sentimentColor = data.parsed.sentiment === 'positive' ? '#0f0' :
+                               data.parsed.sentiment === 'negative' ? '#f00' : '#888';
+        html += `<div style="margin-bottom: 0.5rem; border: 1px solid ${sentimentColor}; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+          <strong style="color: #0ff;">✅ PARSED RESULT:</strong><br>
+          <div style="color: ${sentimentColor}; margin: 0.5rem 0;">
+            <strong>Sentiment:</strong> ${data.parsed.sentiment}<br>
+            <strong>Key Points:</strong> ${data.parsed.keyPoints?.length || 0} items<br>
+            <strong>Action Items:</strong> ${data.parsed.actionItems?.length || 0} items<br>
+            <strong>Questions:</strong> ${data.parsed.questions?.length || 0} items
+          </div>
+        </div>`;
+      }
+
+      // Show inbox entry with validation status
+      if (data.inboxEntry) {
+        const validation = data.inboxEntry.validationStatus;
+        const isSpam = data.inboxEntry.isSpam;
+        const usedFallback = data.inboxEntry.usedFallback || false;
+
+        // Color coding: green=valid, orange=fallback, red=spam
+        const borderColor = usedFallback ? '#fa0' : (isSpam ? '#f00' : '#0f0');
+        const bgColor = usedFallback ? 'rgba(255,170,0,0.1)' : (isSpam ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)');
+        const icon = usedFallback ? '🔄' : (isSpam ? '🗑️' : '📥');
+        const status = usedFallback ? 'FALLBACK (Ollama hallucinated)' : (isSpam ? 'SPAM' : 'VALID');
+        const statusColor = usedFallback ? '#fa0' : (isSpam ? '#f00' : '#0f0');
+
+        html += `<div style="margin-bottom: 0.5rem; border: 2px solid ${borderColor}; padding: 0.5rem; background: ${bgColor};">
+          <strong style="color: ${statusColor};">${icon} INBOX (#${inbox.length}): ${status}</strong><br>
+          Time: ${new Date(data.inboxEntry.timestamp).toLocaleTimeString()}<br>`;
+
+        if (usedFallback) {
+          html += `<br><strong style="color: #fa0;">⚠️ USED LOCALPARSE FALLBACK</strong><br>
+          <div style="margin-left: 1rem; font-size: 0.85rem; color: #fa0;">
+            Ollama hallucinated → switched to deterministic parsing
+          </div>`;
+        }
+
+        html += `<br>
+          <strong style="color: #0ff;">VALIDATION CHECKS:</strong><br>
+          <div style="margin-left: 1rem; font-size: 0.85rem;">
+            ${validation.checks.sentiment ? '✅' : '❌'} Sentiment matches keywords<br>
+            ${validation.checks.year ? '✅' : '❌'} Year validation (no 2026)<br>
+            ${validation.checks.fields ? '✅' : '❌'} Required fields present<br>
+            ${validation.checks.validSentiment ? '✅' : '❌'} Valid sentiment value<br>
+          </div>`;
+
+        if (!validation.isValid && validation.reasons.length > 0) {
+          html += `<br><strong style="color: #f00;">⚠️ REJECTION REASONS:</strong><br>
+          <div style="margin-left: 1rem; color: #f00; font-size: 0.85rem;">`;
+          validation.reasons.forEach(reason => {
+            html += `• ${reason}<br>`;
+          });
+          html += `</div>`;
+        }
+
+        // Show comparison if fallback was used
+        if (usedFallback && data.ollamaHallucination) {
+          html += `<br><details style="margin-top: 0.5rem;">
+            <summary style="cursor: pointer; color: #fa0;">Compare: Ollama vs Fallback</summary>
+            <div style="margin-top: 0.5rem; font-size: 0.8rem;">
+              <div style="border-left: 3px solid #f00; padding-left: 0.5rem; margin-bottom: 0.5rem;">
+                <strong style="color: #f00;">❌ Ollama (hallucinated):</strong><br>
+                Sentiment: ${data.ollamaHallucination.sentiment}<br>
+                Key Points: ${data.ollamaHallucination.keyPoints?.length || 0}<br>
+                Actions: ${data.ollamaHallucination.actionItems?.length || 0}
+              </div>
+              <div style="border-left: 3px solid #0f0; padding-left: 0.5rem;">
+                <strong style="color: #0f0;">✅ LocalParse (used):</strong><br>
+                Sentiment: ${data.parsed.sentiment}<br>
+                Key Points: ${data.parsed.keyPoints?.length || 0}<br>
+                Actions: ${data.parsed.actionItems?.length || 0}
+              </div>
+            </div>
+          </details>`;
+        }
+
+        html += `</div>`;
+      }
+
+      // Show spam summary if any
+      if (spam.length > 0) {
+        html += `<div style="margin-top: 0.5rem; border: 1px solid #f00; padding: 0.5rem; background: rgba(255,0,0,0.1);">
+          <strong style="color: #f00;">🗑️ SPAM FILTER SUMMARY:</strong><br>
+          Total rejected: ${spam.length}<br>
+          <details style="margin-top: 0.5rem;">
+            <summary style="cursor: pointer; color: #fa0;">View last spam entry</summary>
+            <div style="margin-top: 0.5rem; font-size: 0.8rem;">
+              Time: ${new Date(spam[spam.length - 1].timestamp).toLocaleTimeString()}<br>
+              Reasons:<br>
+              <div style="margin-left: 1rem; color: #f00;">
+                ${spam[spam.length - 1].reasons.map(r => `• ${r}`).join('<br>')}
+              </div>
+            </div>
+          </details>
+        </div>`;
+      }
+
+      debugContent.innerHTML = html;
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // CONSOLE ANALYTICS COMMANDS (for browser console)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // Export to global scope for console access
+    window.soulfraAnalytics = {
+      // Get all transactions
+      getAll: () => {
+        const txns = AnalyticsDB.getTransactions();
+        console.table(txns.map(t => ({
+          ID: t.id.substring(0, 15),
+          Time: new Date(t.timestamp).toLocaleTimeString(),
+          Message: t.message?.substring(0, 50) || 'N/A',
+          Sentiment: t.sentiment,
+          Status: t.status,
+          ProcessingTime: t.processingTime + 'ms'
+        })));
+        return txns;
+      },
+
+      // Get metrics dashboard
+      metrics: () => {
+        const m = AnalyticsDB.getMetrics();
+        console.log('');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('📊 SOULFRA ANALYTICS DASHBOARD');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log(`Total transactions: ${m.total}`);
+        console.log(`✅ Valid: ${m.valid} (${m.successRate}%)`);
+        console.log(`🔄 Fallback: ${m.fallback} (${m.fallbackRate}%)`);
+        console.log(`🗑️ Spam: ${m.spam} (${m.spamRate}%)`);
+        console.log('');
+        console.log('Sentiment Breakdown:');
+        Object.entries(m.sentimentBreakdown).forEach(([sentiment, count]) => {
+          console.log(`  ${sentiment}: ${count}`);
+        });
+        console.log('');
+        console.log(`Average processing time: ${m.avgProcessingTime}ms`);
+        console.log('');
+        if (m.commonFailures.length > 0) {
+          console.log('Top 5 failure reasons:');
+          m.commonFailures.forEach((f, i) => {
+            console.log(`  ${i + 1}. ${f.reason} (${f.count}x)`);
+          });
+        }
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('');
+        return m;
+      },
+
+      // Query transactions
+      query: (filters) => {
+        const results = AnalyticsDB.query(filters);
+        console.log(`Found ${results.length} transactions matching filters:`, filters);
+        console.table(results.map(t => ({
+          ID: t.id.substring(0, 15),
+          Time: new Date(t.timestamp).toLocaleTimeString(),
+          Message: t.message?.substring(0, 50) || 'N/A',
+          Sentiment: t.sentiment,
+          Status: t.status
+        })));
+        return results;
+      },
+
+      // Export to CSV
+      exportCSV: () => {
+        const csv = AnalyticsDB.exportToCSV();
+        if (!csv) {
+          console.log('No data to export');
+          return;
+        }
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `soulfra-analytics-${Date.now()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        console.log('✅ Analytics exported to CSV');
+      },
+
+      // Clear analytics
+      clear: () => {
+        if (confirm('Are you sure you want to clear all analytics data?')) {
+          AnalyticsDB.clear();
+          console.log('✅ Analytics cleared');
+        }
+      },
+
+      // Search by keyword
+      search: (keyword) => {
+        return window.soulfraAnalytics.query({ keyword });
+      },
+
+      // Get by sentiment
+      bySentiment: (sentiment) => {
+        return window.soulfraAnalytics.query({ sentiment });
+      },
+
+      // Get by status
+      byStatus: (status) => {
+        return window.soulfraAnalytics.query({ status });
+      },
+
+      // Get failures only
+      failures: () => {
+        const txns = AnalyticsDB.getTransactions().filter(t => t.status !== 'valid');
+        console.log(`Found ${txns.length} failures:`);
+        txns.forEach(t => {
+          console.log('');
+          console.log(`Transaction ${t.id}:`);
+          console.log(`  Message: ${t.message}`);
+          console.log(`  Status: ${t.status}`);
+          console.log(`  Reasons:`, t.failureReasons);
+        });
+        return txns;
+      },
+
+      // Help
+      help: () => {
+        console.log('');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('📊 SOULFRA ANALYTICS CONSOLE COMMANDS');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('');
+        console.log('soulfraAnalytics.getAll()          - View all transactions');
+        console.log('soulfraAnalytics.metrics()         - View analytics dashboard');
+        console.log('soulfraAnalytics.query(filters)    - Query with filters');
+        console.log('  Example: .query({ sentiment: "negative", status: "fallback" })');
+        console.log('soulfraAnalytics.search("bug")     - Search by keyword');
+        console.log('soulfraAnalytics.bySentiment("negative") - Filter by sentiment');
+        console.log('soulfraAnalytics.byStatus("fallback")    - Filter by status');
+        console.log('soulfraAnalytics.failures()        - View all failures');
+        console.log('soulfraAnalytics.exportCSV()       - Export to CSV file');
+        console.log('soulfraAnalytics.clear()           - Clear all analytics');
+        console.log('');
+        console.log('Status types: "valid", "fallback", "spam"');
+        console.log('Sentiments: "positive", "negative", "neutral"');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('');
+      }
+    };
+
+    // Log analytics commands on startup
+    console.log('');
+    console.log('💡 TIP: Use soulfraAnalytics.help() to see available analytics commands');
+    console.log('');
+
+    // Initialize on load
+    window.addEventListener('load', async () => {
+      await initialize();
+    });
+  </script>
+</body>
+</html>

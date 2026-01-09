@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Health - Soulfra</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: #0a0a0a;
+      color: #0f0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #0f0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #0ff;
+    }
+
+    .subtitle {
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .service-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .service-card {
+      background: #1a1a1a;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .service-card.online {
+      border-color: #0f0;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+
+    .service-card.offline {
+      border-color: #f00;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+    }
+
+    .service-card.checking {
+      border-color: #fa0;
+      box-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
+    }
+
+    .service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .service-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .status-badge.online {
+      background: rgba(0, 255, 0, 0.2);
+      color: #0f0;
+      border: 1px solid #0f0;
+    }
+
+    .status-badge.offline {
+      background: rgba(255, 0, 0, 0.2);
+      color: #f00;
+      border: 1px solid #f00;
+    }
+
+    .status-badge.checking {
+      background: rgba(255, 170, 0, 0.2);
+      color: #fa0;
+      border: 1px solid #fa0;
+    }
+
+    .service-details {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .service-details p {
+      margin: 0.3rem 0;
+    }
+
+    .service-details strong {
+      color: #0ff;
+    }
+
+    .summary {
+      background: #1a1a1a;
+      border: 2px solid #0ff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .summary h2 {
+      color: #0ff;
+      margin-bottom: 1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .summary-item {
+      background: #0a0a0a;
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    .summary-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+    }
+
+    .summary-value.good {
+      color: #0f0;
+    }
+
+    .summary-value.bad {
+      color: #f00;
+    }
+
+    .summary-label {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      background: #0a0a0a;
+      border: 2px solid #0f0;
+      color: #0f0;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: #0f0;
+      color: #0a0a0a;
+    }
+
+    .timestamp {
+      text-align: center;
+      opacity: 0.5;
+      font-size: 0.85rem;
+      margin-top: 2rem;
+    }
+
+    .loading {
+      display: inline-block;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ SYSTEM HEALTH MONITOR</h1>
+      <p class="subtitle">Real-time status of Soulfra services</p>
+    </div>
+
+    <div class="summary">
+      <h2>System Status</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="summary-value good" id="onlineCount">-</div>
+          <div class="summary-label">Online</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value bad" id="offlineCount">-</div>
+          <div class="summary-label">Offline</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value" id="uptimePercent" style="color: #0ff;">-</div>
+          <div class="summary-label">Uptime %</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value" id="responseTime" style="color: #fa0;">-</div>
+          <div class="summary-label">Avg Response</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="service-grid" id="services">
+      <!-- Services will be added here dynamically -->
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="checkAllServices()">🔄 Refresh</button>
+      <button class="btn" onclick="window.location.href='/pages/chat/chatbox.html'">💬 Go to Chat</button>
+    </div>
+
+    <div class="timestamp" id="timestamp">
+      Last checked: <span class="loading">checking...</span>
+    </div>
+  </div>
+
+  <script>
+    const services = [
+      {
+        id: 'http-server',
+        name: 'HTTP Server',
+        description: 'Python HTTP server',
+        checkFn: checkHTTPServer
+      },
+      {
+        id: 'ollama',
+        name: 'Ollama AI',
+        description: 'Local LLM (mistral)',
+        checkFn: checkOllama
+      },
+      {
+        id: 'qr-router',
+        name: 'QR Router',
+        description: 'Session routing',
+        checkFn: checkQRRouter
+      },
+      {
+        id: 'analytics',
+        name: 'Analytics DB',
+        description: 'localStorage database',
+        checkFn: checkAnalytics
+      },
+      {
+        id: 'voice-api',
+        name: 'Voice Recognition',
+        description: 'Web Speech API',
+        checkFn: checkVoiceAPI
+      }
+    ];
+
+    let statusResults = {};
+
+    // Check HTTP server (self-check)
+    async function checkHTTPServer() {
+      const start = Date.now();
+      try {
+        const response = await fetch('/health.html');
+        const responseTime = Date.now() - start;
+        return {
+          status: response.ok ? 'online' : 'offline',
+          responseTime: responseTime + 'ms',
+          details: `Server responding on port 8000`
+        };
+      } catch (e) {
+        return {
+          status: 'offline',
+          responseTime: '-',
+          details: 'Server not responding'
+        };
+      }
+    }
+
+    // Check Ollama
+    async function checkOllama() {
+      const start = Date.now();
+      try {
+        const response = await fetch('http://localhost:11434/api/tags');
+        const responseTime = Date.now() - start;
+        const data = await response.json();
+        const modelCount = data.models?.length || 0;
+        return {
+          status: response.ok ? 'online' : 'offline',
+          responseTime: responseTime + 'ms',
+          details: `${modelCount} model(s) available`
+        };
+      } catch (e) {
+        return {
+          status: 'offline',
+          responseTime: '-',
+          details: 'Ollama not running (run: ollama serve)'
+        };
+      }
+    }
+
+    // Check QR Router
+    async function checkQRRouter() {
+      try {
+        const response = await fetch('/qr/index.html');
+        return {
+          status: response.ok ? 'online' : 'offline',
+          responseTime: '-',
+          details: 'QR routing system active'
+        };
+      } catch (e) {
+        return {
+          status: 'offline',
+          responseTime: '-',
+          details: 'QR router not accessible'
+        };
+      }
+    }
+
+    // Check Analytics DB
+    function checkAnalytics() {
+      try {
+        const data = localStorage.getItem('soulfra_analytics');
+        const transactions = data ? JSON.parse(data) : [];
+        return {
+          status: 'online',
+          responseTime: '<1ms',
+          details: `${transactions.length} transaction(s) stored`
+        };
+      } catch (e) {
+        return {
+          status: 'offline',
+          responseTime: '-',
+          details: 'localStorage not available'
+        };
+      }
+    }
+
+    // Check Voice API
+    function checkVoiceAPI() {
+      const available = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+      return {
+        status: available ? 'online' : 'offline',
+        responseTime: '-',
+        details: available ? 'Web Speech API supported' : 'Not supported in this browser'
+      };
+    }
+
+    // Render services
+    function renderServices() {
+      const container = document.getElementById('services');
+      container.innerHTML = '';
+
+      services.forEach(service => {
+        const status = statusResults[service.id] || { status: 'checking', responseTime: '-', details: 'Checking...' };
+
+        const card = document.createElement('div');
+        card.className = `service-card ${status.status}`;
+        card.innerHTML = `
+          <div class="service-header">
+            <div class="service-name">${service.name}</div>
+            <div class="status-badge ${status.status}">
+              ${status.status === 'online' ? '✅ ONLINE' : status.status === 'offline' ? '❌ OFFLINE' : '⏳ CHECKING'}
+            </div>
+          </div>
+          <div class="service-details">
+            <p><strong>Description:</strong> ${service.description}</p>
+            <p><strong>Response Time:</strong> ${status.responseTime}</p>
+            <p><strong>Details:</strong> ${status.details}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Update summary
+      const online = Object.values(statusResults).filter(s => s.status === 'online').length;
+      const offline = Object.values(statusResults).filter(s => s.status === 'offline').length;
+      const total = services.length;
+      const uptime = total > 0 ? ((online / total) * 100).toFixed(0) : 0;
+
+      document.getElementById('onlineCount').textContent = online;
+      document.getElementById('offlineCount').textContent = offline;
+      document.getElementById('uptimePercent').textContent = uptime + '%';
+
+      // Calculate average response time
+      const responseTimes = Object.values(statusResults)
+        .map(s => s.responseTime)
+        .filter(t => t !== '-' && t !== '<1ms')
+        .map(t => parseInt(t));
+      const avgTime = responseTimes.length > 0
+        ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
+        : 0;
+      document.getElementById('responseTime').textContent = avgTime ? avgTime + 'ms' : '-';
+    }
+
+    // Check all services
+    async function checkAllServices() {
+      console.log('🔍 Checking all services...');
+
+      // Reset status
+      statusResults = {};
+      renderServices();
+
+      // Check each service
+      for (const service of services) {
+        try {
+          const result = await service.checkFn();
+          statusResults[service.id] = result;
+          console.log(`✅ ${service.name}:`, result.status);
+        } catch (e) {
+          statusResults[service.id] = {
+            status: 'offline',
+            responseTime: '-',
+            details: 'Check failed: ' + e.message
+          };
+          console.error(`❌ ${service.name}:`, e);
+        }
+        renderServices();
+      }
+
+      // Update timestamp
+      document.getElementById('timestamp').innerHTML = `Last checked: ${new Date().toLocaleTimeString()}`;
+      console.log('✅ Health check complete');
+    }
+
+    // Auto-check on load
+    window.addEventListener('load', () => {
+      console.log('⚡ Health monitor initialized');
+      checkAllServices();
+
+      // Auto-refresh every 30 seconds
+      setInterval(checkAllServices, 30000);
+    });
+  </script>
+</body>
+</html>
