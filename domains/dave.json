@@ -1,0 +1,9 @@
+{
+  "owner": "dave",
+  "email": "dave@example.com",
+  "subdomain": "dave",
+  "domain": "deathtodata",
+  "letter": "D",
+  "target": "192.0.2.1",
+  "record_type": "A"
+}

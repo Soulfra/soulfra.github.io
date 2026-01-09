@@ -1,0 +1,9 @@
+{
+  "owner": "carlos",
+  "email": "carlos@example.com",
+  "subdomain": "carlos",
+  "domain": "cringeproof",
+  "letter": "C",
+  "target": "carlos.example.com",
+  "record_type": "CNAME"
+}

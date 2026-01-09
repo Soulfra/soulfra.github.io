@@ -1,0 +1,9 @@
+{
+  "owner": "bob",
+  "email": "bob@example.com",
+  "subdomain": "bob",
+  "domain": "calriven",
+  "letter": "B",
+  "target": "bob.github.io",
+  "record_type": "CNAME"
+}

@@ -1,0 +1,237 @@
+name: Validate Domain Registration PR
+
+on:
+  pull_request:
+    paths:
+      - 'domains/*.json'
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests jsonschema
+
+      - name: Validate domain registration
+        id: validate
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          import re
+          import sys
+          import requests
+          from pathlib import Path
+          from jsonschema import validate, ValidationError
+
+          # JSON Schema for domain registration
+          SCHEMA = {
+              "type": "object",
+              "required": ["owner", "email", "subdomain", "domain", "letter", "target", "record_type"],
+              "properties": {
+                  "owner": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+                  "email": {"type": "string", "format": "email"},
+                  "subdomain": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+                  "domain": {"type": "string", "enum": ["soulfra", "calriven", "deathtodata", "cringeproof"]},
+                  "letter": {"type": "string", "pattern": "^[A-Z]$"},
+                  "target": {"type": "string"},
+                  "record_type": {"type": "string", "enum": ["CNAME", "A", "AAAA", "TXT"]}
+              }
+          }
+
+          VALID_DOMAINS = ["soulfra", "calriven", "deathtodata", "cringeproof"]
+
+          def validate_email(email):
+              """Basic email validation"""
+              pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+              return re.match(pattern, email) is not None
+
+          def check_target_reachable(target, record_type):
+              """Check if target URL/IP is reachable"""
+              if record_type == "CNAME":
+                  try:
+                      response = requests.head(f"https://{target}", timeout=5, allow_redirects=True)
+                      return response.status_code < 500
+                  except:
+                      try:
+                          response = requests.head(f"http://{target}", timeout=5, allow_redirects=True)
+                          return response.status_code < 500
+                      except:
+                          return False
+              elif record_type == "A":
+                  # Basic IP validation
+                  parts = target.split('.')
+                  if len(parts) != 4:
+                      return False
+                  try:
+                      return all(0 <= int(part) <= 255 for part in parts)
+                  except:
+                      return False
+              return True
+
+          def get_allocated_letters(domain_name):
+              """Get all allocated letters for a domain"""
+              allocated = []
+              domains_dir = Path("domains")
+
+              for json_file in domains_dir.glob("*.json"):
+                  if json_file.name == "README.md":
+                      continue
+                  try:
+                      with open(json_file) as f:
+                          data = json.load(f)
+                          if data.get("domain") == domain_name:
+                              allocated.append(data.get("letter"))
+                  except:
+                      pass
+
+              return allocated
+
+          # Get changed files
+          changed_files = os.getenv("CHANGED_FILES", "").split()
+
+          errors = []
+          warnings = []
+
+          for file_path in changed_files:
+              if not file_path.startswith("domains/") or not file_path.endswith(".json"):
+                  continue
+
+              print(f"Validating {file_path}...")
+
+              # Load JSON
+              try:
+                  with open(file_path) as f:
+                      data = json.load(f)
+              except json.JSONDecodeError as e:
+                  errors.append(f"❌ {file_path}: Invalid JSON format - {e}")
+                  continue
+
+              # Validate schema
+              try:
+                  validate(instance=data, schema=SCHEMA)
+              except ValidationError as e:
+                  errors.append(f"❌ {file_path}: Schema validation failed - {e.message}")
+                  continue
+
+              # Check email format
+              if not validate_email(data["email"]):
+                  errors.append(f"❌ {file_path}: Invalid email format")
+
+              # Check letter matches subdomain
+              if not data["subdomain"][0].upper() == data["letter"]:
+                  errors.append(f"❌ {file_path}: Letter '{data['letter']}' doesn't match subdomain '{data['subdomain']}' (should start with '{data['subdomain'][0].upper()}')")
+
+              # Check letter availability
+              allocated = get_allocated_letters(data["domain"])
+              if data["letter"] in allocated:
+                  # Check if it's the same file being updated
+                  filename = Path(file_path).stem
+                  is_update = filename == data["owner"]
+
+                  if not is_update:
+                      errors.append(f"❌ {file_path}: Letter '{data['letter']}' is already allocated for {data['domain']}.com")
+
+              # Check subdomain uniqueness
+              existing = Path(f"domains/{data['owner']}.json")
+              if existing.exists() and str(existing) != file_path:
+                  errors.append(f"❌ {file_path}: Owner '{data['owner']}' already has a domain registration")
+
+              # Check target reachability
+              if not check_target_reachable(data["target"], data["record_type"]):
+                  warnings.append(f"⚠️  {file_path}: Target '{data['target']}' may not be reachable")
+
+              # Check filename matches owner
+              filename = Path(file_path).stem
+              if filename != data["owner"]:
+                  errors.append(f"❌ {file_path}: Filename should be '{data['owner']}.json', not '{filename}.json'")
+
+              print(f"✅ {file_path} passed validation")
+
+          # Output results
+          if errors:
+              print("\n## ❌ Validation Failed\n")
+              for error in errors:
+                  print(error)
+              sys.exit(1)
+
+          if warnings:
+              print("\n## ⚠️  Warnings\n")
+              for warning in warnings:
+                  print(warning)
+
+          print("\n## ✅ All validations passed!")
+          EOF
+
+        env:
+          CHANGED_FILES: ${{ steps.files.outputs.all_changed_files }}
+
+      - name: Get changed files
+        id: files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: domains/*.json
+
+      - name: Auto-approve and merge
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+
+            // Add approval comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: '✅ Domain registration validated and approved!\n\nYour subdomain will be live within 5-10 minutes after DNS propagation.'
+            });
+
+            // Approve PR
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              event: 'APPROVE',
+              body: 'Automated validation passed. Merging...'
+            });
+
+            // Merge PR
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash'
+            });
+
+      - name: Comment on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: '❌ Domain registration validation failed. Please check the workflow logs and fix the errors.'
+            });
