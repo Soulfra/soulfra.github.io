@@ -1,0 +1,140 @@
+{
+  "scan_time": "2026-01-09T14:17:42.341698",
+  "local_repos": {
+    "soulfra-simple": {
+      "exists": true,
+      "path": "/Users/matthewmauer/Desktop/roommate-chat/soulfra-simple",
+      "files": 342,
+      "size_mb": 15.2,
+      "file_types": {
+        ".py": 45,
+        ".html": 28,
+        ".js": 12,
+        ".md": 8
+      },
+      "qr_codes": [],
+      "readmes": [
+        "README.md"
+      ],
+      "templates": [
+        "voice-archive/index.html",
+        "voice-archive/login.html"
+      ],
+      "blog_posts": []
+    },
+    "calriven": {
+      "exists": true,
+      "path": "/Users/matthewmauer/Desktop/calriven",
+      "files": 28,
+      "size_mb": 0.5,
+      "file_types": {
+        ".html": 12,
+        ".md": 8,
+        ".xml": 2
+      },
+      "qr_codes": [],
+      "readmes": [
+        "README.md"
+      ],
+      "templates": [],
+      "blog_posts": [
+        "post/fully-automated-calos-publishing-system-live-on-calriven.html"
+      ]
+    }
+  },
+  "github_repos": {
+    "soulfra-simple": {
+      "description": "Flask backend + CringeProof voice memos",
+      "url": "https://github.com/Soulfra/soulfra-simple",
+      "stars": 0,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-01-09T00:00:00Z",
+      "topics": []
+    },
+    "calriven": {
+      "description": "Best AI for the job. Every time.",
+      "url": "https://github.com/Soulfra/calriven",
+      "stars": 0,
+      "forks": 0,
+      "language": "HTML",
+      "updated_at": "2026-01-09T00:00:00Z",
+      "topics": [
+        "ai",
+        "blog"
+      ]
+    }
+  },
+  "voice_memos": [
+    {
+      "id": 1,
+      "created_at": "2026-01-09T10:00:00",
+      "transcript_preview": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is a test voice memo...",
+      "file_size": 245632,
+      "filename": "test-memo-1.wav"
+    },
+    {
+      "id": 2,
+      "created_at": "2026-01-08T15:30:00",
+      "transcript_preview": "Another test voice recording about AI and automation systems working together...",
+      "file_size": 189234,
+      "filename": "test-memo-2.wav"
+    }
+  ],
+  "blog_posts": [
+    {
+      "repo": "calriven",
+      "path": "post/fully-automated-calos-publishing-system-live-on-calriven.html",
+      "file": "fully-automated-calos-publishing-system-live-on-calriven.html"
+    },
+    {
+      "repo": "calriven",
+      "path": "post/second-test-automated-build-and-deploy-success.html",
+      "file": "second-test-automated-build-and-deploy-success.html"
+    }
+  ],
+  "qr_codes": [],
+  "templates": [
+    "voice-archive/index.html",
+    "voice-archive/login.html",
+    "voice-archive/record.html"
+  ],
+  "admin_dashboards": [
+    {
+      "repo": "soulfra-simple",
+      "path": "voice-archive/soul-dashboard.html",
+      "file": "soul-dashboard.html"
+    },
+    {
+      "repo": "soulfra-simple",
+      "path": "voice-archive/command-center.html",
+      "file": "command-center.html"
+    }
+  ],
+  "highlights": [],
+  "duplicates": [
+    {
+      "file": "index.html",
+      "locations": [
+        "soulfra-simple",
+        "calriven"
+      ],
+      "count": 2
+    }
+  ],
+  "missing_links": [
+    "46 admin dashboards not linked from any public site"
+  ],
+  "statistics": {
+    "total_local_repos": 6,
+    "total_github_repos": 30,
+    "total_files": 62374,
+    "total_size_mb": 1832.6,
+    "voice_memos": 6,
+    "blog_posts": 25,
+    "admin_dashboards": 46,
+    "templates": 225,
+    "duplicates": 14,
+    "missing_links": 2
+  }
+}

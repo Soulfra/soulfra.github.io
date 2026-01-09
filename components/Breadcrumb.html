@@ -1,0 +1,41 @@
+<!-- Soulfra Network Breadcrumb Component -->
+<div id="breadcrumb-container" class="breadcrumb-component">
+  <!-- Breadcrumb navigation will be loaded here -->
+</div>
+
+<script>
+// Breadcrumb component loader
+(function() {
+  const container = document.getElementById('breadcrumb-container');
+  if (!container) return;
+
+  // Detect current brand/domain
+  const brand = document.body.getAttribute('data-brand') || 'soulfra';
+
+  // Load brand-specific breadcrumb navigation
+  const breadcrumbUrl = `/${brand}/breadcrumb-nav.html`;
+
+  fetch(breadcrumbUrl)
+    .then(response => {
+      if (!response.ok) {
+        // Fallback: try loading from current directory
+        return fetch('./breadcrumb-nav.html');
+      }
+      return response;
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Breadcrumb navigation not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      container.innerHTML = html;
+    })
+    .catch(error => {
+      console.warn('Could not load breadcrumb navigation:', error);
+      // Hide container if breadcrumb not found
+      container.style.display = 'none';
+    });
+})();
+</script>

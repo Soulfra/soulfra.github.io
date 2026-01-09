@@ -266,6 +266,7 @@
             <button class="tab active" onclick="switchTab('overview')">📊 Overview</button>
             <button class="tab" onclick="switchTab('add')">➕ Add Domain</button>
             <button class="tab" onclick="switchTab('web')">🕸️ Email Web</button>
+            <button class="tab" onclick="switchTab('portfolio')">💼 Portfolio</button>
         </div>
 
         <!-- OVERVIEW TAB -->
@@ -328,6 +329,73 @@
                     Core domains (green) are the waitlist domains, custom domains (orange) are yours.
                 </p>
                 <canvas id="web-canvas" class="web-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- PORTFOLIO TAB -->
+        <div id="tab-portfolio" class="tab-content">
+            <h2 style="margin-bottom: 25px; font-size: 2rem;">📊 Portfolio Scanner</h2>
+            <p style="margin-bottom: 20px; opacity: 0.9;">
+                Complete inventory of all repos, voice memos, blog posts, and admin dashboards across the SOULFRA network.
+            </p>
+
+            <div id="portfolio-loading" style="text-align: center; padding: 40px;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">⏳</div>
+                <div>Loading portfolio data...</div>
+            </div>
+
+            <div id="portfolio-content" style="display: none;">
+                <!-- Stats Grid -->
+                <div class="domain-grid" style="margin-bottom: 40px;">
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">📁 Total Files</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-files">-</div>
+                    </div>
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">🎙️ Voice Memos</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-voice">-</div>
+                    </div>
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">📝 Blog Posts</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-blogs">-</div>
+                    </div>
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">⚙️ Admin Dashboards</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-admins">-</div>
+                    </div>
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">📦 Local Repos</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-local">-</div>
+                    </div>
+                    <div class="domain-card core">
+                        <h3 style="margin-bottom: 10px;">🌐 GitHub Repos</h3>
+                        <div style="font-size: 3rem; font-weight: bold;" id="stat-github">-</div>
+                    </div>
+                </div>
+
+                <!-- Voice Memos Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">🎙️ Recent Voice Memos</h3>
+                    <div id="voice-memos-list" class="domain-grid"></div>
+                </div>
+
+                <!-- Blog Posts Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">📝 Published Blog Posts</h3>
+                    <div id="blog-posts-list" class="domain-grid"></div>
+                </div>
+
+                <!-- Duplicates Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">⚠️ Duplicate Files</h3>
+                    <div id="duplicates-list" class="domain-grid"></div>
+                </div>
+
+                <!-- Missing Links Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">🔗 Missing Links</h3>
+                    <div id="missing-links-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -410,6 +478,8 @@
 
             if (tabName === 'web') {
                 drawEmailWeb();
+            } else if (tabName === 'portfolio') {
+                loadPortfolioData();
             }
         }
 
@@ -584,6 +654,106 @@
                 alert('Error: ' + err.message);
             }
         });
+
+        // Load Portfolio Data from Flask API
+        let portfolioDataCache = null;
+        async function loadPortfolioData() {
+            if (portfolioDataCache) {
+                renderPortfolio(portfolioDataCache);
+                return;
+            }
+
+            const loading = document.getElementById('portfolio-loading');
+            const content = document.getElementById('portfolio-content');
+
+            try {
+                // Try to load from Flask API (via Cloudflare tunnel)
+                const apiUrl = 'https://screenshot-eve-gave-reproduce.trycloudflare.com/api/portfolio-scan';
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) throw new Error('API error');
+
+                const data = await response.json();
+                portfolioDataCache = data;
+
+                loading.style.display = 'none';
+                content.style.display = 'block';
+
+                renderPortfolio(data);
+            } catch (err) {
+                loading.innerHTML = `
+                    <div style="font-size: 2rem; margin-bottom: 20px;">❌</div>
+                    <div>Failed to load portfolio data</div>
+                    <div style="opacity: 0.7; margin-top: 10px; font-size: 0.9rem;">Error: ${err.message}</div>
+                    <div style="opacity: 0.7; margin-top: 10px; font-size: 0.9rem;">Make sure Flask is running on localhost:5001</div>
+                `;
+            }
+        }
+
+        function renderPortfolio(data) {
+            const stats = data.statistics;
+
+            // Update stats
+            document.getElementById('stat-files').textContent = stats.total_files.toLocaleString();
+            document.getElementById('stat-voice').textContent = stats.voice_memos;
+            document.getElementById('stat-blogs').textContent = stats.blog_posts;
+            document.getElementById('stat-admins').textContent = stats.admin_dashboards;
+            document.getElementById('stat-local').textContent = stats.total_local_repos;
+            document.getElementById('stat-github').textContent = stats.total_github_repos;
+
+            // Render voice memos
+            const voiceList = document.getElementById('voice-memos-list');
+            voiceList.innerHTML = data.voice_memos.slice(0, 6).map(memo => `
+                <div class="domain-card custom">
+                    <h3 style="margin-bottom: 10px;">🎙️ ${memo.filename}</h3>
+                    <div style="opacity: 0.8; font-size: 0.9rem; margin-bottom: 10px;">${new Date(memo.created_at).toLocaleDateString()}</div>
+                    <div style="opacity: 0.7; font-size: 0.85rem;">
+                        ${memo.transcript_preview || 'No transcript'}
+                    </div>
+                    <div style="opacity: 0.6; font-size: 0.75rem; margin-top: 10px;">
+                        ${(memo.file_size / 1024).toFixed(1)} KB
+                    </div>
+                </div>
+            `).join('');
+
+            // Render blog posts
+            const blogList = document.getElementById('blog-posts-list');
+            blogList.innerHTML = data.blog_posts.slice(0, 6).map(post => `
+                <div class="domain-card custom">
+                    <h3 style="margin-bottom: 10px;">📝 ${post.file}</h3>
+                    <div style="opacity: 0.8; font-size: 0.9rem;">${post.repo}</div>
+                    <div style="opacity: 0.6; font-size: 0.85rem; margin-top: 5px;">${post.path}</div>
+                </div>
+            `).join('');
+
+            // Render duplicates
+            const dupList = document.getElementById('duplicates-list');
+            if (data.duplicates.length > 0) {
+                dupList.innerHTML = data.duplicates.map(dup => `
+                    <div class="domain-card custom" style="border-left-color: #ff9800;">
+                        <h3 style="margin-bottom: 10px;">⚠️ ${dup.file}</h3>
+                        <div style="opacity: 0.8; font-size: 0.9rem;">Found in ${dup.count} repos</div>
+                        <div style="opacity: 0.7; font-size: 0.85rem; margin-top: 10px;">
+                            ${dup.locations.join(', ')}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                dupList.innerHTML = '<div style="opacity: 0.7;">No duplicates found ✅</div>';
+            }
+
+            // Render missing links
+            const missingList = document.getElementById('missing-links-list');
+            if (data.missing_links.length > 0) {
+                missingList.innerHTML = data.missing_links.map(link => `
+                    <div style="padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #ff5722;">
+                        ${link}
+                    </div>
+                `).join('');
+            } else {
+                missingList.innerHTML = '<div style="opacity: 0.7;">All systems connected ✅</div>';
+            }
+        }
 
         // Initialize
         renderCoreDomains();

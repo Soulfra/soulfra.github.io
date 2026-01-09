@@ -709,12 +709,44 @@
             async generateIntervention(message, rarity, artyState) {
                 this.interventionCount++;
                 const interventionType = this.determineInterventionType(rarity, artyState);
-                const response = this.generateInterventionByType(message, interventionType);
-                
-                this.adjustPatienceFromIntervention(interventionType);
-                this.lastIntervention = interventionType;
-                
-                return response;
+
+                // REAL OLLAMA CALL - Cal actually thinks now!
+                try {
+                    const response = await fetch('http://localhost:5001/api/cal/reason', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: message,
+                            context: this.getConversationContext(),
+                            trigger: interventionType
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    this.adjustPatienceFromIntervention(interventionType);
+                    this.lastIntervention = interventionType;
+
+                    return {
+                        content: data.response,
+                        calMood: data.cal_mood || 'grumpy'
+                    };
+
+                } catch (error) {
+                    console.error('Cal API failed, using fallback:', error);
+                    // Fallback to hardcoded responses if Ollama is down
+                    const response = this.generateInterventionByType(message, interventionType);
+                    this.adjustPatienceFromIntervention(interventionType);
+                    this.lastIntervention = interventionType;
+                    return response;
+                }
+            }
+
+            getConversationContext() {
+                // Get last 5 messages for context
+                const messagesEl = document.getElementById('messages');
+                const messages = Array.from(messagesEl.children).slice(-5);
+                return messages.map(m => m.textContent.substring(0, 200)).join('\n');
             }
             
             determineInterventionType(rarity, artyState) {

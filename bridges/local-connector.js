@@ -1,7 +1,14 @@
-// Local reflection connector - uses built-in reasoning without external APIs
+/**
+ * Local Reflection Connector
+ *
+ * Fallback connector when Ollama is not available.
+ * Provides pattern-based responses and simple reflection capabilities.
+ */
 class LocalConnector {
     constructor() {
         this.initialized = true;
+        this.conversationHistory = [];
+        this.patterns = this.loadPatterns();
         this.reflectionTemplates = {
             default: "Based on the query: '{prompt}', here is my reflection: ",
             analytical: "Analyzing the request: '{prompt}'. The key considerations are: ",
@@ -11,34 +18,93 @@ class LocalConnector {
     }
 
     async initialize() {
-        // Local connector is always ready
+        console.log('✅ Local connector initialized (fallback mode)');
         return true;
+    }
+
+    /**
+     * Load response patterns for common queries
+     */
+    loadPatterns() {
+        return [
+            {
+                patterns: [/^(hi|hello|hey)/i],
+                responses: [
+                    "Hello! I'm running in local fallback mode. Ollama is not available.",
+                    "Hey there! Using basic pattern matching since Ollama isn't running."
+                ]
+            },
+            {
+                patterns: [/help/i],
+                responses: [
+                    "I can help with basic queries in fallback mode. For AI features, start Ollama.",
+                ]
+            },
+            {
+                patterns: [/status/i],
+                responses: [
+                    "🔴 Local fallback mode (Ollama not available)\n💡 Start Ollama with 'ollama serve'"
+                ]
+            }
+        ];
     }
 
     async reflect(prompt, apiKey = null) {
         try {
+            // Add to conversation history
+            this.conversationHistory.push({
+                role: 'user',
+                content: prompt,
+                timestamp: Date.now()
+            });
+
+            // Try pattern matching first
+            for (const pattern of this.patterns) {
+                for (const regex of pattern.patterns) {
+                    if (regex.test(prompt)) {
+                        const response = pattern.responses[
+                            Math.floor(Math.random() * pattern.responses.length)
+                        ];
+
+                        this.conversationHistory.push({
+                            role: 'assistant',
+                            content: response,
+                            timestamp: Date.now()
+                        });
+
+                        return response;
+                    }
+                }
+            }
+
             // Simulate processing time
             await this.simulateDelay(100, 500);
 
             // Determine prompt type
             const promptType = this.analyzePromptType(prompt);
-            
+
             // Generate reflection based on type
             const reflection = this.generateReflection(prompt, promptType);
 
-            return {
-                response: reflection,
-                model: 'local-reflection-1.0',
-                usage: {
-                    prompt_tokens: prompt.split(' ').length,
-                    completion_tokens: reflection.split(' ').length,
-                    total_tokens: prompt.split(' ').length + reflection.split(' ').length
-                }
-            };
+            this.conversationHistory.push({
+                role: 'assistant',
+                content: reflection,
+                timestamp: Date.now()
+            });
+
+            return reflection;
         } catch (error) {
             console.error('Local reflection error:', error);
             throw error;
         }
+    }
+
+    getHistory(limit = 10) {
+        return this.conversationHistory.slice(-limit);
+    }
+
+    clearHistory() {
+        this.conversationHistory = [];
     }
 
     analyzePromptType(prompt) {

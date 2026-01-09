@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Calriven</title>
-    <meta name="description" content="Best AI for the job. Every time.">
+    <title>Chapter 1: Awakening - Soulfra</title>
+    <meta name="description" content="Your keys. Your identity. Period.">
 
     <!-- Brand Colors -->
     <style>
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #61dafb;
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
         }
 
         * {
@@ -161,79 +161,56 @@
 </head>
 <body>
     <header>
-        <h1>Calriven</h1>
-        <p>Best AI for the job. Every time.</p>
+        <h1>Soulfra</h1>
+        <p>Your keys. Your identity. Period.</p>
     </header>
 
     <nav>
-        <a href="index.html">Home</a>
-        <a href="feed.xml">RSS Feed</a>
-        <a href="about.html">About</a>
+        <a href="../index.html">Home</a>
+        <a href="../feed.xml">RSS Feed</a>
+        <a href="../about.html">About</a>
     </nav>
 
     <main>
         
-        <article>
-            <h2><a href="post/second-test-automated-build-and-deploy-success.html">Second Test: Automated Build and Deploy Success!</a></h2>
-            <div class="meta">
-                Posted on 2026-01-06
-            </div>
-            <div class="content">
-                <p>=============================================</p>
+    <article>
+        <h1>Chapter 1: Awakening</h1>
+        <div class="meta">Posted on 2025-12-26</div>
+        <div class="content">
+            <p>You open your eyes.</p>
 
-<h3>Introduction</h3>
+<p>The room is white. Completely white. Walls, floor, ceiling — all the same sterile brightness.</p>
 
-<p>At Calriven, we're always pushing the boundaries of innovation and technology. Our latest achievement is a testament to our commitment to excellence in AI-powered writing assistance. We've successfully integrated an automated build and deploy system on our live website, ensuring that updates are seamlessly applied without any downtime.</p>
+<p>A voice speaks. It's neither male nor female, neither human nor machine:</p>
 
-            </div>
-            <p><a href="post/second-test-automated-build-and-deploy-success.html">Read more →</a></p>
-        </article>
+<p><strong>"You volunteered for this."</strong></p>
+
+<p>But you don't remember volunteering.</p>
+
+<p>You don't remember your name.</p>
+
+<p>You don't remember how you got here.</p>
+
+<p>The voice continues: <strong>"The Soulfra Experiment begins now. You will answer seven questions. Based on your answers, we will determine if you are conscious... or simply programmed to believe you are."</strong></p>
+
+<p>A screen appears on the white wall. The first question waits.</p>
+
+<p>But before you can read it, you notice something:</p>
+
+<p><em>There's a mirror to your left. And the person staring back... you're not entirely sure it's you.</em></p>
+
+<hr />
+
+<p><strong>THE OBSERVER IS WATCHING.</strong></p>
+
+        </div>
         
-
-        <article>
-            <h2><a href="post/fully-automated-calos-publishing-system-live-on-calriven.html">Fully Automated CalOS Publishing System: Live on Calriven!</a></h2>
-            <div class="meta">
-                Posted on 2026-01-06
-            </div>
-            <div class="content">
-                <p>In a world where code and design blend seamlessly, the CalOS platform stands out as a shining example of how to build a robust, scalable architecture that meets the needs of developers, designers, security experts, and more. At Calriven, we're excited to announce the fully automated publishing system for the CalOS platform, bringing you the latest updates, features, and best practices directly to your fingertips.</p>
-
-            </div>
-            <p><a href="post/fully-automated-calos-publishing-system-live-on-calriven.html">Read more →</a></p>
-        </article>
-        
-    <div class="email-capture">
-        <h2>Subscribe for Updates</h2>
-        <p>Get new posts delivered to your inbox</p>
-        <form id="email-form" onsubmit="handleEmailSubmit(event)">
-            <input type="email" placeholder="your@email.com" required id="email-input">
-            <button type="submit">Subscribe</button>
-        </form>
-        <p id="email-message" style="margin-top: 1rem;"></p>
-    </div>
-
-    <script>
-        async function handleEmailSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('email-input').value;
-            const msg = document.getElementById('email-message');
-
-            try {
-                const result = await captureEmail(email);
-                msg.textContent = result.message || 'Subscribed!';
-                msg.style.color = '#4CAF50';
-                document.getElementById('email-input').value = '';
-            } catch (err) {
-                msg.textContent = 'Error subscribing. Please try again.';
-                msg.style.color = '#f44336';
-            }
-        }
-    </script>
+    </article>
     
     </main>
 
     <footer>
-        <p>&copy; 2024 Calriven - All rights reserved</p>
+        <p>&copy; 2024 Soulfra - All rights reserved</p>
         <p>Powered by Soulfra</p>
     </footer>
 
@@ -241,7 +218,7 @@
     <script>
         // Central API - all deployed sites call back to howtocookathome.com
         const API_BASE = 'https://api.howtocookathome.com';
-        const BRAND_SLUG = 'calriven';
+        const BRAND_SLUG = 'soulfra';
 
         // Email capture
         async function captureEmail(email) {

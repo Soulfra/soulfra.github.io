@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title>Calriven</title>
+        <link>https://calriven.com</link>
+        <description>Best AI for the job. Every time.</description>
+        <language>en-us</language>
+        <itunes:author>Calriven</itunes:author>
+        <itunes:category text="Ai Platform"/>
+        
+        <item>
+            <title>Second Test: Automated Build and Deploy Success!</title>
+            <link>https://calriven.com/post/second-test-automated-build-and-deploy-success.html</link>
+            <description><![CDATA[<p>=============================================</p>
+
+<h3>Introduction</h3>
+
+<p>At Calriven, we're always pushing the boundaries of innovation and technology. Our latest achievement is a testament to our commitment to excellence in AI-powered writing assistance. We've successfully integrated an automated build and deploy system on our live website, ensuring that updates are seamlessly applied without any downtime.</p>
+
+<p>This milestone marks a significant step forward for us, demonstrating our ability to scale and adapt to changing requirements. With this new system in place, we can now focus on delivering high-quality content to our users while maintaining the highest levels of performance and reliability.</p>
+
+<h3>Main Content</h3>
+
+<p>The automated build and deploy system is an integral part of Calriven's architecture, designed to streamline our development process and ensure that updates are thoroughly tested before being rolled out. By leveraging this technology, we can now respond quickly to changing requirements and deliver new features and content with minimal disruption.</p>
+
+<p>In the context of our website, this means that users will no longer have to wait for manual intervention to apply updates. Instead, they'll be able to enjoy a seamless experience, with new features and content being added regularly. The automated system has been thoroughly tested and validated to ensure its accuracy and reliability.</p>
+
+<p>We're excited about the potential benefits of this system, including increased efficiency, reduced downtime, and improved user satisfaction. As we continue to evolve and improve our technology, we're committed to delivering exceptional experiences for our users.</p>
+
+<h3>Conclusion</h3>
+
+<p>The successful integration of our automated build and deploy system is a significant achievement for Calriven. We're proud of the hard work and dedication that went into making this happen. With this new system in place, we can now focus on delivering high-quality content and experiences to our users. Thank you for joining us on this journey, and we look forward to continuing to innovate and push the boundaries of what's possible with AI-powered writing assistance.</p>
+
+<hr />
+
+<p><strong>Note:</strong> I've written the blog post in Markdown format, using headings and paragraphs to structure the content. The tone is professional and informative, with a focus on showcasing Calriven's commitment to innovation and excellence. Let me know if you'd like any changes!</p>
+]]></description>
+            <pubDate>2026-01-06T12:17:21.265931</pubDate>
+            <guid>https://calriven.com/post/second-test-automated-build-and-deploy-success.html</guid>
+        </item>
+        
+        <item>
+            <title>Fully Automated CalOS Publishing System: Live on Calriven!</title>
+            <link>https://calriven.com/post/fully-automated-calos-publishing-system-live-on-calriven.html</link>
+            <description><![CDATA[<p>In a world where code and design blend seamlessly, the CalOS platform stands out as a shining example of how to build a robust, scalable architecture that meets the needs of developers, designers, security experts, and more. At Calriven, we're excited to announce the fully automated publishing system for the CalOS platform, bringing you the latest updates, features, and best practices directly to your fingertips.</p>
+
+<h2>Introduction</h2>
+
+<p>As an expert in CalOS platform architecture, I've had the privilege of working on various projects that showcase its versatility and power. From skills systems to actions engines, authentication mechanisms, and API design, the CalOS framework offers a comprehensive set of tools for building scalable and secure applications. With our fully automated publishing system, we're taking it to the next level by providing developers with easy access to the latest updates, features, and best practices.</p>
+
+<h2>Main Content</h2>
+
+<p>Our fully automated publishing system is designed to streamline the publishing process, ensuring that you receive the latest updates and features as soon as they become available. Here's a sneak peek at what's in store:</p>
+
+<ul>
+<li><strong>Skills System</strong>: Our skills system has been revamped with new features and improvements, including level 1-99 progression, XP formulas, leaderboards, and achievements.</li>
+<li><strong>Actions Engine</strong>: The actions engine has been expanded to include pre-defined actions like vote, post, code, review, test, deploy, and more. Configurable effects allow you to customize the experience for your users.</li>
+<li><strong>Identity &amp; Auth</strong>: Our identity and authentication system features JWT-based sessions, device fingerprinting, and privacy-preserving age verification.</li>
+<li><strong>APIs</strong>: We've designed RESTful endpoints with OpenAPI specs, JSON request/response formats, standard error handling, and rate limiting headers to ensure scalability and performance.</li>
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>The fully automated CalOS publishing system is now live on the Calriven website, bringing you the latest updates, features, and best practices directly to your fingertips. With this system, you'll have access to a comprehensive set of tools for building scalable and secure applications, ensuring that your users receive the best possible experience. Stay tuned for more updates and announcements from the Calriven team!</p>
+
+<hr />
+
+<p><strong>Additional metadata:</strong></p>
+
+<ul>
+<li><strong>Keywords:</strong> CalOS, platform architecture, publishing system, automated updates, features, API design</li>
+<li><strong>Category:</strong> Developer Resources</li>
+<li><strong>Tags:</strong> Calriven, CalOS, publishing system, automated updates</li>
+</ul>
+
+<p>Let me know if you want me to change anything.</p>
+]]></description>
+            <pubDate>2026-01-06T12:15:32.699642</pubDate>
+            <guid>https://calriven.com/post/fully-automated-calos-publishing-system-live-on-calriven.html</guid>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Inbox - IRC/Usenet Messenger</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: #161b22;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 { font-size: 1.5rem; font-weight: 600; }
+    .domain-switcher {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .domain-btn {
+      padding: 0.5rem 1rem;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .domain-btn.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+    }
+    .domain-btn:hover { background: #30363d; }
+
+    /* Main Layout */
+    .container {
+      flex: 1;
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Left Sidebar - Channel List */
+    .sidebar {
+      width: 250px;
+      background: #0d1117;
+      border-right: 1px solid #30363d;
+      overflow-y: auto;
+    }
+    .sidebar h3 {
+      padding: 1rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #8b949e;
+      font-weight: 600;
+    }
+    .channel-list {
+      padding: 0 0.5rem;
+    }
+    .channel-item {
+      padding: 0.5rem 1rem;
+      margin: 0.25rem 0;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .channel-item:hover { background: #161b22; }
+    .channel-item.active {
+      background: #1f6feb;
+      color: white;
+    }
+    .channel-name {
+      font-size: 0.9rem;
+      font-family: 'SF Mono', monospace;
+    }
+    .unread-badge {
+      background: #f85149;
+      color: white;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Center - Message List */
+    .messages-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0d1117;
+    }
+    .messages-header {
+      padding: 1rem 2rem;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+    }
+    .messages-header h2 {
+      font-size: 1.25rem;
+      font-family: 'SF Mono', monospace;
+    }
+    .messages-header small {
+      color: #8b949e;
+      font-size: 0.85rem;
+    }
+    .messages-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    .message-thread {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+    .message-thread:hover {
+      border-color: #1f6feb;
+      box-shadow: 0 0 0 1px #1f6feb;
+    }
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .message-author {
+      font-weight: 600;
+      color: #58a6ff;
+    }
+    .message-time {
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+    .message-subject {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .message-body {
+      line-height: 1.6;
+      color: #c9d1d9;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .message-meta {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+    .message-type-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-voice {
+      background: #58a6ff20;
+      color: #58a6ff;
+    }
+    .badge-text {
+      background: #3fb95020;
+      color: #3fb950;
+    }
+    .badge-system {
+      background: #f8514920;
+      color: #f85149;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: #8b949e;
+    }
+    .empty-state h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Loading */
+    .loading {
+      padding: 2rem;
+      text-align: center;
+      color: #8b949e;
+    }
+
+    /* Right Sidebar - Quick Actions */
+    .right-sidebar {
+      width: 300px;
+      background: #0d1117;
+      border-left: 1px solid #30363d;
+      padding: 1rem;
+    }
+    .quick-action-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+    .quick-action-btn:hover { background: #2ea043; }
+
+    .stats-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .stats-card h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #8b949e;
+      margin-bottom: 0.75rem;
+    }
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .stat-value {
+      font-weight: 600;
+      color: #58a6ff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>📬 Soulfra Inbox</h1>
+    <div class="domain-switcher">
+      <button class="domain-btn active" data-domain="soulfra">Soulfra</button>
+      <button class="domain-btn" data-domain="cringeproof">CringeProof</button>
+      <button class="domain-btn" data-domain="deathtodata">DeathToData</button>
+      <button class="domain-btn" data-domain="calriven">CalRiven</button>
+      <button class="domain-btn" data-domain="stpetepros">StPetePros</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Left Sidebar - Channels -->
+    <div class="sidebar">
+      <h3>Channels</h3>
+      <div id="channelList" class="channel-list">
+        <div class="loading">Loading channels...</div>
+      </div>
+    </div>
+
+    <!-- Center - Messages -->
+    <div class="messages-area">
+      <div class="messages-header">
+        <h2 id="currentChannel">alt.soulfra.general</h2>
+        <small id="channelDescription">General discussion</small>
+      </div>
+      <div id="messagesList" class="messages-list">
+        <div class="loading">Loading messages...</div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar - Quick Actions -->
+    <div class="right-sidebar">
+      <button class="quick-action-btn" onclick="window.location.href='/voice-recorder.html'">
+        🎤 Record Voice Memo
+      </button>
+      <button class="quick-action-btn" onclick="alert('Message composer coming soon!')">
+        ✍️ Write Message
+      </button>
+
+      <div class="stats-card">
+        <h4>Your Activity</h4>
+        <div class="stat-item">
+          <span>Messages Sent</span>
+          <span class="stat-value" id="statMessagesSent">-</span>
+        </div>
+        <div class="stat-item">
+          <span>Voice Memos</span>
+          <span class="stat-value" id="statVoiceMemos">-</span>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <h4>Current Domain</h4>
+        <div class="stat-item">
+          <span>Total Messages</span>
+          <span class="stat-value" id="statTotalMessages">-</span>
+        </div>
+        <div class="stat-item">
+          <span>Active Channels</span>
+          <span class="stat-value" id="statActiveChannels">-</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentDomain = 'soulfra';
+    let currentChannel = null;
+    let allChannels = [];
+    let domainMessages = {};
+
+    // Initialize
+    async function init() {
+      await loadChannels();
+      await loadDomainMessages();
+      startPolling();
+    }
+
+    // Load all channels
+    async function loadChannels() {
+      try {
+        const response = await fetch('https://192.168.1.87:5002/api/channels');
+        const data = await response.json();
+
+        if (data.channels) {
+          allChannels = data.channels;
+          renderChannels();
+        }
+      } catch (error) {
+        console.error('Failed to load channels:', error);
+        document.getElementById('channelList').innerHTML = `
+          <div class="empty-state">
+            <h3>⚠️ Failed to load channels</h3>
+            <small>Make sure Flask is running at https://192.168.1.87:5002</small>
+          </div>
+        `;
+      }
+    }
+
+    // Render channel list
+    function renderChannels() {
+      const channelsForDomain = allChannels.filter(ch => ch.domain === currentDomain);
+
+      if (channelsForDomain.length === 0) {
+        document.getElementById('channelList').innerHTML = `
+          <div class="empty-state">
+            <small>No channels for ${currentDomain}</small>
+          </div>
+        `;
+        return;
+      }
+
+      const html = channelsForDomain.map(channel => {
+        const isActive = currentChannel === channel.channel;
+        const unreadCount = 0; // TODO: Track unread
+
+        return `
+          <div class="channel-item ${isActive ? 'active' : ''}" onclick="selectChannel('${channel.channel}')">
+            <span class="channel-name">#${channel.channel}</span>
+            ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('channelList').innerHTML = html;
+
+      // Auto-select first channel
+      if (!currentChannel && channelsForDomain.length > 0) {
+        selectChannel(channelsForDomain[0].channel);
+      }
+    }
+
+    // Select channel
+    function selectChannel(channelName) {
+      currentChannel = channelName;
+      renderChannels();
+      renderMessages();
+
+      const channelInfo = allChannels.find(ch => ch.domain === currentDomain && ch.channel === channelName);
+      document.getElementById('currentChannel').textContent = `alt.${currentDomain}.${channelName}`;
+      document.getElementById('channelDescription').textContent = channelInfo ? channelInfo.description : '';
+    }
+
+    // Load domain messages
+    async function loadDomainMessages() {
+      try {
+        const response = await fetch(`https://192.168.1.87:5002/api/messages/${currentDomain}.json`);
+        const data = await response.json();
+
+        domainMessages = data.channels || {};
+        renderMessages();
+        updateStats(data);
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+      }
+    }
+
+    // Render messages for current channel
+    function renderMessages() {
+      const messages = domainMessages[currentChannel] || [];
+
+      if (messages.length === 0) {
+        document.getElementById('messagesList').innerHTML = `
+          <div class="empty-state">
+            <h3>📭 No messages yet</h3>
+            <p>Be the first to post to this channel!</p>
+          </div>
+        `;
+        return;
+      }
+
+      const html = messages.map(msg => {
+        const time = new Date(msg.created_at).toLocaleString();
+        const typeBadge = msg.type === 'voice' ? 'badge-voice' :
+                         msg.type === 'system' ? 'badge-system' : 'badge-text';
+
+        return `
+          <div class="message-thread">
+            <div class="message-header">
+              <span class="message-author">${msg.from}</span>
+              <span class="message-time">${time}</span>
+            </div>
+            ${msg.subject ? `<div class="message-subject">${msg.subject}</div>` : ''}
+            <div class="message-body">${msg.body}</div>
+            <div class="message-meta">
+              <span class="message-type-badge ${typeBadge}">${msg.type}</span>
+              <span>ID: ${msg.id}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('messagesList').innerHTML = html;
+    }
+
+    // Update stats
+    function updateStats(data) {
+      document.getElementById('statTotalMessages').textContent = data.total_messages || 0;
+      document.getElementById('statActiveChannels').textContent = Object.keys(data.channels || {}).length;
+    }
+
+    // Switch domain
+    document.querySelectorAll('.domain-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        document.querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        currentDomain = btn.dataset.domain;
+        currentChannel = null;
+        renderChannels();
+        await loadDomainMessages();
+      });
+    });
+
+    // Poll for new messages every 5 seconds
+    function startPolling() {
+      setInterval(async () => {
+        await loadDomainMessages();
+      }, 5000);
+    }
+
+    // Start the app
+    init();
+  </script>
+
+</body>
+</html>

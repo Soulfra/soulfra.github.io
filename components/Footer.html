@@ -1,0 +1,211 @@
+<!-- Soulfra Network Universal Footer Component -->
+<footer class="soulfra-footer" id="soulfra-footer">
+  <div class="footer-content">
+    <nav class="footer-nav">
+      <div class="footer-section">
+        <h4>Network</h4>
+        <a href="https://calriven.com">📊 Calriven</a>
+        <a href="https://cringeproof.com">🎭 CringeProof</a>
+        <a href="https://deathtodata.com">🔥 DeathToData</a>
+        <a href="https://soulfra.com">💜 Soulfra</a>
+      </div>
+      <div class="footer-section">
+        <h4>Platform</h4>
+        <a href="/domains/">🌐 Get Subdomain</a>
+        <a href="/waitlist/">📋 Waitlist</a>
+        <a href="/projects.html">📁 Projects</a>
+        <a href="/api/docs">📚 API Docs</a>
+      </div>
+      <div class="footer-section">
+        <h4>Resources</h4>
+        <a href="https://github.com/soulfra">💻 GitHub</a>
+        <a href="/docs/">📖 Documentation</a>
+        <a href="/privacy">🔒 Privacy</a>
+        <a href="/terms">📜 Terms</a>
+      </div>
+    </nav>
+
+    <div class="footer-bottom">
+      <p class="copyright">&copy; 2026 <span class="brand-name">Soulfra</span> Network | Built with <span class="heart">♥</span></p>
+      <p class="tech-info">
+        <span class="backend-url"></span>
+        <span class="prefix-info"></span>
+      </p>
+      <p class="attribution">Powered by GitHub Pages | Free Subdomains Available</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* Soulfra Footer Styles */
+.soulfra-footer {
+  margin-top: 4rem;
+  padding: 3rem 2rem 2rem;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.soulfra-footer .footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.soulfra-footer .footer-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.soulfra-footer .footer-section h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.soulfra-footer .footer-section a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.soulfra-footer .footer-section a:hover {
+  opacity: 1;
+}
+
+.soulfra-footer .footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.soulfra-footer .footer-bottom p {
+  margin: 0.5rem 0;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.soulfra-footer .copyright {
+  font-weight: 500;
+  opacity: 0.8 !important;
+}
+
+.soulfra-footer .brand-name {
+  font-weight: 700;
+  color: var(--brand-color, #667eea);
+}
+
+.soulfra-footer .heart {
+  color: #ff006e;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.soulfra-footer .tech-info {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  opacity: 0.5 !important;
+}
+
+.soulfra-footer .tech-info code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.soulfra-footer .attribution {
+  font-size: 0.85rem;
+  opacity: 0.6 !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .soulfra-footer {
+    padding: 2rem 1rem;
+  }
+
+  .soulfra-footer .footer-nav {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .soulfra-footer .footer-section {
+    text-align: center;
+  }
+
+  .soulfra-footer .footer-bottom p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Theme-specific styling */
+body[data-brand="calriven"] .soulfra-footer .brand-name {
+  color: #3b82f6;
+}
+
+body[data-brand="cringeproof"] .soulfra-footer .brand-name {
+  color: #FF006E;
+}
+
+body[data-brand="deathtodata"] .soulfra-footer .brand-name {
+  color: #ef4444;
+}
+
+body[data-brand="soulfra"] .soulfra-footer .brand-name {
+  color: #667eea;
+}
+</style>
+
+<script>
+// Footer component functionality
+(function() {
+  const footer = document.getElementById('soulfra-footer');
+  if (!footer) return;
+
+  // Update brand name based on current domain
+  const brandName = footer.querySelector('.brand-name');
+  const brand = document.body.getAttribute('data-brand');
+
+  if (brandName && brand) {
+    const brandNames = {
+      'calriven': 'Calriven',
+      'cringeproof': 'CringeProof',
+      'deathtodata': 'DeathToData',
+      'soulfra': 'Soulfra'
+    };
+    brandName.textContent = brandNames[brand] || 'Soulfra';
+  }
+
+  // Display backend info if available (from page context)
+  const backendUrl = footer.querySelector('.backend-url');
+  const prefixInfo = footer.querySelector('.prefix-info');
+
+  if (window.SOULFRA_CONFIG) {
+    if (backendUrl && window.SOULFRA_CONFIG.backend) {
+      backendUrl.innerHTML = `Backend: <code>${window.SOULFRA_CONFIG.backend}</code>`;
+    }
+    if (prefixInfo && window.SOULFRA_CONFIG.prefix) {
+      prefixInfo.innerHTML = ` | Prefix: <code>${window.SOULFRA_CONFIG.prefix}</code>`;
+    }
+  }
+
+  // Update year dynamically
+  const year = new Date().getFullYear();
+  const copyright = footer.querySelector('.copyright');
+  if (copyright) {
+    copyright.innerHTML = copyright.innerHTML.replace('2026', year);
+  }
+})();
+</script>

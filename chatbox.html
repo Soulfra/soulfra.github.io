@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Soulfra Hub - What are you looking for?</title>
+  <meta name="description" content="Interactive hub to route you to the right Soulfra domain">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(26, 26, 46, 0.9);
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid #333;
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 1.5rem;
+      padding-bottom: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Message Bubble */
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.25rem;
+      border-radius: 18px;
+      line-height: 1.5;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.bot {
+      background: rgba(102, 126, 234, 0.15);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      align-self: flex-start;
+    }
+
+    .message.user {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      align-self: flex-end;
+    }
+
+    .message.system {
+      background: rgba(255, 107, 107, 0.15);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      align-self: center;
+      text-align: center;
+      max-width: 90%;
+      font-size: 0.9rem;
+    }
+
+    .message.routing {
+      background: linear-gradient(135deg, rgba(0, 255, 204, 0.2) 0%, rgba(102, 126, 234, 0.2) 100%);
+      border: 2px solid rgba(0, 255, 204, 0.4);
+      align-self: center;
+      text-align: center;
+      max-width: 90%;
+      font-weight: 600;
+    }
+
+    /* Quick Reply Chips */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      animation: slideIn 0.4s ease-out 0.2s both;
+    }
+
+    .quick-reply {
+      background: rgba(102, 126, 234, 0.2);
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      padding: 0.75rem 1.25rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+    }
+
+    .quick-reply:hover {
+      background: rgba(102, 126, 234, 0.4);
+      transform: scale(1.05);
+    }
+
+    .quick-reply:active {
+      transform: scale(0.95);
+    }
+
+    /* Input Bar */
+    .input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.95);
+      border-top: 2px solid #333;
+      padding: 1rem 1.5rem;
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .input-field {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 0.875rem 1.25rem;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-field:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(102, 126, 234, 0.6);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-send {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-send:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-send:active {
+      transform: scale(0.95);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background: rgba(102, 126, 234, 0.15);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      padding: 1rem 1.5rem;
+      border-radius: 18px;
+      max-width: 80px;
+    }
+
+    .typing-indicator.active {
+      display: flex;
+      gap: 6px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(102, 126, 234, 0.8);
+      border-radius: 50%;
+      animation: typingPulse 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingPulse {
+      0%, 60%, 100% { opacity: 0.4; transform: scale(0.8); }
+      30% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Loading State */
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Age Verification Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%);
+      border: 3px solid rgba(102, 126, 234, 0.5);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-content p {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn-modal {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: 2px solid;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal.yes {
+      background: rgba(102, 126, 234, 0.3);
+      border-color: rgba(102, 126, 234, 0.6);
+      color: white;
+    }
+
+    .btn-modal.yes:hover {
+      background: rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-modal.no {
+      background: rgba(255, 107, 107, 0.3);
+      border-color: rgba(255, 107, 107, 0.6);
+      color: white;
+    }
+
+    .btn-modal.no:hover {
+      background: rgba(255, 107, 107, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .message {
+        max-width: 90%;
+      }
+
+      .header h1 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>🎤 Soulfra Hub</h1>
+    <p>What brings you here today?</p>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container" id="chatContainer">
+    <!-- Initial bot message -->
+    <div class="message bot">
+      Hey! I'm the Soulfra router. I'll help you find the right domain based on what you're looking for.
+      <div class="quick-replies">
+        <button class="quick-reply" onclick="quickReply('I want to record voice ideas')">🎤 Voice Ideas</button>
+        <button class="quick-reply" onclick="quickReply('I need AI help')">🤖 AI Help</button>
+        <button class="quick-reply" onclick="quickReply('I want to search without tracking')">🔍 Private Search</button>
+        <button class="quick-reply" onclick="quickReply('Show me all domains')">🌐 All Domains</button>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  </div>
+
+  <!-- Input Bar -->
+  <div class="input-bar">
+    <div class="input-container">
+      <input
+        type="text"
+        class="input-field"
+        id="messageInput"
+        placeholder="Type what you're looking for..."
+        autocomplete="off"
+      >
+      <button class="btn-send" id="sendButton" onclick="sendMessage()">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <!-- Age Verification Modal -->
+  <div class="modal" id="ageModal">
+    <div class="modal-content">
+      <h2>🔞 Age Verification</h2>
+      <p id="ageModalMessage">This content requires age verification. Are you 18 or older?</p>
+      <div class="modal-buttons">
+        <button class="btn-modal yes" onclick="confirmAge(true)">Yes, I'm 18+</button>
+        <button class="btn-modal no" onclick="confirmAge(false)">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API_URL = 'http://localhost:5001'; // Soulfra backend
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const ageModal = document.getElementById('ageModal');
+
+    let conversationHistory = [];
+    let pendingRoute = null;
+    let userAge18Plus = false;
+
+    // Domain routing map
+    const domainRoutes = {
+      'cringeproof': {
+        url: 'https://cringeproof.com',
+        keywords: ['voice', 'record', 'idea', 'prediction', 'cringe', 'performance anxiety', 'speak'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'calriven': {
+        url: 'https://calriven.com',
+        keywords: ['ai', 'help', 'agent', 'assistant', 'automation', 'tool', 'best ai'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'deathtodata': {
+        url: 'https://deathtodata.com',
+        keywords: ['search', 'privacy', 'tracking', 'surveillance', 'google alternative', 'private'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'howtocookathome': {
+        url: 'https://howtocookathome.com',
+        keywords: ['cook', 'recipe', 'food', 'kitchen', 'meal', 'dinner'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'stpetepros': {
+        url: 'https://stpetepros.com',
+        keywords: ['st pete', 'st petersburg', 'florida', 'local', 'community', 'neighborhood'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'hollowtown': {
+        url: 'https://hollowtown.com',
+        keywords: ['story', 'fiction', 'creative', 'writing', 'weird', 'experimental'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'niceleak': {
+        url: 'https://niceleak.com',
+        keywords: ['whistleblow', 'transparency', 'accountability', 'leak', 'expose'],
+        requiresAge: false,
+        tier: 'all-ages'
+      },
+      'oofbox': {
+        url: 'https://oofbox.com',
+        keywords: ['mistake', 'fail', 'lesson', 'embarrassing', 'oof', 'cringe'],
+        requiresAge: false,
+        tier: 'all-ages'
+      }
+    };
+
+    // Add message to chat
+    function addMessage(text, type = 'bot', showQuickReplies = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.textContent = text;
+
+      if (showQuickReplies) {
+        const quickRepliesDiv = document.createElement('div');
+        quickRepliesDiv.className = 'quick-replies';
+        quickRepliesDiv.innerHTML = `
+          <button class="quick-reply" onclick="quickReply('I want to record voice ideas')">🎤 Voice Ideas</button>
+          <button class="quick-reply" onclick="quickReply('I need AI help')">🤖 AI Help</button>
+          <button class="quick-reply" onclick="quickReply('I want to search without tracking')">🔍 Private Search</button>
+          <button class="quick-reply" onclick="quickReply('Show me all domains')">🌐 All Domains</button>
+        `;
+        messageDiv.appendChild(quickRepliesDiv);
+      }
+
+      chatContainer.insertBefore(messageDiv, typingIndicator);
+      scrollToBottom();
+
+      return messageDiv;
+    }
+
+    // Quick reply handler
+    function quickReply(text) {
+      sendMessage(text);
+    }
+
+    // Scroll to bottom
+    function scrollToBottom() {
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
+    }
+
+    // Show typing indicator
+    function showTyping(show = true) {
+      typingIndicator.classList.toggle('active', show);
+      if (show) scrollToBottom();
+    }
+
+    // Simple keyword-based routing (will be enhanced with LLM later)
+    function routeMessage(userMessage) {
+      const lowerMessage = userMessage.toLowerCase();
+
+      // Check for "all domains" request
+      if (lowerMessage.includes('all domains') || lowerMessage.includes('show all') || lowerMessage.includes('list domains')) {
+        return showAllDomains();
+      }
+
+      // Find matching domain
+      for (const [domain, config] of Object.entries(domainRoutes)) {
+        for (const keyword of config.keywords) {
+          if (lowerMessage.includes(keyword)) {
+            return routeToDomain(domain, config);
+          }
+        }
+      }
+
+      // No match found
+      return addMessage(
+        "Hmm, I'm not sure which domain would be best. Could you tell me more about what you're looking for? Or I can show you all available domains.",
+        'bot',
+        true
+      );
+    }
+
+    // Show all domains
+    function showAllDomains() {
+      let response = "Here are all Soulfra domains:\n\n";
+      for (const [domain, config] of Object.entries(domainRoutes)) {
+        response += `• ${domain}.com - ${config.keywords.slice(0, 3).join(', ')}\n`;
+      }
+      addMessage(response, 'bot');
+      addMessage("Which one interests you?", 'bot');
+    }
+
+    // Route to specific domain
+    function routeToDomain(domainName, config) {
+      if (config.requiresAge && !userAge18Plus) {
+        pendingRoute = { domainName, config };
+        showAgeModal(domainName);
+        return;
+      }
+
+      addMessage(`Perfect! Taking you to ${domainName}.com...`, 'routing');
+
+      // Store conversation in backend
+      storeConversation(domainName);
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        window.location.href = config.url;
+      }, 2000);
+    }
+
+    // Show age verification modal
+    function showAgeModal(domainName) {
+      const modalMessage = document.getElementById('ageModalMessage');
+      modalMessage.textContent = `${domainName}.com requires age verification. Are you 18 or older?`;
+      ageModal.classList.add('active');
+    }
+
+    // Confirm age
+    function confirmAge(isOver18) {
+      ageModal.classList.remove('active');
+
+      if (isOver18 && pendingRoute) {
+        userAge18Plus = true;
+        addMessage("Thanks! Continuing...", 'system');
+        routeToDomain(pendingRoute.domainName, pendingRoute.config);
+      } else {
+        addMessage("No problem! Let me find something else for you.", 'bot', true);
+        pendingRoute = null;
+      }
+    }
+
+    // Store conversation in backend
+    async function storeConversation(routedTo) {
+      try {
+        await fetch(`${API_URL}/api/hub/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversation: conversationHistory,
+            routed_to: routedTo,
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (error) {
+        console.error('Failed to store conversation:', error);
+      }
+    }
+
+    // Send message
+    async function sendMessage(messageText = null) {
+      const text = messageText || messageInput.value.trim();
+      if (!text) return;
+
+      // Clear input
+      messageInput.value = '';
+
+      // Add user message
+      addMessage(text, 'user');
+      conversationHistory.push({ role: 'user', content: text });
+
+      // Show typing
+      showTyping(true);
+
+      // Simulate thinking delay
+      setTimeout(() => {
+        showTyping(false);
+        routeMessage(text);
+      }, 800);
+    }
+
+    // Enter key to send
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // Focus input on load
+    window.addEventListener('load', () => {
+      messageInput.focus();
+    });
+  </script>
+</body>
+</html>

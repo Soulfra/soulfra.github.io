@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ollama AI Demo - Soulfra</title>
+  <script src="/components/component-loader.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      padding-bottom: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .status-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-dot.online {
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    .status-dot.offline {
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.9); }
+    }
+
+    .chat-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      max-height: 500px;
+    }
+
+    .message {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      background: rgba(102, 126, 234, 0.3);
+      margin-left: 2rem;
+    }
+
+    .message.assistant {
+      background: rgba(118, 75, 162, 0.3);
+      margin-right: 2rem;
+    }
+
+    .message-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .message-content {
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+    }
+
+    .input-area input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .input-area button {
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .input-area button:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .input-area button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .example-chip {
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .example-chip:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .loading {
+      text-align: center;
+      opacity: 0.7;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div data-component="header"></div>
+
+  <div class="container">
+    <div class="hero">
+      <h1>🤖 Ollama AI Demo</h1>
+      <p>Chat with local AI models powered by Ollama</p>
+    </div>
+
+    <div class="status-card">
+      <div class="status-indicator">
+        <div class="status-dot offline" id="status-dot"></div>
+        <div id="status-text">Checking Ollama status...</div>
+      </div>
+      <div id="status-details" style="font-size: 0.9rem; opacity: 0.8;"></div>
+    </div>
+
+    <div class="examples">
+      <div class="example-chip" onclick="sendExample('Hello! How are you?')">
+        👋 Say Hello
+      </div>
+      <div class="example-chip" onclick="sendExample('Explain quantum computing')">
+        🔬 Explain Concept
+      </div>
+      <div class="example-chip" onclick="sendExample('Write a poem about AI')">
+        ✍️ Creative Writing
+      </div>
+      <div class="example-chip" onclick="sendExample('Help me debug this code')">
+        🐛 Code Help
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div class="messages" id="messages">
+        <div class="message assistant">
+          <div class="message-label">🤖 Assistant</div>
+          <div class="message-content">Welcome! I'm your Soulfra AI assistant. Ask me anything!</div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="prompt-input"
+          placeholder="Type your message..."
+          onkeypress="handleKeyPress(event)"
+        />
+        <button onclick="sendMessage()" id="send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div data-component="footer"></div>
+
+  <script src="/bridges/ollama-connector.js"></script>
+  <script src="/bridges/local-connector.js"></script>
+
+  <script>
+    let isOllamaAvailable = false;
+
+    // Check Ollama status on page load
+    async function checkOllamaStatus() {
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+      const statusDetails = document.getElementById('status-details');
+
+      try {
+        const response = await fetch('http://localhost:11434/api/tags', {
+          method: 'GET',
+          signal: AbortSignal.timeout(3000)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          isOllamaAvailable = true;
+
+          statusDot.classList.remove('offline');
+          statusDot.classList.add('online');
+          statusText.textContent = '✅ Ollama is running';
+          statusDetails.innerHTML = `
+            <strong>Models available:</strong> ${data.models?.length || 0}<br>
+            <small>Using Ollama for AI responses</small>
+          `;
+        } else {
+          throw new Error('Ollama not responding');
+        }
+      } catch (error) {
+        isOllamaAvailable = false;
+
+        statusDot.classList.remove('online');
+        statusDot.classList.add('offline');
+        statusText.textContent = '🔴 Ollama not available';
+        statusDetails.innerHTML = `
+          <small>Using local fallback mode. To enable Ollama:</small><br>
+          <small>1. Install from <a href="https://ollama.ai" target="_blank" style="color: #60a5fa;">ollama.ai</a></small><br>
+          <small>2. Run: <code style="background: rgba(0,0,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">ollama serve</code></small>
+        `;
+      }
+    }
+
+    // Add message to chat
+    function addMessage(role, content) {
+      const messagesDiv = document.getElementById('messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${role}`;
+
+      const label = role === 'user' ? '👤 You' : '🤖 Assistant';
+
+      messageDiv.innerHTML = `
+        <div class="message-label">${label}</div>
+        <div class="message-content">${escapeHtml(content)}</div>
+      `;
+
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Add loading indicator
+    function addLoadingMessage() {
+      const messagesDiv = document.getElementById('messages');
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'message assistant loading';
+      loadingDiv.id = 'loading-message';
+      loadingDiv.innerHTML = `
+        <div class="message-label">🤖 Assistant</div>
+        <div class="message-content">Thinking...</div>
+      `;
+      messagesDiv.appendChild(loadingDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Remove loading indicator
+    function removeLoadingMessage() {
+      const loading = document.getElementById('loading-message');
+      if (loading) {
+        loading.remove();
+      }
+    }
+
+    // Send message
+    async function sendMessage() {
+      const input = document.getElementById('prompt-input');
+      const sendBtn = document.getElementById('send-btn');
+      const prompt = input.value.trim();
+
+      if (!prompt) return;
+
+      // Disable input
+      input.disabled = true;
+      sendBtn.disabled = true;
+
+      // Add user message
+      addMessage('user', prompt);
+
+      // Clear input
+      input.value = '';
+
+      // Show loading
+      addLoadingMessage();
+
+      try {
+        let response;
+
+        if (isOllamaAvailable && typeof OllamaConnector !== 'undefined') {
+          // Use Ollama
+          response = await OllamaConnector.reflect(prompt);
+        } else if (typeof LocalConnector !== 'undefined') {
+          // Use local fallback
+          response = await LocalConnector.reflect(prompt);
+        } else {
+          response = "Error: No AI connector available";
+        }
+
+        // Remove loading
+        removeLoadingMessage();
+
+        // Add assistant response
+        addMessage('assistant', response);
+
+      } catch (error) {
+        console.error('Error:', error);
+        removeLoadingMessage();
+        addMessage('assistant', `Error: ${error.message}`);
+      } finally {
+        // Re-enable input
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    // Send example
+    function sendExample(text) {
+      const input = document.getElementById('prompt-input');
+      input.value = text;
+      input.focus();
+    }
+
+    // Handle Enter key
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize on page load
+    checkOllamaStatus();
+    setInterval(checkOllamaStatus, 30000); // Check every 30 seconds
+  </script>
+</body>
+</html>
