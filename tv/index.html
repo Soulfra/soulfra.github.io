@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra TV - Live Cal & Arty Chat</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 3px solid #06FFA5;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Main Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Live Feed */
+    .live-feed {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 0, 0, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      border: 1px solid #ff0000;
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #ff0000;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .feed-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.cal { border-left-color: #667eea; }
+    .message.arty { border-left-color: #06FFA5; }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .message-header.cal { color: #667eea; }
+    .message-header.arty { color: #06FFA5; }
+
+    .message-timestamp {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-left: auto;
+    }
+
+    .message-content {
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .panel h3 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 0.5rem;
+    }
+
+    /* Contribution Heatmap */
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .heatmap-day {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .heatmap-day:hover {
+      transform: scale(1.2);
+      border: 1px solid #667eea;
+    }
+
+    .heatmap-day.level-0 { background: rgba(255, 255, 255, 0.05); }
+    .heatmap-day.level-1 { background: rgba(102, 126, 234, 0.3); }
+    .heatmap-day.level-2 { background: rgba(102, 126, 234, 0.5); }
+    .heatmap-day.level-3 { background: rgba(102, 126, 234, 0.7); }
+    .heatmap-day.level-4 { background: rgba(102, 126, 234, 1); }
+
+    /* Platform Links */
+    .platforms {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .platform-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .platform-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #667eea;
+      transform: translateX(5px);
+    }
+
+    .platform-icon {
+      font-size: 2rem;
+    }
+
+    .platform-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .platform-status {
+      margin-left: auto;
+      padding: 0.25rem 0.75rem;
+      background: rgba(6, 255, 165, 0.2);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      border: 1px solid #06FFA5;
+      color: #06FFA5;
+    }
+
+    /* QR Code */
+    .qr-section {
+      text-align: center;
+    }
+
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      background: white;
+      margin: 1rem auto;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .live-feed {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📺 Soulfra TV</h1>
+    <p class="tagline">Live Cal & Arty Chat - Voice AI Conversations in Real-Time</p>
+  </header>
+
+  <div class="container">
+    <!-- Live Feed -->
+    <div class="live-feed">
+      <div class="feed-header">
+        <div class="live-indicator">
+          <div class="live-dot"></div>
+          <span>LIVE</span>
+        </div>
+        <span style="opacity: 0.7;">Last updated: <span id="lastUpdate">Never</span></span>
+      </div>
+      <div class="feed-messages" id="feedMessages">
+        <!-- Messages will be inserted here -->
+        <div class="message cal">
+          <div class="message-header cal">
+            🤖 Cal
+            <span class="message-timestamp">Just now</span>
+          </div>
+          <div class="message-content">
+            Welcome to Soulfra TV! This is where voice conversations between Cal (AI) and Arty (human) are broadcast live. Every voice memo is transcribed, analyzed, and routed to the right domain.
+          </div>
+        </div>
+
+        <div class="message arty">
+          <div class="message-header arty">
+            👤 Arty
+            <span class="message-timestamp">Just now</span>
+          </div>
+          <div class="message-content">
+            Connecting live voice feed... Speak into your phone and watch it appear here in real-time!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Activity Heatmap -->
+      <div class="panel">
+        <h3>📊 Recording Activity</h3>
+        <div class="heatmap" id="heatmap">
+          <!-- Generated by JavaScript -->
+        </div>
+        <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+          Last 28 days of voice recordings
+        </p>
+      </div>
+
+      <!-- Platform Links -->
+      <div class="panel">
+        <h3>🌐 Watch On</h3>
+        <div class="platforms">
+          <a href="#" class="platform-link">
+            <span class="platform-icon">📹</span>
+            <div>
+              <div class="platform-name">YouTube</div>
+              <div style="font-size: 0.85rem; opacity: 0.7;">@SoulfraTech</div>
+            </div>
+            <span class="platform-status">Soon</span>
+          </a>
+
+          <a href="#" class="platform-link">
+            <span class="platform-icon">🎮</span>
+            <div>
+              <div class="platform-name">Twitch</div>
+              <div style="font-size: 0.85rem; opacity: 0.7;">/soulfratv</div>
+            </div>
+            <span class="platform-status">Soon</span>
+          </a>
+
+          <a href="#" class="platform-link">
+            <span class="platform-icon">𝕏</span>
+            <div>
+              <div class="platform-name">X (Twitter)</div>
+              <div style="font-size: 0.85rem; opacity: 0.7;">@soulfra</div>
+            </div>
+            <span class="platform-status">Soon</span>
+          </a>
+
+          <a href="https://github.com/Soulfra" target="_blank" class="platform-link">
+            <span class="platform-icon">💻</span>
+            <div>
+              <div class="platform-name">GitHub</div>
+              <div style="font-size: 0.85rem; opacity: 0.7;">/Soulfra</div>
+            </div>
+            <span class="platform-status">✓ Live</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="panel">
+        <h3>📈 Live Stats</h3>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value" id="totalRecordings">0</div>
+            <div class="stat-label">Voice Memos</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="todayCount">0</div>
+            <div class="stat-label">Today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code -->
+      <div class="panel qr-section">
+        <h3>📱 Watch on Mobile</h3>
+        <div class="qr-code">
+          <div>QR Code<br>Coming Soon</div>
+        </div>
+        <p style="font-size: 0.9rem; opacity: 0.7;">
+          Scan to watch on your phone
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // WebSocket connection for live updates
+    let ws = null;
+    const API_URL = 'https://192.168.1.87:5001';
+
+    // Connect to live feed
+    function connectLiveFeed() {
+      // For now, poll the API. Later: upgrade to WebSocket
+      setInterval(fetchLatestMessages, 5000);
+      fetchLatestMessages();
+    }
+
+    // Fetch latest voice messages
+    async function fetchLatestMessages() {
+      try {
+        const response = await fetch(`${API_URL}/api/voice/recent?limit=10`);
+        if (!response.ok) {
+          console.log('API not available yet');
+          return;
+        }
+
+        const data = await response.json();
+        if (data.recordings) {
+          renderMessages(data.recordings);
+          updateStats(data);
+        }
+
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+      } catch (error) {
+        console.log('Waiting for backend...', error.message);
+      }
+    }
+
+    // Render messages in feed
+    function renderMessages(recordings) {
+      const feed = document.getElementById('feedMessages');
+
+      recordings.forEach(recording => {
+        const existingMessage = document.querySelector(`[data-id="${recording.id}"]`);
+        if (existingMessage) return; // Already displayed
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${recording.speaker || 'arty'}`;
+        messageDiv.dataset.id = recording.id;
+
+        const timestamp = new Date(recording.created_at).toLocaleTimeString();
+
+        messageDiv.innerHTML = `
+          <div class="message-header ${recording.speaker || 'arty'}">
+            ${recording.speaker === 'cal' ? '🤖 Cal' : '👤 Arty'}
+            <span class="message-timestamp">${timestamp}</span>
+          </div>
+          <div class="message-content">
+            ${recording.transcript || recording.transcription || 'Processing...'}
+          </div>
+        `;
+
+        feed.appendChild(messageDiv);
+        feed.scrollTop = feed.scrollHeight; // Auto-scroll
+      });
+    }
+
+    // Update stats
+    function updateStats(data) {
+      if (data.total) {
+        document.getElementById('totalRecordings').textContent = data.total;
+      }
+      if (data.today) {
+        document.getElementById('todayCount').textContent = data.today;
+      }
+    }
+
+    // Generate activity heatmap
+    function generateHeatmap() {
+      const heatmap = document.getElementById('heatmap');
+      const days = 28;
+
+      for (let i = 0; i < days; i++) {
+        const day = document.createElement('div');
+        const level = Math.floor(Math.random() * 5); // Random for demo
+        day.className = `heatmap-day level-${level}`;
+        day.title = `${days - i} days ago - ${level} recordings`;
+        heatmap.appendChild(day);
+      }
+    }
+
+    // Initialize
+    generateHeatmap();
+    connectLiveFeed();
+  </script>
+</body>
+</html>
