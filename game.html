@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra Domain Game - Daily Emoji Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .puzzle-number {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .emoji-display {
+            font-size: 5rem;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .hint {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .guess-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .guess-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .attempts {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .attempt-box {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .attempt-box.correct {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .attempt-box.wrong {
+            background: #f44336;
+            border-color: #f44336;
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+            display: block;
+        }
+
+        .result.failure {
+            background: rgba(244, 67, 54, 0.3);
+            border: 2px solid #f44336;
+            display: block;
+        }
+
+        .share-text {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-family: monospace;
+            white-space: pre-line;
+        }
+
+        .copy-btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Soulfra Domain Game</h1>
+        <p class="puzzle-number">Puzzle #<span id="puzzle-number">0</span></p>
+
+        <div class="emoji-display" id="emoji-clue">🎨</div>
+
+        <p class="hint">Guess the domain from the emoji!</p>
+
+        <input
+            type="text"
+            class="guess-input"
+            id="guess-input"
+            placeholder="Enter domain name (e.g., soulfra)"
+            autocomplete="off"
+        >
+
+        <button class="submit-btn" id="submit-btn" onclick="submitGuess()">
+            Submit Guess
+        </button>
+
+        <div class="attempts" id="attempts"></div>
+
+        <div class="result" id="result"></div>
+
+        <a href="/index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        // ALL YOUR DOMAINS - Unique emoji for each!
+        const DOMAINS = [
+            { name: 'soulfra', full: 'soulfra.com', emoji: '🌐', category: 'platform' },
+            { name: 'cringeproof', full: 'cringeproof.com', emoji: '🎪', category: 'social' },
+            { name: 'deathtodata', full: 'deathtodata.com', emoji: '🌳', category: 'privacy' },
+            { name: 'calriven', full: 'calriven.com', emoji: '🎹', category: 'writing' },
+            { name: 'stpetepros', full: 'stpetepros.com', emoji: '🏖️', category: 'local' },
+            { name: 'blamechain', full: 'blamechain.com', emoji: '⛓️', category: 'crypto' }
+        ];
+
+        // Game state
+        let attempts = [];
+        let maxAttempts = 6;
+        let currentDomain;
+        let puzzleNumber;
+        let gameOver = false;
+
+        // Get today's puzzle (deterministic based on date)
+        function getTodaysPuzzle() {
+            const today = new Date();
+            const startDate = new Date('2026-01-01');
+            const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+
+            puzzleNumber = daysSinceStart + 1;
+            const domainIndex = daysSinceStart % DOMAINS.length;
+
+            return {
+                domain: DOMAINS[domainIndex],
+                number: puzzleNumber
+            };
+        }
+
+        // Initialize game
+        function initGame() {
+            const puzzle = getTodaysPuzzle();
+            currentDomain = puzzle.domain;
+            puzzleNumber = puzzle.number;
+
+            document.getElementById('puzzle-number').textContent = puzzleNumber;
+            document.getElementById('emoji-clue').textContent = currentDomain.emoji;
+
+            // Create attempt boxes
+            const attemptsEl = document.getElementById('attempts');
+            for (let i = 0; i < maxAttempts; i++) {
+                const box = document.createElement('div');
+                box.className = 'attempt-box';
+                box.id = `attempt-${i}`;
+                attemptsEl.appendChild(box);
+            }
+
+            // Enable enter key
+            document.getElementById('guess-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitGuess();
+                }
+            });
+        }
+
+        // Submit guess
+        function submitGuess() {
+            if (gameOver) return;
+
+            const input = document.getElementById('guess-input');
+            const guess = input.value.toLowerCase().trim();
+
+            if (!guess) {
+                alert('Please enter a guess!');
+                return;
+            }
+
+            // Check if correct (match base name)
+            const isCorrect = guess === currentDomain.name || guess === currentDomain.full;
+
+            // Record attempt
+            attempts.push({
+                guess: guess,
+                correct: isCorrect
+            });
+
+            // Update attempt box
+            const attemptBox = document.getElementById(`attempt-${attempts.length - 1}`);
+            if (isCorrect) {
+                attemptBox.textContent = '✓';
+                attemptBox.classList.add('correct');
+                winGame();
+            } else {
+                attemptBox.textContent = '✗';
+                attemptBox.classList.add('wrong');
+
+                if (attempts.length >= maxAttempts) {
+                    loseGame();
+                } else {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+
+        // Win game
+        function winGame() {
+            gameOver = true;
+            const resultEl = document.getElementById('result');
+
+            const shareText = generateShareText();
+
+            resultEl.className = 'result success';
+            resultEl.innerHTML = `
+                <h2>🎉 Correct!</h2>
+                <p>You guessed <strong>${currentDomain.full}</strong> in ${attempts.length} ${attempts.length === 1 ? 'try' : 'tries'}!</p>
+                <p style="margin-top: 1rem;">Redirecting to ${currentDomain.full} in 3 seconds...</p>
+                <div class="share-text">${shareText}</div>
+                <button class="copy-btn" onclick="copyShareText()">📋 Copy Share Text</button>
+            `;
+
+            document.getElementById('guess-input').disabled = true;
+            document.getElementById('submit-btn').disabled = true;
+
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                window.location.href = `https://${currentDomain.full}`;
+            }, 3000);
+        }
+
+        // Lose game
+        function loseGame() {
+            gameOver = true;
+            const resultEl = document.getElementById('result');
+
+            resultEl.className = 'result failure';
+            resultEl.innerHTML = `
+                <h2>😔 Game Over</h2>
+                <p>The domain was <strong>${currentDomain.full}</strong></p>
+                <p style="margin-top: 1rem;">Try again tomorrow!</p>
+                <button class="copy-btn" onclick="location.reload()">🔄 Play Again</button>
+            `;
+
+            document.getElementById('guess-input').disabled = true;
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Generate share text (Wordle-style)
+        function generateShareText() {
+            let text = `Soulfra #${puzzleNumber}\n${currentDomain.emoji}\n`;
+
+            for (let i = 0; i < maxAttempts; i++) {
+                if (i < attempts.length) {
+                    text += attempts[i].correct ? '✅' : '❌';
+                } else {
+                    text += '⬜';
+                }
+            }
+
+            text += `\n\nPlay at: ${window.location.href}`;
+            return text;
+        }
+
+        // Copy share text to clipboard
+        function copyShareText() {
+            const shareText = generateShareText();
+            navigator.clipboard.writeText(shareText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                alert('Could not copy to clipboard. Please copy manually.');
+            });
+        }
+
+        // Initialize on page load
+        initGame();
+    </script>
+</body>
+</html>

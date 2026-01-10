@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CringeProof - Call out the cringe</title>
   <meta name="description" content="Authentic conversation, no performative BS">
-  <!-- Load Soulfra component system -->
-  <script src="/components/component-loader.js"></script>
   <style>
     * {
       margin: 0;
@@ -196,11 +194,185 @@
         max-width: 300px;
       }
     }
+
+    /* Soulfra Header Styles */
+    .soulfra-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .soulfra-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .soulfra-header .logo:hover {
+      opacity: 0.8;
+    }
+
+    .soulfra-header .logo-icon::before {
+      content: '🎭';
+      font-size: 1.5rem;
+    }
+
+    .soulfra-header .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .soulfra-header .nav-links li a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+      font-size: 1rem;
+    }
+
+    .soulfra-header .nav-links li a:hover {
+      opacity: 1;
+    }
+
+    .soulfra-header .dropdown {
+      position: relative;
+    }
+
+    .soulfra-header .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 0.5rem;
+      min-width: 200px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .soulfra-header .dropdown:hover .dropdown-menu,
+    .soulfra-header .dropdown-menu:hover {
+      display: block;
+    }
+
+    .soulfra-header .dropdown-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .soulfra-header .dropdown-menu a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .soulfra-header .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .soulfra-header .mobile-menu-toggle span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .soulfra-header {
+        flex-wrap: wrap;
+      }
+
+      .soulfra-header .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .soulfra-header .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 1rem;
+      }
+
+      .soulfra-header .nav-links.active {
+        display: flex;
+      }
+
+      .soulfra-header .nav-links li {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .soulfra-header .dropdown-menu {
+        position: static;
+        display: none;
+        margin-top: 0.5rem;
+        box-shadow: none;
+      }
+
+      .soulfra-header .dropdown.active .dropdown-menu {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body data-brand="cringeproof">
-  <!-- Soulfra Header Component (auto-loads) -->
-  <div data-component="header"></div>
+  <!-- Soulfra Network Universal Header Component -->
+  <nav class="soulfra-header" id="soulfra-header">
+    <a href="/" class="logo">
+      <span class="logo-icon"></span>
+      <span class="logo-text">CringeProof</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/projects.html">📁 Projects</a></li>
+      <li><a href="/domains/">🌐 Domains</a></li>
+      <li><a href="/waitlist/">📋 Waitlist</a></li>
+      <li class="dropdown">
+        <a href="#brands" class="brands-toggle">🚀 Brands ▾</a>
+        <div class="dropdown-menu">
+          <a href="https://calriven.com">📊 Calriven</a>
+          <a href="https://cringeproof.com">🎭 CringeProof</a>
+          <a href="https://deathtodata.com">🔥 DeathToData</a>
+          <a href="https://soulfra.com">💜 Soulfra</a>
+        </div>
+      </li>
+    </ul>
+    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
 
   <!-- CringeProof-specific local nav (optional) -->
   <nav class="local-nav" style="
@@ -278,15 +450,220 @@
     </section>
   </div>
 
-  <!-- Soulfra Footer Component (auto-loads) -->
-  <div data-component="footer"></div>
+  <!-- Soulfra Network Universal Footer Component -->
+  <footer class="soulfra-footer" id="soulfra-footer">
+    <div class="footer-content">
+      <nav class="footer-nav">
+        <div class="footer-section">
+          <h4>Network</h4>
+          <a href="https://calriven.com">📊 Calriven</a>
+          <a href="https://cringeproof.com">🎭 CringeProof</a>
+          <a href="https://deathtodata.com">🔥 DeathToData</a>
+          <a href="https://soulfra.com">💜 Soulfra</a>
+        </div>
+        <div class="footer-section">
+          <h4>Platform</h4>
+          <a href="/domains/">🌐 Get Subdomain</a>
+          <a href="/waitlist/">📋 Waitlist</a>
+          <a href="/projects.html">📁 Projects</a>
+          <a href="/api/docs">📚 API Docs</a>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <a href="https://github.com/soulfra">💻 GitHub</a>
+          <a href="/docs/">📖 Documentation</a>
+          <a href="/privacy">🔒 Privacy</a>
+          <a href="/terms">📜 Terms</a>
+        </div>
+      </nav>
 
-  <!-- CringeProof backend configuration for footer display -->
+      <div class="footer-bottom">
+        <p class="copyright">&copy; 2026 <span class="brand-name">CringeProof</span> Network | Built with <span class="heart">♥</span></p>
+        <p class="tech-info">
+          <span class="backend-url"></span>
+          <span class="prefix-info"></span>
+        </p>
+        <p class="attribution">Powered by GitHub Pages | Free Subdomains Available</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
+    // CringeProof backend configuration
     window.SOULFRA_CONFIG = {
       backend: 'https://192.168.1.87:5001',
       prefix: 'cp_'
     };
+
+    // Header functionality
+    (function() {
+      const header = document.getElementById('soulfra-header');
+      if (!header) return;
+
+      // Mobile menu toggle
+      const menuToggle = header.querySelector('.mobile-menu-toggle');
+      const navLinks = header.querySelector('.nav-links');
+
+      if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+          navLinks.classList.toggle('active');
+        });
+      }
+
+      // Mobile dropdown toggle
+      const dropdowns = header.querySelectorAll('.dropdown');
+      dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.brands-toggle');
+        if (toggle) {
+          toggle.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+              e.preventDefault();
+              dropdown.classList.toggle('active');
+            }
+          });
+        }
+      });
+    })();
+
+    // Footer functionality
+    (function() {
+      const footer = document.getElementById('soulfra-footer');
+      if (!footer) return;
+
+      // Display backend info if available
+      const backendUrl = footer.querySelector('.backend-url');
+      const prefixInfo = footer.querySelector('.prefix-info');
+
+      if (window.SOULFRA_CONFIG) {
+        if (backendUrl && window.SOULFRA_CONFIG.backend) {
+          backendUrl.innerHTML = `Backend: <code>${window.SOULFRA_CONFIG.backend}</code>`;
+        }
+        if (prefixInfo && window.SOULFRA_CONFIG.prefix) {
+          prefixInfo.innerHTML = ` | Prefix: <code>${window.SOULFRA_CONFIG.prefix}</code>`;
+        }
+      }
+
+      // Update year dynamically
+      const year = new Date().getFullYear();
+      const copyright = footer.querySelector('.copyright');
+      if (copyright) {
+        copyright.innerHTML = copyright.innerHTML.replace('2026', year);
+      }
+    })();
   </script>
+
+  <style>
+    /* Soulfra Footer Styles */
+    .soulfra-footer {
+      margin-top: 4rem;
+      padding: 3rem 2rem 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .soulfra-footer .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .soulfra-footer .footer-nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .soulfra-footer .footer-section h4 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    .soulfra-footer .footer-section a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      padding: 0.25rem 0;
+      font-size: 0.95rem;
+    }
+
+    .soulfra-footer .footer-section a:hover {
+      opacity: 1;
+    }
+
+    .soulfra-footer .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .soulfra-footer .footer-bottom p {
+      margin: 0.5rem 0;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .soulfra-footer .copyright {
+      font-weight: 500;
+      opacity: 0.8 !important;
+    }
+
+    .soulfra-footer .brand-name {
+      font-weight: 700;
+      color: #FF006E;
+    }
+
+    .soulfra-footer .heart {
+      color: #ff006e;
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .soulfra-footer .tech-info {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      opacity: 0.5 !important;
+    }
+
+    .soulfra-footer .tech-info code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .soulfra-footer .attribution {
+      font-size: 0.85rem;
+      opacity: 0.6 !important;
+    }
+
+    @media (max-width: 768px) {
+      .soulfra-footer {
+        padding: 2rem 1rem;
+      }
+
+      .soulfra-footer .footer-nav {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .soulfra-footer .footer-section {
+        text-align: center;
+      }
+
+      .soulfra-footer .footer-bottom p {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </body>
 </html>
