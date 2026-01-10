@@ -10,6 +10,10 @@
 
   <!-- Gist Database Integration -->
   <script src="/api/gist/database.js"></script>
+  <!-- LLM Router Integration -->
+  <script src="/api/llm/router.js"></script>
+  <!-- Domain Context Integration -->
+  <script src="/api/llm/domain-context.js"></script>
   <style>
     * {
       margin: 0;
@@ -363,7 +367,21 @@
   <!-- Header -->
   <div class="header">
     <h1>🤖 Soulfra Chat</h1>
-    <p>Chat with Ollama - Session: <span id="sessionId">Loading...</span> | Gist: <span id="gistStatus">Not synced</span></p>
+    <p>Chat with Ollama - Session: <span id="sessionId">Loading...</span> | Gist: <span id="gistStatus">Not synced</span> | Mode: <span id="modeStatus">Single</span> | Domain: <span id="domainStatus">Soulfra</span></p>
+    <select id="modelModeSelect" onchange="changeModelMode()" style="position: absolute; right: 48rem; top: 1rem; padding: 0.5rem; background: rgba(102, 126, 234, 0.2); border: 1px solid rgba(102, 126, 234, 0.4); border-radius: 6px; color: #fff; cursor: pointer;">
+      <option value="single">Single Model</option>
+      <option value="ensemble">Ensemble (All 3)</option>
+      <option value="calos">Calos Only</option>
+      <option value="soulfra">Soulfra Only</option>
+      <option value="deathtodata">DeathToData Only</option>
+    </select>
+    <select id="domainContextSelect" onchange="changeDomainContext()" style="position: absolute; right: 32rem; top: 1rem; padding: 0.5rem; background: rgba(118, 75, 162, 0.2); border: 1px solid rgba(118, 75, 162, 0.4); border-radius: 6px; color: #fff; cursor: pointer;">
+      <option value="soulfra">🔐 Soulfra (Identity)</option>
+      <option value="calriven">🤖 Calriven (AI Platform)</option>
+      <option value="deathtodata">🔍 DeathToData (Search)</option>
+      <option value="cringeproof">📊 CringeProof (Predictions)</option>
+      <option value="none">🌐 No Domain Context</option>
+    </select>
     <button onclick="syncToGist()" style="position: absolute; right: 23rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(100,200,255,0.2); border: 1px solid rgba(100,200,255,0.4); border-radius: 8px; color: #6cf; cursor: pointer;">
       ☁️ Sync Gist
     </button>
@@ -530,7 +548,10 @@
     // CONFIGURATION - DECLARE FIRST!
     // ============================================
     const OLLAMA_URL = 'http://localhost:11434';
-    const OLLAMA_MODEL = 'mistral'; // Change this to use different model
+    const OLLAMA_MODEL = 'mistral'; // Fallback model
+    let currentModelMode = 'single'; // single, ensemble, calos, soulfra, deathtodata
+    let currentDomainContext = 'soulfra'; // soulfra, calriven, deathtodata, cringeproof, none
+    let llmRouter = null; // LLM Router instance
 
     // DOM elements (set after page loads)
     let chatContainer, messageInput, sendButton, typingIndicator, ageModal, sessionIdEl;
@@ -1547,8 +1568,126 @@ JSON RESPONSE:`;
           return;
         }
 
-        // Parse conversation with Ollama (pass history for context)
+        // Route message based on current mode
+
+        // ENSEMBLE MODE - Pure Chat (no analytics display)
+        if (currentModelMode === 'ensemble' && llmRouter) {
+          console.log('🎭 Routing to ensemble (chat mode)...');
+
+          try {
+            // Pass domain context if not 'none'
+            const domain = currentDomainContext !== 'none' ? currentDomainContext : null;
+            const chatResult = await llmRouter.queryEnsemble(userMessage, { domain, injectContext: domain !== null });
+
+            if (!chatResult.success) {
+              throw new Error(chatResult.error || 'Ensemble failed');
+            }
+
+            // Display chat response
+            addMessage(chatResult.response, 'bot');
+
+            // Show ensemble info
+            const modelsUsed = chatResult.ensemble?.modelsUsed?.join(', ') || 'unknown';
+            const responseTime = chatResult.responseTime || 0;
+            addMessage(`🎭 Ensemble: ${modelsUsed} (${responseTime}ms)`, 'system');
+
+            // Log analytics to console only (for debugging)
+            console.log('📊 Analytics available in console:');
+            try {
+              const analytics = await OllamaClient.parseConversation(userMessage, conversationHistory);
+              console.log(analytics);
+              window.lastDebugData = {
+                userMessage,
+                chatResponse: chatResult.response,
+                analytics,
+                ensemble: chatResult.ensemble
+              };
+            } catch (e) {
+              console.warn('Analytics parsing failed:', e);
+            }
+
+            // Store in history
+            conversationHistory.push({
+              timestamp: new Date().toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              }),
+              message: userMessage,
+              response: chatResult.response,
+              mode: 'ensemble',
+              modelsUsed: chatResult.ensemble?.modelsUsed || []
+            });
+
+            return; // Skip normal analytics display
+
+          } catch (error) {
+            console.error('❌ Ensemble error:', error);
+            addMessage(`❌ Ensemble error: ${error.message}. Falling back to single model...`, 'system');
+            // Fall through to single model mode
+          }
+        }
+
+        // INDIVIDUAL MODEL MODE - Chat (no analytics display)
+        if (currentModelMode !== 'single' && llmRouter) {
+          const modelMap = {
+            'calos': 'creative',
+            'soulfra': 'reasoning',
+            'deathtodata': 'fast'
+          };
+          const intent = modelMap[currentModelMode] || 'fast';
+
+          console.log(`🔀 Routing to ${currentModelMode} (intent: ${intent})...`);
+
+          try {
+            // Pass domain context if not 'none'
+            const domain = currentDomainContext !== 'none' ? currentDomainContext : null;
+            const chatResult = await llmRouter.route(userMessage, { intent, requireLocal: true, domain, injectContext: domain !== null });
+
+            if (!chatResult.success) {
+              throw new Error(chatResult.error || 'Routing failed');
+            }
+
+            // Display chat response
+            addMessage(chatResult.response, 'bot');
+            addMessage(`🤖 Model: ${chatResult.model} (${chatResult.responseTime}ms)`, 'system');
+
+            // Log analytics to console
+            console.log('📊 Analytics available in console:');
+            try {
+              const analytics = await OllamaClient.parseConversation(userMessage, conversationHistory);
+              console.log(analytics);
+            } catch (e) {
+              console.warn('Analytics parsing failed:', e);
+            }
+
+            // Store in history
+            conversationHistory.push({
+              timestamp: new Date().toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              }),
+              message: userMessage,
+              response: chatResult.response,
+              mode: currentModelMode,
+              model: chatResult.model
+            });
+
+            return; // Skip normal analytics display
+
+          } catch (error) {
+            console.error('❌ Routing error:', error);
+            addMessage(`❌ Routing error: ${error.message}. Falling back to single model...`, 'system');
+            // Fall through to single model mode
+          }
+        }
+
+        // SINGLE MODEL MODE - Analytics Parser (original behavior)
         const result = await OllamaClient.parseConversation(userMessage, conversationHistory);
+        result.modelUsed = 'mistral';
 
         // Display parsed results with timestamp
         addMessage(userMessage, 'bot', result);
@@ -2003,6 +2142,64 @@ JSON RESPONSE:`;
       console.log('✅ Gist Database initialized');
     } catch (e) {
       console.warn('⚠️ Gist Database not available:', e);
+    }
+
+    // Initialize LLM Router
+    try {
+      llmRouter = new LLMRouter();
+      llmRouter.initialize().then(status => {
+        console.log('✅ LLM Router initialized:', status);
+      });
+    } catch (e) {
+      console.warn('⚠️ LLM Router not available:', e);
+    }
+
+    // Change model mode
+    function changeModelMode() {
+      const select = document.getElementById('modelModeSelect');
+      const modeStatus = document.getElementById('modeStatus');
+      currentModelMode = select.value;
+
+      const modeNames = {
+        'single': 'Single',
+        'ensemble': 'Ensemble',
+        'calos': 'Calos',
+        'soulfra': 'Soulfra',
+        'deathtodata': 'DeathToData'
+      };
+
+      modeStatus.textContent = modeNames[currentModelMode] || currentModelMode;
+      console.log('🔄 Model mode changed to:', currentModelMode);
+
+      addMessage(`🔄 Switched to ${modeNames[currentModelMode]} mode`, 'system');
+    }
+
+    // Change domain context
+    function changeDomainContext() {
+      const select = document.getElementById('domainContextSelect');
+      const domainStatus = document.getElementById('domainStatus');
+      currentDomainContext = select.value;
+
+      const domainNames = {
+        'soulfra': 'Soulfra',
+        'calriven': 'Calriven',
+        'deathtodata': 'DeathToData',
+        'cringeproof': 'CringeProof',
+        'none': 'None'
+      };
+
+      domainStatus.textContent = domainNames[currentDomainContext] || currentDomainContext;
+      console.log('🌐 Domain context changed to:', currentDomainContext);
+
+      // Show domain context info
+      if (currentDomainContext !== 'none' && window.DomainContext) {
+        const context = window.DomainContext.getContext(currentDomainContext);
+        addMessage(`🌐 Switched to ${context.name} context: ${context.tagline}`, 'system');
+        console.log(`📋 Domain: ${context.name} - ${context.tagline}`);
+        console.log(`🎯 Focus: ${context.focus.slice(0, 3).join(', ')}`);
+      } else {
+        addMessage(`🌐 Domain context disabled`, 'system');
+      }
     }
 
     // Sync to Gist

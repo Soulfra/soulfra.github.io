@@ -19,12 +19,20 @@ class LLMRouter {
     this.models = {
       // Fast models (for quick queries)
       fast: [
+        { name: 'deathtodata-model', provider: 'ollama', model: 'deathtodata-model:latest', speed: 'fast', cost: 0 },
         { name: 'ollama-mistral', provider: 'ollama', model: 'mistral', speed: 'fast', cost: 0 },
         { name: 'ollama-llama3', provider: 'ollama', model: 'llama3:latest', speed: 'fast', cost: 0 }
       ],
 
+      // Creative models (for poetic/creative responses)
+      creative: [
+        { name: 'calos-model', provider: 'ollama', model: 'calos-model:latest', speed: 'medium', cost: 0 },
+        { name: 'drseuss-model', provider: 'ollama', model: 'drseuss-model:latest', speed: 'medium', cost: 0 }
+      ],
+
       // Reasoning models (for complex analysis)
       reasoning: [
+        { name: 'soulfra-model', provider: 'ollama', model: 'soulfra-model:latest', speed: 'medium', cost: 0 },
         { name: 'ollama-deepseek', provider: 'ollama', model: 'deepseek-coder', speed: 'medium', cost: 0 },
         { name: 'openrouter-claude', provider: 'openrouter', model: 'anthropic/claude-3-sonnet', speed: 'medium', cost: 0.003 }
       ],
@@ -32,6 +40,13 @@ class LLMRouter {
       // Search models (for web-augmented queries)
       search: [
         { name: 'perplexity', provider: 'openrouter', model: 'perplexity/sonar-medium-online', speed: 'slow', cost: 0.005 }
+      ],
+
+      // Ensemble (all custom models)
+      ensemble: [
+        { name: 'calos-model', provider: 'ollama', model: 'calos-model:latest', speed: 'medium', cost: 0 },
+        { name: 'soulfra-model', provider: 'ollama', model: 'soulfra-model:latest', speed: 'medium', cost: 0 },
+        { name: 'deathtodata-model', provider: 'ollama', model: 'deathtodata-model:latest', speed: 'fast', cost: 0 }
       ]
     };
 
@@ -99,10 +114,12 @@ class LLMRouter {
       intent = 'fast',           // fast | reasoning | search
       requireLocal = false,      // Only use local Ollama
       maxCost = 0.01,           // Max cost per query
-      obfuscate = true          // Hide model source in response
+      obfuscate = true,         // Hide model source in response
+      domain = null,            // Domain context to inject
+      injectContext = true      // Whether to inject domain context
     } = options;
 
-    console.log(`🔀 Routing query (intent: ${intent})`);
+    console.log(`🔀 Routing query (intent: ${intent})${domain ? `, domain: ${domain}` : ''}`);
 
     // Get candidate models for this intent
     const candidates = this.getCandidates(intent, requireLocal, maxCost);
@@ -120,7 +137,7 @@ class LLMRouter {
     // Try each candidate in order (fallback chain)
     for (const model of candidates) {
       try {
-        const result = await this.queryModel(model, query);
+        const result = await this.queryModel(model, query, { domain, injectContext });
 
         // Update stats
         this.stats.byModel[model.name] = (this.stats.byModel[model.name] || 0) + 1;
@@ -182,13 +199,23 @@ class LLMRouter {
   }
 
   /**
-   * Query a specific model
+   * Query a specific model with optional domain context
    */
-  async queryModel(model, query) {
+  async queryModel(model, query, options = {}) {
+    const { domain = null, injectContext = true } = options;
+
+    // Inject domain context if available and requested
+    let finalQuery = query;
+    if (injectContext && domain && typeof window !== 'undefined' && window.DomainContext) {
+      const contextData = window.DomainContext.injectContext(query, domain);
+      finalQuery = contextData.fullPrompt;
+      console.log(`🌐 Injected ${domain} context into query`);
+    }
+
     if (model.provider === 'ollama') {
-      return await this.queryOllama(model, query);
+      return await this.queryOllama(model, finalQuery);
     } else if (model.provider === 'openrouter') {
-      return await this.queryOpenRouter(model, query);
+      return await this.queryOpenRouter(model, finalQuery);
     } else {
       throw new Error(`Unknown provider: ${model.provider}`);
     }
@@ -291,6 +318,104 @@ class LLMRouter {
   setOpenRouterKey(apiKey) {
     this.providers.openrouter.apiKey = apiKey;
     console.log('✅ OpenRouter API key set');
+  }
+
+  /**
+   * Query ensemble - ask all 3 custom models and synthesize
+   */
+  async queryEnsemble(query, options = {}) {
+    const { domain = null, injectContext = true } = options;
+
+    console.log(`🎭 Querying ensemble (calos + soulfra + deathtodata)${domain ? ` with ${domain} context` : ''}...`);
+
+    const models = this.models.ensemble;
+    const startTime = Date.now();
+
+    // Query all models in parallel with domain context
+    const results = await Promise.allSettled(
+      models.map(model => this.queryModel(model, query, { domain, injectContext }))
+    );
+
+    // Filter successful responses
+    const responses = results
+      .filter(r => r.status === 'fulfilled' && r.value.success)
+      .map(r => r.value);
+
+    if (responses.length === 0) {
+      console.error('❌ All ensemble models failed');
+      return {
+        success: false,
+        error: 'All ensemble models failed',
+        response: null
+      };
+    }
+
+    console.log(`✅ Got ${responses.length}/${models.length} ensemble responses`);
+
+    // Synthesize responses
+    const synthesis = await this.synthesizeResponses(responses, query);
+
+    const totalTime = Date.now() - startTime;
+
+    return {
+      success: true,
+      response: synthesis,
+      model: 'soulfra-ensemble',
+      provider: 'soulfra',
+      responseTime: totalTime,
+      cost: 0,
+      ensemble: {
+        modelsUsed: responses.map(r => r.model),
+        individualResponses: responses,
+        synthesisMethod: 'weighted-combination'
+      }
+    };
+  }
+
+  /**
+   * Synthesize multiple responses into one
+   */
+  async synthesizeResponses(responses, query) {
+    // Find responses by model type
+    const calos = responses.find(r => r.model === 'calos-model');
+    const soulfra = responses.find(r => r.model === 'soulfra-model');
+    const deathtodata = responses.find(r => r.model === 'deathtodata-model');
+
+    // If only one model responded, return it
+    if (responses.length === 1) {
+      return responses[0].response;
+    }
+
+    // Strategy: Use calos as baseline structure, enhance with others
+    let synthesis = '';
+
+    // Start with calos (creative baseline)
+    if (calos) {
+      synthesis = calos.response;
+    }
+
+    // Add soulfra depth if significantly different
+    if (soulfra && calos) {
+      const hasNewInsight = !calos.response.includes(soulfra.response.substring(0, 50));
+      if (hasNewInsight) {
+        synthesis += '\n\n💭 ' + soulfra.response;
+      }
+    }
+
+    // Add deathtodata technical details if relevant
+    if (deathtodata && (calos || soulfra)) {
+      const hasTechnicalDetails = deathtodata.response.length < 500; // Fast, concise
+      if (hasTechnicalDetails) {
+        synthesis += '\n\n⚡ ' + deathtodata.response;
+      }
+    }
+
+    // Fallback: if no synthesis strategy worked, concatenate
+    if (!synthesis) {
+      synthesis = responses.map(r => `${r.model}:\n${r.response}`).join('\n\n---\n\n');
+    }
+
+    return synthesis;
   }
 }
 
