@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:11434; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:11434 https://api.github.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
   <title>Soulfra Chat - Conversation Parser</title>
   <meta name="description" content="Chat with Ollama and parse conversations">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+
+  <!-- Gist Database Integration -->
+  <script src="/api/gist/database.js"></script>
   <style>
     * {
       margin: 0;
@@ -360,7 +363,13 @@
   <!-- Header -->
   <div class="header">
     <h1>🤖 Soulfra Chat</h1>
-    <p>Chat with Ollama - Session: <span id="sessionId">Loading...</span></p>
+    <p>Chat with Ollama - Session: <span id="sessionId">Loading...</span> | Gist: <span id="gistStatus">Not synced</span></p>
+    <button onclick="syncToGist()" style="position: absolute; right: 23rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(100,200,255,0.2); border: 1px solid rgba(100,200,255,0.4); border-radius: 8px; color: #6cf; cursor: pointer;">
+      ☁️ Sync Gist
+    </button>
+    <button onclick="loadFromGist()" style="position: absolute; right: 16rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(100,255,100,0.2); border: 1px solid rgba(100,255,100,0.4); border-radius: 8px; color: #6f6; cursor: pointer;">
+      📥 Load
+    </button>
     <button onclick="toggleDebug()" style="position: absolute; right: 9rem; top: 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); border-radius: 8px; color: white; cursor: pointer;">
       🐛 Debug
     </button>
@@ -1983,9 +1992,132 @@ JSON RESPONSE:`;
       }
     };
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // GIST DATABASE INTEGRATION
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // Initialize Gist Database
+    let gistDB;
+    try {
+      gistDB = new GistDatabase({ mockMode: false });
+      console.log('✅ Gist Database initialized');
+    } catch (e) {
+      console.warn('⚠️ Gist Database not available:', e);
+    }
+
+    // Sync to Gist
+    async function syncToGist() {
+      if (!gistDB) {
+        alert('❌ Gist Database not available');
+        return;
+      }
+
+      const statusEl = document.getElementById('gistStatus');
+      statusEl.textContent = 'Syncing...';
+      statusEl.style.color = '#fa0';
+
+      try {
+        console.log('☁️ Syncing analytics to Gist...');
+
+        // Get all local analytics
+        const transactions = AnalyticsDB.getTransactions();
+
+        if (transactions.length === 0) {
+          alert('ℹ️ No transactions to sync');
+          statusEl.textContent = 'No data';
+          statusEl.style.color = '#888';
+          return;
+        }
+
+        // Save each transaction to Gist
+        let synced = 0;
+        for (const txn of transactions) {
+          await gistDB.saveTransaction(txn, 'soulfra');
+          synced++;
+        }
+
+        // Get stats
+        const stats = await gistDB.getStats('soulfra');
+
+        statusEl.textContent = `Synced ${synced} transactions`;
+        statusEl.style.color = '#0f0';
+
+        alert(`✅ Synced ${synced} transactions to Gist!\n\nGist ID: ${stats.gistId}\nTotal: ${stats.totalTransactions}\nChain Valid: ${stats.chainValid}`);
+
+        console.log('✅ Sync complete:', stats);
+
+      } catch (error) {
+        console.error('❌ Sync failed:', error);
+        statusEl.textContent = 'Sync failed';
+        statusEl.style.color = '#f00';
+        alert('❌ Sync failed: ' + error.message);
+      }
+    }
+
+    // Load from Gist
+    async function loadFromGist() {
+      if (!gistDB) {
+        alert('❌ Gist Database not available');
+        return;
+      }
+
+      const statusEl = document.getElementById('gistStatus');
+      statusEl.textContent = 'Loading...';
+      statusEl.style.color = '#fa0';
+
+      try {
+        console.log('📥 Loading analytics from Gist...');
+
+        // Load transactions from Gist
+        const transactions = await gistDB.loadTransactions('soulfra');
+
+        if (transactions.length === 0) {
+          alert('ℹ️ No transactions found in Gist');
+          statusEl.textContent = 'No data';
+          statusEl.style.color = '#888';
+          return;
+        }
+
+        // Verify blockchain integrity
+        const verification = await gistDB.verifyBlockchain('soulfra');
+
+        if (!verification.valid) {
+          alert(`⚠️ Blockchain verification failed!\n\n${verification.message}`);
+          statusEl.textContent = 'Invalid chain';
+          statusEl.style.color = '#f00';
+          return;
+        }
+
+        // Load into local analytics
+        transactions.forEach(txn => {
+          if (txn.data) {
+            AnalyticsDB.saveTransaction(txn.data);
+          }
+        });
+
+        statusEl.textContent = `Loaded ${transactions.length} transactions`;
+        statusEl.style.color = '#0f0';
+
+        alert(`✅ Loaded ${transactions.length} transactions from Gist!\n\n${verification.message}`);
+
+        console.log('✅ Load complete:', verification);
+
+      } catch (error) {
+        console.error('❌ Load failed:', error);
+        statusEl.textContent = 'Load failed';
+        statusEl.style.color = '#f00';
+        alert('❌ Load failed: ' + error.message);
+      }
+    }
+
+    // Expose Gist functions globally
+    window.syncToGist = syncToGist;
+    window.loadFromGist = loadFromGist;
+
     // Log analytics commands on startup
     console.log('');
     console.log('💡 TIP: Use soulfraAnalytics.help() to see available analytics commands');
+    console.log('💡 TIP: Use syncToGist() to sync to GitHub Gist database');
     console.log('');
 
     // Initialize on load
