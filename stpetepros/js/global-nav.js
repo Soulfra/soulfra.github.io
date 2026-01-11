@@ -21,10 +21,10 @@
     let currentProId = 0;
     let currentIndex = -1;
 
-    // Detect if on professional profile page
-    const proMatch = window.location.pathname.match(/professional-(\d+)\.html/);
-    if (proMatch) {
-        currentProId = parseInt(proMatch[1]);
+    // Get current pro ID from global variable (set by export script)
+    currentProId = window.CURRENT_PRO_ID || 0;
+
+    if (currentProId > 0) {
         // Get actual professional IDs from export script (skips gaps like 17-25)
         professionalIds = window.PROFESSIONAL_IDS || [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,26];
         currentIndex = professionalIds.indexOf(currentProId);
@@ -267,6 +267,42 @@
 
             sessionStorage.setItem('stpetepros-keyboard-hint-shown', 'true');
         });
+    }
+
+    // Add swipe gesture support (mobile web standard)
+    if (currentProId > 0 && currentIndex >= 0) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+
+            const swipeThreshold = 50; // minimum swipe distance
+            const swipeDistanceX = Math.abs(touchEndX - touchStartX);
+            const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+
+            // Only trigger if horizontal swipe is dominant
+            if (swipeDistanceX > swipeDistanceY && swipeDistanceX > swipeThreshold) {
+                // Swipe left - Next professional
+                if (touchEndX < touchStartX) {
+                    const nextIndex = currentIndex < professionalIds.length - 1 ? currentIndex + 1 : 0;
+                    window.location.href = `professional-${professionalIds[nextIndex]}.html`;
+                }
+                // Swipe right - Previous professional
+                else if (touchEndX > touchStartX) {
+                    const prevIndex = currentIndex > 0 ? currentIndex - 1 : professionalIds.length - 1;
+                    window.location.href = `professional-${professionalIds[prevIndex]}.html`;
+                }
+            }
+        }, {passive: true});
     }
 
     // Add mobile navigation buttons (for touch screens)
