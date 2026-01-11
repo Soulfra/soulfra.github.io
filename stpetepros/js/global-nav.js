@@ -17,15 +17,17 @@
     };
 
     // Professional navigation (if on profile page)
-    let totalPros = 0;
+    let professionalIds = [];
     let currentProId = 0;
+    let currentIndex = -1;
 
     // Detect if on professional profile page
     const proMatch = window.location.pathname.match(/professional-(\d+)\.html/);
     if (proMatch) {
         currentProId = parseInt(proMatch[1]);
-        // Total pros injected by export script, or default to 17
-        totalPros = window.TOTAL_PROFESSIONALS || 17;
+        // Get actual professional IDs from export script (skips gaps like 17-25)
+        professionalIds = window.PROFESSIONAL_IDS || [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,26];
+        currentIndex = professionalIds.indexOf(currentProId);
     }
 
     // Global keyboard event handler
@@ -98,28 +100,31 @@
         }
 
         // Professional navigation (only on profile pages)
-        if (currentProId > 0) {
-            // Arrow Left - Previous professional
+        if (currentProId > 0 && currentIndex >= 0) {
+            // Arrow Left - Previous professional (skip gaps)
             if (key === 'ArrowLeft') {
                 e.preventDefault();
-                const prevId = currentProId > 1 ? currentProId - 1 : totalPros;
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : professionalIds.length - 1;
+                const prevId = professionalIds[prevIndex];
                 window.location.href = `professional-${prevId}.html`;
                 return;
             }
 
-            // Arrow Right - Next professional
+            // Arrow Right - Next professional (skip gaps)
             if (key === 'ArrowRight') {
                 e.preventDefault();
-                const nextId = currentProId < totalPros ? currentProId + 1 : 1;
+                const nextIndex = currentIndex < professionalIds.length - 1 ? currentIndex + 1 : 0;
+                const nextId = professionalIds[nextIndex];
                 window.location.href = `professional-${nextId}.html`;
                 return;
             }
 
-            // Number keys 1-9 - Jump to professional
+            // Number keys 1-9 - Jump to professional (by position, not ID)
             if (key >= '1' && key <= '9') {
                 e.preventDefault();
-                const targetId = parseInt(key);
-                if (targetId <= totalPros) {
+                const targetIndex = parseInt(key) - 1;
+                if (targetIndex < professionalIds.length) {
+                    const targetId = professionalIds[targetIndex];
                     window.location.href = `professional-${targetId}.html`;
                 }
                 return;
@@ -261,6 +266,95 @@
             }, 5000);
 
             sessionStorage.setItem('stpetepros-keyboard-hint-shown', 'true');
+        });
+    }
+
+    // Add mobile navigation buttons (for touch screens)
+    if (currentProId > 0 && currentIndex >= 0) {
+        window.addEventListener('load', () => {
+            const navBar = document.createElement('div');
+            navBar.style.cssText = `
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(102, 126, 234, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 15px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+                z-index: 9500;
+                gap: 10px;
+            `;
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = '← Prev';
+            prevBtn.style.cssText = `
+                background: white;
+                color: #667eea;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 16px;
+                cursor: pointer;
+                flex: 1;
+                max-width: 120px;
+            `;
+            prevBtn.onclick = () => {
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : professionalIds.length - 1;
+                window.location.href = `professional-${professionalIds[prevIndex]}.html`;
+            };
+
+            // Home button
+            const homeBtn = document.createElement('button');
+            homeBtn.innerHTML = '🏠 Home';
+            homeBtn.style.cssText = `
+                background: rgba(255,255,255,0.3);
+                color: white;
+                border: 2px solid white;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 16px;
+                cursor: pointer;
+                flex: 1;
+                max-width: 120px;
+            `;
+            homeBtn.onclick = () => {
+                window.location.href = 'index.html';
+            };
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = 'Next →';
+            nextBtn.style.cssText = `
+                background: white;
+                color: #667eea;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 16px;
+                cursor: pointer;
+                flex: 1;
+                max-width: 120px;
+            `;
+            nextBtn.onclick = () => {
+                const nextIndex = currentIndex < professionalIds.length - 1 ? currentIndex + 1 : 0;
+                window.location.href = `professional-${professionalIds[nextIndex]}.html`;
+            };
+
+            navBar.appendChild(prevBtn);
+            navBar.appendChild(homeBtn);
+            navBar.appendChild(nextBtn);
+            document.body.appendChild(navBar);
+
+            // Add padding to body so content doesn't hide under nav bar
+            document.body.style.paddingBottom = '80px';
         });
     }
 

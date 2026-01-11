@@ -26,13 +26,20 @@
      */
     async function checkAuthStatus() {
         try {
+            // Set timeout to avoid hanging on unreachable backend
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+
             const response = await fetch(`${FLASK_API}/api/auth/check`, {
                 method: 'GET',
                 credentials: 'include', // Send cookies
                 headers: {
                     'Accept': 'application/json'
-                }
+                },
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 const data = await response.json();
@@ -42,7 +49,8 @@
                     tier: data.tier || 'free',
                     tokens: data.tokens || 0,
                     userId: data.user_id || null,
-                    loading: false
+                    loading: false,
+                    backendAvailable: true
                 };
 
                 // Trigger event for other scripts to react
@@ -55,18 +63,23 @@
             } else {
                 // Not logged in
                 window.soulfraAuth.loading = false;
+                window.soulfraAuth.backendAvailable = true;
                 document.dispatchEvent(new CustomEvent('soulfra:auth-ready', {
                     detail: window.soulfraAuth
                 }));
             }
         } catch (error) {
-            // Flask backend not available - static mode only
-            console.log('Flask backend not available - running in static mode');
+            // Flask backend not available - static mode only (SILENT FAIL)
+            // Don't show any errors to user - just work as static site
             window.soulfraAuth.loading = false;
             window.soulfraAuth.backendAvailable = false;
             document.dispatchEvent(new CustomEvent('soulfra:auth-ready', {
                 detail: window.soulfraAuth
             }));
+            // Don't log to console in production to avoid scaring users
+            if (window.location.hostname === 'localhost' || window.location.hostname.includes('.local')) {
+                console.log('Flask backend not reachable - running in static mode');
+            }
         }
     }
 
