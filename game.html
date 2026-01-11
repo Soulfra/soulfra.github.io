@@ -223,9 +223,15 @@
 
         // Get today's puzzle (deterministic based on date)
         function getTodaysPuzzle() {
+            // Use UTC to ensure same puzzle worldwide regardless of timezone
             const today = new Date();
-            const startDate = new Date('2026-01-01');
-            const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+            const utcYear = today.getUTCFullYear();
+            const utcMonth = today.getUTCMonth();
+            const utcDate = today.getUTCDate();
+            const todayUTC = new Date(Date.UTC(utcYear, utcMonth, utcDate));
+
+            const startDate = new Date(Date.UTC(2026, 0, 1)); // Jan 1, 2026 UTC
+            const daysSinceStart = Math.floor((todayUTC - startDate) / (1000 * 60 * 60 * 24));
 
             puzzleNumber = daysSinceStart + 1;
             const domainIndex = daysSinceStart % DOMAINS.length;
