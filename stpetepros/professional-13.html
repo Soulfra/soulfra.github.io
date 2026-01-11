@@ -127,7 +127,72 @@
             color: #666;
             font-size: 0.9rem;
         }
+
+        .nav-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
     </style>
+    <script>
+        // Keyboard Navigation
+        const totalPros = 16;
+        const currentProId = 13;
+
+        document.addEventListener('keydown', (e) => {
+            // Arrow Left - Previous professional
+            if (e.key === 'ArrowLeft') {
+                const prevId = currentProId > 1 ? currentProId - 1 : totalPros;
+                window.location.href = `professional-${prevId}.html`;
+            }
+
+            // Arrow Right - Next professional
+            if (e.key === 'ArrowRight') {
+                const nextId = currentProId < totalPros ? currentProId + 1 : 1;
+                window.location.href = `professional-${nextId}.html`;
+            }
+
+            // Escape - Back to directory
+            if (e.key === 'Escape') {
+                window.location.href = 'index.html';
+            }
+
+            // Number keys 1-9 - Jump to professional
+            if (e.key >= '1' && e.key <= '9') {
+                const targetId = parseInt(e.key);
+                if (targetId <= totalPros) {
+                    window.location.href = `professional-${targetId}.html`;
+                }
+            }
+
+            // 0 - Back to directory
+            if (e.key === '0') {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Show navigation hint on first load
+        window.addEventListener('load', () => {
+            const hint = document.createElement('div');
+            hint.className = 'nav-hint';
+            hint.innerHTML = '← → Navigate | Esc Home | 1-9 Jump';
+            document.body.appendChild(hint);
+            setTimeout(() => hint.remove(), 3000);
+        });
+    </script>
 </head>
 <body>
     <div class="container">
