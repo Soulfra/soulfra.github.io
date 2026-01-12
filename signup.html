@@ -285,30 +285,58 @@
       btn.disabled = true;
       btn.textContent = 'Creating account...';
 
-      // Create account object
-      const account = {
-        name,
-        email,
-        plan,
-        use_case,
-        createdAt: new Date().toISOString(),
-        id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
-      };
+      try {
+        // Call real signup API
+        const response = await fetch('http://localhost:5050/api/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            plan,
+            use_case
+          })
+        });
 
-      // Save to localStorage (client-side database)
-      localStorage.setItem('soulfra_account', JSON.stringify(account));
+        const result = await response.json();
 
-      console.log('✅ Account created:', account);
-      console.log('💾 Saved to localStorage["soulfra_account"]');
+        if (!result.success) {
+          // Handle error
+          btn.disabled = false;
+          btn.textContent = 'Create Account';
+          alert(`Error: ${result.error.message || 'Signup failed'}`);
+          return;
+        }
 
-      // Show success and redirect to dashboard
-      document.getElementById('signupForm').style.display = 'none';
-      document.getElementById('successMessage').classList.add('show');
+        // Save account + API key to localStorage for dashboard
+        const account = {
+          ...result.data.user,
+          apiKey: result.data.apiKey,
+          use_case
+        };
+        localStorage.setItem('soulfra_account', JSON.stringify(account));
 
-      // Redirect to dashboard after 2 seconds
-      setTimeout(() => {
-        window.location.href = '/dashboard.html';
-      }, 2000);
+        console.log('✅ Account created:', result.data.user);
+        console.log('🔑 API Key:', result.data.apiKey);
+        console.log('💾 Saved to localStorage["soulfra_account"]');
+
+        // Show success and redirect to dashboard
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('successMessage').classList.add('show');
+
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 2000);
+
+      } catch (error) {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+        console.error('Signup error:', error);
+        alert('Failed to create account. Make sure the backend is running on port 5050.');
+      }
     });
   </script>
 </body>
