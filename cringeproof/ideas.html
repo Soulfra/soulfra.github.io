@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CringeProof - Idea Compiler</title>
+
+  <!-- Knowledge Graph & Router -->
+  <script src="/lib/knowledge-graph.js"></script>
+  <script src="/lib/domain-router.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -263,6 +268,173 @@
       margin-bottom: 8px;
       opacity: 0.9;
     }
+
+    /* Knowledge Graph Search */
+    .knowledge-search {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      border-radius: 8px;
+      border: 2px solid rgba(155, 89, 182, 0.3);
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(155, 89, 182, 0.8);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0.6;
+    }
+
+    .search-results {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .search-results.active {
+      display: block;
+    }
+
+    .search-result-item {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .search-result-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+
+    .result-type {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      margin-right: 8px;
+      background: rgba(155, 89, 182, 0.5);
+    }
+
+    .result-name {
+      font-weight: bold;
+      color: #00C49A;
+      margin-bottom: 5px;
+    }
+
+    .result-meta {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .related-concepts {
+      background: rgba(0, 196, 154, 0.1);
+      border-left: 3px solid #00C49A;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .related-concepts-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #00C49A;
+    }
+
+    .concept-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(155, 89, 182, 0.3);
+      border-radius: 12px;
+      margin: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .concept-tag:hover {
+      background: rgba(155, 89, 182, 0.6);
+      transform: scale(1.05);
+    }
+
+    .routing-hint {
+      background: rgba(106, 13, 173, 0.2);
+      border-left: 3px solid #6a0dad;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .routing-hint-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #9B59B6;
+    }
+
+    .routing-action {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(106, 13, 173, 0.6);
+      border-radius: 6px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .routing-action:hover {
+      background: rgba(106, 13, 173, 0.9);
+      transform: scale(1.05);
+    }
+
+    .kg-stats {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .kg-stat {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .kg-stat-value {
+      font-weight: bold;
+      color: #00C49A;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -271,6 +443,34 @@
       <h1>🧠 Idea Compiler</h1>
       <p class="tagline">Voice Memos → Organized Ideas</p>
     </header>
+
+    <!-- Knowledge Graph Search -->
+    <div class="knowledge-search">
+      <div class="search-input-wrapper">
+        <input
+          type="text"
+          class="search-input"
+          id="kgSearch"
+          placeholder="Search 43,772 concepts from 1,935 historical docs..."
+          autocomplete="off"
+        />
+        <div class="search-icon">🔍</div>
+      </div>
+
+      <div class="search-results" id="searchResults"></div>
+
+      <div class="kg-stats" id="kgStats" style="display: none;">
+        <div class="kg-stat">
+          <span class="kg-stat-value" id="kgDocs">0</span> documents
+        </div>
+        <div class="kg-stat">
+          <span class="kg-stat-value" id="kgConcepts">0</span> concepts
+        </div>
+        <div class="kg-stat">
+          <span class="kg-stat-value" id="kgConnections">0</span> connections
+        </div>
+      </div>
+    </div>
 
     <div class="stats">
       <div class="stat">
@@ -334,7 +534,7 @@
 
   <script>
     const API_URL = window.location.hostname === 'localhost'
-      ? 'http://localhost:3002'
+      ? 'http://localhost:5050'
       : 'https://api.soulfra.com';
 
     let memos = [];
@@ -354,6 +554,11 @@
     async function loadMemos() {
       try {
         const response = await fetch(`${API_URL}/api/cringeproof/voice/list`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
         const apiMemos = await response.json();
 
         // Load organization data
@@ -375,7 +580,15 @@
         console.log(`📼 Loaded ${memos.length} memos`);
         renderMemos();
       } catch (error) {
-        console.error('Failed to load memos:', error);
+        console.warn('⚠️  Could not load memos from API:', error.message);
+        console.log('💡 Knowledge Graph is still available for searching historical concepts');
+
+        // Show zero state
+        memos = [];
+        renderMemos();
+
+        // Show helpful message
+        showDemoMode();
       }
     }
 
@@ -480,7 +693,252 @@
     }
 
     // Load memos on page load
-    window.addEventListener('DOMContentLoaded', loadMemos);
+    window.addEventListener('DOMContentLoaded', async () => {
+      await initKnowledgeGraph();
+      loadMemos();
+    });
+
+    // ========================================
+    // Knowledge Graph Integration
+    // ========================================
+
+    let kgLoaded = false;
+
+    async function initKnowledgeGraph() {
+      try {
+        console.log('🧠 Initializing Knowledge Graph...');
+
+        // Load knowledge graph
+        await window.KnowledgeGraph.load();
+
+        // Initialize domain router
+        await window.DomainRouter.init();
+
+        kgLoaded = true;
+
+        // Display stats
+        const stats = window.KnowledgeGraph.getStats();
+        document.getElementById('kgDocs').textContent = stats.totalDocs.toLocaleString();
+        document.getElementById('kgConcepts').textContent = stats.totalConcepts.toLocaleString();
+        document.getElementById('kgConnections').textContent = stats.connections.total.toLocaleString();
+        document.getElementById('kgStats').style.display = 'flex';
+
+        console.log('✅ Knowledge Graph ready');
+      } catch (error) {
+        console.error('❌ Failed to load Knowledge Graph:', error);
+      }
+    }
+
+    // Search knowledge graph
+    let searchTimeout = null;
+    document.getElementById('kgSearch').addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+
+      // Clear previous timeout
+      if (searchTimeout) clearTimeout(searchTimeout);
+
+      if (query.length < 2) {
+        document.getElementById('searchResults').classList.remove('active');
+        return;
+      }
+
+      // Debounce search (wait 300ms after typing stops)
+      searchTimeout = setTimeout(() => {
+        performKGSearch(query);
+      }, 300);
+    });
+
+    function performKGSearch(query) {
+      if (!kgLoaded) {
+        console.warn('Knowledge Graph not loaded yet');
+        return;
+      }
+
+      console.log(`🔍 Searching: "${query}"`);
+
+      const results = window.KnowledgeGraph.search(query, {
+        limit: 10,
+        type: 'all'
+      });
+
+      displaySearchResults(results);
+    }
+
+    function displaySearchResults(results) {
+      const container = document.getElementById('searchResults');
+
+      if (results.metadata.totalResults === 0) {
+        container.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 20px;">No results found</div>';
+        container.classList.add('active');
+        return;
+      }
+
+      let html = '';
+
+      // Display concepts
+      if (results.concepts.length > 0) {
+        html += '<div style="margin-bottom: 20px;">';
+        html += '<div style="font-weight: bold; margin-bottom: 10px; opacity: 0.8;">📚 Concepts</div>';
+        results.concepts.slice(0, 5).forEach(concept => {
+          html += `
+            <div class="search-result-item" onclick="exploreConceptsFromSearch('${concept.name}')">
+              <div class="result-type">concept</div>
+              <div class="result-name">${concept.name}</div>
+              <div class="result-meta">
+                Found in ${concept.documents.length} document(s) |
+                Relevance: ${(concept.relevance * 100).toFixed(0)}%
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      // Display documents
+      if (results.documents.length > 0) {
+        html += '<div style="margin-bottom: 20px;">';
+        html += '<div style="font-weight: bold; margin-bottom: 10px; opacity: 0.8;">📄 Documents</div>';
+        results.documents.slice(0, 3).forEach(doc => {
+          html += `
+            <div class="search-result-item">
+              <div class="result-type">document</div>
+              <div class="result-name">${doc.filename}</div>
+              <div class="result-meta">
+                ${doc.path} |
+                Modified: ${new Date(doc.modified).toLocaleDateString()}
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      // Add routing hint
+      const routingHint = window.DomainRouter.route(results.metadata.query);
+      if (routingHint.primary.score > 0.3) {
+        html += `
+          <div class="routing-hint">
+            <div class="routing-hint-title">💡 This topic relates to: ${routingHint.primary.domain}</div>
+            <div>${routingHint.primary.config.description}</div>
+            <div class="routing-action" onclick="DomainRouter.navigate('${routingHint.primary.config.paths[0]}')">
+              Go to ${routingHint.primary.domain} →
+            </div>
+          </div>
+        `;
+      }
+
+      html += `
+        <div style="margin-top: 15px; text-align: center; opacity: 0.6; font-size: 0.85rem;">
+          Found ${results.metadata.totalResults} result(s) in ${results.metadata.searchTime.toFixed(0)}ms
+        </div>
+      `;
+
+      container.innerHTML = html;
+      container.classList.add('active');
+    }
+
+    function exploreConcept(conceptName) {
+      console.log(`🔎 Exploring concept: "${conceptName}"`);
+
+      if (!kgLoaded) return;
+
+      // Get related concepts
+      const related = window.KnowledgeGraph.getRelatedConcepts(conceptName, {
+        limit: 8,
+        minStrength: 2
+      });
+
+      // Display in search results
+      let html = `
+        <div style="margin-bottom: 20px;">
+          <div style="font-weight: bold; margin-bottom: 10px; color: #00C49A; font-size: 1.1rem;">
+            🌐 Concept: ${conceptName}
+          </div>
+
+          ${related.length > 0 ? `
+            <div class="related-concepts">
+              <div class="related-concepts-title">Related Concepts</div>
+              <div>
+                ${related.map(r => `
+                  <span class="concept-tag" onclick="exploreConcept('${r.concept}')">
+                    ${r.concept} (${r.strength})
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : '<div style="opacity: 0.6;">No related concepts found</div>'}
+        </div>
+      `;
+
+      document.getElementById('searchResults').innerHTML = html;
+      document.getElementById('searchResults').classList.add('active');
+    }
+
+    // Wrapper to avoid naming conflicts
+    function exploreConceptFromSearch(conceptName) {
+      exploreConcept(conceptName);
+    }
+
+    // Add related concepts to memo cards
+    function enhanceMemoWithKG(memo) {
+      if (!kgLoaded) return '';
+
+      const searchQuery = memo.title || memo.transcript || '';
+      if (!searchQuery) return '';
+
+      const results = window.KnowledgeGraph.search(searchQuery, {
+        limit: 3,
+        type: 'concepts'
+      });
+
+      if (results.concepts.length === 0) return '';
+
+      return `
+        <div class="related-concepts">
+          <div class="related-concepts-title">📚 Related Historical Concepts</div>
+          <div>
+            ${results.concepts.map(c => `
+              <span class="concept-tag" onclick="exploreConcept('${c.name}')">
+                ${c.name}
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+      const searchContainer = document.querySelector('.knowledge-search');
+      const searchInput = document.getElementById('kgSearch');
+
+      if (!searchContainer.contains(e.target) && e.target !== searchInput) {
+        document.getElementById('searchResults').classList.remove('active');
+      }
+    });
+
+    // Demo mode: Show when no memos are available
+    function showDemoMode() {
+      const searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = `
+        <div style="text-align: center; padding: 30px;">
+          <div style="font-size: 2rem; margin-bottom: 15px;">🧠</div>
+          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #00C49A;">
+            Knowledge Graph Ready!
+          </div>
+          <div style="opacity: 0.8; margin-bottom: 20px;">
+            No voice memos loaded yet, but you can still search 43,772 concepts from 1,935 historical documents.
+          </div>
+          <div style="opacity: 0.7; font-size: 0.9rem;">
+            Try searching for: "authentication", "payment", "user", "api", etc.
+          </div>
+          <div style="margin-top: 20px; padding: 15px; background: rgba(155, 89, 182, 0.1); border-radius: 8px; font-size: 0.85rem;">
+            💡 To add voice memos, record at <a href="/voice/record.html" style="color: #00C49A;">/voice/record.html</a>
+          </div>
+        </div>
+      `;
+      searchResults.classList.add('active');
+    }
   </script>
 </body>
 </html>
