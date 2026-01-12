@@ -285,30 +285,30 @@
       btn.disabled = true;
       btn.textContent = 'Creating account...';
 
-      try {
-        // Store in Google Sheets via backend
-        const response = await fetch('http://localhost:5001/api/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, plan, use_case })
-        });
+      // Create account object
+      const account = {
+        name,
+        email,
+        plan,
+        use_case,
+        createdAt: new Date().toISOString(),
+        id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
+      };
 
-        if (response.ok) {
-          // Show success message
-          document.getElementById('signupForm').style.display = 'none';
-          document.getElementById('successMessage').classList.add('show');
-        } else {
-          const error = await response.json();
-          alert('Signup failed: ' + (error.message || 'Unknown error'));
-          btn.disabled = false;
-          btn.textContent = 'Create Account';
-        }
-      } catch (error) {
-        // Fallback: Show success anyway (for demo)
-        console.error('Backend not running, showing demo success');
-        document.getElementById('signupForm').style.display = 'none';
-        document.getElementById('successMessage').classList.add('show');
-      }
+      // Save to localStorage (client-side database)
+      localStorage.setItem('soulfra_account', JSON.stringify(account));
+
+      console.log('✅ Account created:', account);
+      console.log('💾 Saved to localStorage["soulfra_account"]');
+
+      // Show success and redirect to dashboard
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('successMessage').classList.add('show');
+
+      // Redirect to dashboard after 2 seconds
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 2000);
     });
   </script>
 </body>
