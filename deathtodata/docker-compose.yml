@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # DeathToData API Backend
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile.deathtodata
+    container_name: deathtodata-api
+    ports:
+      - "5051:5051"
+    volumes:
+      - ./deathtodata.db:/app/deathtodata.db
+      - ./api:/app/api
+    environment:
+      - NODE_ENV=production
+      - PORT=5051
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5051/api/feed"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Static Frontend (optional - can use GitHub Pages instead)
+  frontend:
+    image: nginx:alpine
+    container_name: deathtodata-frontend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./deathtodata:/usr/share/nginx/html/deathtodata
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Ollama for AI filtering (optional - requires GPU)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: deathtodata-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Comment out the deploy section if you don't have a GPU
+
+  # PostgreSQL (for production)
+  db:
+    image: postgres:15-alpine
+    container_name: deathtodata-db
+    environment:
+      - POSTGRES_DB=deathtodata
+      - POSTGRES_USER=deathtodata
+      - POSTGRES_PASSWORD=changeme
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../db/schema-postgres.sql:/docker-entrypoint-initdb.d/schema.sql
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+  postgres_data:

@@ -1,24 +1,34 @@
-# DeathToData
+# Deathtodata
 
-Search without surveillance. Deal with it, Google.
+Auto-generated professional website using local AI (Ollama).
 
-**Category**: Privacy Search
+## Files
 
-## Deployment
+- `index.html` - Landing page
+- `pitch-deck.html` - Investor pitch deck
+- `business-plan.html` - Full business plan
+- `blog/` - Blog posts (3 articles)
 
-This site is deployed to GitHub Pages.
+## View Locally
 
-Domain: https://deathtodata.com
-
-## Architecture
-
-- **Static Site**: GitHub Pages (free)
-- **API Server**: api.soulfra.com (shared)
-- **Database**: SQLite on API server
-
-## Build
-
-Generated from Soulfra multi-site generator:
 ```bash
-python3 export_static.py --brand deathtodata
+cd deathtodata
+python3 -m http.server 8080
+# Visit: http://localhost:8080
 ```
+
+## Deploy
+
+This site is ready to deploy to:
+- GitHub Pages
+- Netlify
+- Vercel
+- Any static hosting
+
+## Generated
+
+Content generated using:
+- **Ollama** (local LLM - no API costs)
+- **Domain contexts** from `api/llm/domain-context.js`
+- **Professional templates** matching existing site quality
+- **Zero external API dependencies**
