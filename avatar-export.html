@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Data Extractor - Soulfra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+
+        .upload-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 2px dashed #333;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+        }
+
+        .upload-area {
+            text-align: center;
+            cursor: pointer;
+            padding: 60px 20px;
+        }
+
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .description {
+            background: #0f0f1e;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: #0f0f1e;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            font-size: 18px;
+            padding: 20px 60px;
+            margin-top: 30px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Avatar Data Extractor</h1>
+        <p class="subtitle">Extract hex codes, colors, and metadata for rigging software</p>
+
+        <!-- Upload -->
+        <div class="upload-section">
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <p style="font-size: 64px; margin-bottom: 10px;">📸</p>
+                <p style="font-size: 24px; margin-bottom: 10px;">Upload Image</p>
+                <p style="color: #888;">Drag & drop or click to select</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/*">
+
+            <div style="text-align: center; display: none;" id="previewSection">
+                <img id="previewImg" class="preview-img">
+                <br>
+                <button class="btn" onclick="analyzeImage()">🔍 Analyze</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="font-size: 18px; color: #667eea;">Analyzing image...</p>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="results" style="display: none;">
+            <!-- Left: Description & Stats -->
+            <div>
+                <div class="card">
+                    <h2>💬 LLaVA Description</h2>
+                    <div class="description" id="description"></div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h2>📊 Image Stats</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="uniqueColors">0</div>
+                            <div class="stat-label">Unique Colors</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="totalPixels">0</div>
+                            <div class="stat-label">Total Pixels</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="dominantColor">#000</div>
+                            <div class="stat-label">Dominant Color</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <h2>🗺️ Depth Map (Beadmap)</h2>
+                    <p style="font-size: 12px; color: #888; margin-bottom: 15px;">
+                        Pseudo-depth for rigging. Brighter = closer, darker = farther
+                    </p>
+                    <img id="depthMapImg" style="width: 100%; border-radius: 10px; display: none;">
+                    <div style="font-size: 11px; color: #666; margin-top: 10px;" id="depthInfo"></div>
+                </div>
+            </div>
+
+            <!-- Right: Colors -->
+            <div>
+                <div class="card">
+                    <h2>🎨 Extracted Hex Codes</h2>
+                    <p style="font-size: 12px; color: #888; margin-bottom: 15px;">
+                        Click any color to copy hex code
+                    </p>
+                    <div class="color-palette" id="colorPalette"></div>
+                </div>
+
+                <button class="btn export-btn" onclick="exportData()">
+                    💾 Export for Rigging (JSON)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api-config.js"></script>
+    <script>
+        let currentImageData = null;
+        let analysisData = {
+            description: null,
+            colors: null,
+            depthMap: null
+        };
+
+        // File upload
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('previewSection').style.display = 'block';
+                currentImageData = e.target.result.split(',')[1]; // Remove data:image/...;base64,
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function analyzeImage() {
+            if (!currentImageData) return;
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                // Run all three analyses in parallel
+                const [descResponse, colorsResponse, depthResponse] = await Promise.all([
+                    apiCall(API_CONFIG.ENDPOINTS.avatarAnalyze, {
+                        method: 'POST',
+                        body: JSON.stringify({ imageData: currentImageData })
+                    }),
+                    apiCall(API_CONFIG.ENDPOINTS.avatarExtractColors, {
+                        method: 'POST',
+                        body: JSON.stringify({ imageData: currentImageData })
+                    }),
+                    apiCall(API_CONFIG.ENDPOINTS.avatarDepthMap, {
+                        method: 'POST',
+                        body: JSON.stringify({ imageData: currentImageData })
+                    })
+                ]);
+
+                // Store data
+                analysisData.description = descResponse.data.prompt;
+                analysisData.colors = colorsResponse.data;
+                analysisData.depthMap = depthResponse.data;
+
+                // Display results
+                displayResults();
+            } catch (error) {
+                alert(`Analysis failed: ${error.message}`);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function displayResults() {
+            // Show results section
+            document.getElementById('results').style.display = 'grid';
+
+            // Description
+            document.getElementById('description').textContent = analysisData.description;
+
+            // Stats
+            document.getElementById('uniqueColors').textContent = analysisData.colors.unique_colors;
+            document.getElementById('totalPixels').textContent = analysisData.colors.total_pixels.toLocaleString();
+            document.getElementById('dominantColor').textContent = analysisData.colors.dominant_color;
+            document.getElementById('dominantColor').style.color = analysisData.colors.dominant_color;
+
+            // Depth Map
+            if (analysisData.depthMap && analysisData.depthMap.depth_map_grid) {
+                const depthImg = document.getElementById('depthMapImg');
+                depthImg.src = analysisData.depthMap.depth_map_grid;
+                depthImg.style.display = 'block';
+
+                const depthInfo = document.getElementById('depthInfo');
+                depthInfo.innerHTML = `
+                    Method: ${analysisData.depthMap.method}<br>
+                    Range: ${analysisData.depthMap.depth_range.min.toFixed(1)} - ${analysisData.depthMap.depth_range.max.toFixed(1)}<br>
+                    Mean: ${analysisData.depthMap.depth_range.mean.toFixed(1)}
+                `;
+            }
+
+            // Color palette
+            const palette = document.getElementById('colorPalette');
+            palette.innerHTML = '';
+
+            analysisData.colors.colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.background = color.hex;
+                swatch.textContent = color.hex;
+                swatch.title = `${color.percentage}% - Click to copy`;
+                swatch.onclick = () => copyToClipboard(color.hex);
+                palette.appendChild(swatch);
+            });
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert(`Copied: ${text}`);
+        }
+
+        function exportData() {
+            if (!analysisData.description || !analysisData.colors || !analysisData.depthMap) {
+                alert('Please analyze an image first!');
+                return;
+            }
+
+            const exportData = {
+                version: '1.0',
+                timestamp: new Date().toISOString(),
+                source_image: document.getElementById('fileInput').files[0]?.name || 'uploaded_image.png',
+
+                llava_description: analysisData.description,
+
+                colors: {
+                    dominant: analysisData.colors.dominant_color,
+                    palette: analysisData.colors.palette,
+                    detailed: analysisData.colors.colors.map(c => ({
+                        hex: c.hex,
+                        rgb: c.rgb,
+                        percentage: c.percentage,
+                        name: c.name
+                    })),
+                    stats: {
+                        unique_colors: analysisData.colors.unique_colors,
+                        total_pixels: analysisData.colors.total_pixels,
+                        interesting_pixels: analysisData.colors.interesting_pixels
+                    }
+                },
+
+                depth_map: {
+                    method: analysisData.depthMap.method,
+                    depth_range: analysisData.depthMap.depth_range,
+                    resolution: analysisData.depthMap.resolution,
+                    visualizations: {
+                        colored: analysisData.depthMap.depth_map_colored,
+                        grayscale: analysisData.depthMap.depth_map_grayscale,
+                        grid_beadmap: analysisData.depthMap.depth_map_grid
+                    },
+                    note: analysisData.depthMap.note
+                },
+
+                metadata: {
+                    analyzed_at: new Date().toISOString(),
+                    tool: 'Soulfra Avatar Data Extractor',
+                    version: '1.0'
+                }
+            };
+
+            // Download as JSON
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${exportData.source_image.replace(/\..+$/, '')}_rigging_data.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ Exported rigging data!');
+        }
+    </script>
+</body>
+</html>

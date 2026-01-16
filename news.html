@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered News Feed</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      opacity: 0.6;
+      margin-bottom: 20px;
+    }
+    .refresh-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 40px;
+      transition: all 0.3s;
+    }
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    .refresh-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0.7;
+    }
+    .spinner {
+      border: 3px solid #333;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .news-item {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      transition: all 0.3s;
+    }
+    .news-item:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+    .news-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .news-title a {
+      color: #fff;
+      text-decoration: none;
+    }
+    .news-title a:hover {
+      color: #667eea;
+    }
+    .ai-summary {
+      background: #0f0f0f;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+      margin-bottom: 15px;
+    }
+    .meta {
+      font-size: 0.9rem;
+      opacity: 0.5;
+      margin-top: 10px;
+    }
+    .tag {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-right: 8px;
+    }
+    .error {
+      background: rgba(255, 50, 50, 0.2);
+      border: 1px solid rgba(255, 50, 50, 0.5);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 AI-Powered News Feed</h1>
+    <p class="subtitle" id="subtitle">Summarized by Ollama • Click refresh to load news</p>
+
+    <button class="refresh-btn" id="refreshBtn" onclick="refreshNews()">
+      🔄 Refresh News
+    </button>
+
+    <div id="newsContainer">
+      <div style="text-align: center; opacity: 0.5; padding: 60px 20px;">
+        <p style="font-size: 1.2rem;">Click the button above to load fresh news</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Takes about 20 seconds</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function refreshNews() {
+      const btn = document.getElementById('refreshBtn');
+      const container = document.getElementById('newsContainer');
+      const subtitle = document.getElementById('subtitle');
+
+      // Show loading state
+      btn.disabled = true;
+      btn.textContent = '⏳ Loading...';
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Fetching news from 5 sources...</p>
+          <p style="margin-top: 10px; opacity: 0.7;">This takes about 20 seconds</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch('http://localhost:5051/api/refresh-news', {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown error');
+        }
+
+        // Update subtitle with timestamp
+        const now = new Date().toLocaleString();
+        subtitle.textContent = `Summarized by Ollama • Updated ${now}`;
+
+        // Render news items
+        container.innerHTML = data.news.map(item => `
+          <div class="news-item">
+            <div class="news-title">
+              <a href="${item.link}" target="_blank">${item.title}</a>
+            </div>
+            <div class="ai-summary">
+              <span class="tag">AI Summary</span>
+              ${item.aiSummary}
+            </div>
+            <div class="meta">
+              Source: ${new URL(item.source).hostname} • ${new Date(item.fetchedAt).toLocaleString()}
+            </div>
+          </div>
+        `).join('');
+
+        console.log(`✅ Loaded ${data.count} news items`);
+      } catch (error) {
+        container.innerHTML = `
+          <div class="error">
+            <h3 style="margin-bottom: 10px;">❌ Error loading news</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 15px; opacity: 0.7;">Make sure the news API server is running:</p>
+            <code style="display: block; margin-top: 10px; padding: 10px; background: #000; border-radius: 4px;">
+              node api/news-api.js
+            </code>
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Refresh News';
+      }
+    }
+  </script>
+</body>
+</html>

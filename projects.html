@@ -249,31 +249,29 @@
     </div>
   </div>
 
+  <!-- Load API configuration and SDK -->
+  <script src="/api/config.js"></script>
+  <script src="/api/sdk.js"></script>
+
   <script>
-    // Fetch projects from Flask backend
+    // Initialize SDK
+    const soulfra = new SoulframSDK({ debug: false });
+
+    // Fetch projects using SDK
     async function loadProjects() {
       try {
-        const response = await fetch('https://192.168.1.87:5002/api/debug/github-repos');
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || 'Unknown error');
-        }
+        // Simple SDK call - no manual fetch, error handling is built-in
+        const repos = await soulfra.getRepos();
 
         // Update stats
-        document.getElementById('totalCount').textContent = data.total_repos;
-        document.getElementById('activeCount').textContent = data.active.length;
-        document.getElementById('experimentCount').textContent = data.experiments.length;
+        document.getElementById('totalCount').textContent = repos.total_repos;
+        document.getElementById('activeCount').textContent = repos.active.length;
+        document.getElementById('experimentCount').textContent = repos.experiments.length;
 
         // Render sections
-        renderRepos('active', data.active);
-        renderRepos('experiments', data.experiments);
-        renderRepos('archived', data.archived);
+        renderRepos('active', repos.active);
+        renderRepos('experiments', repos.experiments);
+        renderRepos('archived', repos.archived);
 
         // Hide loading
         document.getElementById('loading').style.display = 'none';
@@ -286,7 +284,8 @@
         errorDiv.innerHTML = `
           <strong>Failed to load projects</strong><br>
           ${error.message}<br><br>
-          Make sure Flask is running at https://192.168.1.87:5002
+          Make sure unified backend is running:<br>
+          <code>node api/unified-backend-v2.js</code>
         `;
       }
     }

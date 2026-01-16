@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Navigation - All Tools</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+      color: #00ff88;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(0, 255, 136, 0.05);
+      border: 2px solid #00ff88;
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .tool-card {
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 25px;
+      transition: all 0.3s;
+    }
+
+    .tool-card:hover {
+      border-color: #00ff88;
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0, 255, 136, 0.2);
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .tool-icon {
+      font-size: 36px;
+      margin-right: 15px;
+    }
+
+    .tool-title {
+      font-size: 20px;
+      color: #00ff88;
+    }
+
+    .tool-desc {
+      color: #ccc;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .tool-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .tool-link:hover {
+      background: rgba(0, 255, 136, 0.2);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-left: 10px;
+    }
+
+    .status.live {
+      background: rgba(0, 255, 136, 0.2);
+      color: #00ff88;
+    }
+
+    .status.beta {
+      background: rgba(255, 136, 0, 0.2);
+      color: #ff8800;
+    }
+
+    .domains-section {
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 25px;
+      margin-top: 40px;
+    }
+
+    .domains-section h2 {
+      color: #00ff88;
+      margin-bottom: 20px;
+    }
+
+    .domain-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .domain-item {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px solid #222;
+    }
+
+    .domain-name {
+      color: #00ff88;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .domain-path {
+      color: #666;
+      font-size: 12px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 20px;
+      color: #666;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🗺️ Soulfra Navigation</h1>
+      <p class="subtitle">All Tools & Systems in One Place</p>
+    </header>
+
+    <div class="tools-grid">
+      <!-- Pipelines -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🔧</div>
+          <div>
+            <div class="tool-title">Pipelines<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Chain Ollama models together. Multi-stage LLM workflows with domain context injection.
+        </p>
+        <a href="/pipelines/run.html" class="tool-link">→ Open Pipelines</a>
+      </div>
+
+      <!-- Voice Memos -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🎤</div>
+          <div>
+            <div class="tool-title">Voice Memos<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Record voice, transcribe with Whisper, verify with $1 payment. Creates permanent QR proof codes.
+        </p>
+        <a href="/voice/record.html" class="tool-link">→ Record Voice</a>
+      </div>
+
+      <!-- Reviews -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">⭐</div>
+          <div>
+            <div class="tool-title">Reviews<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Verified business reviews. Pay $1 for trust verification. QR-based review collection system.
+        </p>
+        <a href="/reviews/form.html" class="tool-link">→ Write Review</a>
+      </div>
+
+      <!-- Sandbox -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🧪</div>
+          <div>
+            <div class="tool-title">Sandbox<span class="status beta">BETA</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Test all systems: Story Compiler, Reasoning Engine, Soul/Cal Capsules, Session Manager.
+        </p>
+        <a href="/sandbox/test.html" class="tool-link">→ Open Sandbox</a>
+      </div>
+
+      <!-- Calriven Test Faucet -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">💧</div>
+          <div>
+            <div class="tool-title">Cal Test Faucet<span class="status beta">BETA</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Test Calriven protocol for $1. Email capture, funnel onboarding, access token generation.
+        </p>
+        <a href="/cal/test-protocol.html" class="tool-link">→ Test Protocol ($1)</a>
+      </div>
+
+      <!-- Reasoning Engine -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🧠</div>
+          <div>
+            <div class="tool-title">Reasoning Engine<span class="status beta">BETA</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          IVC (Interview Voice Coach). Word-timing mechanics force temporal experience. No judgment before comprehension.
+        </p>
+        <a href="/sandbox/test.html#reasoning" class="tool-link">→ Test in Sandbox</a>
+      </div>
+
+      <!-- Story Compiler -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">📖</div>
+          <div>
+            <div class="tool-title">Story Compiler<span class="status beta">BETA</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Compile UGC into XKCD-style narratives. RL ordering, UPC barcodes, shareable HTML exports.
+        </p>
+        <a href="/sandbox/test.html#story-compiler" class="tool-link">→ Test in Sandbox</a>
+      </div>
+
+      <!-- Session Manager -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🔐</div>
+          <div>
+            <div class="tool-title">Session Manager<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          CringeProof onboarding → Google OAuth pairing → Cookie shedding. 30-day timeout, profile links.
+        </p>
+        <a href="/sandbox/test.html#session" class="tool-link">→ Test in Sandbox</a>
+      </div>
+
+      <!-- Soul Capsules -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🌌</div>
+          <div>
+            <div class="tool-title">Soul Capsules<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Time-locked personal archives. Pipelines + voice + reflections. Epoch timestamps, .soul file exports.
+        </p>
+        <a href="/sandbox/test.html#soul" class="tool-link">→ Test in Sandbox</a>
+      </div>
+
+      <!-- Cal Capsules -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">💼</div>
+          <div>
+            <div class="tool-title">Cal Capsules<span class="status live">LIVE</span></div>
+          </div>
+        </div>
+        <p class="tool-desc">
+          Business archives. Plans + receipts + milestones. Calriven brand focused. .cal file exports.
+        </p>
+        <a href="/sandbox/test.html#cal" class="tool-link">→ Test in Sandbox</a>
+      </div>
+    </div>
+
+    <!-- Domain Routing -->
+    <div class="domains-section">
+      <h2>🌐 Domain Routing</h2>
+      <div class="domain-list">
+        <div class="domain-item">
+          <div class="domain-name">soulfra.com</div>
+          <div class="domain-path">/ (main site)</div>
+        </div>
+        <div class="domain-item">
+          <div class="domain-name">cringeproof.com</div>
+          <div class="domain-path">/cringeproof/</div>
+        </div>
+        <div class="domain-item">
+          <div class="domain-name">calriven.com</div>
+          <div class="domain-path">/calriven/</div>
+        </div>
+        <div class="domain-item">
+          <div class="domain-name">deathtodata.com</div>
+          <div class="domain-path">/deathtodata/</div>
+        </div>
+        <div class="domain-item">
+          <div class="domain-name">localhost:8000</div>
+          <div class="domain-path">/ (testing)</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Soulfra Ecosystem • All systems running on GitHub Pages</p>
+      <p style="margin-top: 10px;">
+        <a href="/docs/ROUTING_GUIDE.md" style="color: #666; text-decoration: none;">Routing Guide</a> •
+        <a href="/docs/OLLAMA_TESTING.md" style="color: #666; text-decoration: none;">Ollama Testing</a> •
+        <a href="/LLM.txt" style="color: #666; text-decoration: none;">LLM.txt</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

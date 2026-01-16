@@ -1,0 +1,58 @@
+{
+  "type": "dual-layer-artifact",
+  "timestamp": "2026-01-10T17:44:48.393Z",
+  "private": {
+    "audio": null,
+    "transcript": {
+      "contentType": "text",
+      "length": 77,
+      "bytes": 77,
+      "hashes": {
+        "sha256": "bc67448066b92a829f2bc2b978bed7a2eb477bc3d9cf9c51fd7717fa5dd68e14",
+        "md5": "7e4d001d55efb5a445ae70845ecd6db7"
+      },
+      "metadata": {
+        "capturedAt": "2026-01-10T17:44:48.393Z"
+      },
+      "preview": {
+        "first50": "Today is a beautiful day to create something amazi",
+        "last50": " create something amazing with code and creativity"
+      }
+    }
+  },
+  "public": {
+    "emojiArt": {
+      "contentType": "text",
+      "length": 39,
+      "bytes": 67,
+      "hashes": {
+        "sha256": "a49bf8287a8686aa22784a3b91feb9842e8aa41b904e04e302ef11c21e460784",
+        "md5": "fd324b483fc5566010b3dd7f935d356f"
+      },
+      "metadata": {
+        "capturedAt": "2026-01-10T17:44:48.393Z"
+      },
+      "preview": {
+        "first50": "🎪 🎵 💉 🧬 🅾️ 🎬 🕓 📡 🔬 🔤 😇 💪 🌐",
+        "last50": "🎪 🎵 💉 🧬 🅾️ 🎬 🕓 📡 🔬 🔤 😇 💪 🌐"
+      }
+    },
+    "fingerprint": "0615b0354343f60b6309b08206fa7dfeae3feed3005319685e7ca90b4ca61635",
+    "derivationProof": {
+      "algorithm": "word-emoji-sha256",
+      "seed": "soulfra-creative-2026",
+      "deterministic": true
+    }
+  },
+  "provenance": {
+    "privateToPublic": "fc78b9788b3260fdd9d1cb4110fd2d2304b119f7c84b3a5da0a16e3c7115a765",
+    "metadata": {
+      "userId": "testuser",
+      "projectName": "Morning Inspiration",
+      "publishedAt": "2026-01-10T17:44:48.393Z",
+      "processor": "soulfra-creative-engine",
+      "version": "1.0"
+    }
+  },
+  "masterSignature": "60af62ec99d1f7ee24944fb583112d74b14cd547921eb6efd7e696f8c3ec575a"
+}

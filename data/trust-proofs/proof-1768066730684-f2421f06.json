@@ -1,0 +1,19 @@
+{
+  "filePath": "index.html",
+  "fullPath": "public/final-test/index.html",
+  "size": 196,
+  "created": "2026-01-10T17:31:07.730Z",
+  "modified": "2026-01-10T17:31:07.730Z",
+  "hashes": {
+    "sha256": "cf5fc168b8a0383f71f6334dc3e597f7a3825a535d839b0822ced5af80744622",
+    "md5": "ecd1eb06e81690242b73dbbb4d8ae4f5",
+    "sha1": "1da67f84855020efcb53492d13e401a30bef62f0"
+  },
+  "metadata": {
+    "purpose": "manual-verification",
+    "createdBy": "CLI",
+    "capturedAt": "2026-01-10T17:38:50.684Z",
+    "validator": "TrustValidator v1.0"
+  },
+  "signature": "015b02182b3123cc7b1cd7ebc56d1f309d6e8a88155f8c4fccb03dd85f26b0cf"
+}

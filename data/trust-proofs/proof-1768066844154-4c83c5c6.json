@@ -1,0 +1,57 @@
+{
+  "type": "dual-layer-artifact",
+  "timestamp": "2026-01-10T17:40:44.154Z",
+  "private": {
+    "audio": null,
+    "transcript": {
+      "contentType": "text",
+      "length": 58,
+      "bytes": 58,
+      "hashes": {
+        "sha256": "adcee6e7cad28a63bb3a2806c67e8edd7bb0765a9bf8ccea45508149afad9bf2",
+        "md5": "f9011ef888ceccaf0e6f9854c07491c7"
+      },
+      "metadata": {
+        "capturedAt": "2026-01-10T17:40:44.154Z"
+      },
+      "preview": {
+        "first50": "I love creative coding and building amazing things",
+        "last50": "reative coding and building amazing things with AI"
+      }
+    }
+  },
+  "public": {
+    "emojiArt": {
+      "contentType": "text",
+      "length": 28,
+      "bytes": 49,
+      "hashes": {
+        "sha256": "395781e8f636f247b1b6dae0a7139b396aa62b00436f4e1c457800ac5c100ca9",
+        "md5": "5880b6132129a04a90d01000e86b1a77"
+      },
+      "metadata": {
+        "capturedAt": "2026-01-10T17:40:44.154Z"
+      },
+      "preview": {
+        "first50": "💪 ©️ 🌙 🎧 💪 ✨ 🔬 🌍 🔤 📱",
+        "last50": "💪 ©️ 🌙 🎧 💪 ✨ 🔬 🌍 🔤 📱"
+      }
+    },
+    "fingerprint": "38a942a3a10121915e8d7a6832d57c3e840a1dad88a470fee953f4e9c8f8c454",
+    "derivationProof": {
+      "algorithm": "word-emoji-deterministic-mapping",
+      "seed": "soulfra-creative-2026",
+      "version": "1.0"
+    }
+  },
+  "provenance": {
+    "privateToPublic": "7f46215922489cf2ebc33cfeada7d02d6a5670f9dc916e7a2cc5e08c20394a49",
+    "metadata": {
+      "userId": "test-user",
+      "projectName": "dual-layer-demo",
+      "processor": "soulfra-creative-engine",
+      "version": "1.0"
+    }
+  },
+  "masterSignature": "22ac3ed56161f0cfccecf7a237970b0c4d6c4be6dfa817f45b3cac8d29a38d91"
+}

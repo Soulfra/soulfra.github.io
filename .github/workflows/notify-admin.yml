@@ -1,0 +1,77 @@
+name: Notify Admin on Changes
+
+# Email admin when StPetePros gets updated
+# Useful for knowing when new professionals sign up
+
+on:
+  push:
+    paths:
+      - 'stpetepros/**'
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    name: Send Email Notification
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Check What Changed
+        id: changes
+        run: |
+          # Check if new professional files were added
+          NEW_FILES=$(git diff --name-only HEAD~1 HEAD | grep 'stpetepros/professional-' || echo "")
+
+          if [ -n "$NEW_FILES" ]; then
+            echo "new_professionals=true" >> $GITHUB_OUTPUT
+            echo "files=$NEW_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "new_professionals=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Email if New Professionals
+        if: steps.changes.outputs.new_professionals == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.SMTP_PORT || '587' }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: 🎉 New StPetePros Signup!
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: StPetePros Notifications <noreply@github.com>
+          body: |
+            New professional(s) added to StPetePros!
+
+            Changed files:
+            ${{ steps.changes.outputs.files }}
+
+            View live site:
+            https://soulfra.github.io/stpetepros/
+
+            GitHub commit:
+            ${{ github.event.head_commit.url }}
+
+            ---
+            This is an automated notification from GitHub Actions.
+            To disable, remove .github/workflows/notify-admin.yml
+
+      - name: Send Workflow Summary
+        run: |
+          echo "## Notification Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changes.outputs.new_professionals }}" == "true" ]; then
+            echo "✅ New professionals detected - Email sent!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Files added:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.changes.outputs.files }}" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No new professionals - Skipped email" >> $GITHUB_STEP_SUMMARY
+          fi

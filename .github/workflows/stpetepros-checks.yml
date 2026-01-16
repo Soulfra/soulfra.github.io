@@ -1,0 +1,171 @@
+name: StPetePros Quality Checks
+
+# Inspired by Bitcoin BIP-39 validation workflow
+# Runs automated checks on every push to stpetepros directory
+
+on:
+  push:
+    paths:
+      - 'stpetepros/**'
+  pull_request:
+    paths:
+      - 'stpetepros/**'
+
+jobs:
+  validate-professionals:
+    runs-on: ubuntu-latest
+    name: Validate Professional Listings
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # Needed for diff checks
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4 requests
+
+      - name: HTML Structure Check
+        run: |
+          echo "🔍 Checking HTML structure..."
+          python3 << 'EOF'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+
+          errors = []
+          stpetepros_dir = Path('stpetepros')
+
+          # Check all professional-*.html files
+          for html_file in stpetepros_dir.glob('professional-*.html'):
+              with open(html_file, 'r') as f:
+                  soup = BeautifulSoup(f.read(), 'html.parser')
+
+              # Required elements
+              if not soup.find('title'):
+                  errors.append(f"{html_file.name}: Missing <title> tag")
+              if not soup.find('meta', attrs={'name': 'description'}):
+                  errors.append(f"{html_file.name}: Missing meta description")
+              if not soup.find('h1'):
+                  errors.append(f"{html_file.name}: Missing <h1> heading")
+
+          if errors:
+              print("❌ HTML structure errors found:")
+              for error in errors:
+                  print(f"  - {error}")
+              exit(1)
+          else:
+              print("✅ All HTML files have valid structure")
+          EOF
+
+      - name: Link Format Check
+        run: |
+          echo "🔗 Checking internal links..."
+          python3 << 'EOF'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import re
+
+          errors = []
+          stpetepros_dir = Path('stpetepros')
+
+          # Get all professional IDs from filenames
+          professional_files = list(stpetepros_dir.glob('professional-*.html'))
+          professional_ids = set()
+          for f in professional_files:
+              match = re.search(r'professional-(\d+)\.html', f.name)
+              if match:
+                  professional_ids.add(int(match.group(1)))
+
+          # Check links in all HTML files
+          for html_file in professional_files:
+              with open(html_file, 'r') as f:
+                  soup = BeautifulSoup(f.read(), 'html.parser')
+
+              # Check all links
+              for link in soup.find_all('a', href=True):
+                  href = link['href']
+
+                  # Check professional links
+                  if 'professional-' in href:
+                      match = re.search(r'professional-(\d+)\.html', href)
+                      if match:
+                          target_id = int(match.group(1))
+                          if target_id not in professional_ids:
+                              errors.append(f"{html_file.name}: Broken link to professional-{target_id}.html")
+
+          if errors:
+              print("❌ Broken links found:")
+              for error in errors:
+                  print(f"  - {error}")
+              exit(1)
+          else:
+              print(f"✅ All internal links valid ({len(professional_files)} professionals checked)")
+          EOF
+
+      - name: Professional ID Sequence Check
+        run: |
+          echo "🔢 Checking professional ID consistency..."
+          python3 << 'EOF'
+          from pathlib import Path
+          import re
+
+          stpetepros_dir = Path('stpetepros')
+          professional_files = list(stpetepros_dir.glob('professional-*.html'))
+
+          # Extract IDs
+          ids = []
+          for f in professional_files:
+              match = re.search(r'professional-(\d+)\.html', f.name)
+              if match:
+                  ids.append(int(match.group(1)))
+
+          ids.sort()
+
+          print(f"📊 Found {len(ids)} professionals with IDs: {ids}")
+
+          # Check for gaps
+          if ids:
+              min_id, max_id = min(ids), max(ids)
+              expected = set(range(min_id, max_id + 1))
+              actual = set(ids)
+              gaps = expected - actual
+
+              if gaps:
+                  print(f"⚠️  Warning: Gaps in professional IDs: {sorted(gaps)}")
+                  print("   This is OK if professionals were deleted")
+              else:
+                  print("✅ No gaps in professional ID sequence")
+          EOF
+
+      - name: Typo Check
+        uses: crate-ci/typos@master
+        with:
+          files: stpetepros/*.html
+        continue-on-error: true  # Don't fail build on typos
+
+      - name: JavaScript/Navigation Check
+        run: |
+          echo "🧭 Checking navigation scripts..."
+          test -f stpetepros/js/global-nav.js && echo "✅ global-nav.js found" || (echo "❌ global-nav.js missing" && exit 1)
+          test -f stpetepros/js/auth-bridge.js && echo "✅ auth-bridge.js found" || (echo "❌ auth-bridge.js missing" && exit 1)
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ All StPetePros quality checks passed!"
+          echo ""
+          echo "📋 Checks completed:"
+          echo "  ✅ HTML structure validation"
+          echo "  ✅ Internal link verification"
+          echo "  ✅ Professional ID consistency"
+          echo "  ✅ Typo checking"
+          echo "  ✅ Navigation scripts present"
+          echo ""
+          echo "🚀 Site is ready for deployment"

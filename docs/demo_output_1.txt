@@ -1,1 +1,0 @@
-./run_destruction.sh: line 127: timeout: command not found

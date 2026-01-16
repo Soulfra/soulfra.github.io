@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Verified</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .verified-badge {
+            background: #0f0f0f;
+            border: 2px solid #00ff88;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .badge-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .badge-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: #00ff88;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .reviewer-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .rating {
+            color: #00ff88;
+            font-size: 20px;
+        }
+
+        .review-text {
+            color: #888;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .review-meta {
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+
+        .qr-section {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 30px;
+            text-align: center;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            display: inline-block;
+            padding: 15px;
+            background: white;
+        }
+
+        .proof-url {
+            margin: 20px 0;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            word-break: break-all;
+            font-size: 11px;
+            color: #888;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .verification-id {
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .error-state h2 {
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="verifiedContent" style="display: none;">
+            <h1>Review Verified</h1>
+            <p class="subtitle">Your review has been verified and published</p>
+
+            <div class="verified-badge">
+                <div class="badge-icon">✓</div>
+                <div class="badge-text">VERIFIED REVIEW</div>
+                <div style="margin-top: 10px; font-size: 12px; color: #888;">
+                    Verification ID: <span class="verification-id" id="verificationId"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="review-header">
+                    <div class="reviewer-name" id="reviewerName"></div>
+                    <div class="rating" id="reviewRating"></div>
+                </div>
+
+                <div class="review-text" id="reviewText"></div>
+
+                <div class="review-meta">
+                    Business: <span id="businessName"></span><br>
+                    Submitted: <span id="reviewTimestamp"></span>
+                </div>
+            </div>
+
+            <div class="info">
+                Your verified review is now public. Save the QR code below as proof of verification.
+            </div>
+
+            <div class="card qr-section">
+                <h2 style="margin-bottom: 20px; font-size: 18px;">Proof of Verification</h2>
+
+                <div id="qrcode"></div>
+
+                <div class="proof-url">
+                    <div style="color: #00ff88; margin-bottom: 8px;">Verification URL:</div>
+                    <div id="proofUrl"></div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="downloadProof()">Download Proof</button>
+                    <button onclick="shareProof()" class="secondary">Share</button>
+                    <button onclick="copyProofURL()" class="secondary">Copy URL</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorContent" class="error-state" style="display: none;">
+            <h2>No Review Data Found</h2>
+            <p style="color: #888; margin-bottom: 20px;">
+                This usually means the payment wasn't completed or the page was accessed directly.
+            </p>
+            <button onclick="window.location.href='/'">Go Home</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        // Get business ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const businessId = urlParams.get('business');
+
+        // Load review data from sessionStorage
+        const reviewDataStr = sessionStorage.getItem('pendingReview');
+
+        if (!reviewDataStr || !businessId) {
+            // No review data - show error
+            document.getElementById('errorContent').style.display = 'block';
+        } else {
+            try {
+                const reviewData = JSON.parse(reviewDataStr);
+
+                // Generate verification ID (timestamp + random)
+                const verificationId = `VER-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+                // Display review data
+                document.getElementById('verificationId').textContent = verificationId;
+                document.getElementById('reviewerName').textContent = reviewData.name;
+                document.getElementById('reviewRating').textContent = '★'.repeat(reviewData.rating);
+                document.getElementById('reviewText').textContent = reviewData.text;
+                document.getElementById('businessName').textContent = businessId.replace(/-/g, ' ').toUpperCase();
+                document.getElementById('reviewTimestamp').textContent = new Date(reviewData.timestamp).toLocaleString();
+
+                // Build proof URL
+                const baseUrl = window.location.origin;
+                const proofUrl = `${baseUrl}/verified.html?business=${businessId}&verify=${verificationId}`;
+
+                document.getElementById('proofUrl').textContent = proofUrl;
+
+                // Generate QR code
+                new QRCode(document.getElementById('qrcode'), {
+                    text: proofUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // Show verified content
+                document.getElementById('verifiedContent').style.display = 'block';
+
+                // Save to localStorage for persistence
+                const verifiedReviews = JSON.parse(localStorage.getItem('verifiedReviews') || '[]');
+                verifiedReviews.push({
+                    ...reviewData,
+                    verificationId,
+                    verifiedAt: new Date().toISOString(),
+                    proofUrl
+                });
+                localStorage.setItem('verifiedReviews', JSON.stringify(verifiedReviews));
+
+                // Clear pending review from session
+                sessionStorage.removeItem('pendingReview');
+
+            } catch (err) {
+                console.error('Error loading review:', err);
+                document.getElementById('errorContent').style.display = 'block';
+            }
+        }
+
+        // Download proof
+        function downloadProof() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const link = document.createElement('a');
+            link.download = `verification-proof-${businessId}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Share proof (uses Web Share API if available)
+        async function shareProof() {
+            const proofUrl = document.getElementById('proofUrl').textContent;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Verified Review Proof',
+                        text: 'My verified review',
+                        url: proofUrl
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        copyProofURL();
+                    }
+                }
+            } else {
+                copyProofURL();
+            }
+        }
+
+        // Copy proof URL
+        function copyProofURL() {
+            const proofUrl = document.getElementById('proofUrl').textContent;
+
+            navigator.clipboard.writeText(proofUrl).then(() => {
+                alert('Proof URL copied to clipboard!');
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = proofUrl;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('Proof URL copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

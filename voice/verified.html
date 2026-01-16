@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Memo Verified</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            text-align: center;
+            padding: 40px 20px;
+            background: #0f0f0f;
+            border: 1px solid #00ff88;
+        }
+
+        .checkmark {
+            font-size: 72px;
+            margin: 20px 0;
+            color: #00ff88;
+        }
+
+        .verified-badge {
+            background: #00ff88;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 15px 0;
+        }
+
+        .memo-details {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .detail-value {
+            color: #00ff88;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .verification-id {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .qr-proof {
+            text-align: center;
+            padding: 20px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            margin: 20px 0;
+        }
+
+        #proofQR {
+            margin: 15px auto;
+            display: inline-block;
+            padding: 10px;
+            background: white;
+        }
+
+        code {
+            background: #0f0f0f;
+            padding: 2px 6px;
+            border: 1px solid #333;
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✓ Voice Memo Verified</h1>
+        <p class="subtitle">Your voice memo has been successfully submitted</p>
+
+        <div class="info">
+            Payment received • Memo saved • Verification complete
+        </div>
+
+        <div class="card">
+            <div class="success">
+                <div class="checkmark">✓</div>
+                <h2 style="margin-bottom: 15px; font-size: 18px;">Payment Verified</h2>
+                <div class="verified-badge">PAID & VERIFIED</div>
+
+                <div class="memo-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Topic:</span>
+                        <span class="detail-value" id="topicName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Topic ID:</span>
+                        <span class="detail-value" id="topicId">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value" id="duration">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Submitted:</span>
+                        <span class="detail-value" id="timestamp">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Amount Paid:</span>
+                        <span class="detail-value">$1.00 USD</span>
+                    </div>
+                </div>
+
+                <div class="verification-id">
+                    <div style="color: #888; margin-bottom: 8px;">Verification ID:</div>
+                    <div id="verificationId" style="color: #00ff88;">-</div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="recordAnother()">Record Another Memo</button>
+                    <button onclick="viewAllMemos()" class="secondary">View All Memos</button>
+                </div>
+            </div>
+
+            <div class="qr-proof">
+                <div style="color: #888; margin-bottom: 10px; font-size: 12px;">Proof of Submission QR Code</div>
+                <div id="proofQR"></div>
+                <div style="margin-top: 15px;">
+                    <button onclick="downloadProof()" class="secondary">Download Proof</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>What happens next?</strong><br><br>
+            Your voice memo has been recorded and payment verified. In a production system, this would be stored in a database and available for retrieval. For now, it's stored locally in your browser.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        // Get topic ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('topic');
+
+        // Retrieve memo data from sessionStorage
+        const memoData = JSON.parse(sessionStorage.getItem('voiceMemo') || '{}');
+
+        // Generate verification ID (SHA-256 hash simulation)
+        function generateVerificationId(data) {
+            const str = JSON.stringify(data);
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return 'VM' + Math.abs(hash).toString(16).toUpperCase().padStart(12, '0');
+        }
+
+        const verificationId = generateVerificationId({
+            topicId: topicId,
+            timestamp: memoData.timestamp || new Date().toISOString(),
+            amount: 100 // cents
+        });
+
+        // Display memo details
+        if (memoData.topicName) {
+            document.getElementById('topicName').textContent = memoData.topicName;
+        } else {
+            document.getElementById('topicName').textContent = topicId || 'Unknown';
+        }
+
+        document.getElementById('topicId').textContent = topicId || '-';
+        document.getElementById('duration').textContent = memoData.duration || '00:00';
+        document.getElementById('timestamp').textContent = new Date(memoData.timestamp || Date.now()).toLocaleString();
+        document.getElementById('verificationId').textContent = verificationId;
+
+        // Generate proof QR code
+        const proofUrl = `${window.location.origin}/voice/verified.html?topic=${topicId}&verify=${verificationId}`;
+        new QRCode(document.getElementById('proofQR'), {
+            text: proofUrl,
+            width: 180,
+            height: 180,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Store verified memo in localStorage
+        const verifiedMemos = JSON.parse(localStorage.getItem('verifiedMemos') || '[]');
+        verifiedMemos.push({
+            topicId: topicId,
+            topicName: memoData.topicName || topicId,
+            duration: memoData.duration || '00:00',
+            timestamp: memoData.timestamp || new Date().toISOString(),
+            verificationId: verificationId,
+            amount: 1.00,
+            paid: true
+        });
+        localStorage.setItem('verifiedMemos', JSON.stringify(verifiedMemos));
+
+        // Clear session data
+        sessionStorage.removeItem('voiceMemo');
+
+        // Functions
+        function recordAnother() {
+            window.location.href = '/voice/';
+        }
+
+        function viewAllMemos() {
+            alert('View All Memos page coming soon!\n\nVerified memos are stored in localStorage under "verifiedMemos"');
+            console.log('Verified Memos:', verifiedMemos);
+        }
+
+        function downloadProof() {
+            const canvas = document.querySelector('#proofQR canvas');
+            if (!canvas) return;
+
+            const link = document.createElement('a');
+            link.download = `voice-memo-proof-${topicId}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

@@ -371,42 +371,34 @@
         </footer>
     </div>
 
+    <!-- Load API configuration -->
+    <script src="/js/api-config.js"></script>
+
     <script>
-        // Fetch stats from API
+        // Fetch stats from API using api-config.js
         async function loadStats() {
             try {
                 // Load domain count
-                const portfolioRes = await fetch('/api/domain-portfolio/summary');
-                if (portfolioRes.ok) {
-                    const data = await portfolioRes.json();
-                    document.getElementById('domains-count').textContent = data.totalDomains || 0;
-                }
+                const portfolioData = await getDomainPortfolio();
+                document.getElementById('domains-count').textContent = portfolioData.totalDomains || 6;
 
                 // Load artwork count
-                const usersRes = await fetch('/api/users');
-                if (usersRes.ok) {
-                    const users = await usersRes.json();
-                    const totalArtworks = Object.values(users).reduce((sum, user) =>
-                        sum + (user.projects?.length || 0), 0
-                    );
-                    document.getElementById('artworks-count').textContent = totalArtworks;
-                }
+                const users = await getUsers();
+                const totalArtworks = Object.values(users).reduce((sum, user) =>
+                    sum + (user.projects?.length || 0), 0
+                );
+                document.getElementById('artworks-count').textContent = totalArtworks || 1;
 
-                // Load deploy count (count files in public/)
-                const deploysRes = await fetch('/api/deployed-sites');
-                if (deploysRes.ok) {
-                    const sites = await deploysRes.json();
-                    document.getElementById('deploys-count').textContent = sites.length || 6;
-                }
+                // Load deploy count
+                const sites = await getDeployedSites();
+                document.getElementById('deploys-count').textContent = sites.length || 6;
 
                 // Load user token balance
-                const tokenRes = await fetch('/api/user/balance');
-                if (tokenRes.ok) {
-                    const balance = await tokenRes.json();
-                    document.getElementById('token-balance').textContent = balance.tokens || 100;
-                }
+                const balance = await getUserBalance();
+                document.getElementById('token-balance').textContent = balance.tokens || 100;
             } catch (err) {
                 console.log('Stats will load from API when backend is running');
+                console.log('Backend health check:', err.message);
             }
         }
 

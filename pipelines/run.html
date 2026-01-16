@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running AI Pipeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .pipeline-header {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pipeline-header h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .pipeline-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .pipeline-info .label {
+            color: #888;
+        }
+
+        .pipeline-info .value {
+            color: #00ff88;
+        }
+
+        .stages-container {
+            margin-top: 20px;
+        }
+
+        .stage {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .stage.running {
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .stage.completed {
+            border-color: #00ff88;
+        }
+
+        .stage.error {
+            border-color: #ff0044;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stage-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .stage-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+
+        .stage-status.pending {
+            background: #333;
+            color: #888;
+        }
+
+        .stage-status.running {
+            background: #00ff88;
+            color: #000;
+            animation: pulse 1.5s infinite;
+        }
+
+        .stage-status.completed {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .stage-status.error {
+            background: #ff0044;
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stage-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .stage-output {
+            background: #000;
+            border: 1px solid #222;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .stage-output.hidden {
+            display: none;
+        }
+
+        .stage-output.expanded {
+            max-height: none;
+        }
+
+        /* Markdown rendering styles */
+        .stage-output h1, .stage-output h2, .stage-output h3 {
+            color: #00ff88;
+            margin: 15px 0 10px 0;
+        }
+
+        .stage-output h1 {
+            font-size: 18px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .stage-output h2 {
+            font-size: 16px;
+        }
+
+        .stage-output h3 {
+            font-size: 14px;
+        }
+
+        .stage-output ul, .stage-output ol {
+            margin-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .stage-output li {
+            margin-bottom: 5px;
+        }
+
+        .stage-output code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border: 1px solid #333;
+            color: #00ff88;
+            border-radius: 3px;
+        }
+
+        .stage-output pre {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+
+        .stage-output pre code {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .stage-output strong {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .stage-output blockquote {
+            border-left: 3px solid #00ff88;
+            padding-left: 15px;
+            margin: 10px 0;
+            color: #888;
+        }
+
+        .expand-button {
+            background: transparent;
+            color: #00ff88;
+            border: 1px solid #333;
+            padding: 6px 12px;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        .expand-button:hover {
+            background: #1a1a1a;
+            border-color: #00ff88;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #222;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00ff88;
+            transition: width 0.3s;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        .export-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .export-section.hidden {
+            display: none;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #00ff88;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 AI Pipeline Execution</h1>
+        <p class="subtitle">Chaining your Ollama models together</p>
+
+        <div class="pipeline-header">
+            <h3 id="pipelineName">Loading pipeline...</h3>
+            <div class="pipeline-info">
+                <span class="label">Topic:</span>
+                <span class="value" id="topicDisplay">-</span>
+                <span class="label">Pipeline ID:</span>
+                <span class="value" id="pipelineIdDisplay">-</span>
+                <span class="label">Total Stages:</span>
+                <span class="value" id="totalStagesDisplay">-</span>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 18px;">Pipeline Stages</h2>
+                <button id="runButton" onclick="runPipeline()">▶ Run Pipeline</button>
+            </div>
+
+            <div id="stagesContainer" class="stages-container">
+                <!-- Stages will be populated here -->
+            </div>
+        </div>
+
+        <div id="exportSection" class="export-section hidden">
+            <h3 style="margin-bottom: 15px; color: #00ff88;">✓ Pipeline Complete!</h3>
+            <p style="color: #888; margin-bottom: 15px;">Export your results:</p>
+            <div class="export-buttons">
+                <button onclick="exportAs('notebook')">📓 Jupyter Notebook (.ipynb)</button>
+                <button onclick="exportAs('script')" class="secondary">🐍 Python Script (.py)</button>
+                <button onclick="exportAs('markdown')" class="secondary">📄 Markdown (.md)</button>
+                <button onclick="exportAs('json')" class="secondary">📊 JSON (.json)</button>
+            </div>
+            <div style="margin-top: 15px;">
+                <button onclick="runAgain()" class="secondary">🔄 Run Again</button>
+                <button onclick="newPipeline()" class="secondary">➕ New Pipeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="wordlist.js"></script>
+    <script src="../api/llm/domain-context.js"></script>
+    <script src="pipeline-engine.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const pipelineId = urlParams.get('pipeline');
+        const templateName = urlParams.get('template');
+        const topic = urlParams.get('topic');
+
+        const pipelineEngine = new PipelineEngine();
+        let pipelineConfig = null;
+
+        // Initialize page
+        async function init() {
+            if (!templateName || !topic) {
+                alert('Invalid pipeline URL. Missing template or topic.');
+                return;
+            }
+
+            document.getElementById('pipelineName').textContent = 'Loading pipeline...';
+            document.getElementById('topicDisplay').textContent = topic;
+            document.getElementById('pipelineIdDisplay').textContent = pipelineId;
+
+            try {
+                pipelineConfig = await pipelineEngine.initPipeline(templateName, topic);
+
+                document.getElementById('pipelineName').textContent = pipelineConfig.pipelineName;
+                document.getElementById('totalStagesDisplay').textContent = pipelineConfig.totalStages;
+
+                renderStages(pipelineConfig.stages);
+            } catch (error) {
+                console.error('Failed to initialize pipeline:', error);
+                alert('Failed to load pipeline template: ' + error.message);
+            }
+        }
+
+        // Render stage cards
+        function renderStages(stages) {
+            const container = document.getElementById('stagesContainer');
+            container.innerHTML = '';
+
+            stages.forEach((stage, i) => {
+                const stageEl = document.createElement('div');
+                stageEl.className = 'stage';
+                stageEl.id = `stage-${i}`;
+
+                stageEl.innerHTML = `
+                    <div class="stage-header">
+                        <div class="stage-title">Stage ${i + 1}: ${stage.name}</div>
+                        <div class="stage-status pending" id="status-${i}">Pending</div>
+                    </div>
+                    <div class="stage-meta">
+                        <span>Model: <strong>${stage.model}</strong></span>
+                        <span id="duration-${i}">Duration: -</span>
+                    </div>
+                    <div class="stage-output hidden" id="output-${i}"></div>
+                `;
+
+                container.appendChild(stageEl);
+            });
+        }
+
+        // Run pipeline
+        async function runPipeline() {
+            const runButton = document.getElementById('runButton');
+            runButton.disabled = true;
+            runButton.innerHTML = '⏳ Running...<span class="spinner"></span>';
+
+            document.getElementById('exportSection').classList.add('hidden');
+
+            try {
+                const result = await pipelineEngine.run(templateName, topic, {
+                    onProgress: (progress) => {
+                        updateProgress(progress);
+                    }
+                });
+
+                document.getElementById('exportSection').classList.remove('hidden');
+                runButton.innerHTML = '✓ Complete';
+
+            } catch (error) {
+                console.error('Pipeline failed:', error);
+                alert('Pipeline execution failed: ' + error.message);
+                runButton.disabled = false;
+                runButton.innerHTML = '▶ Run Pipeline';
+            }
+        }
+
+        // Update progress
+        function updateProgress(progress) {
+            const { stage, totalStages, stageName, model } = progress;
+
+            // Update progress bar
+            const percent = ((stage + 1) / totalStages) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+
+            // Mark current stage as running
+            const currentStage = document.getElementById(`stage-${stage}`);
+            const currentStatus = document.getElementById(`status-${stage}`);
+
+            currentStage.classList.add('running');
+            currentStatus.className = 'stage-status running';
+            currentStatus.textContent = 'Running...';
+
+            // Mark previous stages as completed
+            for (let i = 0; i < stage; i++) {
+                const prevStage = document.getElementById(`stage-${i}`);
+                const prevStatus = document.getElementById(`status-${i}`);
+                prevStage.classList.remove('running');
+                prevStage.classList.add('completed');
+                prevStatus.className = 'stage-status completed';
+                prevStatus.textContent = '✓ Complete';
+            }
+        }
+
+        // Pipeline complete callback (called by engine)
+        pipelineEngine.onStageComplete = function(stageIndex, result) {
+            const stageEl = document.getElementById(`stage-${stageIndex}`);
+            const statusEl = document.getElementById(`status-${stageIndex}`);
+            const outputEl = document.getElementById(`output-${stageIndex}`);
+            const durationEl = document.getElementById(`duration-${stageIndex}`);
+
+            stageEl.classList.remove('running');
+
+            if (result.output.includes('[Error:')) {
+                stageEl.classList.add('error');
+                statusEl.className = 'stage-status error';
+                statusEl.textContent = '✗ Error';
+            } else {
+                stageEl.classList.add('completed');
+                statusEl.className = 'stage-status completed';
+                statusEl.textContent = '✓ Complete';
+            }
+
+            durationEl.textContent = `Duration: ${(result.duration / 1000).toFixed(2)}s`;
+
+            outputEl.textContent = result.output;
+            outputEl.classList.remove('hidden');
+        };
+
+        // Export functions
+        function exportAs(format) {
+            try {
+                pipelineEngine.downloadExport(format);
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Export failed: ' + error.message);
+            }
+        }
+
+        function runAgain() {
+            location.reload();
+        }
+
+        function newPipeline() {
+            window.location.href = '/pipelines/';
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

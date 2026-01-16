@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .twin-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .twin-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            width: 120px;
+            color: #888;
+        }
+
+        .value {
+            color: #00ff88;
+        }
+
+        video {
+            width: 100%;
+            max-width: 600px;
+            background: #000;
+            border: 1px solid #333;
+            margin: 20px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ff4444;
+        }
+
+        .qr-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            display: inline-block;
+            padding: 10px;
+            background: white;
+        }
+
+        a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        code {
+            background: #0f0f0f;
+            padding: 2px 6px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Digital Twin Profile</h1>
+
+        <div id="loading" class="loading">
+            Loading twin data...
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            Twin not found
+        </div>
+
+        <div id="twin-content" style="display: none;">
+            <div class="twin-card">
+                <div class="twin-info">
+                    <div class="info-row">
+                        <div class="label">ID:</div>
+                        <div class="value"><code id="twin-id"></code></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">Name:</div>
+                        <div class="value" id="twin-name"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">Created:</div>
+                        <div class="value" id="twin-created"></div>
+                    </div>
+                </div>
+
+                <video id="twin-video" controls style="display: none;">
+                    Your browser does not support video playback
+                </video>
+            </div>
+
+            <div class="qr-section">
+                <h2 style="margin-bottom: 15px; font-size: 18px;">Share this Twin</h2>
+                <div id="qrcode"></div>
+                <p style="margin-top: 15px; color: #888;">
+                    Scan QR code or share: <br>
+                    <a id="share-link" href="#" target="_blank"></a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        // Get twin ID from URL
+        // Supports: /twin.html?id=abc123 or /twin/abc123
+        function getTwinID() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('id')) {
+                return params.get('id');
+            }
+
+            const pathParts = window.location.pathname.split('/');
+            const twinIndex = pathParts.indexOf('twin');
+            if (twinIndex >= 0 && pathParts[twinIndex + 1]) {
+                return pathParts[twinIndex + 1].replace('.html', '');
+            }
+
+            return null;
+        }
+
+        // Load twin data
+        async function loadTwin() {
+            const twinId = getTwinID();
+
+            if (!twinId) {
+                showError('No twin ID provided');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5050/api/twin/${twinId}`);
+
+                if (!response.ok) {
+                    showError('Twin not found');
+                    return;
+                }
+
+                const result = await response.json();
+                const twin = result.data;
+
+                // Show twin content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('twin-content').style.display = 'block';
+
+                // Fill in twin data
+                document.getElementById('twin-id').textContent = twin.id;
+                document.getElementById('twin-name').textContent = twin.name;
+                document.getElementById('twin-created').textContent = new Date(twin.createdAt).toLocaleString();
+
+                // Show video if available
+                if (twin.videoUrl) {
+                    const video = document.getElementById('twin-video');
+                    video.src = 'http://localhost:5050' + twin.videoUrl;
+                    video.style.display = 'block';
+                }
+
+                // Generate QR code
+                const shareUrl = `${window.location.origin}/twin.html?id=${twin.id}`;
+                document.getElementById('share-link').href = shareUrl;
+                document.getElementById('share-link').textContent = shareUrl;
+
+                new QRCode(document.getElementById('qrcode'), {
+                    text: shareUrl,
+                    width: 200,
+                    height: 200
+                });
+
+            } catch (err) {
+                showError('Error loading twin: ' + err.message);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        // Load on page load
+        loadTwin();
+    </script>
+</body>
+</html>

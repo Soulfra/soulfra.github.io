@@ -1,0 +1,264 @@
+{
+  "research": {
+    "name": "Research Paper Pipeline",
+    "description": "Outline → Draft → Citations → Export",
+    "stages": [
+      {
+        "id": "outline",
+        "name": "Outline Research",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Create a detailed outline for: {topic}. Include main sections, key points, and structure.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "draft",
+        "name": "Write Draft",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Using this outline:\n\n{previous}\n\nWrite a comprehensive draft covering all sections.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "citations",
+        "name": "Add Citations",
+        "model": "deathtodata-model:latest",
+        "domain": "deathtodata",
+        "prompt": "Review this draft and suggest citations/sources:\n\n{previous}",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["notebook", "markdown", "pdf"]
+  },
+
+  "code": {
+    "name": "Code Development Pipeline",
+    "description": "Planning → Implementation → Testing → Documentation",
+    "stages": [
+      {
+        "id": "planning",
+        "name": "Plan Architecture",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Plan the architecture for: {topic}. Include modules, data flow, and API design.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "implementation",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Implement this architecture:\n\n{previous}\n\nProvide working code with comments.",
+        "outputFormat": "code"
+      },
+      {
+        "id": "testing",
+        "name": "Write Tests",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Write comprehensive tests for this code:\n\n{previous}",
+        "outputFormat": "code"
+      },
+      {
+        "id": "documentation",
+        "name": "Generate Docs",
+        "model": "deathtodata-model:latest",
+        "domain": "deathtodata",
+        "prompt": "Generate documentation for:\n\n{previous}",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["notebook", "script", "markdown"]
+  },
+
+  "content": {
+    "name": "Content Creation Pipeline",
+    "description": "Brainstorm → Draft → Edit → Format",
+    "stages": [
+      {
+        "id": "brainstorm",
+        "name": "Brainstorm Ideas",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Brainstorm creative ideas for: {topic}. Generate 10 unique angles.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "draft",
+        "name": "Write Draft",
+        "model": "drseuss-model:latest",
+        "domain": "calriven",
+        "prompt": "Using these ideas:\n\n{previous}\n\nWrite an engaging piece about {topic}.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "edit",
+        "name": "Edit & Refine",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Edit and improve this draft:\n\n{previous}",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "format",
+        "name": "Format Output",
+        "model": "publishing-model:latest",
+        "domain": "calriven",
+        "prompt": "Format this for publication:\n\n{previous}",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["markdown", "html", "pdf"]
+  },
+
+  "analysis": {
+    "name": "Data Analysis Pipeline",
+    "description": "Data Review → Insights → Visualization → Report",
+    "stages": [
+      {
+        "id": "data_review",
+        "name": "Review Data",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Analyze this dataset: {topic}. Identify patterns and anomalies.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "insights",
+        "name": "Extract Insights",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Based on this analysis:\n\n{previous}\n\nProvide key insights and actionable recommendations.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "visualization",
+        "name": "Plan Visualizations",
+        "model": "visual-expert:latest",
+        "domain": "calriven",
+        "prompt": "Suggest visualizations for:\n\n{previous}\n\nInclude chart types and Python code (matplotlib/seaborn).",
+        "outputFormat": "code"
+      },
+      {
+        "id": "report",
+        "name": "Generate Report",
+        "model": "publishing-model:latest",
+        "domain": "calriven",
+        "prompt": "Create executive summary report:\n\n{previous}",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["notebook", "markdown", "pdf"]
+  },
+
+  "learning": {
+    "name": "Study Guide Pipeline",
+    "description": "Outline → Explain → Quiz → Summary",
+    "stages": [
+      {
+        "id": "outline",
+        "name": "Outline Topics",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Create study outline for: {topic}. Include all key concepts and subtopics.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "explain",
+        "name": "Detailed Explanations",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Explain these topics in detail:\n\n{previous}\n\nUse examples and analogies.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "quiz",
+        "name": "Generate Quiz",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Create quiz questions for:\n\n{previous}\n\nInclude multiple choice and short answer.",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "summary",
+        "name": "Create Summary",
+        "model": "deathtodata-model:latest",
+        "domain": "deathtodata",
+        "prompt": "Summarize key takeaways:\n\n{previous}",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["notebook", "markdown", "pdf"]
+  },
+
+  "semantic_web": {
+    "name": "Semantic Web Pipeline",
+    "description": "Content → JSON-LD → IIIF → Deploy",
+    "stages": [
+      {
+        "id": "content",
+        "name": "Create Content",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Create content about: {topic}",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "jsonld",
+        "name": "Convert to JSON-LD",
+        "model": "jsonld-expert:latest",
+        "domain": "calriven",
+        "prompt": "Convert to JSON-LD schema.org markup:\n\n{previous}",
+        "outputFormat": "json"
+      },
+      {
+        "id": "iiif",
+        "name": "IIIF Manifest",
+        "model": "iiif-expert:latest",
+        "domain": "calriven",
+        "prompt": "Generate IIIF manifest for:\n\n{previous}",
+        "outputFormat": "json"
+      }
+    ],
+    "exportFormats": ["json", "notebook", "markdown"]
+  },
+
+  "soulfra_ideas": {
+    "name": "Soulfra Ideas Pipeline",
+    "description": "ZK Proofs → Receipt System → Voice + AI → Business Plan",
+    "stages": [
+      {
+        "id": "zk_proofs",
+        "name": "Zero-Knowledge Proof Concept",
+        "model": "soulfra-model:latest",
+        "domain": "soulfra",
+        "prompt": "Explain Zero-Knowledge Proofs for: {topic}\n\nInclude:\n- What ZK proofs are and why they matter\n- How they enable verification without revealing data\n- Practical applications for receipts, reviews, and tokens\n- Technical implementation approaches (zk-SNARKs, zk-STARKs)\n- Integration possibilities with payment systems",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "receipt_system",
+        "name": "Receipt & Review System Design",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Design a $1 verified receipt and review system using these ZK proof concepts:\n\n{previous}\n\nFor the topic: {topic}\n\nInclude:\n- QR code generation for businesses/topics\n- $1 Stripe payment verification flow\n- Receipt storage and cryptographic proof generation\n- Review submission with verified badge system\n- Template CSS styling (dark theme, green accents)\n- localStorage and session management\n- Export formats for receipts (PDF, JSON, blockchain anchoring)",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "voice_ai",
+        "name": "Voice Memo + AI Assistant Integration",
+        "model": "deathtodata-model:latest",
+        "domain": "deathtodata",
+        "prompt": "Design voice memo and AI assistant integration for: {topic}\n\nBased on this receipt system:\n\n{previous}\n\nInclude:\n- Voice memo recording with QR code wrapper\n- $1 payment gate for premium voice features\n- AI assistant (Ollama models) for:\n  * Transcription and summarization\n  * Idea extraction and organization\n  * Follow-up question generation\n  * Business insight analysis\n- Token system (VFEP - Verified First Engagement Protocol)\n- Voice memo → Receipt → Token reward flow\n- Integration with existing review system",
+        "outputFormat": "markdown"
+      },
+      {
+        "id": "business_plan",
+        "name": "Complete Business Plan",
+        "model": "calos-model:latest",
+        "domain": "calriven",
+        "prompt": "Create a comprehensive business plan combining all these elements:\n\n{previous}\n\nFor: {topic}\n\nInclude:\n- Executive Summary\n- Product Architecture (ZK Proofs + Receipts + Voice + Tokens)\n- Revenue Model ($1 verification, premium features, token economy)\n- Technical Implementation Roadmap\n- Go-to-Market Strategy\n- Competitive Advantages (privacy, verification, AI integration)\n- Growth Projections\n- Next Steps and Milestones\n\nFormat as a professional business plan ready to export.",
+        "outputFormat": "markdown"
+      }
+    ],
+    "exportFormats": ["notebook", "markdown", "pdf", "json"]
+  }
+}

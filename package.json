@@ -13,7 +13,12 @@
     "test": "open test.html || xdg-open test.html",
     "serve": "python3 -m http.server 8000",
     "lint": "echo 'No linter configured yet'",
-    "clean": "rm -rf backups/*.bak && echo 'Cleaned old backups'"
+    "clean": "rm -rf backups/*.bak && echo 'Cleaned old backups'",
+    "backend": "node api/unified-backend-v2.js",
+    "frontend": "python3 -m http.server 8000",
+    "dev": "echo '🚀 Starting Soulfra dev servers...' && npm run backend & npm run frontend",
+    "ngrok": "ngrok http 5050",
+    "start": "npm run dev"
   },
   "keywords": [
     "auth",
@@ -26,8 +31,14 @@
   ],
   "author": "Matthew Mauer <matt@soulfra.com>",
   "license": "MIT",
-  "devDependencies": {},
   "engines": {
     "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4",
+    "sqlite3": "^5.1.7"
   }
 }

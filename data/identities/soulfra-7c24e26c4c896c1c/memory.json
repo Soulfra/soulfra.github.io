@@ -1,0 +1,89 @@
+{
+  "identityId": "soulfra-7c24e26c4c896c1c",
+  "conversations": [
+    {
+      "id": "ee6226c5c250f1c3",
+      "message": "Hello, can you help me?",
+      "metadata": {
+        "domain": "soulfra",
+        "expertise": {
+          "level": "intermediate",
+          "confidence": 0.33,
+          "signals": [
+            {
+              "type": "beginner_phrases",
+              "matches": [
+                "help me"
+              ]
+            }
+          ]
+        }
+      },
+      "timestamp": "2026-01-13T00:11:37.416Z"
+    },
+    {
+      "id": "c5dc4e19e6f2e4b2",
+      "message": "What is Soulfra?",
+      "response": "Soulfra, also known as sulfur hexafluoride (SF6), is a chemical compound with the formula SF6. It's an extremely potent greenhouse gas and is widely used in various industrial applications.\n\nIn the context of coding, I assume you're asking about using SF6 (not the actual gas) in programming, possibly referring to the `SoulFra` library or framework.\n\nAfter some research, I couldn't find any information on a specific \"Soulfra\" library or framework. It's possible that it's a custom or proprietary solution, or maybe it's a typo or misremembered name.\n\nIf you could provide more context or details about what you're trying to achieve with SF6 (or whatever the actual name is), I'd be happy to help you find a suitable solution or guidance on how to use it in your project.",
+      "metadata": {
+        "domain": "soulfra",
+        "expertise": {
+          "level": "intermediate",
+          "confidence": 0.33,
+          "signals": [
+            {
+              "type": "beginner_phrases",
+              "matches": [
+                "what is"
+              ]
+            }
+          ]
+        }
+      },
+      "timestamp": "2026-01-13T00:12:58.569Z"
+    },
+    {
+      "id": "1b0b1642a6454cf3",
+      "message": "test",
+      "response": "It looks like you just sent a simple \"test\" message! That's a great start!\n\nTo get started, I'd love to know what kind of help or project you're working on. Are you trying to learn a new programming language, build a specific application, or tackle a particular problem? Share some more details about your goals and challenges, and I'll do my best to assist you!",
+      "metadata": {
+        "domain": "soulfra",
+        "expertise": {
+          "level": "intermediate",
+          "confidence": 0.67,
+          "signals": [
+            {
+              "type": "intermediate_keywords",
+              "matches": [
+                "test"
+              ]
+            }
+          ]
+        }
+      },
+      "timestamp": "2026-01-13T00:19:22.388Z"
+    },
+    {
+      "id": "c0627224526778c5",
+      "message": "hello",
+      "response": "Hello! It's great to chat with you about coding. I'm here to help with any questions or problems you're facing. What can I assist you with today? Are you working on a specific project, or do you have a question about a particular programming language or concept? Let me know and I'll do my best to provide guidance and support.",
+      "metadata": {
+        "domain": "soulfra",
+        "expertise": {
+          "level": "intermediate",
+          "confidence": 1,
+          "signals": [
+            {
+              "type": "history_analysis",
+              "score": 50
+            }
+          ]
+        }
+      },
+      "timestamp": "2026-01-13T00:22:02.027Z"
+    }
+  ],
+  "learnings": [],
+  "preferences": {},
+  "createdAt": "2026-01-13T00:09:08.467Z"
+}

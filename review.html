@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave a Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .review-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            color: #00ff88;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .rating {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #333;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: #00ff88;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .business-name {
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Leave a Verified Review</h1>
+        <p class="subtitle">Pay $1 to verify your review</p>
+
+        <div class="info">
+            Reviewing: <span class="business-name" id="businessName">Loading...</span><br>
+            Your review will be verified after payment
+        </div>
+
+        <div class="review-card">
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="reviewerName" required placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="error" id="ratingError" style="display: none;">
+                        Please select a rating
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Review (10-500 characters)</label>
+                    <textarea id="reviewText" required placeholder="Share your experience..." maxlength="500"></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> / 500
+                    </div>
+                    <div class="error" id="textError" style="display: none;">
+                        Review must be at least 10 characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="price">$1.00</div>
+                    <button type="submit" id="submitBtn">
+                        Pay $1 to Verify Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get business ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const businessId = urlParams.get('business') || 'demo-business';
+
+        // Store review state
+        let selectedRating = 0;
+
+        // Update business name
+        document.getElementById('businessName').textContent =
+            businessId.replace(/-/g, ' ').toUpperCase();
+
+        // Star rating system
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.rating);
+                updateStars();
+                document.getElementById('ratingError').style.display = 'none';
+            });
+        });
+
+        function updateStars() {
+            stars.forEach(star => {
+                const rating = parseInt(star.dataset.rating);
+                if (rating <= selectedRating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Character counter
+        const reviewText = document.getElementById('reviewText');
+        const charCount = document.getElementById('charCount');
+
+        reviewText.addEventListener('input', () => {
+            const count = reviewText.value.length;
+            charCount.textContent = count;
+
+            if (count >= 10) {
+                document.getElementById('textError').style.display = 'none';
+            }
+        });
+
+        // Form submission
+        document.getElementById('reviewForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('reviewerName').value.trim();
+            const text = reviewText.value.trim();
+
+            let hasError = false;
+
+            // Validate rating
+            if (selectedRating === 0) {
+                document.getElementById('ratingError').style.display = 'block';
+                hasError = true;
+            }
+
+            // Validate review text
+            if (text.length < 10) {
+                document.getElementById('textError').style.display = 'block';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Store review data in sessionStorage
+            const reviewData = {
+                businessId,
+                name,
+                rating: selectedRating,
+                text,
+                timestamp: new Date().toISOString()
+            };
+
+            sessionStorage.setItem('pendingReview', JSON.stringify(reviewData));
+
+            // Stripe Payment Link - configured and ready
+            // Created: 2026-01-11 (Test mode)
+            const stripePaymentLink = 'https://buy.stripe.com/test_cNieVd5Vjb6N2ZY6Fq4wM00';
+
+            // Check if Stripe link is configured
+            if (stripePaymentLink.includes('REPLACE_WITH_YOUR_LINK')) {
+                alert('⚠️ Stripe Payment Link Not Configured\n\n' +
+                      'Follow these steps:\n' +
+                      '1. Open STRIPE_5_MINUTES.md\n' +
+                      '2. Create payment link in Stripe dashboard\n' +
+                      '3. Copy the URL\n' +
+                      '4. Paste into review.html line 290\n\n' +
+                      'Quick link: https://dashboard.stripe.com/test/payment-links');
+                return;
+            }
+
+            // Add success URL parameter to redirect back after payment
+            const successUrl = encodeURIComponent(
+                `${window.location.origin}/verified.html?business=${businessId}`
+            );
+
+            // Redirect to Stripe
+            window.location.href = `${stripePaymentLink}?client_reference_id=${businessId}`;
+        });
+    </script>
+</body>
+</html>

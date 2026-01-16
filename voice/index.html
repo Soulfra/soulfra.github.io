@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Business QR Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            color: #00ff88;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 30px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            display: inline-block;
+            padding: 15px;
+            background: white;
+        }
+
+        .url-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            word-break: break-all;
+            font-size: 12px;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .business-id {
+            color: #00ff88;
+            font-weight: 500;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        code {
+            background: #0f0f0f;
+            padding: 2px 6px;
+            border: 1px solid #333;
+            color: #00ff88;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Voice Memo QR Code</h1>
+        <p class="subtitle">Create QR codes for people to submit $1 voice memos</p>
+
+        <div class="info">
+            User scans → Record voice memo → Pay $1 → Memo saved
+        </div>
+
+        <div class="card">
+            <form id="businessForm">
+                <div class="form-group">
+                    <label>Topic / Collection Name</label>
+                    <input type="text" id="businessName" required placeholder="Enter topic (e.g., Podcast Episode 5)" autofocus>
+                </div>
+
+                <button type="submit">Generate QR Code</button>
+            </form>
+        </div>
+
+        <div id="qrResult" class="card hidden">
+            <h2 style="margin-bottom: 20px; font-size: 18px;">Your Voice Memo QR Code</h2>
+
+            <div class="business-id">
+                Topic ID: <code id="displayBusinessId"></code>
+            </div>
+
+            <div class="qr-container">
+                <div id="qrcode"></div>
+
+                <div class="url-display">
+                    <div style="color: #888; margin-bottom: 8px;">Recording URL:</div>
+                    <div id="reviewUrl"></div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="downloadQR()">Download QR Code</button>
+                    <button onclick="printQR()" class="secondary">Print</button>
+                    <button onclick="copyURL()" class="secondary">Copy URL</button>
+                    <button onclick="reset()" class="secondary">Generate Another</button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <strong>How to use:</strong>
+                <ol>
+                    <li>Download or print the QR code</li>
+                    <li>Share it with your audience (poster, social media, email)</li>
+                    <li>People scan to record voice memos</li>
+                    <li>Each memo costs $1 to submit</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="wordlist.js"></script>
+    <script>
+        let currentQR = null;
+        let currentBusinessId = null;
+        let currentUrl = null;
+
+        // Generate business ID from name (word-based, Bitcoin BIP39-style)
+        function generateBusinessId(name) {
+            // Use word-based ID for memorable, easy-to-spell identifiers
+            // Example: "purple-mountain-tiger-47" instead of "coffee-shop-x9k2"
+            return nameToWordId(name);
+        }
+
+        // Form submission
+        document.getElementById('businessForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const businessName = document.getElementById('businessName').value.trim();
+
+            if (!businessName) return;
+
+            // Generate unique ID
+            currentBusinessId = generateBusinessId(businessName);
+
+            // Build voice memo URL
+            const baseUrl = window.location.origin;
+            currentUrl = `${baseUrl}/voice/record.html?topic=${currentBusinessId}`;
+
+            // Show result section
+            document.getElementById('qrResult').classList.remove('hidden');
+            document.getElementById('displayBusinessId').textContent = currentBusinessId;
+            document.getElementById('reviewUrl').textContent = currentUrl;
+
+            // Clear previous QR code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            // Generate new QR code
+            currentQR = new QRCode(qrContainer, {
+                text: currentUrl,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Scroll to result
+            document.getElementById('qrResult').scrollIntoView({ behavior: 'smooth' });
+
+            // Store in localStorage
+            const topics = JSON.parse(localStorage.getItem('voiceTopics') || '[]');
+            topics.push({
+                id: currentBusinessId,
+                name: businessName,
+                createdAt: new Date().toISOString(),
+                url: currentUrl
+            });
+            localStorage.setItem('voiceTopics', JSON.stringify(topics));
+        });
+
+        // Download QR code
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const link = document.createElement('a');
+            link.download = `qr-${currentBusinessId}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Print QR code
+        function printQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const printWindow = window.open('', '', 'width=600,height=600');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>QR Code - ${currentBusinessId}</title>
+                    <style>
+                        @media print {
+                            @page {
+                                margin: 0;
+                                size: auto;
+                            }
+                            body {
+                                margin: 1cm;
+                            }
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                            text-align: center;
+                            padding: 40px;
+                        }
+                        img {
+                            margin: 20px 0;
+                        }
+                        .business-id {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin: 20px 0;
+                        }
+                        .url {
+                            font-size: 12px;
+                            word-break: break-all;
+                            margin: 20px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Scan to Record a Voice Memo</h1>
+                    <img src="${canvas.toDataURL('image/png')}" />
+                    <div class="business-id">Topic ID: ${currentBusinessId}</div>
+                    <div class="url">${currentUrl}</div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Copy URL to clipboard
+        function copyURL() {
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                alert('URL copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const input = document.createElement('input');
+                input.value = currentUrl;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('URL copied to clipboard!');
+            });
+        }
+
+        // Reset form
+        function reset() {
+            document.getElementById('businessForm').reset();
+            document.getElementById('qrResult').classList.add('hidden');
+            document.getElementById('businessName').focus();
+        }
+    </script>
+</body>
+</html>

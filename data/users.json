@@ -1,0 +1,29 @@
+{
+  "testuser": {
+    "id": "274706422d2fb55e2c541b20b209474a",
+    "username": "testuser",
+    "email": "testuser@example.com",
+    "name": "Test User",
+    "plan": "free",
+    "use_case": "Testing the signup API",
+    "createdAt": "2026-01-12T22:21:14.748Z",
+    "settings": {
+      "customDomain": "testuser.soulfra.com",
+      "defaultTheme": "default",
+      "allowPublicView": true,
+      "enableNotifications": true
+    },
+    "usage": {
+      "uploads": 0,
+      "deployments": 0,
+      "storageUsed": 0,
+      "tokensRemaining": 100
+    },
+    "projects": [],
+    "security": {
+      "accessToken": "d2a287617f8ed175866bdff1b0ba1f365140b1c17357c97e62e6786c9dd6cf63",
+      "lastLogin": null,
+      "loginCount": 0
+    }
+  }
+}

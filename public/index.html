@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulfra - Creative Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .token-balance {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* Products Grid */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-card p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features li {
+            padding: 0.5rem 0;
+            opacity: 0.85;
+        }
+
+        .product-features li::before {
+            content: '✓ ';
+            margin-right: 0.5rem;
+        }
+
+        .product-cta {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            opacity: 0.8;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                🌐 <span>SOULFRA</span>
+            </div>
+            <div class="user-info">
+                <div class="token-balance">
+                    <span>💰</span>
+                    <span id="token-balance">100</span>
+                    <span>tokens</span>
+                </div>
+                <a href="/dashboard" class="btn btn-primary">Dashboard</a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>🌐 Welcome to Soulfra</h1>
+            <p>One platform. Three products. Infinite creativity.</p>
+            <p class="hero-subtitle">Creative tools powered by emoji fingerprinting, trust validation & token economy</p>
+        </section>
+
+        <!-- Products Grid -->
+        <section class="products">
+            <!-- Product 1: Domain Game -->
+            <div class="product-card">
+                <div class="product-icon">🎮</div>
+                <h2>Domain Game</h2>
+                <p>Daily emoji puzzles that drive viral traffic to your domains</p>
+                <ul class="product-features">
+                    <li>Daily emoji-based domain puzzles</li>
+                    <li>Wordle-style sharing mechanics</li>
+                    <li>Traffic generation for your portfolio</li>
+                    <li>Leaderboards & achievements</li>
+                </ul>
+                <div class="product-cta">
+                    <a href="/game" class="btn btn-primary">Play Today's Puzzle</a>
+                    <a href="/game/upcoming" class="btn btn-outline">View Schedule</a>
+                </div>
+            </div>
+
+            <!-- Product 2: Creative Publishing -->
+            <div class="product-card">
+                <div class="product-icon">🎨</div>
+                <h2>Creative Publishing</h2>
+                <p>Turn voice into verified emoji art with cryptographic proof</p>
+                <ul class="product-features">
+                    <li>Scan QR → Record voice</li>
+                    <li>Auto-generate emoji artwork</li>
+                    <li>Cryptographic verification</li>
+                    <li>Custom domain publishing</li>
+                </ul>
+                <div class="product-cta">
+                    <a href="/upload" class="btn btn-primary">Create Art</a>
+                    <a href="/gallery" class="btn btn-outline">View Gallery</a>
+                </div>
+            </div>
+
+            <!-- Product 3: Auto-Deploy -->
+            <div class="product-card">
+                <div class="product-icon">🚀</div>
+                <h2>Auto-Deploy</h2>
+                <p>Drop code, get instant deployment with automatic routing</p>
+                <ul class="product-features">
+                    <li>AirDrop or local folder drop</li>
+                    <li>Instant URL assignment</li>
+                    <li>Token-based deployment</li>
+                    <li>Ollama code analysis</li>
+                </ul>
+                <div class="product-cta">
+                    <a href="/drops" class="btn btn-primary">View Drops</a>
+                    <a href="/docs/deploy" class="btn btn-outline">How It Works</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="domains-count">0</div>
+                <div class="stat-label">Domains in Game</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="artworks-count">1</div>
+                <div class="stat-label">Artworks Created</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="deploys-count">6</div>
+                <div class="stat-label">Sites Deployed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Verified & Trusted</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Built with emoji fingerprinting, cryptographic trust & deterministic mapping</p>
+            <p>
+                <a href="https://github.com/soulfra">GitHub</a>
+                <a href="/docs">Documentation</a>
+                <a href="/about">About</a>
+                <a href="/dashboard">Dashboard</a>
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                © 2026 Soulfra Platform - One account for everything
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Fetch stats from API
+        async function loadStats() {
+            try {
+                // Load domain count
+                const portfolioRes = await fetch('/api/domain-portfolio/summary');
+                if (portfolioRes.ok) {
+                    const data = await portfolioRes.json();
+                    document.getElementById('domains-count').textContent = data.totalDomains || 0;
+                }
+
+                // Load artwork count
+                const usersRes = await fetch('/api/users');
+                if (usersRes.ok) {
+                    const users = await usersRes.json();
+                    const totalArtworks = Object.values(users).reduce((sum, user) =>
+                        sum + (user.projects?.length || 0), 0
+                    );
+                    document.getElementById('artworks-count').textContent = totalArtworks;
+                }
+
+                // Load deploy count (count files in public/)
+                const deploysRes = await fetch('/api/deployed-sites');
+                if (deploysRes.ok) {
+                    const sites = await deploysRes.json();
+                    document.getElementById('deploys-count').textContent = sites.length || 6;
+                }
+
+                // Load user token balance
+                const tokenRes = await fetch('/api/user/balance');
+                if (tokenRes.ok) {
+                    const balance = await tokenRes.json();
+                    document.getElementById('token-balance').textContent = balance.tokens || 100;
+                }
+            } catch (err) {
+                console.log('Stats will load from API when backend is running');
+            }
+        }
+
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>

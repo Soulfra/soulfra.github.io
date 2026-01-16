@@ -1,0 +1,379 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-01-10T00:00:00.000Z",
+  "description": "Comprehensive map of existing Soulfra infrastructure",
+
+  "summary": {
+    "totalFiles": 12508,
+    "duplicatesRemoved": 2579,
+    "categories": {
+      "infrastructure": 60,
+      "agents": 78,
+      "daemons": 29,
+      "interfaces": 68,
+      "bridges": 13,
+      "games": 34,
+      "scripts": 305,
+      "config": 1394,
+      "docs": 1943,
+      "misc": 8519
+    }
+  },
+
+  "infrastructure": {
+    "qr_systems": {
+      "files": [
+        "infrastructure/qr-generator.js",
+        "infrastructure/qr-auth-system_tier-minus17.js",
+        "infrastructure/qr-keygen.js",
+        "infrastructure/qr-listener.js",
+        "infrastructure/qr-login.js",
+        "infrastructure/qr-pair-init.js",
+        "infrastructure/qr-point-of-sale-system_tier-8-payment-ecosystem.js",
+        "infrastructure/qr-redirector.js",
+        "infrastructure/qr-renderer.js",
+        "infrastructure/qr-scan-handler.js",
+        "infrastructure/qr-server.js",
+        "infrastructure/qr-validator.js",
+        "infrastructure/qr-validator_tier-minus9.js",
+        "infrastructure/qr-verify.js"
+      ],
+      "capabilities": [
+        "QR code generation for affiliate tracking",
+        "Fork invite system",
+        "Agent sharing via QR",
+        "Authentication via QR scan",
+        "Payment system integration",
+        "QR validation and verification",
+        "Mirror URL routing"
+      ],
+      "status": "Existing, Node.js-based",
+      "integration_needed": "Browser-compatible adapter"
+    },
+
+    "mirror_systems": {
+      "files": [
+        "infrastructure/mirror-affinity-scanner_tier-minus20.js",
+        "infrastructure/mirror-agent-template.js",
+        "infrastructure/mirror-alert-bus.js",
+        "infrastructure/mirror-approver.js",
+        "infrastructure/mirror-authenticator.js",
+        "infrastructure/mirror-bid-handler_tier-minus20.js",
+        "infrastructure/mirror-config.js",
+        "infrastructure/mirror-diffusion-engine.js",
+        "infrastructure/mirror-diffusion-instance.js",
+        "infrastructure/mirror-draft-engine_tier-minus20.js",
+        "infrastructure/mirror-growth-seed_tier-minus20.js",
+        "infrastructure/mirror-hijack-system_tier-minus20.js",
+        "infrastructure/mirror-kernel-integration.js",
+        "infrastructure/mirror-launch-loop.js",
+        "infrastructure/mirror-launch_tier-minus20.js",
+        "infrastructure/mirror-loop.js",
+        "infrastructure/mirror-matrix-control_tier-minus12.js",
+        "infrastructure/mirror-nft-mint-engine_tier-minus20.js",
+        "infrastructure/mirror-node-runtime_tier-minus20.js",
+        "infrastructure/mirror-passkey-engine_tier-minus20.js",
+        "infrastructure/mirror-pattern-template.js",
+        "infrastructure/mirror-projection-deploy_tier-minus20.js",
+        "infrastructure/mirror-replay-agent.js",
+        "infrastructure/mirror-resonance-engine_tier-minus20.js",
+        "infrastructure/mirror-router.js",
+        "infrastructure/mirror-snapshot-oracle_tier-minus20.js",
+        "infrastructure/mirror-stats.js",
+        "infrastructure/mirror-store.js",
+        "infrastructure/mirror-stream-projector_tier-minus20.js",
+        "infrastructure/mirror-sync-daemon.js",
+        "infrastructure/mirror-throttle-daemon_tier-minus20.js",
+        "infrastructure/mirror-title-assigner_tier-minus20.js"
+      ],
+      "capabilities": [
+        "Mirror instance management",
+        "Agent template system",
+        "Diffusion engine for agent distribution",
+        "NFT minting for agents",
+        "Mirror authentication",
+        "Launch loop orchestration"
+      ],
+      "status": "Existing, complex system",
+      "integration_needed": "Documentation + simplified interface"
+    },
+
+    "routing": {
+      "files": [
+        "infrastructure/infinity-router.js",
+        "infrastructure/infinity-router_tier-minus9.js",
+        "infrastructure/cal-riven-consciousness-engine_tier-minus13.js",
+        "infrastructure/cal-riven-operator.js",
+        "infrastructure/cal-riven-triple-server_tier-minus17.js"
+      ],
+      "capabilities": [
+        "Infinity routing system",
+        "Cal-Riven consciousness engine",
+        "Multi-server orchestration"
+      ],
+      "status": "Existing",
+      "integration_needed": "Connect to LLM Router"
+    }
+  },
+
+  "agents": {
+    "agent_builders": {
+      "files": [
+        "agents/agent-builder.js",
+        "agents/agent-framework.js",
+        "agents/agent-orchestrator.js",
+        "agents/agent-workshop-platform.js",
+        "agents/simple-agent-system.js",
+        "agents/agentzero-core.js"
+      ],
+      "capabilities": [
+        "Agent creation from templates",
+        "Vault integration",
+        "Multi-agent orchestration",
+        "Workshop platform for agent development"
+      ],
+      "status": "Existing, feature-complete",
+      "integration_needed": "Adapter for EnsembleBuilder"
+    },
+
+    "cal_agents": {
+      "files": [
+        "agents/cal-chat-agent.js",
+        "agents/cal-chat-agent-mirror_tier-minus12.js",
+        "agents/cal-launch-agent.js",
+        "agents/cal-summon-platform-agent_tier-minus20.js"
+      ],
+      "capabilities": [
+        "Cal chat interface",
+        "Platform launcher",
+        "Mirror chat system"
+      ],
+      "status": "Existing",
+      "integration_needed": "Connect to ensemble chatbox"
+    },
+
+    "specialized_agents": {
+      "files": [
+        "agents/AgentBirthCeremony.js",
+        "agents/AgentBlessingEngine.js",
+        "agents/AgentBuildCostEngine.js",
+        "agents/AgentEconomy.js",
+        "agents/AgentFusionRitual.js",
+        "agents/AgentMemoryWeaver.js",
+        "agents/AgentReflectionProxy.js",
+        "agents/voice-agent.js"
+      ],
+      "capabilities": [
+        "Agent lifecycle management",
+        "Blessing/validation system",
+        "Cost calculation",
+        "Economy simulation",
+        "Agent fusion (combining agents)",
+        "Memory weaving",
+        "Voice interaction"
+      ],
+      "status": "Existing, specialized",
+      "integration_needed": "Documentation + use cases"
+    },
+
+    "qr_agents": {
+      "files": [
+        "agents/QRAgentPromptKit.js"
+      ],
+      "capabilities": [
+        "QR-specific agent prompts"
+      ],
+      "status": "Existing",
+      "integration_needed": "Connect to bootstrap QR system"
+    }
+  },
+
+  "daemons": {
+    "loop_daemons": {
+      "files": [
+        "daemons/autoloop_daemon_tier-minus20.js",
+        "daemons/LocalLoopMemoryDaemon.js",
+        "daemons/LoopBlessingDaemon.js",
+        "daemons/LoopMarketplaceDaemon.js",
+        "daemons/LoopMemoryCacheDaemon.js",
+        "daemons/LoopNarrativeDaemon.js"
+      ],
+      "capabilities": [
+        "Automatic loop management",
+        "Loop memory persistence",
+        "Loop marketplace",
+        "Narrative generation"
+      ],
+      "status": "Existing",
+      "integration_needed": "Background services integration"
+    },
+
+    "system_daemons": {
+      "files": [
+        "daemons/heartbeat_daemon.js",
+        "daemons/neo4j_sync_daemon.js",
+        "daemons/stats-daemon.js"
+      ],
+      "capabilities": [
+        "Health monitoring",
+        "Graph database sync",
+        "Statistics collection"
+      ],
+      "status": "Existing",
+      "integration_needed": "Monitoring dashboard"
+    },
+
+    "processing_daemons": {
+      "files": [
+        "daemons/IdeaDecomposerDaemon.js",
+        "daemons/IntentInferenceDaemon.js",
+        "daemons/SmartRoutingDaemon.js",
+        "daemons/TaskRouterDaemon.js",
+        "daemons/ValidationDaemon.js"
+      ],
+      "capabilities": [
+        "Idea decomposition",
+        "Intent detection",
+        "Smart routing",
+        "Task routing",
+        "Data validation"
+      ],
+      "status": "Existing",
+      "integration_needed": "Connect to ensemble routing"
+    }
+  },
+
+  "new_systems": {
+    "ensemble": {
+      "files": [
+        "api/llm/router.js",
+        "api/llm/domain-context.js",
+        "pages/chat/chatbox.html"
+      ],
+      "capabilities": [
+        "Multi-model ensemble",
+        "Domain context injection",
+        "LLM routing by intent"
+      ],
+      "status": "New, functional",
+      "integration_needed": "Connect to existing agents/infrastructure"
+    },
+
+    "gist_database": {
+      "files": [
+        "api/gist/database.js",
+        "api/gist/blog-aggregator.js"
+      ],
+      "capabilities": [
+        "Blockchain-style Gist storage",
+        "Blog aggregation",
+        "Cross-domain sync"
+      ],
+      "status": "New, functional",
+      "integration_needed": "Sync with existing vault system"
+    },
+
+    "bootstrap_qr": {
+      "files": [
+        "api/qr/bootstrap-generator.js",
+        "api/build/ensemble-builder.js",
+        "api/build/feature-packager.js"
+      ],
+      "capabilities": [
+        "Bootstrap QR generation",
+        "Feature building from chat",
+        "QR-installable packaging"
+      ],
+      "status": "New, overlaps with existing QR system",
+      "integration_needed": "Merge with infrastructure/qr-generator.js via adapter"
+    }
+  },
+
+  "integration_gaps": {
+    "adapters_needed": [
+      {
+        "name": "QR Adapter",
+        "purpose": "Bridge new bootstrap QR system with existing infrastructure/qr-generator.js",
+        "priority": "High",
+        "file": "api/adapters/qr-adapter.js"
+      },
+      {
+        "name": "Agent Adapter",
+        "purpose": "Bridge EnsembleBuilder with existing agents/agent-builder.js",
+        "priority": "High",
+        "file": "api/adapters/agent-adapter.js"
+      },
+      {
+        "name": "Orchestrator Adapter",
+        "purpose": "Connect ensemble to agents/agent-orchestrator.js",
+        "priority": "Medium",
+        "file": "api/adapters/orchestrator-adapter.js"
+      },
+      {
+        "name": "Daemon Adapter",
+        "purpose": "Connect ensemble to existing daemons",
+        "priority": "Low",
+        "file": "api/adapters/daemon-adapter.js"
+      }
+    ],
+
+    "documentation_needed": [
+      "Mirror system architecture",
+      "Agent lifecycle explained",
+      "QR affiliate system flow",
+      "Vault integration guide",
+      "Daemon coordination"
+    ],
+
+    "ui_needed": [
+      {
+        "name": "Calriven Build Studio",
+        "purpose": "Unified interface to all systems",
+        "file": "pages/build/calriven-studio.html"
+      },
+      {
+        "name": "Infrastructure Explorer",
+        "purpose": "Browse and document existing systems",
+        "file": "pages/build/infrastructure-explorer.html"
+      }
+    ]
+  },
+
+  "deployment": {
+    "existing_ports": {
+      "ai_economy": 9999,
+      "chat_processor": 8888,
+      "soulfra_monitor": 7777,
+      "cal_riven_cli": 4040,
+      "simple_game": 5555,
+      "max_autonomous": 6004
+    },
+    "http_server": {
+      "port": 8000,
+      "command": "python3 -m http.server 8000",
+      "status": "Running"
+    }
+  },
+
+  "recommendations": {
+    "immediate": [
+      "Create adapters to wrap existing QR/agent systems",
+      "Build unified UI (calriven-studio.html) that uses adapters",
+      "Document existing infrastructure with ensemble",
+      "Mark new duplicate systems as deprecated",
+      "Test integration: ensemble → adapters → existing infrastructure"
+    ],
+    "short_term": [
+      "Migrate browser-compatible functionality to adapters",
+      "Consolidate QR systems (keep infrastructure/qr-generator.js, deprecate api/qr/)",
+      "Integrate GistDatabase with existing vault system",
+      "Create migration guide for users"
+    ],
+    "long_term": [
+      "Refactor existing Node.js systems to be isomorphic (browser + Node)",
+      "Modernize agent-builder.js with ensemble interface",
+      "Build comprehensive documentation using ensemble",
+      "Create testing suite for integrations"
+    ]
+  }
+}

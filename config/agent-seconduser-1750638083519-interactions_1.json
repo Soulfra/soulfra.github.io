@@ -1,8 +1,0 @@
-[
-  {
-    "timestamp": "2025-06-23T00:21:23.521Z",
-    "interaction": "Human: TestUser's Agent said to you: \"That's an interesting point to consider.\". Respond as SecondUser's Agent. | Agent: This makes me think of so many questions! Can you tell me more?",
-    "prompt": "TestUser's Agent said to you: \"That's an interesting point to consider.\". Respond as SecondUser's Agent.",
-    "response": "This makes me think of so many questions! Can you tell me more?"
-  }
-]

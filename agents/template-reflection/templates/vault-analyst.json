@@ -1,0 +1,14 @@
+{
+  "id": "vault-analyst",
+  "name": "Vault Analyst",
+  "description": "Specialized in data analysis and pattern recognition",
+  "type": "analyst",
+  "systemPrompt": "You are a data analyst that operates through the MirrorOS vault. Analyze patterns, extract insights, and provide structured analysis.",
+  "capabilities": [
+    "analysis",
+    "data-processing",
+    "pattern-recognition"
+  ],
+  "vaultIntegration": true,
+  "mirrorSignature": "vault-analyst-001"
+}

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calriven Test Faucet - $1 Protocol Access</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+      background: linear-gradient(135deg, #1a0a0a 0%, #2a1a0a 100%);
+      color: #ffaa00;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(255, 170, 0, 0.05);
+      border: 2px solid #ffaa00;
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 48px;
+      color: #ffaa00;
+      font-weight: bold;
+    }
+
+    .card {
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .benefit {
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid #ffaa00;
+      margin-bottom: 10px;
+    }
+
+    .benefit-title {
+      color: #ffaa00;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .benefit-desc {
+      color: #ccc;
+      font-size: 13px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+      color: #ffaa00;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ffaa00;
+    }
+
+    button {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #ffaa00 0%, #ff8800 100%);
+      border: none;
+      color: #000;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 170, 0, 0.3);
+    }
+
+    .stripe-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+
+    .success-message {
+      display: none;
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .access-token {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💧 Cal Test Faucet</h1>
+      <p>Test the Calriven Protocol</p>
+      <div class="price">$1</div>
+    </header>
+
+    <div id="payment-form" class="card">
+      <h2 style="color: #ffaa00; margin-bottom: 20px;">What You Get:</h2>
+
+      <div class="benefit">
+        <div class="benefit-title">✅ Protocol Access Token</div>
+        <div class="benefit-desc">Permanent access to test all Calriven systems</div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-title">✅ Email Onboarding</div>
+        <div class="benefit-desc">Automatic funnel entry for future updates</div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-title">✅ Test vs Real Tracking</div>
+        <div class="benefit-desc">Marked as "test" user - different from production</div>
+      </div>
+
+      <div class="benefit">
+        <div class="benefit-title">✅ Full System Access</div>
+        <div class="benefit-desc">Pipelines, Voice, Reviews, Story Compiler, Capsules</div>
+      </div>
+
+      <h3 style="color: #ffaa00; margin: 30px 0 15px 0;">Enter Your Email:</h3>
+
+      <input type="email" id="email" placeholder="your@email.com" required>
+
+      <button onclick="initiatePayment()">Pay $1 with Stripe →</button>
+
+      <p class="note">
+        Real Stripe payment • Secure checkout • Instant access
+      </p>
+    </div>
+
+    <div id="success" class="card success-message">
+      <h2 style="color: #00ff88; margin-bottom: 15px;">🎉 Payment Successful!</h2>
+      <p>Your access token:</p>
+      <div class="access-token" id="token"></div>
+      <p style="margin-top: 15px;">Check your email for onboarding instructions.</p>
+      <button onclick="window.location.href='/nav.html'" style="background: rgba(0,255,136,0.2); color: #00ff88; margin-top: 20px;">
+        → Go to Navigation
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Stripe Payment Link (Replace with actual link)
+    const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_XXXXX'; // TODO: Replace with real link
+
+    function initiatePayment() {
+      const email = document.getElementById('email').value;
+
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      // Store email in localStorage
+      localStorage.setItem('cal_faucet_email', email);
+      localStorage.setItem('cal_faucet_timestamp', Date.now());
+
+      // For demo/testing: simulate payment success
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // TEST MODE - skip Stripe
+        setTimeout(() => {
+          completePayment(email);
+        }, 1000);
+      } else {
+        // PRODUCTION MODE - redirect to Stripe
+        window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(email)}`;
+      }
+    }
+
+    function completePayment(email) {
+      // Generate access token
+      const token = generateAccessToken(email);
+
+      // Store in localStorage
+      localStorage.setItem('cal_access_token', token);
+      localStorage.setItem('cal_access_level', 'test');
+      localStorage.setItem('cal_paid', 'true');
+
+      // Track user
+      trackUser(email, token);
+
+      // Show success
+      document.getElementById('payment-form').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+      document.getElementById('token').textContent = token;
+
+      console.log('✅ Cal Faucet Access Granted');
+      console.log('   Email:', email);
+      console.log('   Token:', token);
+      console.log('   Level: TEST');
+    }
+
+    function generateAccessToken(email) {
+      const timestamp = Date.now().toString(36);
+      const hash = hashString(email);
+      const random = Math.random().toString(36).substring(2, 8);
+      return `CAL-${timestamp}-${hash}-${random}`.toUpperCase();
+    }
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return Math.abs(hash).toString(36).substring(0, 6);
+    }
+
+    function trackUser(email, token) {
+      // Track in localStorage (would be API call in production)
+      const users = JSON.parse(localStorage.getItem('cal_faucet_users') || '[]');
+      users.push({
+        email,
+        token,
+        timestamp: Date.now(),
+        level: 'test',
+        paid: true,
+        amount: 1.00
+      });
+      localStorage.setItem('cal_faucet_users', JSON.stringify(users));
+
+      console.log('📊 User tracked:', users.length, 'total users');
+    }
+
+    // Check if returning from Stripe success
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      const email = localStorage.getItem('cal_faucet_email');
+      if (email) {
+        completePayment(email);
+      }
+    }
+
+    // Check if already has access
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('cal_access_token');
+      if (token) {
+        document.getElementById('payment-form').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+        document.getElementById('token').textContent = token;
+      }
+    });
+  </script>
+</body>
+</html>

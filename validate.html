@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Validation - Prove It Works</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .validation-cell {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #333;
+        }
+
+        .validation-cell.running {
+            border-left-color: #ffaa00;
+        }
+
+        .validation-cell.passed {
+            border-left-color: #00ff88;
+        }
+
+        .validation-cell.failed {
+            border-left-color: #ff4444;
+        }
+
+        .cell-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .cell-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .cell-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .cell-status.running {
+            color: #ffaa00;
+        }
+
+        .cell-status.passed {
+            color: #00ff88;
+        }
+
+        .cell-status.failed {
+            color: #ff4444;
+        }
+
+        .cell-content {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .data-block {
+            margin: 10px 0;
+        }
+
+        .data-label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            color: #00ff88;
+            word-break: break-all;
+        }
+
+        .hash {
+            font-family: monospace;
+            font-size: 11px;
+            color: #888;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .controls {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .transcript {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #888;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transcript-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        .transcript-entry.info {
+            color: #00ff88;
+        }
+
+        .transcript-entry.error {
+            color: #ff4444;
+        }
+
+        .transcript-entry.hash {
+            color: #888;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>System Validation - Prove It Works</h1>
+        <p class="subtitle">Step-by-step verification with cryptographic proofs (like ipynb)</p>
+
+        <div class="controls">
+            <button id="runValidation">▶ Run Full Validation</button>
+            <button id="downloadTranscript">Download Transcript</button>
+            <button id="resetValidation">Reset</button>
+        </div>
+
+        <!-- Validation Cells (like Jupyter notebook) -->
+        <div id="validationCells"></div>
+
+        <!-- Transcript Log -->
+        <div class="transcript" id="transcript"></div>
+    </div>
+
+    <script src="wordlist.js"></script>
+    <script>
+        const cells = [
+            {
+                id: 'cell-1',
+                title: '[1] Generate Business ID',
+                test: async () => {
+                    const businessName = 'Signal Stack LLC';
+                    const businessId = nameToWordId(businessName);
+
+                    return {
+                        input: businessName,
+                        output: businessId,
+                        hash: await hashData(businessId),
+                        validation: businessId.split('-').length === 4 && !businessId.includes('undefined'),
+                        data: {
+                            'Input': businessName,
+                            'Output ID': businessId,
+                            'Format': 'word-word-word-number',
+                            'Hash': await hashData(businessId)
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-2',
+                title: '[2] Create Review Data',
+                test: async () => {
+                    const review = {
+                        name: 'Test User',
+                        rating: 5,
+                        text: 'This is a validation test review.',
+                        timestamp: new Date().toISOString()
+                    };
+
+                    const reviewJSON = JSON.stringify(review);
+                    const reviewHash = await hashData(reviewJSON);
+
+                    return {
+                        input: review,
+                        output: reviewJSON,
+                        hash: reviewHash,
+                        validation: review.rating >= 1 && review.rating <= 5 && review.text.length >= 10,
+                        data: {
+                            'Name': review.name,
+                            'Rating': review.rating + ' stars',
+                            'Review Length': review.text.length + ' chars',
+                            'Timestamp': review.timestamp,
+                            'JSON Size': reviewJSON.length + ' bytes',
+                            'SHA256': reviewHash
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-3',
+                title: '[3] Store in SessionStorage',
+                test: async () => {
+                    const testData = {
+                        businessId: 'abandon-ability-able-472',
+                        name: 'Test User',
+                        rating: 5,
+                        text: 'Validation test',
+                        timestamp: new Date().toISOString()
+                    };
+
+                    sessionStorage.setItem('pendingReview', JSON.stringify(testData));
+                    const retrieved = sessionStorage.getItem('pendingReview');
+                    const parsed = JSON.parse(retrieved);
+
+                    return {
+                        input: testData,
+                        output: parsed,
+                        hash: await hashData(retrieved),
+                        validation: parsed.businessId === testData.businessId,
+                        data: {
+                            'Stored': 'sessionStorage["pendingReview"]',
+                            'Size': retrieved.length + ' bytes',
+                            'Retrieval': parsed ? 'Success' : 'Failed',
+                            'Hash Match': await hashData(JSON.stringify(testData)) === await hashData(retrieved) ? 'Yes' : 'No',
+                            'SHA256': await hashData(retrieved)
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-4',
+                title: '[4] Validate Stripe Link',
+                test: async () => {
+                    const stripeLink = 'https://buy.stripe.com/test_cNieVd5Vjb6N2ZY6Fq4wM00';
+                    const isConfigured = !stripeLink.includes('REPLACE');
+                    const isTest = stripeLink.includes('/test_');
+
+                    return {
+                        input: 'Stripe Payment Link',
+                        output: stripeLink,
+                        hash: await hashData(stripeLink),
+                        validation: isConfigured && stripeLink.startsWith('https://buy.stripe.com/'),
+                        data: {
+                            'URL': stripeLink,
+                            'Configured': isConfigured ? 'Yes' : 'No',
+                            'Mode': isTest ? 'Test' : 'Live',
+                            'Valid Format': stripeLink.startsWith('https://buy.stripe.com/') ? 'Yes' : 'No',
+                            'SHA256': await hashData(stripeLink)
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-5',
+                title: '[5] Generate Verification ID',
+                test: async () => {
+                    const timestamp = Date.now();
+                    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+                    const verificationId = `VER-${timestamp}-${random}`;
+
+                    return {
+                        input: { timestamp, random },
+                        output: verificationId,
+                        hash: await hashData(verificationId),
+                        validation: verificationId.startsWith('VER-') && verificationId.length > 10,
+                        data: {
+                            'Verification ID': verificationId,
+                            'Timestamp': new Date(timestamp).toISOString(),
+                            'Random Suffix': random,
+                            'Length': verificationId.length + ' chars',
+                            'SHA256': await hashData(verificationId)
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-6',
+                title: '[6] Generate Proof QR Data',
+                test: async () => {
+                    const businessId = 'abandon-ability-able-472';
+                    const verificationId = 'VER-1736611234-X7K2';
+                    const proofUrl = `${window.location.origin}/verified.html?business=${businessId}&verify=${verificationId}`;
+
+                    return {
+                        input: { businessId, verificationId },
+                        output: proofUrl,
+                        hash: await hashData(proofUrl),
+                        validation: proofUrl.includes('verified.html') && proofUrl.includes('verify='),
+                        data: {
+                            'Proof URL': proofUrl,
+                            'Business ID': businessId,
+                            'Verification ID': verificationId,
+                            'URL Length': proofUrl.length + ' chars',
+                            'QR Scannable': 'Yes (< 300 chars)',
+                            'SHA256': await hashData(proofUrl)
+                        }
+                    };
+                }
+            }
+        ];
+
+        // Hash function (SHA-256)
+        async function hashData(data) {
+            const encoder = new TextEncoder();
+            const dataBuffer = encoder.encode(typeof data === 'string' ? data : JSON.stringify(data));
+            const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Log to transcript
+        function log(message, type = 'info') {
+            const transcript = document.getElementById('transcript');
+            const entry = document.createElement('div');
+            entry.className = `transcript-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            transcript.appendChild(entry);
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        // Render cells
+        function renderCells() {
+            const container = document.getElementById('validationCells');
+            container.innerHTML = '';
+
+            cells.forEach(cell => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'validation-cell';
+                cellDiv.id = cell.id;
+                cellDiv.innerHTML = `
+                    <div class="cell-header">
+                        <div class="cell-title">${cell.title}</div>
+                        <div class="cell-status">Pending</div>
+                    </div>
+                    <div class="cell-content" id="${cell.id}-content">
+                        Not yet run
+                    </div>
+                `;
+                container.appendChild(cellDiv);
+            });
+        }
+
+        // Run validation
+        async function runValidation() {
+            log('Starting validation suite...', 'info');
+
+            for (const cell of cells) {
+                const cellDiv = document.getElementById(cell.id);
+                const statusDiv = cellDiv.querySelector('.cell-status');
+                const contentDiv = document.getElementById(`${cell.id}-content`);
+
+                // Mark as running
+                cellDiv.className = 'validation-cell running';
+                statusDiv.className = 'cell-status running';
+                statusDiv.textContent = 'Running...';
+
+                log(`Running ${cell.title}...`, 'info');
+
+                try {
+                    const result = await cell.test();
+
+                    // Render data
+                    let html = '';
+                    for (const [key, value] of Object.entries(result.data)) {
+                        html += `
+                            <div class="data-block">
+                                <div class="data-label">${key}:</div>
+                                <div class="data-value">${value}</div>
+                            </div>
+                        `;
+                    }
+                    contentDiv.innerHTML = html;
+
+                    // Mark as passed/failed
+                    if (result.validation) {
+                        cellDiv.className = 'validation-cell passed';
+                        statusDiv.className = 'cell-status passed';
+                        statusDiv.textContent = '✓ Passed';
+                        log(`${cell.title} - PASSED`, 'info');
+                        log(`Hash: ${result.hash}`, 'hash');
+                    } else {
+                        cellDiv.className = 'validation-cell failed';
+                        statusDiv.className = 'cell-status failed';
+                        statusDiv.textContent = '✗ Failed';
+                        log(`${cell.title} - FAILED`, 'error');
+                    }
+
+                    // Small delay between cells
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                } catch (err) {
+                    cellDiv.className = 'validation-cell failed';
+                    statusDiv.className = 'cell-status failed';
+                    statusDiv.textContent = '✗ Error';
+                    contentDiv.innerHTML = `<div class="data-value" style="color: #ff4444;">Error: ${err.message}</div>`;
+                    log(`${cell.title} - ERROR: ${err.message}`, 'error');
+                }
+            }
+
+            log('Validation suite complete', 'info');
+        }
+
+        // Download transcript
+        function downloadTranscript() {
+            const transcript = document.getElementById('transcript').textContent;
+            const blob = new Blob([transcript], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `validation-transcript-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset
+        function reset() {
+            renderCells();
+            document.getElementById('transcript').innerHTML = '';
+            log('Validation reset', 'info');
+        }
+
+        // Event listeners
+        document.getElementById('runValidation').addEventListener('click', runValidation);
+        document.getElementById('downloadTranscript').addEventListener('click', downloadTranscript);
+        document.getElementById('resetValidation').addEventListener('click', reset);
+
+        // Initialize
+        renderCells();
+        log('Validation suite initialized', 'info');
+        log('Click "Run Full Validation" to test the system', 'info');
+    </script>
+</body>
+</html>

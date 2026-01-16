@@ -1,0 +1,249 @@
+📱 Initializing QR Affiliate Engine...
+✅ Using existing infrastructure/qr-generator.js
+📱 QRAdapter initialized (Node.js mode)
+✅ QR Adapter loaded
+🛠️ Initializing Agent Builder...
+✅ Using existing agents/agent-builder.js (vault-integrated)
+🤖 AgentAdapter initialized (Node.js mode)
+✅ Agent Adapter loaded
+⚠️ Could not load agents/agent-orchestrator.js: Cannot find module './cal-memory-loader'
+Require stack:
+- /Users/matthewmauer/Desktop/soulfra.github.io/agents/agent-orchestrator.js
+- /Users/matthewmauer/Desktop/soulfra.github.io/api/adapters/orchestrator-adapter.js
+- /Users/matthewmauer/Desktop/soulfra.github.io/api/unified-backend-v2.js
+🔀 OrchestratorAdapter initialized (Node.js mode)
+✅ Orchestrator Adapter loaded
+⚠️ OpenAI API key not found (set OPENAI_API_KEY)
+⚠️ Claude API key not found (set ANTHROPIC_API_KEY)
+✅ Ollama provider ready (local AI)
+✅ Learning Router initialized with 1 provider(s)
+⚠️ pdfkit not installed. Run: npm install pdfkit
+⚠️ Invoice generator in MOCK MODE
+⚠️ Stripe secret key not found. Set STRIPE_SECRET_KEY env variable.
+⚠️ Payments engine running in MOCK MODE
+
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║       🚀 Soulfra Unified API Backend v2.0                 ║
+║                                                            ║
+║  Server running on http://localhost:5050                 ║
+║                                                            ║
+║  ✅ GitHub pagination - gets ALL repos                    ║
+║  ✅ Safe file operations with locking                     ║
+║  ✅ Proper CORS preflight (204)                           ║
+║  ✅ Error handling everywhere                             ║
+║  ✅ Adapter fallbacks (graceful degradation)              ║
+║  ✅ Standardized response format                          ║
+║  ✅ AI provider abstraction & auto-routing                ║
+║                                                            ║
+║  AI Providers:                                             ║
+║    - OpenAI: ⚠️ Not configured                             ║
+║    - Claude: ⚠️ Not configured                             ║
+║                                                            ║
+║  Adapters:                                                 ║
+║    - QR: ✅ Ready                             ║
+║    - Agent: ✅ Ready                        ║
+║                                                            ║
+║  API Docs: http://localhost:5050/api                     ║
+║  Health Check: http://localhost:5050/api/health          ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+📋 Available endpoints:
+  GET  /api
+  GET  /api/health
+  GET  /api/debug/github-repos
+  POST /api/email-capture
+  POST /api/comments
+  POST /api/qr/generate
+  POST /api/chat
+  POST /api/chat/stream
+  POST /api/agent/build
+  POST /api/auth/qr/generate
+  GET  /api/auth/qr/status/:id
+
+⚠️ Subscriptions manager in MOCK MODE
+✅ Content Library initialized with 0 items
+✅ Web Researcher initialized with 0 cached URLs
+✅ Content Generator initialized
+🔄 Switched to identity: soulfra-7c24e26c4c896c1c (Soulfra)
+✅ Identity Keyring initialized with 1 identities
+✅ Identity Keyring initialized
+✅ Agent Builder ready
+👥 Loaded 0 active affiliates
+✅ QR Generator ready - affiliate tracking active
+⚠️ Failed to fetch exchange rates: Failed to parse exchange rate data: [object Object]
+⚠️ Multi-currency running with MOCK rates
+POST /api/assistant/chat
+GET /api
+GET /api
+GET /favicon.ico
+OPTIONS /api/assistant/chat
+POST /api/assistant/chat
+GET /api/content/info
+GET /api/content/stats
+GET /api
+GET /favicon.ico
+GET /api/assistant/info
+GET /favicon.ico
+GET /api
+GET /api/content/domains
+GET /api/content/domains
+GET /favicon.ico
+GET /api/health
+POST /api/content/generate
+
+🎨 Generating landing_page for soulfra: "Homepage for soulfra with hero section, features, and call-to-action"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: lan_soulfra_05efcf3c8bda81ffb459152b - soulfra/landing_page
+✅ Content generated: lan_soulfra_05efcf3c8bda81ffb459152b
+   Words: 302 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "Pitch deck for soulfra: problem, solution, market size, business model, and ask"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_a24f4b4507801b74ed0cb8a9 - soulfra/article
+✅ Content generated: art_soulfra_a24f4b4507801b74ed0cb8a9
+   Words: 252 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "Business plan for soulfra: executive summary, market analysis, strategy, financial projections, roadmap"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_2d509e904d04007f9000ee07 - soulfra/article
+✅ Content generated: art_soulfra_2d509e904d04007f9000ee07
+   Words: 375 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "Why soulfra matters"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_1a3d274a38448f259b956541 - soulfra/article
+✅ Content generated: art_soulfra_1a3d274a38448f259b956541
+   Words: 340 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "How soulfra works"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📄 Fetching: https://en.wikipedia.org/wiki/Soul_fra
+✅ Summarized: https://en.wikipedia.org/wiki/Soul_fra
+📄 Fetching: https://support.google.com/chrome/a/answer/10714413
+❌ Failed to research https://support.google.com/chrome/a/answer/10714413: Content too large
+📄 Fetching: https://www.tutorialspoint.com/java_soulfrasupport_java_soulfrahelpherfindex.htm
+✅ Summarized: https://www.tutorialspoint.com/java_soulfrasupport_java_soulfrahelpherfindex.htm
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_21dd9aa4182d5e362e6ea473 - soulfra/article
+✅ Content generated: art_soulfra_21dd9aa4182d5e362e6ea473
+   Words: 330 | Sources: 2
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "Getting started with soulfra"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_64abf13f58dde2da53c85446 - soulfra/article
+✅ Content generated: art_soulfra_64abf13f58dde2da53c85446
+   Words: 371 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "soulfra vs traditional solutions"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_88016b5f0893850086570c67 - soulfra/article
+✅ Content generated: art_soulfra_88016b5f0893850086570c67
+   Words: 324 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for soulfra: "The future of soulfra"
+📋 Domain: Soulfra - Your keys. Your identity. Period.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_soulfra_aa263542cafe42b9968908ab - soulfra/article
+✅ Content generated: art_soulfra_aa263542cafe42b9968908ab
+   Words: 263 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating landing_page for calriven: "Homepage for calriven with hero section, features, and call-to-action"
+📋 Domain: Calriven - Best AI for the job. Every time.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: lan_calriven_1479561469a6bf9fb7e60009 - calriven/landing_page
+✅ Content generated: lan_calriven_1479561469a6bf9fb7e60009
+   Words: 0 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for calriven: "Pitch deck for calriven: problem, solution, market size, business model, and ask"
+📋 Domain: Calriven - Best AI for the job. Every time.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_calriven_fa88608fea982af17eb53b59 - calriven/article
+✅ Content generated: art_calriven_fa88608fea982af17eb53b59
+   Words: 0 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for calriven: "Business plan for calriven: executive summary, market analysis, strategy, financial projections, roadmap"
+📋 Domain: Calriven - Best AI for the job. Every time.
+🔍 Stage 1: Researching...
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_calriven_ab223aba968d9aa6a79ccd86 - calriven/article
+✅ Content generated: art_calriven_ab223aba968d9aa6a79ccd86
+   Words: 788 | Sources: 0
+POST /api/content/generate
+
+🎨 Generating article for calriven: "Why calriven matters"
+📋 Domain: Calriven - Best AI for the job. Every time.
+🔍 Stage 1: Researching...
+📄 Fetching: https://en.wikipedia.org/wiki/Calvinist
+❌ Failed to research https://en.wikipedia.org/wiki/Calvinist: Content too large
+📄 Fetching: https://www.calvinism.com/what-is-calvinism/
+❌ Failed to research https://www.calvinism.com/what-is-calvinism/: Request failed: Hostname/IP does not match certificate's altnames: Host: www.calvinism.com. is not in the cert's altnames: DNS:*.lotoffaith.com, DNS:lotoffaith.com
+📄 Fetching: https://www.desiringgod.org/articles/what-is-calvinism
+✅ Summarized: https://www.desiringgod.org/articles/what-is-calvinism
+📝 Stage 2: Creating outline...
+✍️  Stage 3: Writing draft...
+✨ Stage 4: Polishing...
+💾 Saving to library...
+✅ Content saved: art_calriven_de212ad3272397a888784ccc - calriven/article
+✅ Content generated: art_calriven_de212ad3272397a888784ccc
+   Words: 0 | Sources: 1

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation + CCNA Teaching - Black Box System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .validation-cell {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #333;
+        }
+
+        .validation-cell.running {
+            border-left-color: #ffaa00;
+        }
+
+        .validation-cell.passed {
+            border-left-color: #00ff88;
+        }
+
+        .validation-cell.failed {
+            border-left-color: #ff4444;
+        }
+
+        .cell-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .cell-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .cell-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .cell-status.running {
+            color: #ffaa00;
+        }
+
+        .cell-status.passed {
+            color: #00ff88;
+        }
+
+        .cell-status.failed {
+            color: #ff4444;
+        }
+
+        .cell-content {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .teaching-section {
+            background: #1a1a2e;
+            border: 1px solid #4a4aff;
+            border-left: 4px solid #4a4aff;
+            padding: 15px;
+            margin-top: 10px;
+            color: #aaf;
+        }
+
+        .teaching-header {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a4aff;
+            margin-bottom: 10px;
+        }
+
+        .teaching-concept {
+            margin: 10px 0;
+            padding: 10px;
+            background: #0f0f1a;
+            border-left: 2px solid #4a4aff;
+        }
+
+        .quiz-section {
+            background: #1a2e1a;
+            border: 1px solid #00ff88;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .quiz-question {
+            color: #00ff88;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .quiz-option {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: #00ff88;
+            background: #1a1a1a;
+        }
+
+        .quiz-option.correct {
+            border-color: #00ff88;
+            background: #1a2e1a;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #ff4444;
+            background: #2e1a1a;
+        }
+
+        .data-block {
+            margin: 10px 0;
+        }
+
+        .data-label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            color: #00ff88;
+            word-break: break-all;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .controls {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .transcript {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #888;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transcript-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        .transcript-entry.info {
+            color: #00ff88;
+        }
+
+        .transcript-entry.error {
+            color: #ff4444;
+        }
+
+        .transcript-entry.lesson {
+            color: #4a4aff;
+        }
+
+        .student-project {
+            background: #2e1a1a;
+            border: 1px solid #ff8800;
+            border-left: 4px solid #ff8800;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .student-project h2 {
+            color: #ff8800;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .wordmap {
+            color: #888;
+            font-size: 12px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Black Box Teaching System - Prototype</h1>
+        <p class="subtitle">Learn CCNA by building YOUR idea (validation + teaching + cryptographic proof)</p>
+
+        <!-- Student's Project Context -->
+        <div class="student-project">
+            <h2>Your Project: $1 Verified Review System</h2>
+            <div style="color: #ff8800; margin-bottom: 5px;">
+                "I want to build a review system for my business where people pay $1 to verify reviews"
+            </div>
+            <div class="wordmap">
+                Your wordmap: reviews → verification → payment → QR codes → trust → business
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="runValidation">▶ Run Lesson + Validation</button>
+            <button id="downloadTranscript">Download Learning Transcript</button>
+            <button id="resetValidation">Reset</button>
+        </div>
+
+        <!-- Validation Cells with Teaching Content -->
+        <div id="validationCells"></div>
+
+        <!-- Transcript Log -->
+        <div class="transcript" id="transcript"></div>
+    </div>
+
+    <script src="wordlist.js"></script>
+    <script>
+        const cellsWithTeaching = [
+            {
+                id: 'cell-1',
+                title: '[Lesson 1] Generate Business ID',
+                ccnaConcept: 'DNS Naming & Domain Structure',
+                test: async () => {
+                    const businessName = 'Signal Stack LLC';
+                    const businessId = nameToWordId(businessName);
+
+                    return {
+                        input: businessName,
+                        output: businessId,
+                        hash: await hashData(businessId),
+                        validation: businessId.split('-').length === 4 && !businessId.includes('undefined'),
+                        data: {
+                            'Input': businessName,
+                            'Output ID': businessId,
+                            'Format': 'word-word-word-number',
+                            'Hash': await hashData(businessId)
+                        },
+                        teaching: {
+                            concept: 'DNS Naming Conventions',
+                            connection: 'Just like DNS translates "google.com" to an IP address, your system translates "Signal Stack LLC" to a memorable ID.',
+                            ccnaTopics: [
+                                {
+                                    title: 'Why Memorable Names Matter',
+                                    explanation: 'DNS exists because humans can\'t remember IP addresses (192.168.1.1). Your word-based IDs (purple-mountain-tiger-472) solve the same problem - they\'re easier to remember than random strings (xk2-9f4-h8j).'
+                                },
+                                {
+                                    title: 'Hierarchical Structure',
+                                    explanation: 'DNS uses hierarchy: sub.domain.com → domain.com → .com. Your IDs use hierarchy too: word-word-word-number → business → review system.'
+                                },
+                                {
+                                    title: 'Uniqueness & Collision',
+                                    explanation: 'DNS prevents duplicate domain names through central registry. Your system prevents duplicates using timestamp (Date.now() % 1000) - same concept, different implementation.'
+                                }
+                            ],
+                            quiz: {
+                                question: 'What is the PRIMARY purpose of DNS?',
+                                options: [
+                                    { text: 'A) Encrypt network traffic', correct: false },
+                                    { text: 'B) Translate human-readable names to IP addresses', correct: true },
+                                    { text: 'C) Route packets between networks', correct: false },
+                                    { text: 'D) Provide firewall protection', correct: false }
+                                ],
+                                explanation: 'DNS (Domain Name System) translates names to IPs - exactly what your nameToWordId() function does for business IDs!'
+                            }
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-2',
+                title: '[Lesson 2] Create Review Data',
+                ccnaConcept: 'Data Encapsulation & JSON Structure',
+                test: async () => {
+                    const review = {
+                        name: 'Test User',
+                        rating: 5,
+                        text: 'This is a validation test review.',
+                        timestamp: new Date().toISOString()
+                    };
+
+                    const reviewJSON = JSON.stringify(review);
+                    const reviewHash = await hashData(reviewJSON);
+
+                    return {
+                        input: review,
+                        output: reviewJSON,
+                        hash: reviewHash,
+                        validation: review.rating >= 1 && review.rating <= 5 && review.text.length >= 10,
+                        data: {
+                            'Name': review.name,
+                            'Rating': review.rating + ' stars',
+                            'Review Length': review.text.length + ' chars',
+                            'Timestamp': review.timestamp,
+                            'JSON Size': reviewJSON.length + ' bytes',
+                            'SHA256': reviewHash
+                        },
+                        teaching: {
+                            concept: 'Data Encapsulation (OSI Model Layer 7)',
+                            connection: 'Your review data is encapsulated in JSON, just like network data is encapsulated in protocol headers.',
+                            ccnaTopics: [
+                                {
+                                    title: 'Encapsulation Process',
+                                    explanation: 'OSI Model: Application layer (your review) → gets wrapped in protocol headers at each layer down to Physical. JSON.stringify() does the same - wraps your data for transport.'
+                                },
+                                {
+                                    title: 'Data Integrity (Hashing)',
+                                    explanation: 'SHA-256 hash proves data wasn\'t tampered with. Networks use checksums (CRC) for the same reason - verify data arrived intact.'
+                                },
+                                {
+                                    title: 'Serialization',
+                                    explanation: 'JSON is serialization (object → string). Networks serialize too - convert data to bits for transmission over wire.'
+                                }
+                            ],
+                            quiz: {
+                                question: 'In the OSI model, which layer handles data formatting like JSON?',
+                                options: [
+                                    { text: 'A) Transport Layer (Layer 4)', correct: false },
+                                    { text: 'B) Network Layer (Layer 3)', correct: false },
+                                    { text: 'C) Application Layer (Layer 7)', correct: true },
+                                    { text: 'D) Data Link Layer (Layer 2)', correct: false }
+                                ],
+                                explanation: 'Application Layer (7) handles data formatting - your JSON.stringify() operates at Layer 7!'
+                            }
+                        }
+                    };
+                }
+            },
+            {
+                id: 'cell-3',
+                title: '[Lesson 3] Store in SessionStorage',
+                ccnaConcept: 'Session Management & State',
+                test: async () => {
+                    const testData = {
+                        businessId: 'abandon-ability-able-472',
+                        name: 'Test User',
+                        rating: 5,
+                        text: 'Validation test',
+                        timestamp: new Date().toISOString()
+                    };
+
+                    sessionStorage.setItem('pendingReview', JSON.stringify(testData));
+                    const retrieved = sessionStorage.getItem('pendingReview');
+                    const parsed = JSON.parse(retrieved);
+
+                    return {
+                        input: testData,
+                        output: parsed,
+                        hash: await hashData(retrieved),
+                        validation: parsed.businessId === testData.businessId,
+                        data: {
+                            'Stored': 'sessionStorage["pendingReview"]',
+                            'Size': retrieved.length + ' bytes',
+                            'Retrieval': parsed ? 'Success' : 'Failed',
+                            'Hash Match': await hashData(JSON.stringify(testData)) === await hashData(retrieved) ? 'Yes' : 'No',
+                            'SHA256': await hashData(retrieved)
+                        },
+                        teaching: {
+                            concept: 'Stateful vs Stateless Protocols',
+                            connection: 'SessionStorage maintains state across pages - like TCP maintains connection state.',
+                            ccnaTopics: [
+                                {
+                                    title: 'Stateful Protocols (TCP)',
+                                    explanation: 'TCP remembers connection state (SYN, SYN-ACK, ACK). Your sessionStorage remembers review data between pages. Both maintain "memory" of what happened before.'
+                                },
+                                {
+                                    title: 'Stateless Protocols (HTTP)',
+                                    explanation: 'HTTP forgets after each request. That\'s why you NEED sessionStorage - HTTP alone would forget the review when redirecting to Stripe!'
+                                },
+                                {
+                                    title: 'Session vs Persistent Storage',
+                                    explanation: 'sessionStorage = temporary (like TCP connection). localStorage = persistent (like database). Network uses both concepts - ephemeral connections, persistent data.'
+                                }
+                            ],
+                            quiz: {
+                                question: 'Which protocol is stateful and maintains connection state?',
+                                options: [
+                                    { text: 'A) UDP (User Datagram Protocol)', correct: false },
+                                    { text: 'B) IP (Internet Protocol)', correct: false },
+                                    { text: 'C) TCP (Transmission Control Protocol)', correct: true },
+                                    { text: 'D) HTTP (HyperText Transfer Protocol)', correct: false }
+                                ],
+                                explanation: 'TCP is stateful - tracks connection state. Your sessionStorage does the same for review data!'
+                            }
+                        }
+                    };
+                }
+            }
+        ];
+
+        // Hash function (SHA-256)
+        async function hashData(data) {
+            const encoder = new TextEncoder();
+            const dataBuffer = encoder.encode(typeof data === 'string' ? data : JSON.stringify(data));
+            const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Log to transcript
+        function log(message, type = 'info') {
+            const transcript = document.getElementById('transcript');
+            const entry = document.createElement('div');
+            entry.className = `transcript-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            transcript.appendChild(entry);
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        // Render cells with teaching content
+        function renderCells() {
+            const container = document.getElementById('validationCells');
+            container.innerHTML = '';
+
+            cellsWithTeaching.forEach(cell => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'validation-cell';
+                cellDiv.id = cell.id;
+                cellDiv.innerHTML = `
+                    <div class="cell-header">
+                        <div class="cell-title">${cell.title}</div>
+                        <div class="cell-status">Pending</div>
+                    </div>
+                    <div style="color: #4a4aff; font-size: 11px; margin-bottom: 10px;">
+                        CCNA Topic: ${cell.ccnaConcept}
+                    </div>
+                    <div class="cell-content" id="${cell.id}-content">
+                        Not yet run
+                    </div>
+                `;
+                container.appendChild(cellDiv);
+            });
+        }
+
+        // Render teaching section
+        function renderTeaching(cellId, teaching) {
+            const teachingDiv = document.createElement('div');
+            teachingDiv.className = 'teaching-section';
+
+            let conceptsHTML = '';
+            teaching.ccnaTopics.forEach(topic => {
+                conceptsHTML += `
+                    <div class="teaching-concept">
+                        <div style="color: #4a4aff; font-weight: 500; margin-bottom: 5px;">${topic.title}</div>
+                        <div style="color: #aaf; font-size: 12px;">${topic.explanation}</div>
+                    </div>
+                `;
+            });
+
+            teachingDiv.innerHTML = `
+                <div class="teaching-header">📚 CCNA Lesson: ${teaching.concept}</div>
+                <div style="margin-bottom: 15px; color: #ff8800; font-size: 12px;">
+                    Connection to YOUR project: ${teaching.connection}
+                </div>
+                ${conceptsHTML}
+            `;
+
+            return teachingDiv;
+        }
+
+        // Render quiz
+        function renderQuiz(cellId, quiz) {
+            const quizDiv = document.createElement('div');
+            quizDiv.className = 'quiz-section';
+
+            let optionsHTML = '';
+            quiz.options.forEach((option, index) => {
+                optionsHTML += `
+                    <div class="quiz-option" data-correct="${option.correct}" data-cell="${cellId}" data-index="${index}">
+                        ${option.text}
+                    </div>
+                `;
+            });
+
+            quizDiv.innerHTML = `
+                <div class="quiz-question">❓ Quick Check: ${quiz.question}</div>
+                ${optionsHTML}
+                <div id="${cellId}-quiz-feedback" style="margin-top: 10px; color: #888; font-size: 11px;"></div>
+            `;
+
+            // Add click handlers
+            setTimeout(() => {
+                document.querySelectorAll(`[data-cell="${cellId}"]`).forEach(option => {
+                    option.addEventListener('click', () => {
+                        const correct = option.dataset.correct === 'true';
+                        const feedback = document.getElementById(`${cellId}-quiz-feedback`);
+
+                        if (correct) {
+                            option.classList.add('correct');
+                            feedback.textContent = `✓ Correct! ${quiz.explanation}`;
+                            feedback.style.color = '#00ff88';
+                            log(`Quiz answered correctly for ${cellId}`, 'lesson');
+                        } else {
+                            option.classList.add('incorrect');
+                            feedback.textContent = '✗ Not quite. Try again!';
+                            feedback.style.color = '#ff4444';
+                        }
+
+                        // Disable other options
+                        document.querySelectorAll(`[data-cell="${cellId}"]`).forEach(opt => {
+                            if (opt !== option) opt.style.opacity = '0.5';
+                        });
+                    });
+                });
+            }, 100);
+
+            return quizDiv;
+        }
+
+        // Run validation with teaching
+        async function runValidation() {
+            log('Starting validation + teaching suite...', 'info');
+            log('Teaching CCNA through YOUR project...', 'lesson');
+
+            for (const cell of cellsWithTeaching) {
+                const cellDiv = document.getElementById(cell.id);
+                const statusDiv = cellDiv.querySelector('.cell-status');
+                const contentDiv = document.getElementById(`${cell.id}-content`);
+
+                // Mark as running
+                cellDiv.className = 'validation-cell running';
+                statusDiv.className = 'cell-status running';
+                statusDiv.textContent = 'Running...';
+
+                log(`Running ${cell.title}...`, 'info');
+                log(`Teaching: ${cell.ccnaConcept}`, 'lesson');
+
+                try {
+                    const result = await cell.test();
+
+                    // Render validation data
+                    let html = '';
+                    for (const [key, value] of Object.entries(result.data)) {
+                        html += `
+                            <div class="data-block">
+                                <div class="data-label">${key}:</div>
+                                <div class="data-value">${value}</div>
+                            </div>
+                        `;
+                    }
+                    contentDiv.innerHTML = html;
+
+                    // Mark as passed/failed
+                    if (result.validation) {
+                        cellDiv.className = 'validation-cell passed';
+                        statusDiv.className = 'cell-status passed';
+                        statusDiv.textContent = '✓ Passed';
+                        log(`${cell.title} - PASSED`, 'info');
+                        log(`Hash: ${result.hash}`, 'info');
+
+                        // Add teaching content
+                        if (result.teaching) {
+                            const teachingSection = renderTeaching(cell.id, result.teaching);
+                            cellDiv.appendChild(teachingSection);
+
+                            const quizSection = renderQuiz(cell.id, result.teaching.quiz);
+                            cellDiv.appendChild(quizSection);
+
+                            log(`Lesson added: ${result.teaching.concept}`, 'lesson');
+                        }
+                    } else {
+                        cellDiv.className = 'validation-cell failed';
+                        statusDiv.className = 'cell-status failed';
+                        statusDiv.textContent = '✗ Failed';
+                        log(`${cell.title} - FAILED`, 'error');
+                    }
+
+                    // Delay between cells
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                } catch (err) {
+                    cellDiv.className = 'validation-cell failed';
+                    statusDiv.className = 'cell-status failed';
+                    statusDiv.textContent = '✗ Error';
+                    contentDiv.innerHTML = `<div class="data-value" style="color: #ff4444;">Error: ${err.message}</div>`;
+                    log(`${cell.title} - ERROR: ${err.message}`, 'error');
+                }
+            }
+
+            log('Validation + teaching complete', 'info');
+            log('You learned CCNA by building YOUR review system!', 'lesson');
+        }
+
+        // Download transcript
+        function downloadTranscript() {
+            const transcript = document.getElementById('transcript').textContent;
+            const blob = new Blob([transcript], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `learning-transcript-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset
+        function reset() {
+            renderCells();
+            document.getElementById('transcript').innerHTML = '';
+            log('System reset', 'info');
+        }
+
+        // Event listeners
+        document.getElementById('runValidation').addEventListener('click', runValidation);
+        document.getElementById('downloadTranscript').addEventListener('click', downloadTranscript);
+        document.getElementById('resetValidation').addEventListener('click', reset);
+
+        // Initialize
+        renderCells();
+        log('Black Box Teaching System initialized', 'info');
+        log('Student project: $1 Verified Review System', 'lesson');
+        log('Learning CCNA through building YOUR idea...', 'lesson');
+    </script>
+</body>
+</html>

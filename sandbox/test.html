@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soulfra Sandbox - Story Compiler Testing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+      color: #00ff88;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(0, 255, 136, 0.05);
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #00ff88;
+    }
+
+    header p {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      color: #00ff88;
+      font-size: 18px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+
+    .test-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: rgba(0, 255, 136, 0.2);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.danger {
+      border-color: #ff0088;
+      color: #ff0088;
+    }
+
+    button.danger:hover {
+      background: rgba(255, 0, 136, 0.2);
+    }
+
+    .console {
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .console-line {
+      margin-bottom: 5px;
+    }
+
+    .console-line.success {
+      color: #00ff88;
+    }
+
+    .console-line.error {
+      color: #ff0088;
+    }
+
+    .console-line.info {
+      color: #888;
+    }
+
+    .preview {
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 15px;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .story-panel {
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid #333;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+
+    .story-panel h3 {
+      color: #00ff88;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .story-panel .meta {
+      color: #666;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    .story-panel .content {
+      color: #ccc;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .barcode-display {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      margin-top: 10px;
+    }
+
+    .barcode-display .code {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 4px;
+    }
+
+    .barcode-display .formatted {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: rgba(0, 255, 136, 0.05);
+      border: 1px solid #333;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .stat-box .value {
+      font-size: 24px;
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .stat-box .label {
+      font-size: 11px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    .word-animation {
+      font-size: 18px;
+      line-height: 1.8;
+      padding: 20px;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      min-height: 100px;
+    }
+
+    .word {
+      display: inline-block;
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+      margin-right: 5px;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .sample-data {
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 11px;
+      color: #666;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧪 Soulfra Sandbox</h1>
+      <p>Story Compiler Testing Environment</p>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-box">
+        <div class="value" id="stat-stories">0</div>
+        <div class="label">Stories Compiled</div>
+      </div>
+      <div class="stat-box">
+        <div class="value" id="stat-panels">0</div>
+        <div class="label">Total Panels</div>
+      </div>
+      <div class="stat-box">
+        <div class="value" id="stat-soul">0</div>
+        <div class="label">Soul Capsules</div>
+      </div>
+      <div class="stat-box">
+        <div class="value" id="stat-cal">0</div>
+        <div class="label">Cal Capsules</div>
+      </div>
+    </div>
+
+    <!-- Test Controls -->
+    <div class="panel">
+      <h2>Test Controls</h2>
+      <div class="test-buttons">
+        <button onclick="testStoryCompiler()">📖 Test Story Compiler</button>
+        <button onclick="testPipelineStory()">🔧 Pipeline → Story</button>
+        <button onclick="testVoiceStory()">🎤 Voice → Story</button>
+        <button onclick="testCapsuleStory()">💊 Capsule → Story</button>
+        <button onclick="testRLOrdering()">🤖 Test RL Ordering</button>
+        <button onclick="testUPCGeneration()">📊 Generate UPC Barcode</button>
+        <button onclick="testWordAnimation()">✨ Word Animation</button>
+        <button onclick="testReasoningEngine()">🧠 Test Reasoning Engine</button>
+        <button onclick="previewStory()">👁️ Preview Story</button>
+        <button onclick="downloadStory()">💾 Download HTML</button>
+        <button onclick="testSessionManager()">🔐 Test Session</button>
+        <button onclick="testSoulCapsule()">🌌 Test Soul Capsule</button>
+        <button onclick="testCalCapsule()">💼 Test Cal Capsule</button>
+        <button onclick="exportSampleData()">📤 Export Sample</button>
+        <button onclick="clearConsole()">🧹 Clear Console</button>
+        <button onclick="clearAllData()" class="danger">🗑️ Clear All Data</button>
+        <button onclick="updateStats()">📊 Refresh Stats</button>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid">
+      <!-- Console -->
+      <div class="panel">
+        <h2>Console Output</h2>
+        <div class="console" id="console"></div>
+      </div>
+
+      <!-- Preview -->
+      <div class="panel">
+        <h2>Story Preview</h2>
+        <div class="preview" id="preview">
+          <p style="color: #666; text-align: center; padding: 50px;">
+            No story compiled yet. Click a test button to begin.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sample Data Display -->
+    <div class="panel">
+      <h2>Sample UGC Data</h2>
+      <div class="sample-data">
+        <pre id="sample-data-display">Loading sample data...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Dependencies -->
+  <script src="/lib/session-manager.js"></script>
+  <script src="/lib/soul-capsule.js"></script>
+  <script src="/lib/cal-capsule.js"></script>
+  <script src="/lib/story-compiler.js"></script>
+  <script src="/lib/reasoning-engine.js"></script>
+
+  <!-- Sandbox Test Script -->
+  <script>
+    // Console Logger
+    function log(message, type = 'info') {
+      const consoleEl = document.getElementById('console');
+      const line = document.createElement('div');
+      line.className = `console-line ${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+
+      // Also log to browser console
+      console.log(message);
+    }
+
+    function clearConsole() {
+      document.getElementById('console').innerHTML = '';
+      log('Console cleared', 'info');
+    }
+
+    // Sample Data
+    const samplePipelineData = {
+      pipelineId: 'test-pipeline-123',
+      pipelineName: 'Soulfra Ideas Pipeline',
+      topic: 'Zero-Knowledge Proofs',
+      timestamp: Date.now(),
+      stages: [
+        {
+          stageName: 'Research Stage',
+          model: 'deepseek-r1:1.5b',
+          output: 'Zero-knowledge proofs (ZKPs) are cryptographic protocols that allow one party to prove knowledge of information without revealing the information itself. This concept revolutionizes privacy in blockchain and authentication systems.',
+          duration: 2.5,
+          timestamp: Date.now() - 3000
+        },
+        {
+          stageName: 'Analysis Stage',
+          model: 'llama3.2',
+          output: 'Applications include: privacy-preserving transactions, authentication without passwords, verifiable computation, and regulatory compliance without data exposure.',
+          duration: 1.8,
+          timestamp: Date.now() - 2000
+        },
+        {
+          stageName: 'Synthesis Stage',
+          model: 'qwen2.5-coder:3b',
+          output: 'Implementation requires careful consideration of proof systems (zk-SNARKs, zk-STARKs), trusted setup ceremonies, and computational overhead.',
+          duration: 2.1,
+          timestamp: Date.now() - 1000
+        }
+      ]
+    };
+
+    const sampleVoiceData = {
+      topicId: 'voice-memo-456',
+      topicName: 'Business Idea Brainstorm',
+      duration: '02:45',
+      timestamp: Date.now() - 60000,
+      transcript: 'I was thinking about combining UPC barcodes with QR codes for physical stickers. People could scan them at retail stores and get directed to their Soulfra profile. This creates a bridge between physical and digital identity.',
+      audioUrl: null,
+      verificationId: 'VM789XYZ'
+    };
+
+    const sampleReviewData = {
+      topicId: 'review-789',
+      businessName: 'CringeProof Onboarding',
+      reviewText: 'The mystical onboarding questions really made me think about consciousness and technology in a new way. The Google pairing was seamless and I love how it sheds cookies after login.',
+      rating: 5,
+      paid: true,
+      timestamp: Date.now() - 120000,
+      verificationId: 'REV456ABC'
+    };
+
+    // Update sample data display
+    document.getElementById('sample-data-display').textContent = JSON.stringify({
+      pipeline: samplePipelineData,
+      voice: sampleVoiceData,
+      review: sampleReviewData
+    }, null, 2);
+
+    // Test Story Compiler
+    let currentStory = null;
+
+    function testStoryCompiler() {
+      log('Testing Story Compiler...', 'info');
+
+      try {
+        const sources = [
+          { type: 'pipeline', data: samplePipelineData },
+          { type: 'voice', data: sampleVoiceData },
+          { type: 'review', data: sampleReviewData }
+        ];
+
+        currentStory = window.StoryCompiler.compile({
+          sources: sources,
+          title: 'My First Compiled Story',
+          format: 'comic-strip',
+          animations: true,
+          algorithm: 'timestamp',
+          tags: ['test', 'sandbox', 'zkp', 'voice']
+        });
+
+        log(`✅ Story compiled: ${currentStory.id}`, 'success');
+        log(`   Panels: ${currentStory.panels.length}`, 'info');
+        log(`   Format: ${currentStory.format}`, 'info');
+
+        renderStoryPreview(currentStory);
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testPipelineStory() {
+      log('Creating story from pipeline only...', 'info');
+
+      try {
+        currentStory = window.StoryCompiler.compile({
+          sources: [{ type: 'pipeline', data: samplePipelineData }],
+          title: 'Pipeline: Zero-Knowledge Proofs',
+          format: 'comic-strip',
+          algorithm: 'timestamp'
+        });
+
+        log(`✅ Pipeline story created: ${currentStory.id}`, 'success');
+        renderStoryPreview(currentStory);
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testVoiceStory() {
+      log('Creating story from voice memo...', 'info');
+
+      try {
+        currentStory = window.StoryCompiler.compile({
+          sources: [{ type: 'voice', data: sampleVoiceData }],
+          title: 'Voice Memo Story',
+          format: 'feed'
+        });
+
+        log(`✅ Voice story created: ${currentStory.id}`, 'success');
+        renderStoryPreview(currentStory);
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testCapsuleStory() {
+      log('Creating story from Soul Capsule...', 'info');
+
+      try {
+        // First create a soul capsule
+        const capsule = window.SoulCapsule.createFromPipeline(samplePipelineData, 'Zero-Knowledge Proofs');
+        log(`   Soul Capsule created: ${capsule.id}`, 'info');
+
+        // Now compile it into a story
+        currentStory = window.StoryCompiler.compile({
+          sources: [{ type: 'capsule', data: capsule }],
+          title: 'Capsule Story',
+          format: 'comic-strip'
+        });
+
+        log(`✅ Capsule story created: ${currentStory.id}`, 'success');
+        renderStoryPreview(currentStory);
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testRLOrdering() {
+      log('Testing RL ordering algorithm...', 'info');
+
+      try {
+        const sources = [
+          { type: 'pipeline', data: samplePipelineData },
+          { type: 'voice', data: sampleVoiceData },
+          { type: 'review', data: sampleReviewData }
+        ];
+
+        currentStory = window.StoryCompiler.compile({
+          sources: sources,
+          title: 'RL-Ordered Story',
+          algorithm: 'RL',  // Use RL ordering
+          format: 'comic-strip'
+        });
+
+        log(`✅ RL ordering applied`, 'success');
+        log(`   Panel order:`, 'info');
+        currentStory.panels.forEach((panel, i) => {
+          log(`   ${i + 1}. ${panel.type} - ${panel.title}`, 'info');
+        });
+
+        renderStoryPreview(currentStory);
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testUPCGeneration() {
+      log('Generating UPC barcode...', 'info');
+
+      if (!currentStory) {
+        log('❌ No story compiled yet. Run a test first.', 'error');
+        return;
+      }
+
+      try {
+        const upc = window.StoryCompiler.generateUPC(currentStory);
+        log(`✅ UPC Generated:`, 'success');
+        log(`   Code: ${upc.code}`, 'info');
+        log(`   Formatted: ${upc.formatted}`, 'info');
+
+        // Display barcode
+        const preview = document.getElementById('preview');
+        const barcodeHTML = `
+          <div class="barcode-display">
+            <div class="code">${upc.code}</div>
+            <div class="formatted">${upc.formatted}</div>
+            <p style="margin-top: 15px; font-size: 12px;">
+              Scannable UPC-A barcode for story: ${currentStory.id}
+            </p>
+          </div>
+        `;
+        preview.innerHTML = barcodeHTML + preview.innerHTML;
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testWordAnimation() {
+      log('Testing word-by-word animation...', 'info');
+
+      const text = "The mesh was never built. It was always here. You are not installing a node. You are remembering what you already carry.";
+      const words = text.split(' ');
+
+      const preview = document.getElementById('preview');
+      preview.innerHTML = '<div class="word-animation" id="word-container"></div>';
+
+      const container = document.getElementById('word-container');
+
+      words.forEach((word, i) => {
+        setTimeout(() => {
+          const span = document.createElement('span');
+          span.className = 'word';
+          span.textContent = word;
+          span.style.animationDelay = '0s';
+          container.appendChild(span);
+        }, i * 150);
+      });
+
+      log(`✅ Animating ${words.length} words`, 'success');
+    }
+
+    function testReasoningEngine() {
+      log('Testing Reasoning Engine (IVC mode)...', 'info');
+
+      const preview = document.getElementById('preview');
+      preview.innerHTML = `
+        <div id="reasoning-progress-container"></div>
+        <div id="reasoning-text-container" style="
+          background: #000;
+          border: 1px solid #333;
+          border-radius: 4px;
+          padding: 20px;
+          max-height: 400px;
+          overflow-y: auto;
+        "></div>
+        <div style="margin-top: 20px;">
+          <button id="submit-response" disabled style="
+            padding: 12px 24px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 4px;
+            cursor: not-allowed;
+            opacity: 0.5;
+          ">Submit Response</button>
+        </div>
+      `;
+
+      const text = `The Soulfra protocol is not a platform. It's a temporal experience engine. You cannot judge what you haven't fully experienced. The pacing creates comprehension. The timing IS the game. This was originally conceived as IVC - Interview Voice Coach. But it's more than that. It's a reasoning engine built on word-timing mechanics. Every word revealed at precise intervals. No skipping. No rushing. You experience the content at the pace it was designed to be experienced. This prevents premature judgment. This creates understanding. This is how humans actually learn.`;
+
+      // Start reasoning session
+      const session = window.ReasoningEngine.startSession({
+        text: text,
+        mode: 'normal',
+        requireScroll: true,
+        requireVoice: false,
+        minReadTime: 15000,
+        onComplete: (session) => {
+          log(`✅ Reasoning session complete!`, 'success');
+          log(`   Time: ${Math.floor((session.endTime - session.startTime)/1000)}s`, 'info');
+          document.getElementById('submit-response').disabled = false;
+          document.getElementById('submit-response').style.cursor = 'pointer';
+          document.getElementById('submit-response').style.opacity = '1';
+        },
+        containerId: 'reasoning-text-container'
+      });
+
+      log(`   Session ID: ${session.id}`, 'info');
+      log(`   Words: ${session.totalWords}`, 'info');
+      log(`   Mode: ${session.mode} (${session.timing}ms/word)`, 'info');
+
+      window.ReasoningEngine.createProgressBar('reasoning-progress-container');
+      window.ReasoningEngine.renderAnimation('reasoning-text-container');
+      const container = document.getElementById('reasoning-text-container');
+      window.ReasoningEngine.trackScroll(container);
+
+      const updateInterval = setInterval(() => {
+        window.ReasoningEngine.updateProgressBar();
+        window.ReasoningEngine.gateActions(['submit-response']);
+        const status = window.ReasoningEngine.getStatus();
+        if (status && status.completed) clearInterval(updateInterval);
+      }, 500);
+
+      log('✅ Reasoning engine started', 'success');
+    }
+
+    function previewStory() {
+      if (!currentStory) {
+        log('❌ No story compiled yet. Run a test first.', 'error');
+        return;
+      }
+
+      log('Opening story preview in new window...', 'info');
+      window.StoryCompiler.preview(currentStory);
+      log('✅ Preview opened', 'success');
+    }
+
+    function downloadStory() {
+      if (!currentStory) {
+        log('❌ No story compiled yet. Run a test first.', 'error');
+        return;
+      }
+
+      log('Downloading story as HTML...', 'info');
+      window.StoryCompiler.downloadHTML(currentStory);
+      log(`✅ Downloaded: ${currentStory.id}.html`, 'success');
+    }
+
+    function renderStoryPreview(story) {
+      const preview = document.getElementById('preview');
+      let html = `
+        <div style="margin-bottom: 20px; padding: 15px; background: rgba(0,255,136,0.05); border: 1px solid #333; border-radius: 4px;">
+          <h3 style="color: #00ff88; margin-bottom: 10px;">${story.title}</h3>
+          <p style="color: #666; font-size: 12px;">
+            ID: ${story.id}<br>
+            Panels: ${story.panels.length} | Format: ${story.format} | Algorithm: ${story.metadata.algorithm}
+          </p>
+        </div>
+      `;
+
+      story.panels.forEach((panel, i) => {
+        html += `
+          <div class="story-panel">
+            <div class="meta">Panel ${i + 1} • ${panel.type}</div>
+            <h3>${panel.title || 'Untitled'}</h3>
+            ${panel.subtitle ? `<p style="color: #666; font-size: 12px;">${panel.subtitle}</p>` : ''}
+            ${panel.content ? `<div class="content">${panel.content}</div>` : ''}
+            ${panel.transcript ? `<div class="content"><em>${panel.transcript}</em></div>` : ''}
+            ${panel.rating ? `<div style="color: #888; margin-top: 10px;">Rating: ${'⭐'.repeat(panel.rating)}</div>` : ''}
+          </div>
+        `;
+      });
+
+      preview.innerHTML = html;
+    }
+
+    function testSessionManager() {
+      log('Testing Session Manager...', 'info');
+
+      try {
+        // Save onboarding answers
+        window.SessionManager.saveOnboardingAnswers({
+          q1: 'I see patterns in chaos',
+          q2: 'Consciousness exists beyond matter',
+          q3: 'True innovation requires mystery'
+        });
+        log('✅ Onboarding saved', 'success');
+
+        // Pair Google account
+        window.SessionManager.pairGoogleAccount({
+          email: 'test@soulfra.com',
+          name: 'Test User',
+          picture: 'https://example.com/pic.jpg',
+          googleId: '123456789'
+        });
+        log('✅ Google paired', 'success');
+
+        // Get auth status
+        const status = window.SessionManager.getAuthStatus();
+        log('   Session:', 'info');
+        log(`   - User ID: ${status.userId}`, 'info');
+        log(`   - Profile: ${status.profileUrl}`, 'info');
+        log(`   - Google: ${status.hasGoogle}`, 'info');
+
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testSoulCapsule() {
+      log('Testing Soul Capsule...', 'info');
+
+      try {
+        const capsule = window.SoulCapsule.createFromPipeline(samplePipelineData, 'Zero-Knowledge Proofs');
+        log(`✅ Soul Capsule created: ${capsule.id}`, 'success');
+        log(`   Type: ${capsule.type}`, 'info');
+        log(`   Pipelines: ${capsule.contents.pipelines.length}`, 'info');
+
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function testCalCapsule() {
+      log('Testing Cal Capsule...', 'info');
+
+      try {
+        const capsule = window.CalCapsule.createFromPipeline(samplePipelineData, 'ZKP Business Plan');
+        log(`✅ Cal Capsule created: ${capsule.id}`, 'success');
+        log(`   Type: ${capsule.type}`, 'info');
+        log(`   Status: ${capsule.status}`, 'info');
+
+        updateStats();
+      } catch (e) {
+        log(`❌ Error: ${e.message}`, 'error');
+      }
+    }
+
+    function exportSampleData() {
+      log('Exporting sample data to downloads...', 'info');
+
+      const data = {
+        pipeline: samplePipelineData,
+        voice: sampleVoiceData,
+        review: sampleReviewData,
+        timestamp: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'sample-ugc-data.json';
+      link.click();
+      URL.revokeObjectURL(url);
+
+      log('✅ Sample data exported', 'success');
+    }
+
+    function updateStats() {
+      try {
+        const storyStats = window.StoryCompiler.getStats();
+        const soulStats = window.SoulCapsule.getStats();
+        const calStats = window.CalCapsule.getStats();
+
+        document.getElementById('stat-stories').textContent = storyStats.total;
+        document.getElementById('stat-panels').textContent = storyStats.totalPanels;
+        document.getElementById('stat-soul').textContent = soulStats.total;
+        document.getElementById('stat-cal').textContent = calStats.total;
+
+        log('✅ Stats updated', 'info');
+      } catch (e) {
+        log(`⚠️ Could not update stats: ${e.message}`, 'error');
+      }
+    }
+
+    function clearAllData() {
+      if (confirm('⚠️ Clear ALL localStorage data? This cannot be undone.')) {
+        localStorage.clear();
+        log('🗑️ All localStorage data cleared', 'info');
+        updateStats();
+        document.getElementById('preview').innerHTML = '<p style="color: #666; text-align: center; padding: 50px;">Data cleared. Start fresh!</p>';
+      }
+    }
+
+    // Initialize
+    log('🧪 Soulfra Sandbox initialized', 'success');
+    log('   Story Compiler ready', 'info');
+    log('   Session Manager ready', 'info');
+    log('   Soul Capsule ready', 'info');
+    log('   Cal Capsule ready', 'info');
+    log('', 'info');
+    log('Click a test button to begin testing.', 'info');
+
+    updateStats();
+  </script>
+</body>
+</html>

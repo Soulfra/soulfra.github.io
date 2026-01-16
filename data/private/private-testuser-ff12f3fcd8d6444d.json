@@ -1,0 +1,27 @@
+{
+  "text": "Today is a beautiful day to create something amazing with code and creativity",
+  "proof": {
+    "contentType": "text",
+    "length": 77,
+    "bytes": 77,
+    "hashes": {
+      "sha256": "bc67448066b92a829f2bc2b978bed7a2eb477bc3d9cf9c51fd7717fa5dd68e14",
+      "md5": "7e4d001d55efb5a445ae70845ecd6db7"
+    },
+    "metadata": {
+      "source": "user-input",
+      "username": "testuser",
+      "title": "Morning Inspiration",
+      "capturedAt": "2026-01-10T17:44:48.392Z"
+    },
+    "preview": {
+      "first50": "Today is a beautiful day to create something amazi",
+      "last50": " create something amazing with code and creativity"
+    }
+  },
+  "metadata": {
+    "username": "testuser",
+    "title": "Morning Inspiration",
+    "description": ""
+  }
+}

@@ -1,0 +1,63 @@
+# robots.txt for Soulfra Ecosystem
+
+# Allow all bots to crawl everything
+User-agent: *
+Allow: /
+
+# Specific bot permissions
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# AI Crawlers - Welcome!
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Sitemaps
+Sitemap: https://soulfra.com/sitemap.xml
+
+# Crawl delays (be gentle, we're static pages)
+Crawl-delay: 1
+
+# Special notes for AI crawlers:
+# - Read /LLM.txt for structured documentation
+# - All systems run client-side (localStorage)
+# - Ollama integration requires local setup
+# - Test with $1 Cal Faucet at /cal/test-protocol.html
+# - Navigation hub at /nav.html
+
+# Disallow nothing - this is public infrastructure
+# No sensitive data, no private routes
+# Everything is meant to be discovered

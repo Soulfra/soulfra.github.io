@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Avatar AR Filter - Soulfra</title>
+
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .video-panel {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .video-wrapper {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        #webcam {
+            display: none;
+        }
+
+        #output-canvas {
+            max-width: 100%;
+            max-height: 100vh;
+            border-radius: 10px;
+        }
+
+        .control-panel {
+            width: 350px;
+            background: #1a1a1a;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .upload-area {
+            border: 2px dashed #333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area.active {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="file"], input[type="text"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #333;
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #222;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .toggle label {
+            font-size: 14px;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #444;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .switch.active {
+            background: #667eea;
+        }
+
+        .switch-thumb {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .switch.active .switch-thumb {
+            transform: translateX(24px);
+        }
+
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider input {
+            width: 100%;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            padding: 15px;
+            background: #222;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .preview-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-panel">
+            <div class="video-wrapper">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="output-canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <h1>🎭 Live Avatar Filter</h1>
+            <p class="subtitle">Real-time face tracking + voice modulation</p>
+
+            <!-- Upload Avatar Style -->
+            <div class="section">
+                <h3>1. Choose Avatar Style</h3>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('styleImage').click()">
+                    <p style="font-size: 32px; margin-bottom: 5px;">📸</p>
+                    <p style="font-size: 12px;">Upload image or paste Twitter URL</p>
+                </div>
+                <input type="file" id="styleImage" accept="image/*">
+                <input type="text" id="twitterUrl" placeholder="Paste Twitter URL">
+                <button class="btn btn-secondary" onclick="showTwitterInput()">Or Paste Twitter URL</button>
+                <img id="stylePreview" class="preview-thumb" style="display: none;">
+                <div class="loading" id="styleLoading">
+                    <div class="spinner"></div>
+                    <p style="font-size: 12px; color: #888;">Analyzing style...</p>
+                </div>
+                <div id="styleStatus" class="status" style="display: none;"></div>
+            </div>
+
+            <!-- Camera Toggle -->
+            <div class="section">
+                <h3>2. Camera Controls</h3>
+                <div class="toggle" onclick="toggleCamera()">
+                    <label>Webcam</label>
+                    <div class="switch" id="cameraSwitch">
+                        <div class="switch-thumb"></div>
+                    </div>
+                </div>
+                <div class="toggle" onclick="toggleFaceTracking()">
+                    <label>Face Tracking</label>
+                    <div class="switch" id="trackingSwitch">
+                        <div class="switch-thumb"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Modulation -->
+            <div class="section">
+                <h3>3. Voice Modulation</h3>
+                <div class="toggle" onclick="toggleVoice()">
+                    <label>Voice Effect</label>
+                    <div class="switch" id="voiceSwitch">
+                        <div class="switch-thumb"></div>
+                    </div>
+                </div>
+                <div class="slider">
+                    <div class="slider-label">
+                        <span>Pitch Shift</span>
+                        <span id="pitchValue">0</span>
+                    </div>
+                    <input type="range" id="pitchSlider" min="-12" max="12" value="0" step="1" oninput="updatePitch(this.value)">
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="section">
+                <div id="systemStatus" class="status">
+                    <div><strong>Status:</strong> Ready</div>
+                    <div id="fpsDisplay" style="margin-top: 5px;">FPS: 0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api-config.js"></script>
+    <script>
+        let faceMesh = null;
+        let camera = null;
+        let audioContext = null;
+        let pitchShifter = null;
+        let currentStyle = null;
+        let cameraActive = false;
+        let trackingActive = false;
+        let voiceActive = false;
+        let fps = 0;
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        const videoElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('output-canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+
+        // Initialize MediaPipe Face Mesh
+        function initFaceMesh() {
+            faceMesh = new FaceMesh({
+                locateFile: (file) => {
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+                }
+            });
+
+            faceMesh.setOptions({
+                maxNumFaces: 1,
+                refineLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+
+            faceMesh.onResults(onFaceResults);
+        }
+
+        // Face tracking results callback
+        function onFaceResults(results) {
+            // Set canvas size to match video
+            if (results.image) {
+                canvasElement.width = results.image.width;
+                canvasElement.height = results.image.height;
+            }
+
+            // Calculate FPS
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime - lastTime >= 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+                document.getElementById('fpsDisplay').textContent = `FPS: ${fps}`;
+            }
+
+            // Draw results
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiFaceLandmarks && trackingActive) {
+                for (const landmarks of results.multiFaceLandmarks) {
+                    // Draw face mesh using MediaPipe drawing utils
+                    if (window.drawConnectors && window.FACEMESH_TESSELATION) {
+                        window.drawConnectors(canvasCtx, landmarks, window.FACEMESH_TESSELATION, {
+                            color: currentStyle ? currentStyle.color : '#667eea',
+                            lineWidth: 1
+                        });
+                    } else {
+                        // Fallback: draw simple dots for landmarks
+                        drawLandmarksFallback(landmarks);
+                    }
+
+                    // Apply avatar style overlay if loaded
+                    if (currentStyle && currentStyle.overlay) {
+                        applyStyleOverlay(landmarks);
+                    }
+                }
+            }
+
+            canvasCtx.restore();
+        }
+
+        // Fallback landmark drawing if MediaPipe utils not loaded
+        function drawLandmarksFallback(landmarks) {
+            canvasCtx.fillStyle = currentStyle ? currentStyle.color : '#667eea';
+            for (const landmark of landmarks) {
+                const x = landmark.x * canvasElement.width;
+                const y = landmark.y * canvasElement.height;
+                canvasCtx.beginPath();
+                canvasCtx.arc(x, y, 1, 0, 2 * Math.PI);
+                canvasCtx.fill();
+            }
+        }
+
+        // Apply avatar style overlay to face
+        function applyStyleOverlay(landmarks) {
+            // This is where we'll apply the analyzed style from calriven.png etc
+            // For now, just draw colored highlights
+            if (!currentStyle) return;
+
+            const color = currentStyle.color || '#667eea';
+
+            // Draw glow effect around face
+            if (window.FACEMESH_FACE_OVAL) {
+                const faceOval = window.FACEMESH_FACE_OVAL;
+                for (const connection of faceOval) {
+                    const start = landmarks[connection[0]];
+                    const end = landmarks[connection[1]];
+
+                    canvasCtx.strokeStyle = color;
+                    canvasCtx.lineWidth = 3;
+                    canvasCtx.globalAlpha = 0.3;
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(start.x * canvasElement.width, start.y * canvasElement.height);
+                    canvasCtx.lineTo(end.x * canvasElement.width, end.y * canvasElement.height);
+                    canvasCtx.stroke();
+                }
+                canvasCtx.globalAlpha = 1.0;
+            } else {
+                // Fallback: draw a circle around face center
+                const noseTip = landmarks[1]; // Nose tip is landmark 1
+                const x = noseTip.x * canvasElement.width;
+                const y = noseTip.y * canvasElement.height;
+
+                canvasCtx.strokeStyle = color;
+                canvasCtx.lineWidth = 3;
+                canvasCtx.globalAlpha = 0.3;
+                canvasCtx.beginPath();
+                canvasCtx.arc(x, y, 150, 0, 2 * Math.PI);
+                canvasCtx.stroke();
+                canvasCtx.globalAlpha = 1.0;
+            }
+        }
+
+        // Toggle camera
+        async function toggleCamera() {
+            const switchEl = document.getElementById('cameraSwitch');
+            cameraActive = !cameraActive;
+            switchEl.classList.toggle('active');
+
+            if (cameraActive) {
+                await startCamera();
+                updateStatus('Camera started', 'success');
+            } else {
+                stopCamera();
+                updateStatus('Camera stopped', '');
+            }
+        }
+
+        // Start camera
+        async function startCamera() {
+            if (!faceMesh) initFaceMesh();
+
+            camera = new Camera(videoElement, {
+                onFrame: async () => {
+                    await faceMesh.send({image: videoElement});
+                },
+                width: 1280,
+                height: 720
+            });
+
+            camera.start();
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (camera) {
+                camera.stop();
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            }
+        }
+
+        // Toggle face tracking
+        function toggleFaceTracking() {
+            const switchEl = document.getElementById('trackingSwitch');
+            trackingActive = !trackingActive;
+            switchEl.classList.toggle('active');
+            updateStatus(`Face tracking ${trackingActive ? 'enabled' : 'disabled'}`, 'success');
+        }
+
+        // Toggle voice modulation
+        async function toggleVoice() {
+            const switchEl = document.getElementById('voiceSwitch');
+            voiceActive = !voiceActive;
+            switchEl.classList.toggle('active');
+
+            if (voiceActive) {
+                await startVoiceModulation();
+                updateStatus('Voice modulation enabled', 'success');
+            } else {
+                stopVoiceModulation();
+                updateStatus('Voice modulation disabled', '');
+            }
+        }
+
+        // Start voice modulation
+        async function startVoiceModulation() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+
+                // Create pitch shifter (simple for now)
+                const biquadFilter = audioContext.createBiquadFilter();
+                biquadFilter.type = 'lowpass';
+                biquadFilter.frequency.value = 8000;
+
+                source.connect(biquadFilter);
+                biquadFilter.connect(audioContext.destination);
+
+                pitchShifter = { source, filter: biquadFilter };
+            } catch (error) {
+                console.error('Voice modulation error:', error);
+                updateStatus('Microphone access denied', 'error');
+            }
+        }
+
+        // Stop voice modulation
+        function stopVoiceModulation() {
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+                pitchShifter = null;
+            }
+        }
+
+        // Update pitch shift
+        function updatePitch(value) {
+            document.getElementById('pitchValue').textContent = value;
+            // TODO: Implement actual pitch shifting
+            // For now just update the filter frequency
+            if (pitchShifter && pitchShifter.filter) {
+                const frequency = 8000 * Math.pow(2, value / 12);
+                pitchShifter.filter.frequency.value = frequency;
+            }
+        }
+
+        // Handle style image upload
+        document.getElementById('styleImage').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            handleStyleUpload(file);
+        });
+
+        // Handle style upload
+        async function handleStyleUpload(file) {
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('stylePreview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Analyze with LLaVA
+            document.getElementById('styleLoading').style.display = 'block';
+            document.getElementById('styleStatus').style.display = 'none';
+
+            try {
+                const base64 = await fileToBase64(file);
+                const response = await apiCall(API_CONFIG.ENDPOINTS.avatarAnalyze, {
+                    method: 'POST',
+                    body: JSON.stringify({ imageData: base64 })
+                });
+
+                // Extract colors from prompt
+                const prompt = response.data.prompt;
+                const colorMatch = prompt.match(/#[0-9A-Fa-f]{6}/);
+                const mainColor = colorMatch ? colorMatch[0] : '#667eea';
+
+                currentStyle = {
+                    prompt: prompt,
+                    color: mainColor,
+                    overlay: true
+                };
+
+                updateStatus(`Style loaded: ${file.name}`, 'success');
+            } catch (error) {
+                updateStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('styleLoading').style.display = 'none';
+            }
+        }
+
+        // Show Twitter input
+        function showTwitterInput() {
+            const input = prompt('Paste Twitter URL:');
+            if (input) {
+                fetchTwitterImage(input);
+            }
+        }
+
+        // Fetch image from Twitter URL
+        async function fetchTwitterImage(url) {
+            updateStatus('Fetching Twitter image...', '');
+            // TODO: Implement Twitter image fetcher
+            updateStatus('Twitter fetcher coming soon', 'error');
+        }
+
+        // Helper: file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Update status message
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('systemStatus');
+            statusEl.textContent = message;
+            statusEl.className = 'status' + (type ? ' ' + type : '');
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Canvas size will be set dynamically when camera starts
+            updateStatus('Ready - Upload an image and toggle camera', '');
+
+            // Check MediaPipe library availability
+            console.log('MediaPipe FaceMesh:', typeof FaceMesh !== 'undefined');
+            console.log('MediaPipe Drawing Utils:', typeof window.drawConnectors !== 'undefined');
+            console.log('MediaPipe Camera:', typeof Camera !== 'undefined');
+        });
+    </script>
+</body>
+</html>

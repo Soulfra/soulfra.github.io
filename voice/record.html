@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Voice Memo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .topic-display {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .topic-id {
+            color: #00ff88;
+            font-weight: 500;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .recorder {
+            text-align: center;
+            padding: 40px 20px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            margin: 20px 0;
+        }
+
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #00ff88;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .record-button:hover {
+            background: #00dd77;
+            transform: scale(1.05);
+        }
+
+        .record-button.recording {
+            background: #ff0044;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .timer {
+            font-size: 32px;
+            color: #00ff88;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer.recording {
+            color: #ff0044;
+        }
+
+        .audio-player {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .audio-player.show {
+            display: block;
+        }
+
+        audio {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        button:disabled {
+            background: #222;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .status {
+            color: #888;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .waveform {
+            height: 60px;
+            background: #0f0f0f;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 0 20px;
+        }
+
+        .waveform-bar {
+            width: 3px;
+            background: #00ff88;
+            transition: height 0.1s;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Record Voice Memo</h1>
+        <p class="subtitle">Record your message and pay $1 to submit</p>
+
+        <div class="topic-display">
+            <div style="color: #888;">Topic:</div>
+            <div class="topic-id" id="topicName">Loading...</div>
+        </div>
+
+        <div class="info">
+            Record → Review → Pay $1 → Memo Saved
+        </div>
+
+        <div class="card">
+            <div class="recorder">
+                <div class="timer" id="timer">00:00</div>
+
+                <button class="record-button" id="recordButton" onclick="toggleRecording()">
+                    <span id="recordText">● Record</span>
+                </button>
+
+                <div class="waveform" id="waveform"></div>
+
+                <div class="status" id="status">Click the button to start recording</div>
+            </div>
+
+            <div class="audio-player" id="audioPlayer">
+                <audio id="audioPlayback" controls></audio>
+                <div style="margin-top: 15px;">
+                    <button onclick="retryRecording()" class="secondary">🔄 Re-record</button>
+                    <button onclick="submitRecording()" id="submitButton">Pay $1 to Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get topic ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('topic');
+
+        // Retrieve topic data
+        const topics = JSON.parse(localStorage.getItem('voiceTopics') || '[]');
+        const topic = topics.find(t => t.id === topicId);
+
+        if (topic) {
+            document.getElementById('topicName').textContent = topic.name;
+        } else {
+            document.getElementById('topicName').textContent = topicId || 'Unknown Topic';
+        }
+
+        // Recording state
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingStartTime = null;
+        let timerInterval = null;
+        let audioBlob = null;
+
+        // Initialize waveform bars
+        const waveform = document.getElementById('waveform');
+        for (let i = 0; i < 40; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'waveform-bar';
+            bar.style.height = '4px';
+            waveform.appendChild(bar);
+        }
+
+        // Toggle recording
+        async function toggleRecording() {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        // Start recording
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    document.getElementById('audioPlayback').src = audioUrl;
+                    document.getElementById('audioPlayer').classList.add('show');
+
+                    // Stop waveform animation
+                    clearInterval(timerInterval);
+                    resetWaveform();
+                };
+
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+
+                // Update UI
+                document.getElementById('recordButton').classList.add('recording');
+                document.getElementById('recordText').textContent = '■ Stop';
+                document.getElementById('status').textContent = 'Recording in progress...';
+                document.getElementById('timer').classList.add('recording');
+
+                // Start timer
+                timerInterval = setInterval(updateTimer, 100);
+                animateWaveform();
+
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                document.getElementById('status').textContent = 'Error: Could not access microphone';
+            }
+        }
+
+        // Stop recording
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+
+                // Update UI
+                document.getElementById('recordButton').classList.remove('recording');
+                document.getElementById('recordText').textContent = '● Record';
+                document.getElementById('status').textContent = 'Recording complete. Review your memo below.';
+                document.getElementById('timer').classList.remove('recording');
+            }
+        }
+
+        // Update timer
+        function updateTimer() {
+            const elapsed = Date.now() - recordingStartTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            document.getElementById('timer').textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Animate waveform
+        function animateWaveform() {
+            const bars = document.querySelectorAll('.waveform-bar');
+            setInterval(() => {
+                bars.forEach(bar => {
+                    const height = Math.random() * 50 + 10;
+                    bar.style.height = height + 'px';
+                });
+            }, 100);
+        }
+
+        // Reset waveform
+        function resetWaveform() {
+            const bars = document.querySelectorAll('.waveform-bar');
+            bars.forEach(bar => {
+                bar.style.height = '4px';
+            });
+        }
+
+        // Retry recording
+        function retryRecording() {
+            document.getElementById('audioPlayer').classList.remove('show');
+            document.getElementById('timer').textContent = '00:00';
+            document.getElementById('status').textContent = 'Click the button to start recording';
+            audioBlob = null;
+        }
+
+        // Submit recording
+        function submitRecording() {
+            if (!audioBlob) {
+                alert('Please record a voice memo first');
+                return;
+            }
+
+            // Store recording data in sessionStorage (temporary)
+            const recordingData = {
+                topicId: topicId,
+                topicName: topic ? topic.name : topicId,
+                timestamp: new Date().toISOString(),
+                duration: document.getElementById('timer').textContent,
+                audioSize: audioBlob.size
+            };
+
+            sessionStorage.setItem('voiceMemo', JSON.stringify(recordingData));
+
+            // Redirect to Stripe payment (same test link from reviews)
+            const stripePaymentUrl = 'https://buy.stripe.com/test_cNieVd5Vjb6N2ZY6Fq4wM00';
+            const returnUrl = `${window.location.origin}/voice/verified.html?topic=${topicId}`;
+
+            window.location.href = `${stripePaymentUrl}?client_reference_id=${topicId}&success_url=${encodeURIComponent(returnUrl)}`;
+        }
+    </script>
+</body>
+</html>

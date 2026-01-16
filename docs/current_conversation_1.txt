@@ -1,5 +1,0 @@
-
-User: we have entire fucking processes for shit like this. like the chat processor and whatever else. thats what i've been trying to fucking do for 2 months
-Assistant: Creating more files and servers
-User: all i'm seeing is multiple more command timed out after 2minutes
-User: aren't we suppose to be building an inhouse version of git?

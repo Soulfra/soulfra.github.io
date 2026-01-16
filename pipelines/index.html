@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate AI Pipeline QR Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            color: #00ff88;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #00dd77;
+        }
+
+        button.secondary {
+            background: #333;
+            color: #00ff88;
+        }
+
+        button.secondary:hover {
+            background: #444;
+        }
+
+        .info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 30px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            display: inline-block;
+            padding: 15px;
+            background: white;
+        }
+
+        .url-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            word-break: break-all;
+            font-size: 12px;
+        }
+
+        .pipeline-id {
+            color: #00ff88;
+            font-weight: 500;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        code {
+            background: #0f0f0f;
+            padding: 2px 6px;
+            border: 1px solid #333;
+            color: #00ff88;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .template-info {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .template-info h4 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .stages-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .stages-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        .stages-list li:last-child {
+            border-bottom: none;
+        }
+
+        .stage-number {
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .stage-model {
+            color: #888;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generate AI Pipeline QR Code</h1>
+        <p class="subtitle">Chain your Ollama models into automated workflows</p>
+
+        <div class="info">
+            User scans → Runs pipeline → Models chain together → Export to notebook/script
+        </div>
+
+        <div class="card">
+            <form id="pipelineForm">
+                <div class="form-group">
+                    <label>Pipeline Template</label>
+                    <select id="templateSelect" required>
+                        <option value="">Select a pipeline template...</option>
+                    </select>
+                </div>
+
+                <div id="templatePreview" class="template-info hidden"></div>
+
+                <div class="form-group">
+                    <label>Topic / Subject</label>
+                    <input type="text" id="topicInput" required placeholder="e.g., CCNA Networking, Python Web Scraping" autofocus>
+                </div>
+
+                <button type="submit">Generate Pipeline QR Code</button>
+            </form>
+        </div>
+
+        <div id="qrResult" class="card hidden">
+            <h2 style="margin-bottom: 20px; font-size: 18px;">Your Pipeline QR Code</h2>
+
+            <div class="pipeline-id">
+                Pipeline ID: <code id="displayPipelineId"></code>
+            </div>
+
+            <div class="qr-container">
+                <div id="qrcode"></div>
+
+                <div class="url-display">
+                    <div style="color: #888; margin-bottom: 8px;">Pipeline URL:</div>
+                    <div id="pipelineUrl"></div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="downloadQR()">Download QR Code</button>
+                    <button onclick="printQR()" class="secondary">Print</button>
+                    <button onclick="copyURL()" class="secondary">Copy URL</button>
+                    <button onclick="reset()" class="secondary">Generate Another</button>
+                </div>
+            </div>
+
+            <div class="info" style="margin-top: 20px;">
+                <strong>How to use:</strong><br><br>
+                1. Download or print the QR code<br>
+                2. Scan QR → Pipeline runs automatically<br>
+                3. Watch models chain together (Stage 1 → Stage 2 → Stage 3...)<br>
+                4. Export results to Jupyter notebook or Python script
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="wordlist.js"></script>
+    <script src="pipeline-engine.js"></script>
+    <script>
+        let currentQR = null;
+        let currentPipelineId = null;
+        let currentUrl = null;
+        let currentTemplate = null;
+
+        const pipelineEngine = new PipelineEngine();
+
+        // Load pipeline templates
+        async function loadTemplates() {
+            const templates = await pipelineEngine.getAvailableTemplates();
+            const select = document.getElementById('templateSelect');
+
+            templates.forEach(template => {
+                const option = document.createElement('option');
+                option.value = template.id;
+                option.textContent = `${template.name} - ${template.description}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Show template preview
+        document.getElementById('templateSelect').addEventListener('change', async (e) => {
+            const templateId = e.target.value;
+            if (!templateId) {
+                document.getElementById('templatePreview').classList.add('hidden');
+                return;
+            }
+
+            const templates = await pipelineEngine.loadTemplates();
+            const template = templates[templateId];
+
+            const preview = document.getElementById('templatePreview');
+            preview.innerHTML = `
+                <h4>${template.name}</h4>
+                <p style="color: #888; margin-bottom: 15px;">${template.description}</p>
+                <strong style="color: #00ff88;">Pipeline Stages:</strong>
+                <ul class="stages-list">
+                    ${template.stages.map((stage, i) => `
+                        <li>
+                            <span class="stage-number">Stage ${i + 1}:</span> ${stage.name || stage.id}
+                            <div class="stage-model">Model: ${stage.model} ${stage.domain ? `| Domain: ${stage.domain}` : ''}</div>
+                        </li>
+                    `).join('')}
+                </ul>
+                <div style="margin-top: 15px; color: #888;">
+                    Export formats: ${template.exportFormats.join(', ')}
+                </div>
+            `;
+            preview.classList.remove('hidden');
+
+            currentTemplate = template;
+        });
+
+        // Form submission
+        document.getElementById('pipelineForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const templateId = document.getElementById('templateSelect').value;
+            const topic = document.getElementById('topicInput').value.trim();
+
+            if (!templateId || !topic) return;
+
+            // Generate unique ID
+            currentPipelineId = nameToWordId(topic);
+
+            // Build pipeline URL
+            const baseUrl = window.location.origin;
+            currentUrl = `${baseUrl}/pipelines/run.html?pipeline=${currentPipelineId}&template=${templateId}&topic=${encodeURIComponent(topic)}`;
+
+            // Show result section
+            document.getElementById('qrResult').classList.remove('hidden');
+            document.getElementById('displayPipelineId').textContent = currentPipelineId;
+            document.getElementById('pipelineUrl').textContent = currentUrl;
+
+            // Clear previous QR code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            // Generate new QR code
+            currentQR = new QRCode(qrContainer, {
+                text: currentUrl,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Scroll to result
+            document.getElementById('qrResult').scrollIntoView({ behavior: 'smooth' });
+
+            // Store in localStorage
+            const pipelines = JSON.parse(localStorage.getItem('pipelineConfigs') || '[]');
+            pipelines.push({
+                id: currentPipelineId,
+                template: templateId,
+                templateName: currentTemplate.name,
+                topic: topic,
+                createdAt: new Date().toISOString(),
+                url: currentUrl
+            });
+            localStorage.setItem('pipelineConfigs', JSON.stringify(pipelines));
+        });
+
+        // Download QR code
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const link = document.createElement('a');
+            link.download = `pipeline-qr-${currentPipelineId}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Print QR code
+        function printQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const printWindow = window.open('', '', 'width=600,height=600');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Pipeline QR Code - ${currentPipelineId}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+                        img { margin: 20px 0; }
+                        .pipeline-id { font-size: 18px; font-weight: bold; margin: 20px 0; }
+                        .url { font-size: 12px; word-break: break-all; margin: 20px 0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Scan to Run AI Pipeline</h1>
+                    <img src="${canvas.toDataURL('image/png')}" />
+                    <div class="pipeline-id">Pipeline ID: ${currentPipelineId}</div>
+                    <div class="url">${currentUrl}</div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Copy URL to clipboard
+        function copyURL() {
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                alert('Pipeline URL copied to clipboard!');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = currentUrl;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('Pipeline URL copied to clipboard!');
+            });
+        }
+
+        // Reset form
+        function reset() {
+            document.getElementById('pipelineForm').reset();
+            document.getElementById('qrResult').classList.add('hidden');
+            document.getElementById('templatePreview').classList.add('hidden');
+            document.getElementById('templateSelect').focus();
+        }
+
+        // Load templates on page load
+        loadTemplates();
+    </script>
+</body>
+</html>

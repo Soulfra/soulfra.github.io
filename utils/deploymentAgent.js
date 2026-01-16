@@ -20,9 +20,10 @@ async function deploymentAgent(dropName, copyToPublic = true) {
 
         if (copyToPublic) {
           const publicPath = path.join(__dirname, `../public`);
+          const targetPath = path.join(publicPath, dropName);
           if (!fs.existsSync(publicPath)) fs.mkdirSync(publicPath);
-          fs.cpSync(folderPath, publicPath, { recursive: true });
-          console.log("✅ Copied drop to /public for serving.");
+          fs.cpSync(folderPath, targetPath, { recursive: true });
+          console.log(`✅ Copied drop to /public/${dropName} for serving.`);
         }
 
         resolve(zipPath);

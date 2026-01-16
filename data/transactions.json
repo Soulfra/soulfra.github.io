@@ -1,0 +1,56 @@
+[
+  {
+    "id": "tx_1768064749319_c3d1ca30",
+    "timestamp": "2026-01-10T17:05:49.319Z",
+    "userId": "default@soulfra.com",
+    "type": "grant",
+    "amount": 100,
+    "description": "Welcome bonus",
+    "balanceAfter": 100
+  },
+  {
+    "id": "tx_1768064749319_25606f82",
+    "timestamp": "2026-01-10T17:05:49.319Z",
+    "userId": "default@soulfra.com",
+    "type": "charge",
+    "amount": -10,
+    "description": "Deploy website",
+    "balanceAfter": 90
+  },
+  {
+    "id": "tx_1768064749331_2b6fe7d7",
+    "timestamp": "2026-01-10T17:05:49.331Z",
+    "userId": "default@soulfra.com",
+    "type": "charge",
+    "amount": -10,
+    "description": "Deploy website",
+    "balanceAfter": 80
+  },
+  {
+    "id": "tx_1768064749335_a5598236",
+    "timestamp": "2026-01-10T17:05:49.335Z",
+    "userId": "default@soulfra.com",
+    "type": "charge",
+    "amount": -10,
+    "description": "Deploy website",
+    "balanceAfter": 70
+  },
+  {
+    "id": "tx_1768065086530_12362e12",
+    "timestamp": "2026-01-10T17:11:26.530Z",
+    "userId": "default@soulfra.com",
+    "type": "charge",
+    "amount": -10,
+    "description": "Deploy website",
+    "balanceAfter": 60
+  },
+  {
+    "id": "tx_1768065499016_176f8c47",
+    "timestamp": "2026-01-10T17:18:19.017Z",
+    "userId": "default@soulfra.com",
+    "type": "charge",
+    "amount": -10,
+    "description": "Deploy website",
+    "balanceAfter": 50
+  }
+]

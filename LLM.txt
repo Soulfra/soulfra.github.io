@@ -1,0 +1,962 @@
+# Soulfra Ecosystem - Documentation for LLMs
+
+> **Stripe-Quality Documentation for AI Agents**
+> Last Updated: 2026-01-12
+> Version: 1.0.0
+> Maintained by: Soulfra Infrastructure Team
+
+---
+
+## Table of Contents
+
+1. [System Overview](#system-overview)
+2. [Architecture](#architecture)
+3. [Core Systems](#core-systems)
+4. [API Reference](#api-reference)
+5. [Integration Patterns](#integration-patterns)
+6. [Testing & Debugging](#testing--debugging)
+7. [Deployment](#deployment)
+8. [Best Practices](#best-practices)
+
+---
+
+## System Overview
+
+### What is Soulfra?
+
+Soulfra is a **temporal experience engine** that prevents premature judgment through word-timing mechanics. It combines local LLM inference (Ollama), client-side storage (localStorage), and timed comprehension systems to create privacy-first, zero-dependency workflows.
+
+### Core Innovation: IVC (Interview Voice Coach)
+
+The reasoning engine forces users to experience content at controlled timing intervals. This creates comprehension before judgment, preventing snap reactions and enabling deeper understanding.
+
+**Mechanic**: You cannot judge what you haven't fully experienced. The pacing creates comprehension. The timing IS the game.
+
+### Technology Stack
+
+- **Frontend**: Vanilla JavaScript (no frameworks)
+- **Styling**: Custom CSS (SF Mono font family)
+- **Storage**: Browser localStorage (no backend required)
+- **LLM**: Ollama (local inference, privacy-first)
+- **Hosting**: GitHub Pages (static site)
+- **Payments**: Stripe (test faucet at $1)
+
+### Key Principles
+
+1. **Zero Dependencies**: All systems run client-side
+2. **Privacy-First**: No data leaves user's machine (except Stripe payments)
+3. **Temporal Experience**: Word-timing prevents premature judgment
+4. **Local LLMs**: Ollama integration for zero-trust AI inference
+5. **Multi-Stage Pipelines**: Chain models with domain context injection
+
+---
+
+## Architecture
+
+### File Structure
+
+```
+soulfra.github.io/
+├── CNAME                      # Points to soulfra.com
+├── robots.txt                 # SEO + AI crawler config
+├── sitemap.xml               # URL structure
+├── LLM.txt                   # This file
+├── index.html                # Root landing page
+├── nav.html                  # Master navigation hub
+│
+├── pipelines/
+│   └── run.html              # Multi-stage LLM pipeline system
+│
+├── voice/
+│   └── record.html           # Voice memo recording + transcription
+│
+├── reviews/
+│   └── form.html             # Verified business reviews ($1 payment)
+│
+├── sandbox/
+│   └── test.html             # Testing environment for all systems
+│
+├── cal/
+│   └── test-protocol.html    # $1 Cal Faucet (protocol access)
+│
+├── lib/
+│   ├── session-manager.js    # CringeProof → Google OAuth → Cookie shedding
+│   ├── soul-capsule.js       # Time-locked personal archives
+│   ├── cal-capsule.js        # Business archives (Calriven brand)
+│   ├── story-compiler.js     # UGC → XKCD-style narratives
+│   └── reasoning-engine.js   # IVC temporal experience engine
+│
+└── docs/
+    ├── PUNCH_TEST.md         # Mario-style mechanical tests
+    ├── OLLAMA_TESTING.md     # End-to-end Ollama integration guide
+    └── ROUTING_GUIDE.md      # Domain routing explained
+```
+
+### Data Flow
+
+```
+User Input → Local Processing → localStorage → LLM (Ollama) → Output
+     ↓              ↓                ↓             ↓             ↓
+  Voice         Pipeline        Capsule      Reasoning      Story
+  Record        Stages          Creation     Engine         Export
+```
+
+### Storage Schema
+
+All data stored in browser localStorage:
+
+```javascript
+// Session Management
+'soulfra_session' → {userId, googleId, onboarding, created_at}
+
+// Story Compiler
+'compiled_stories' → [{id, title, panels, created_at, ...}]
+
+// Capsules
+'soul_capsules' → [{id, type, contents, created_at, locked, ...}]
+'cal_capsules' → [{id, type, status, plans, receipts, ...}]
+
+// Cal Faucet
+'cal_access_token' → "CAL-{timestamp}-{hash}-{random}"
+'cal_access_level' → "test" | "real"
+'cal_faucet_users' → [{email, token, timestamp, paid, ...}]
+
+// Voice Memos
+'voice_memos' → [{id, transcript, duration, verificationId, ...}]
+
+// Reviews
+'reviews' → [{id, businessName, rating, paid, verificationId, ...}]
+
+// Reasoning Engine
+'reasoning_progress' → {sessionId, currentWord, scrolled, completed, ...}
+```
+
+---
+
+## Core Systems
+
+### 1. Pipelines System
+
+**URL**: `/pipelines/run.html`
+
+**Purpose**: Chain Ollama models together for multi-stage LLM workflows with domain context injection.
+
+**How It Works**:
+
+1. User enters topic (e.g., "Zero-Knowledge Proofs")
+2. Selects 3 models (e.g., deepseek-r1:1.5b, llama3.2, qwen2.5-coder:3b)
+3. Pipeline executes:
+   - **Stage 1**: Research (model outputs initial thoughts)
+   - **Stage 2**: Analysis (uses Stage 1 output + domain context)
+   - **Stage 3**: Synthesis (combines Stage 1 + Stage 2 + domain context)
+4. Results stored in localStorage
+5. Can be saved to Soul/Cal Capsules
+
+**Domain Context**: Automatically injected Soulfra-specific knowledge into prompts.
+
+**API Integration**:
+
+```javascript
+// Call Ollama API
+const response = await fetch('http://localhost:11434/api/generate', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    model: 'deepseek-r1:1.5b',
+    prompt: userTopic + domainContext,
+    stream: false
+  })
+});
+
+const data = await response.json();
+const output = data.response;
+```
+
+**Performance**: 8-17 seconds for 3-stage pipeline (models 1.5B-3B size).
+
+---
+
+### 2. Reasoning Engine (IVC)
+
+**Library**: `/lib/reasoning-engine.js`
+
+**Purpose**: Word-by-word timed reveal to prevent premature judgment.
+
+**Core Mechanic**:
+
+```javascript
+// Start reasoning session
+const session = window.ReasoningEngine.startSession({
+  text: "Your content here...",
+  mode: 'normal',              // fast|normal|slow|meditative
+  requireScroll: true,          // Must scroll to end
+  requireVoice: false,          // Optional voice verification
+  minReadTime: 15000,           // Minimum 15 seconds
+  onComplete: (session) => {
+    console.log('User comprehended content');
+  }
+});
+
+// Render word-by-word animation
+await window.ReasoningEngine.renderAnimation('container-id');
+```
+
+**Timing Modes**:
+
+| Mode | ms/word | Use Case |
+|------|---------|----------|
+| fast | 100ms | Speed reading |
+| normal | 150ms | Natural pace |
+| slow | 250ms | Comprehension focus |
+| meditative | 500ms | Deep reflection |
+
+**Completion Requirements**:
+1. ✅ Read all words (word-by-word reveal)
+2. ✅ Scroll to end (95% scroll depth)
+3. ✅ Meet minimum read time
+4. ✅ Optional: Record voice response
+
+**Button Gating**: Actions disabled until all requirements met.
+
+---
+
+### 3. Story Compiler
+
+**Library**: `/lib/story-compiler.js`
+
+**Purpose**: Compile UGC (pipelines, voice, reviews, capsules) into XKCD-style visual narratives.
+
+**Usage**:
+
+```javascript
+const story = window.StoryCompiler.compile({
+  sources: [
+    {type: 'pipeline', data: pipelineResult},
+    {type: 'voice', data: voiceMemo},
+    {type: 'review', data: reviewData}
+  ],
+  title: 'My First Story',
+  format: 'comic-strip',  // comic-strip|timeline|feed
+  algorithm: 'timestamp',  // timestamp|RL|manual
+  tags: ['zkp', 'voice', 'test']
+});
+
+// story = {
+//   id: 'story-...',
+//   panels: [...],
+//   created_at: 1234567890,
+//   metadata: {...}
+// }
+```
+
+**Panel Types**:
+- `title` - Story header
+- `stage` - Pipeline stage output
+- `voice` - Voice memo with transcript
+- `review` - Business review with rating
+- `capsule-header` - Capsule metadata
+- `reflection` - User reflections
+- `generic` - Custom content
+
+**Ordering Algorithms**:
+- **timestamp**: Chronological order
+- **RL**: Reinforcement learning-style scoring (recency + type priority + content length)
+- **manual**: Keep original order
+
+**Export Options**:
+```javascript
+// Preview in new window
+window.StoryCompiler.preview(story);
+
+// Download as HTML
+window.StoryCompiler.downloadHTML(story);
+
+// Generate UPC barcode
+const upc = window.StoryCompiler.generateUPC(story);
+// Returns: {code: '123456789012', formatted: '1-23456-78901-2'}
+```
+
+---
+
+### 4. Session Manager
+
+**Library**: `/lib/session-manager.js`
+
+**Purpose**: CringeProof onboarding → Google OAuth pairing → Cookie shedding.
+
+**Authentication Flow**:
+
+```javascript
+// 1. Save onboarding answers (mystical questions)
+window.SessionManager.saveOnboardingAnswers({
+  q1: 'I see patterns in chaos',
+  q2: 'Consciousness exists beyond matter',
+  q3: 'True innovation requires mystery'
+});
+
+// 2. Pair Google account
+window.SessionManager.pairGoogleAccount({
+  email: 'user@gmail.com',
+  name: 'User Name',
+  picture: 'https://...',
+  googleId: '123456789'
+});
+
+// 3. Get session status
+const status = window.SessionManager.getAuthStatus();
+// Returns: {
+//   isAuthenticated: true,
+//   userId: 'uuid-...',
+//   hasGoogle: true,
+//   profileUrl: '/profiles/uuid-...'
+// }
+```
+
+**Session Timeout**: 30 days of inactivity.
+
+**Cookie Shedding**: After Google pairing, cookies cleared except session UUID.
+
+---
+
+### 5. Soul Capsules & Cal Capsules
+
+**Libraries**: `/lib/soul-capsule.js`, `/lib/cal-capsule.js`
+
+**Purpose**: Time-locked personal (Soul) and business (Cal) archives.
+
+**Soul Capsules** (Personal):
+
+```javascript
+// Create from pipeline
+const capsule = window.SoulCapsule.createFromPipeline(pipelineData, 'My Topic');
+
+// capsule = {
+//   id: 'soul-...',
+//   type: 'soul',
+//   title: 'My Topic',
+//   created_at: 1234567890,  // epoch timestamp
+//   locked: false,
+//   contents: {
+//     pipelines: [...],
+//     voice_memos: [...],
+//     reflections: '...'
+//   }
+// }
+
+// Lock capsule (no modifications after lock)
+window.SoulCapsule.lock(capsuleId);
+
+// Export as .soul file
+window.SoulCapsule.exportToFile(capsuleId);
+```
+
+**Cal Capsules** (Business):
+
+```javascript
+// Create from pipeline
+const capsule = window.CalCapsule.createFromPipeline(pipelineData, 'Business Plan');
+
+// capsule = {
+//   id: 'cal-...',
+//   type: 'cal',
+//   title: 'Business Plan',
+//   status: 'active',
+//   created_at: 1234567890,
+//   contents: {
+//     pipelines: [...],
+//     plans: [...],
+//     receipts: [...],
+//     milestones: [...]
+//   }
+// }
+
+// Export as .cal file
+window.CalCapsule.exportToFile(capsuleId);
+```
+
+---
+
+### 6. Voice Memos
+
+**URL**: `/voice/record.html`
+
+**Purpose**: Record voice, transcribe with Whisper, verify with $1 payment.
+
+**Features**:
+- Browser microphone recording
+- Audio waveform visualization
+- Transcription (Whisper API integration planned)
+- QR code proof generation
+- Permanent verification IDs
+
+**Storage**: Audio blob → localStorage, Transcript → localStorage, QR → SVG data URL.
+
+---
+
+### 7. Reviews System
+
+**URL**: `/reviews/form.html`
+
+**Purpose**: Verified business reviews with $1 trust verification.
+
+**Features**:
+- Business name + review text + star rating
+- Optional $1 payment for verification
+- QR-based review collection
+- Permanent verification IDs
+- Integration with Story Compiler
+
+---
+
+### 8. Cal Test Faucet
+
+**URL**: `/cal/test-protocol.html`
+
+**Purpose**: $1 protocol access for testing Calriven systems.
+
+**Features**:
+- Email capture for funnel onboarding
+- Stripe payment integration ($1 test fee)
+- Access token generation: `CAL-{timestamp}-{hash}-{random}`
+- Test vs real user tracking
+- Automatic entry to all systems
+
+**Localhost Behavior**: Skips Stripe, simulates payment success.
+
+**Production Behavior**: Redirects to real Stripe checkout.
+
+---
+
+## API Reference
+
+### Window Globals
+
+All libraries export singleton instances to `window` object:
+
+```javascript
+window.ReasoningEngine  // Temporal experience engine
+window.StoryCompiler    // UGC → story compilation
+window.SessionManager   // Auth + session management
+window.SoulCapsule      // Personal archives
+window.CalCapsule       // Business archives
+```
+
+**Usage Pattern**:
+
+```javascript
+// Always use window. prefix in onclick handlers
+<button onclick="window.StoryCompiler.compile({...})">
+  Compile Story
+</button>
+
+// Or access directly in scripts
+const story = window.StoryCompiler.compile({...});
+```
+
+---
+
+### Ollama API Integration
+
+**Base URL**: `http://localhost:11434`
+
+**Endpoints Used**:
+
+```
+GET  /api/tags       # List installed models
+POST /api/generate   # Generate text (non-streaming)
+POST /api/chat       # Chat completion (planned)
+```
+
+**Generate Text Example**:
+
+```javascript
+async function callOllama(model, prompt) {
+  const response = await fetch('http://localhost:11434/api/generate', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: model,
+      prompt: prompt,
+      stream: false
+    })
+  });
+
+  const data = await response.json();
+  return data.response;
+}
+
+// Usage
+const output = await callOllama('llama3.2', 'Explain zero-knowledge proofs');
+```
+
+**Recommended Models**:
+- `deepseek-r1:1.5b` - Fast reasoning (1GB, ~2-5s)
+- `llama3.2` - General analysis (2GB, ~3-6s)
+- `qwen2.5-coder:3b` - Code/synthesis (2GB, ~3-6s)
+
+---
+
+### localStorage API
+
+**Standard Pattern**:
+
+```javascript
+// Save data
+localStorage.setItem('key', JSON.stringify(data));
+
+// Load data
+const data = JSON.parse(localStorage.getItem('key'));
+
+// Check existence
+const exists = localStorage.getItem('key') !== null;
+
+// Remove data
+localStorage.removeItem('key');
+
+// Clear all
+localStorage.clear();
+```
+
+**Soulfra Keys**: See [Storage Schema](#storage-schema) above.
+
+---
+
+## Integration Patterns
+
+### Pattern 1: Pipeline → Reasoning Engine
+
+Generate content with Ollama, then force timed comprehension:
+
+```javascript
+// 1. Generate content
+const response = await callOllama('llama3.2', 'Explain temporal experience');
+
+// 2. Feed to reasoning engine
+const session = window.ReasoningEngine.startSession({
+  text: response,
+  mode: 'normal',
+  requireScroll: true,
+  minReadTime: response.split(' ').length * 150
+});
+
+// 3. Render word-by-word
+await window.ReasoningEngine.renderAnimation('container-id');
+
+// 4. User must experience at controlled pace before proceeding
+```
+
+---
+
+### Pattern 2: Voice → Pipeline → Capsule
+
+Record voice memo, transcribe, analyze with LLM, save to capsule:
+
+```javascript
+// 1. Record voice (manual step in /voice/record.html)
+// 2. Get transcript from localStorage
+const transcript = localStorage.getItem('last_voice_transcript');
+
+// 3. Send to Ollama for analysis
+const analysis = await callOllama('llama3.2', `Analyze: ${transcript}`);
+
+// 4. Create pipeline with transcript + analysis
+const pipelineData = {
+  topic: 'Voice Memo Analysis',
+  stages: [
+    {stageName: 'Transcript', output: transcript},
+    {stageName: 'Analysis', output: analysis}
+  ]
+};
+
+// 5. Save to Soul Capsule
+const capsule = window.SoulCapsule.createFromPipeline(pipelineData, 'Voice Analysis');
+```
+
+---
+
+### Pattern 3: Review → Story Compilation
+
+Submit review, enhance with LLM, compile into shareable story:
+
+```javascript
+// 1. Submit review (manual step in /reviews/form.html)
+// 2. Get review data
+const review = JSON.parse(localStorage.getItem('reviews'))[0];
+
+// 3. Enhance with Ollama
+const expansion = await callOllama('deepseek-r1:1.5b', `Expand on this review: ${review.reviewText}`);
+
+// 4. Compile into story
+const story = window.StoryCompiler.compile({
+  sources: [
+    {type: 'review', data: review},
+    {type: 'generic', data: {title: 'AI Expansion', content: expansion}}
+  ],
+  title: 'Enhanced Review Story',
+  algorithm: 'RL'
+});
+
+// 5. Export as HTML
+window.StoryCompiler.downloadHTML(story);
+```
+
+---
+
+### Pattern 4: Multi-Brand Data Sharing
+
+Share session data across Soulfra brands:
+
+```javascript
+// In CringeProof onboarding
+const userId = window.SessionManager.getUserId();
+localStorage.setItem('soulfra_global_user', userId);
+
+// In Calriven tools
+const globalUser = localStorage.getItem('soulfra_global_user');
+// Now you know it's the same user across brands
+
+// Benefits:
+// - Same domain = same localStorage
+// - No cross-origin restrictions
+// - Unified user experience
+```
+
+---
+
+## Testing & Debugging
+
+### Punch Tests
+
+**Purpose**: Mario-style mechanical tests to verify each system works.
+
+**Location**: `/docs/PUNCH_TEST.md`
+
+**Format**:
+```
+Test #1: Story Compiler
+Action: Click "📖 Test Story Compiler"
+Expected: Story ID appears, 8 panels render
+Pass: ✅ / ❌
+```
+
+**Coverage**: 12 punch tests covering all major systems.
+
+---
+
+### Ollama Integration Testing
+
+**Purpose**: End-to-end testing with local LLMs.
+
+**Location**: `/docs/OLLAMA_TESTING.md`
+
+**Prerequisites**:
+```bash
+# Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Install models
+ollama pull deepseek-r1:1.5b
+ollama pull llama3.2
+ollama pull qwen2.5-coder:3b
+
+# Verify service
+curl http://localhost:11434/api/tags
+```
+
+**Test Workflows**:
+1. Pipeline → Soul Capsule → Story
+2. Voice → Reasoning Engine → Pipeline
+3. Review → Story Compilation
+
+---
+
+### Browser Console Debugging
+
+**Check System Status**:
+
+```javascript
+// Verify libraries loaded
+console.log(window.ReasoningEngine);   // Should show object
+console.log(window.StoryCompiler);     // Should show object
+console.log(window.SessionManager);    // Should show object
+
+// Check localStorage data
+console.log(localStorage.getItem('soulfra_session'));
+console.log(localStorage.getItem('compiled_stories'));
+
+// List all localStorage keys
+console.log(Object.keys(localStorage));
+
+// Test Ollama connection
+fetch('http://localhost:11434/api/tags')
+  .then(r => r.json())
+  .then(d => console.log('Ollama models:', d));
+```
+
+---
+
+### Common Errors & Fixes
+
+**Error**: `window.StoryCompiler is not a function`
+
+**Fix**:
+1. Check script loaded: View Network tab → `/lib/story-compiler.js` → Status 200
+2. Check console: Look for "[StoryCompiler] Module loaded"
+3. Verify path: Must be absolute `/lib/...` not relative
+
+---
+
+**Error**: Ollama connection refused
+
+**Fix**:
+```bash
+# Check service
+curl http://localhost:11434/api/tags
+
+# Restart if needed
+pkill -f ollama
+ollama serve
+```
+
+---
+
+**Error**: Words have no spaces (Reasoning Engine)
+
+**Fix**: Already fixed in `reasoning-engine.js:116-117`
+- Changed `display: inline-block` → `display: inline`
+- Added `marginRight: '5px'`
+
+---
+
+## Deployment
+
+### GitHub Pages Setup
+
+**Repository**: `soulfra/soulfra.github.io`
+
+**Configuration**:
+1. Repo → Settings → Pages
+2. Source: `main` branch, `/ (root)` folder
+3. Custom domain: `soulfra.com`
+4. Enforce HTTPS: ✅
+
+**CNAME File**: `/CNAME` contains `soulfra.com`
+
+---
+
+### Deployment Workflow
+
+```bash
+# 1. Develop locally
+python3 -m http.server 8000
+# Test at http://localhost:8000
+
+# 2. Commit changes
+git add .
+git commit -m "Add feature"
+
+# 3. Push to GitHub
+git push origin main
+
+# 4. Wait 1-2 minutes for build
+# GitHub Actions will deploy automatically
+
+# 5. Test production
+# Visit https://soulfra.com
+```
+
+---
+
+### URL Structure
+
+**Localhost**:
+```
+http://localhost:8000/nav.html
+http://localhost:8000/pipelines/run.html
+http://localhost:8000/sandbox/test.html
+```
+
+**Production**:
+```
+https://soulfra.com/nav.html
+https://soulfra.com/pipelines/run.html
+https://soulfra.com/sandbox/test.html
+```
+
+**Key Point**: Paths are identical. Only domain changes.
+
+---
+
+## Best Practices
+
+### 1. Always Use Absolute Paths
+
+```html
+<!-- Good -->
+<script src="/lib/story-compiler.js"></script>
+<a href="/nav.html">Navigation</a>
+
+<!-- Bad -->
+<script src="lib/story-compiler.js"></script>
+<a href="nav.html">Navigation</a>
+```
+
+**Why**: Works consistently across all pages and environments.
+
+---
+
+### 2. Check Libraries Loaded
+
+```javascript
+// In any onclick handler
+if (!window.StoryCompiler) {
+  console.error('StoryCompiler not loaded!');
+  return;
+}
+
+window.StoryCompiler.compile({...});
+```
+
+---
+
+### 3. Handle localStorage Errors
+
+```javascript
+// Safe localStorage access
+function getSafeItem(key) {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch (e) {
+    console.error('localStorage error:', e);
+    return null;
+  }
+}
+```
+
+---
+
+### 4. Test Both Environments
+
+**Localhost**: Fast iteration, Ollama works
+**Production**: HTTPS, Stripe works
+
+**Always test on both before major releases.**
+
+---
+
+### 5. Use Reasoning Engine for Important Content
+
+```javascript
+// For any content where comprehension > speed:
+const session = window.ReasoningEngine.startSession({
+  text: importantContent,
+  mode: 'slow',
+  requireScroll: true,
+  minReadTime: 20000
+});
+```
+
+**When to use**:
+- Legal terms
+- Important disclaimers
+- Educational content
+- Meditation scripts
+- Interview feedback
+
+---
+
+### 6. Export Data Frequently
+
+```javascript
+// Export stories
+window.StoryCompiler.downloadHTML(story);
+
+// Export capsules
+window.SoulCapsule.exportToFile(capsuleId);
+
+// Backup localStorage
+const backup = JSON.stringify(localStorage);
+// Save to file
+```
+
+**Why**: localStorage can be cleared. Always have backups.
+
+---
+
+## FAQ for AI Agents
+
+**Q: Can I run Soulfra without Ollama?**
+
+A: Yes. Pipelines require Ollama, but all other systems (Voice, Reviews, Story Compiler, Capsules, Reasoning Engine) work standalone.
+
+---
+
+**Q: How do I integrate my own LLM?**
+
+A: Replace Ollama API calls with your LLM's API:
+
+```javascript
+// Instead of:
+fetch('http://localhost:11434/api/generate', {...})
+
+// Use your API:
+fetch('https://your-llm-api.com/generate', {...})
+```
+
+---
+
+**Q: Can I use Soulfra on mobile?**
+
+A: Yes. All systems are responsive and work on mobile browsers. Voice recording requires microphone permission.
+
+---
+
+**Q: What happens to data when I close the browser?**
+
+A: localStorage persists. Data remains until manually cleared or browser cache wiped.
+
+---
+
+**Q: How do I contribute?**
+
+A: Fork repo `soulfra/soulfra.github.io`, make changes, submit PR. All code is client-side JavaScript.
+
+---
+
+**Q: Why no backend/database?**
+
+A: **Privacy-first architecture**. Your data never leaves your machine (except Stripe payments). No servers = no surveillance.
+
+---
+
+**Q: Can I self-host?**
+
+A: Yes. Clone repo, run `python3 -m http.server 8000`. Everything works locally.
+
+---
+
+## Additional Resources
+
+- **Punch Tests**: `/docs/PUNCH_TEST.md`
+- **Ollama Guide**: `/docs/OLLAMA_TESTING.md`
+- **Routing Guide**: `/docs/ROUTING_GUIDE.md`
+- **Navigation Hub**: `/nav.html`
+- **GitHub Repo**: `https://github.com/soulfra/soulfra.github.io`
+
+---
+
+## Contact & Support
+
+**Issues**: https://github.com/soulfra/soulfra.github.io/issues
+**Discussions**: https://github.com/soulfra/soulfra.github.io/discussions
+
+---
+
+**End of LLM.txt**
+
+This documentation is designed to give AI agents complete understanding of the Soulfra ecosystem. All systems are open-source, privacy-first, and designed for local-first workflows.
+
+**License**: AGPLv3
+**Version**: 1.0.0
+**Last Updated**: 2026-01-12

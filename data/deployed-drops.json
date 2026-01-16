@@ -1,0 +1,165 @@
+{
+  "drops": [
+    {
+      "name": "NiceLeak",
+      "deployedAt": "2026-01-10T17:05:49.331Z",
+      "url": "http://localhost:8000/NiceLeak",
+      "metadata": {
+        "fileCount": 2,
+        "hasHTML": true,
+        "hasJS": true,
+        "hasCSS": false,
+        "hasReact": false,
+        "hasPackageJson": false,
+        "type": "website"
+      },
+      "tokenCost": 10,
+      "status": "deployed",
+      "domainAssignment": {
+        "projectName": "NiceLeak",
+        "url": "http://localhost:8000/NiceLeak",
+        "userId": "default@soulfra.com",
+        "assignedAt": "2026-01-10T17:05:49.330Z",
+        "customDomain": null,
+        "metadata": {
+          "fileCount": 2,
+          "hasHTML": true,
+          "hasJS": true,
+          "hasCSS": false,
+          "hasReact": false,
+          "hasPackageJson": false,
+          "type": "website"
+        }
+      }
+    },
+    {
+      "name": "holy",
+      "deployedAt": "2026-01-10T17:05:49.334Z",
+      "url": "http://localhost:8000/holy",
+      "metadata": {
+        "fileCount": 2,
+        "hasHTML": true,
+        "hasJS": true,
+        "hasCSS": false,
+        "hasReact": false,
+        "hasPackageJson": false,
+        "type": "website"
+      },
+      "tokenCost": 10,
+      "status": "deployed",
+      "domainAssignment": {
+        "projectName": "holy",
+        "url": "http://localhost:8000/holy",
+        "userId": "default@soulfra.com",
+        "assignedAt": "2026-01-10T17:05:49.334Z",
+        "customDomain": null,
+        "metadata": {
+          "fileCount": 2,
+          "hasHTML": true,
+          "hasJS": true,
+          "hasCSS": false,
+          "hasReact": false,
+          "hasPackageJson": false,
+          "type": "website"
+        }
+      }
+    },
+    {
+      "name": "phase1-test",
+      "deployedAt": "2026-01-10T17:05:49.338Z",
+      "url": "http://localhost:8000/phase1-test",
+      "metadata": {
+        "fileCount": 1,
+        "hasHTML": true,
+        "hasJS": false,
+        "hasCSS": false,
+        "hasReact": false,
+        "hasPackageJson": false,
+        "type": "website"
+      },
+      "tokenCost": 10,
+      "status": "deployed",
+      "domainAssignment": {
+        "projectName": "phase1-test",
+        "url": "http://localhost:8000/phase1-test",
+        "userId": "default@soulfra.com",
+        "assignedAt": "2026-01-10T17:05:49.338Z",
+        "customDomain": null,
+        "metadata": {
+          "fileCount": 1,
+          "hasHTML": true,
+          "hasJS": false,
+          "hasCSS": false,
+          "hasReact": false,
+          "hasPackageJson": false,
+          "type": "website"
+        }
+      }
+    },
+    {
+      "name": "final-test",
+      "deployedAt": "2026-01-10T17:11:26.541Z",
+      "url": "http://localhost:8000/public/final-test",
+      "metadata": {
+        "fileCount": 1,
+        "hasHTML": true,
+        "hasJS": false,
+        "hasCSS": false,
+        "hasReact": false,
+        "hasPackageJson": false,
+        "type": "website"
+      },
+      "tokenCost": 10,
+      "status": "deployed",
+      "domainAssignment": {
+        "projectName": "final-test",
+        "url": "http://localhost:8000/public/final-test",
+        "userId": "default@soulfra.com",
+        "assignedAt": "2026-01-10T17:11:26.541Z",
+        "customDomain": null,
+        "metadata": {
+          "fileCount": 1,
+          "hasHTML": true,
+          "hasJS": false,
+          "hasCSS": false,
+          "hasReact": false,
+          "hasPackageJson": false,
+          "type": "website"
+        }
+      }
+    },
+    {
+      "name": "airdrop-test",
+      "deployedAt": "2026-01-10T17:18:19.026Z",
+      "url": "http://localhost:8000/public/airdrop-test",
+      "metadata": {
+        "fileCount": 1,
+        "hasHTML": true,
+        "hasJS": false,
+        "hasCSS": false,
+        "hasReact": false,
+        "hasPackageJson": false,
+        "type": "website"
+      },
+      "tokenCost": 10,
+      "status": "deployed",
+      "domainAssignment": {
+        "projectName": "airdrop-test",
+        "url": "http://localhost:8000/public/airdrop-test",
+        "userId": "default@soulfra.com",
+        "assignedAt": "2026-01-10T17:18:19.025Z",
+        "customDomain": null,
+        "metadata": {
+          "fileCount": 1,
+          "hasHTML": true,
+          "hasJS": false,
+          "hasCSS": false,
+          "hasReact": false,
+          "hasPackageJson": false,
+          "type": "website"
+        }
+      }
+    }
+  ],
+  "lastCheck": "2026-01-10T17:18:29.020Z"
+}

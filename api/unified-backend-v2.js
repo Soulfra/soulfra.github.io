@@ -35,6 +35,19 @@ const OllamaProvider = require('./providers/ollama-provider.js');
 // Import learning router
 const LearningRouter = require('./learning-router.js');
 
+// Import payment modules
+const PaymentsEngine = require('./payments-engine.js');
+const SubscriptionsManager = require('./subscriptions-manager.js');
+const InvoiceGenerator = require('./invoice-generator.js');
+const MultiCurrency = require('./multi-currency.js');
+
+// Import content generation modules
+const ContentGenerator = require('./content-generator.js');
+
+// Import assistant modules
+const IdentityKeyring = require('./identity-keyring.js');
+const CodeAnalyzer = require('./code-analyzer.js');
+
 // Initialize data stores
 const emailStore = new DataStore(path.join(__dirname, '../data/email-captures.json'));
 const commentStore = new DataStore(path.join(__dirname, '../data/comments.json'));
@@ -110,6 +123,49 @@ try {
 // Initialize learning router
 const learningRouter = new LearningRouter(aiProviders);
 console.log(`✅ Learning Router initialized with ${aiProviders.size} provider(s)`);
+
+// Initialize payment modules
+const paymentsEngine = new PaymentsEngine();
+const subscriptionsManager = new SubscriptionsManager(paymentsEngine);
+const invoiceGenerator = new InvoiceGenerator();
+const multiCurrency = new MultiCurrency();
+
+// Initialize content generation
+const contentGenerator = new ContentGenerator();
+
+// Initialize assistant modules
+const identityKeyring = new IdentityKeyring();
+const codeAnalyzer = new CodeAnalyzer(identityKeyring);
+
+// Initialize payment modules asynchronously
+(async () => {
+  try {
+    await paymentsEngine.initialize();
+    await subscriptionsManager.initialize();
+    await multiCurrency.initialize();
+  } catch (error) {
+    console.warn('⚠️ Payment modules initialization warning:', error.message);
+  }
+})();
+
+// Initialize content generator asynchronously
+(async () => {
+  try {
+    await contentGenerator.initialize();
+  } catch (error) {
+    console.warn('⚠️ Content generator initialization warning:', error.message);
+  }
+})();
+
+// Initialize assistant modules asynchronously
+(async () => {
+  try {
+    await identityKeyring.initialize();
+    console.log('✅ Identity Keyring initialized');
+  } catch (error) {
+    console.warn('⚠️ Identity Keyring initialization warning:', error.message);
+  }
+})();
 
 /**
  * Auto-select best provider based on task
@@ -1247,6 +1303,588 @@ async function handleRequest(req, res) {
           `Signup failed: ${error.message}`,
           'SIGNUP_ERROR'
         ), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // PAYMENTS API
+    // ==========================================
+
+    // Create Payment
+    if (pathname === '/api/payments/create' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+
+        const payment = await paymentsEngine.createPayment({
+          amount: body.amount,
+          currency: body.currency,
+          customerId: body.customerId,
+          description: body.description,
+          metadata: body.metadata,
+          paymentMethod: body.paymentMethod
+        });
+
+        sendJSON(res, successResponse(payment));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Payment creation failed: ${error.message}`,
+          'PAYMENT_CREATE_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // Confirm Payment
+    if (pathname === '/api/payments/confirm' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+
+        if (!body.paymentId) {
+          sendJSON(res, errorResponse('Payment ID is required', 'VALIDATION_ERROR'), 400);
+          return;
+        }
+
+        const result = await paymentsEngine.confirmPayment(body.paymentId, body.paymentMethod);
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Payment confirmation failed: ${error.message}`,
+          'PAYMENT_CONFIRM_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // Process Refund
+    if (pathname === '/api/payments/refund' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+
+        if (!body.paymentId) {
+          sendJSON(res, errorResponse('Payment ID is required', 'VALIDATION_ERROR'), 400);
+          return;
+        }
+
+        const refund = await paymentsEngine.refund(body.paymentId, body.amount, body.reason);
+        sendJSON(res, successResponse(refund));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Refund failed: ${error.message}`,
+          'REFUND_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // Get Payment Status
+    if (pathname.startsWith('/api/payments/') && method === 'GET') {
+      const paymentId = pathname.split('/').pop();
+      try {
+        const payment = await paymentsEngine.getPayment(paymentId);
+        sendJSON(res, successResponse({ payment }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'PAYMENT_NOT_FOUND'), 404);
+      }
+      return;
+    }
+
+    // List Payments
+    if (pathname === '/api/payments' && method === 'GET') {
+      try {
+        const filters = parsedUrl.query;
+        const payments = await paymentsEngine.listPayments(filters);
+        sendJSON(res, successResponse({ payments, count: payments.length }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'PAYMENTS_LIST_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Payment Statistics
+    if (pathname === '/api/payments/stats' && method === 'GET') {
+      try {
+        const stats = await paymentsEngine.getStats();
+        sendJSON(res, successResponse(stats));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'STATS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // SUBSCRIPTIONS API
+    // ==========================================
+
+    // Create Plan
+    if (pathname === '/api/subscriptions/plans' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const plan = await subscriptionsManager.createPlan(body);
+        sendJSON(res, successResponse(plan));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Plan creation failed: ${error.message}`,
+          'PLAN_CREATE_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // List Plans
+    if (pathname === '/api/subscriptions/plans' && method === 'GET') {
+      try {
+        const plans = await subscriptionsManager.listPlans();
+        sendJSON(res, successResponse({ plans, count: plans.length }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'PLANS_LIST_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Subscribe Customer
+    if (pathname === '/api/subscriptions/subscribe' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const subscription = await subscriptionsManager.subscribe(body);
+        sendJSON(res, successResponse(subscription));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Subscription failed: ${error.message}`,
+          'SUBSCRIPTION_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // Cancel Subscription
+    if (pathname.startsWith('/api/subscriptions/') && pathname.endsWith('/cancel') && method === 'POST') {
+      const subscriptionId = pathname.split('/')[3];
+      try {
+        const body = await parseBody(req);
+        const result = await subscriptionsManager.cancelSubscription(subscriptionId, body);
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'CANCEL_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Subscription
+    if (pathname.startsWith('/api/subscriptions/') && method === 'GET' && !pathname.endsWith('/stats')) {
+      const subscriptionId = pathname.split('/').pop();
+      try {
+        const subscription = await subscriptionsManager.getSubscription(subscriptionId);
+        sendJSON(res, successResponse({ subscription }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'SUBSCRIPTION_NOT_FOUND'), 404);
+      }
+      return;
+    }
+
+    // List Subscriptions for Customer
+    if (pathname === '/api/subscriptions' && method === 'GET') {
+      try {
+        const customerId = parsedUrl.query.customerId;
+        const subscriptions = customerId
+          ? await subscriptionsManager.listSubscriptions(customerId)
+          : await subscriptionsManager.subscriptionsStore.read();
+        sendJSON(res, successResponse({ subscriptions, count: subscriptions.length }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'SUBSCRIPTIONS_LIST_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Subscription Statistics
+    if (pathname === '/api/subscriptions/stats' && method === 'GET') {
+      try {
+        const stats = await subscriptionsManager.getStats();
+        sendJSON(res, successResponse(stats));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'STATS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // INVOICES API
+    // ==========================================
+
+    // Generate Invoice
+    if (pathname === '/api/invoices/generate' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const invoice = await invoiceGenerator.generateInvoice(body);
+        sendJSON(res, successResponse(invoice));
+      } catch (error) {
+        sendJSON(res, errorResponse(
+          `Invoice generation failed: ${error.message}`,
+          'INVOICE_ERROR'
+        ), 500);
+      }
+      return;
+    }
+
+    // Get Invoice
+    if (pathname.startsWith('/api/invoices/') && method === 'GET') {
+      const invoiceId = pathname.split('/').pop();
+      try {
+        const invoice = await invoiceGenerator.getInvoice(invoiceId);
+        sendJSON(res, successResponse({ invoice }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'INVOICE_NOT_FOUND'), 404);
+      }
+      return;
+    }
+
+    // List Invoices
+    if (pathname === '/api/invoices' && method === 'GET') {
+      try {
+        const customerId = parsedUrl.query.customerId;
+        const invoices = await invoiceGenerator.listInvoices(customerId);
+        sendJSON(res, successResponse({ invoices, count: invoices.length }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'INVOICES_LIST_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Mark Invoice as Paid
+    if (pathname.startsWith('/api/invoices/') && pathname.endsWith('/paid') && method === 'POST') {
+      const invoiceId = pathname.split('/')[3];
+      try {
+        const body = await parseBody(req);
+        const result = await invoiceGenerator.markPaid(invoiceId, body.paymentId);
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'MARK_PAID_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Invoice Statistics
+    if (pathname === '/api/invoices/stats' && method === 'GET') {
+      try {
+        const stats = await invoiceGenerator.getStats();
+        sendJSON(res, successResponse(stats));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'STATS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // MULTI-CURRENCY API
+    // ==========================================
+
+    // Convert Currency
+    if (pathname === '/api/currency/convert' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { amount, from, to } = body;
+
+        if (!amount || !from || !to) {
+          sendJSON(res, errorResponse('Amount, from, and to currencies are required', 'VALIDATION_ERROR'), 400);
+          return;
+        }
+
+        const converted = multiCurrency.convert(amount, from, to);
+        sendJSON(res, successResponse({
+          amount,
+          from: from.toUpperCase(),
+          to: to.toUpperCase(),
+          converted,
+          rate: multiCurrency.getRate(to) / multiCurrency.getRate(from),
+          formatted: {
+            original: multiCurrency.format(amount, from),
+            converted: multiCurrency.format(converted, to)
+          }
+        }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'CONVERSION_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Exchange Rates
+    if (pathname === '/api/currency/rates' && method === 'GET') {
+      try {
+        const currency = parsedUrl.query.currency;
+        if (currency) {
+          const rate = multiCurrency.getRate(currency);
+          sendJSON(res, successResponse({
+            currency: currency.toUpperCase(),
+            rate,
+            base: multiCurrency.config.baseCurrency
+          }));
+        } else {
+          sendJSON(res, successResponse({
+            rates: multiCurrency.ratesCache.rates,
+            base: multiCurrency.ratesCache.baseCurrency,
+            timestamp: multiCurrency.ratesCache.timestamp
+          }));
+        }
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'RATES_ERROR'), 500);
+      }
+      return;
+    }
+
+    // List Supported Currencies
+    if (pathname === '/api/currency/supported' && method === 'GET') {
+      try {
+        const currencies = multiCurrency.getSupportedCurrencies();
+        sendJSON(res, successResponse({ currencies, count: currencies.length }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'CURRENCIES_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Refresh Exchange Rates
+    if (pathname === '/api/currency/refresh' && method === 'POST') {
+      try {
+        await multiCurrency.refreshRates();
+        const cacheInfo = multiCurrency.getCacheInfo();
+        sendJSON(res, successResponse({ refreshed: true, cache: cacheInfo }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'REFRESH_ERROR'), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // CONTENT GENERATION ENDPOINTS
+    // ==========================================
+
+    // Generate Content
+    if (pathname === '/api/content/generate' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const result = await contentGenerator.generate(body);
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'CONTENT_GENERATE_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Generate Content for All Domains
+    if (pathname === '/api/content/generate-all' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const result = await contentGenerator.generateForAllDomains(
+          body.type,
+          body.topic,
+          {
+            keywords: body.keywords,
+            urls: body.urls,
+            metadata: body.metadata
+          }
+        );
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'BATCH_GENERATE_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Content Generator Stats
+    if (pathname === '/api/content/stats' && method === 'GET') {
+      try {
+        const stats = contentGenerator.getStats();
+        sendJSON(res, successResponse(stats));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'STATS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Content Generator Info
+    if (pathname === '/api/content/info' && method === 'GET') {
+      try {
+        const info = contentGenerator.getInfo();
+        sendJSON(res, successResponse(info));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'INFO_ERROR'), 500);
+      }
+      return;
+    }
+
+    // List Content Types
+    if (pathname === '/api/content/types' && method === 'GET') {
+      try {
+        const types = contentGenerator.getContentTypes();
+        sendJSON(res, successResponse(types));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'TYPES_ERROR'), 500);
+      }
+      return;
+    }
+
+    // List Available Domains
+    if (pathname === '/api/content/domains' && method === 'GET') {
+      try {
+        const domains = contentGenerator.getDomains();
+        sendJSON(res, successResponse(domains));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'DOMAINS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // ==========================================
+    // ASSISTANT ENDPOINTS
+    // ==========================================
+
+    // Assistant Chat (integrates identity, learning router, domain context)
+    if (pathname === '/api/assistant/chat' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { message, domain = 'soulfra', history = [] } = body;
+
+        if (!message) {
+          return sendJSON(res, errorResponse('Message required', 'INVALID_REQUEST'), 400);
+        }
+
+        // Switch to domain identity if needed
+        const currentIdentity = identityKeyring.activeIdentity;
+        if (!currentIdentity || currentIdentity.profile.domain !== domain) {
+          const identities = await identityKeyring.listIdentities();
+          const domainIdentity = identities.find(i => i.domain === domain);
+
+          if (domainIdentity) {
+            await identityKeyring.switchIdentity(domainIdentity.id);
+          } else {
+            // Create new identity for this domain
+            await identityKeyring.createIdentity(domain);
+          }
+        }
+
+        // Build domain-specific system prompt
+        const DomainContext = require('./llm/domain-context.js');
+        const domainContext = new DomainContext();
+        const systemPrompt = domainContext.getSystemPrompt(domain);
+
+        // Prepare messages for learning router
+        const messages = [
+          { role: 'system', content: systemPrompt },
+          ...history.map(h => ({ role: h.role, content: h.content })),
+          { role: 'user', content: message }
+        ];
+
+        // Use learning router for adaptive response
+        const result = await learningRouter.chat(message, {
+          history: history,
+          provider: 'ollama', // Prefer local Ollama
+          systemPrompt: systemPrompt
+        });
+
+        // Save conversation to identity memory
+        await identityKeyring.addConversation(message, result.content, {
+          domain,
+          expertise: result.expertise
+        });
+
+        sendJSON(res, successResponse({
+          response: result.content,
+          domain,
+          identity: identityKeyring.activeIdentity.id,
+          expertise: result.expertise
+        }));
+      } catch (error) {
+        console.error('Assistant chat error:', error);
+        sendJSON(res, errorResponse(error.message, 'CHAT_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Analyze Code
+    if (pathname === '/api/assistant/analyze-code' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { code, language, task = 'analyze', domain = 'soulfra' } = body;
+
+        if (!code) {
+          return sendJSON(res, errorResponse('Code required', 'INVALID_REQUEST'), 400);
+        }
+
+        const result = await codeAnalyzer.analyzeCode(code, language, { task });
+
+        sendJSON(res, successResponse(result));
+      } catch (error) {
+        console.error('Code analysis error:', error);
+        sendJSON(res, errorResponse(error.message, 'ANALYSIS_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Active Identity
+    if (pathname === '/api/assistant/identity' && method === 'GET') {
+      try {
+        const identity = identityKeyring.getActiveIdentity();
+        sendJSON(res, successResponse(identity));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'IDENTITY_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Switch Identity
+    if (pathname === '/api/assistant/switch-identity' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { identityId, domain } = body;
+
+        if (identityId) {
+          await identityKeyring.switchIdentity(identityId);
+        } else if (domain) {
+          // Find or create identity for domain
+          const identities = await identityKeyring.listIdentities();
+          const domainIdentity = identities.find(i => i.domain === domain);
+
+          if (domainIdentity) {
+            await identityKeyring.switchIdentity(domainIdentity.id);
+          } else {
+            await identityKeyring.createIdentity(domain);
+          }
+        } else {
+          return sendJSON(res, errorResponse('identityId or domain required', 'INVALID_REQUEST'), 400);
+        }
+
+        const identity = identityKeyring.getActiveIdentity();
+        sendJSON(res, successResponse(identity));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'SWITCH_ERROR'), 500);
+      }
+      return;
+    }
+
+    // List Identities
+    if (pathname === '/api/assistant/identities' && method === 'GET') {
+      try {
+        const identities = await identityKeyring.listIdentities();
+        sendJSON(res, successResponse({ identities }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'LIST_ERROR'), 500);
+      }
+      return;
+    }
+
+    // Get Assistant Info
+    if (pathname === '/api/assistant/info' && method === 'GET') {
+      try {
+        const identityInfo = identityKeyring.getInfo();
+        const codeAnalyzerInfo = codeAnalyzer.getInfo();
+
+        sendJSON(res, successResponse({
+          identity: identityInfo,
+          codeAnalyzer: codeAnalyzerInfo,
+          learningRouter: learningRouter.getStats()
+        }));
+      } catch (error) {
+        sendJSON(res, errorResponse(error.message, 'INFO_ERROR'), 500);
       }
       return;
     }

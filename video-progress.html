@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SadTalker - Live Progress Monitor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+            to { text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0; }
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: #001100;
+            border: 2px solid #0f0;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 40px;
+            background: #001100;
+            border: 2px solid #0f0;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0f0, #0c0);
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .log-container {
+            background: #000;
+            border: 2px solid #0f0;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .log-line {
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .log-line.complete { color: #0f0; }
+        .log-line.progress { color: #ff0; }
+        .log-line.stage { color: #0cf; font-weight: bold; }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .phase {
+            display: inline-block;
+            padding: 3px 8px;
+            margin: 2px;
+            border: 1px solid #0f0;
+            border-radius: 3px;
+        }
+        .phase.done { background: #0f0; color: #000; }
+        .phase.active { background: #ff0; color: #000; animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .phases {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+
+    <div class="container">
+        <h1>⚡ SADTALKER LIVE RENDER ⚡</h1>
+
+        <div class="phases">
+            <div class="phase" id="phase-extract">3DMM Extraction</div>
+            <div class="phase" id="phase-audio">Audio Processing</div>
+            <div class="phase" id="phase-coeff">Coefficient Generation</div>
+            <div class="phase" id="phase-render">Face Rendering</div>
+            <div class="phase" id="phase-encode">Video Encoding</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">FRAMES RENDERED</div>
+                <div class="stat-value" id="frames">0/100</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">PROGRESS</div>
+                <div class="stat-value" id="progress">0%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">TIME ELAPSED</div>
+                <div class="stat-value" id="elapsed">00:00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">TIME REMAINING</div>
+                <div class="stat-value" id="remaining">--:--</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="log-container" id="log"></div>
+    </div>
+
+    <script>
+        // Matrix rain background
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = '01アイウエオカキクケコサシスセソタチツテト';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        // Progress monitoring
+        const logContainer = document.getElementById('log');
+        let startTime = Date.now();
+        let currentFrame = 0;
+        let currentPhase = 'extract';
+
+        function updatePhase(phase) {
+            ['extract', 'audio', 'coeff', 'render', 'encode'].forEach(p => {
+                const el = document.getElementById('phase-' + p);
+                el.classList.remove('active', 'done');
+                if (p === phase) {
+                    el.classList.add('active');
+                } else if (phases.indexOf(p) < phases.indexOf(phase)) {
+                    el.classList.add('done');
+                }
+            });
+        }
+
+        const phases = ['extract', 'audio', 'coeff', 'render', 'encode'];
+
+        async function fetchProgress() {
+            try {
+                const response = await fetch('/api/video/progress');
+                const data = await response.json();
+
+                // Update stats
+                document.getElementById('frames').textContent = `${data.frame}/${data.total}`;
+                document.getElementById('progress').textContent = data.percent + '%';
+                document.getElementById('progressFill').style.width = data.percent + '%';
+                document.getElementById('progressFill').textContent = data.percent + '%';
+
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('elapsed').textContent =
+                    Math.floor(elapsed / 60) + ':' + (elapsed % 60).toString().padStart(2, '0');
+
+                if (data.frame > 0) {
+                    const secondsPerFrame = elapsed / data.frame;
+                    const remainingFrames = data.total - data.frame;
+                    const remainingSeconds = Math.floor(secondsPerFrame * remainingFrames);
+                    document.getElementById('remaining').textContent =
+                        Math.floor(remainingSeconds / 60) + ':' + (remainingSeconds % 60).toString().padStart(2, '0');
+                }
+
+                // Update phase
+                updatePhase(data.phase);
+
+                // Add new log lines
+                if (data.logs) {
+                    data.logs.forEach(line => {
+                        const div = document.createElement('div');
+                        div.className = 'log-line';
+                        if (line.includes('100%')) div.classList.add('complete');
+                        else if (line.includes('%')) div.classList.add('progress');
+                        else if (line.includes('::')) div.classList.add('stage');
+                        div.textContent = line;
+                        logContainer.appendChild(div);
+                    });
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }
+
+            } catch (err) {
+                // Fall back to reading log file
+                const response = await fetch('http://localhost:5050/api/logs/sadtalker');
+                const text = await response.text();
+                const lines = text.split('\n').filter(l => l.trim());
+
+                // Parse progress from log
+                const lastLine = lines[lines.length - 1];
+                const match = lastLine.match(/(\d+)\/(\d+)/);
+                if (match) {
+                    const current = parseInt(match[1]);
+                    const total = parseInt(match[2]);
+                    const percent = Math.floor((current / total) * 100);
+
+                    document.getElementById('frames').textContent = `${current}/${total}`;
+                    document.getElementById('progress').textContent = percent + '%';
+                    document.getElementById('progressFill').style.width = percent + '%';
+                    document.getElementById('progressFill').textContent = percent + '%';
+
+                    // Determine phase
+                    if (lastLine.includes('landmark Det')) updatePhase('extract');
+                    else if (lastLine.includes('mel::') || lastLine.includes('audio2exp')) updatePhase('audio');
+                    else if (lastLine.includes('3DMM')) updatePhase('coeff');
+                    else if (lastLine.includes('Face Renderer')) updatePhase('render');
+                }
+
+                // Show recent logs
+                lines.slice(-20).forEach(line => {
+                    if (!logContainer.textContent.includes(line)) {
+                        const div = document.createElement('div');
+                        div.className = 'log-line';
+                        if (line.includes('100%')) div.classList.add('complete');
+                        else if (line.includes('%')) div.classList.add('progress');
+                        else if (line.includes('::')) div.classList.add('stage');
+                        div.textContent = line;
+                        logContainer.appendChild(div);
+                    }
+                });
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+        }
+
+        // Poll every second
+        setInterval(fetchProgress, 1000);
+        fetchProgress();
+    </script>
+</body>
+</html>

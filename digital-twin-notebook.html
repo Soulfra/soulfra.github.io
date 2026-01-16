@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin Notebook - Soulfra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .notebook {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .cell {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .cell-header {
+            background: #0f0f0f;
+            padding: 10px 15px;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cell-number {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .cell-content {
+            padding: 20px;
+        }
+
+        .btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #00dd77;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        video, canvas, img {
+            max-width: 100%;
+            border-radius: 4px;
+            background: #000;
+        }
+
+        .preview-box {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin: 15px 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .result-text {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            color: #00ff88;
+            min-height: 60px;
+        }
+
+        .progress {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 4px;
+            height: 30px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: #00ff88;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: #333;
+            color: #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .file-label:hover {
+            background: #444;
+        }
+
+        .audio-viz {
+            width: 100%;
+            height: 60px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        #qrCode {
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="notebook">
+        <h1>Digital Twin Notebook</h1>
+
+        <!-- Cell 1: Image Input -->
+        <div class="cell">
+            <div class="cell-header">
+                <span><span class="cell-number">[1]</span> Image Input</span>
+                <span>Camera or Upload</span>
+            </div>
+            <div class="cell-content">
+                <div class="preview-box" id="imagePreview">
+                    <canvas id="imageCanvas" class="hidden"></canvas>
+                    <span id="imagePlaceholder">No image captured</span>
+                </div>
+                <div class="controls">
+                    <button class="btn" id="startCamera">Start Camera</button>
+                    <button class="btn btn-secondary hidden" id="captureImage">Capture Photo</button>
+                    <label class="file-label">
+                        <input type="file" id="uploadImage" accept="image/*">
+                        Upload Image
+                    </label>
+                </div>
+                <video id="cameraStream" class="hidden" autoplay playsinline></video>
+            </div>
+        </div>
+
+        <!-- Cell 2: Object Recognition -->
+        <div class="cell">
+            <div class="cell-header">
+                <span><span class="cell-number">[2]</span> Vision Recognition</span>
+                <span>AI Object Identification</span>
+            </div>
+            <div class="cell-content">
+                <button class="btn" id="identifyBtn" disabled>Identify Objects</button>
+                <div class="result-text" id="identifyResult">
+                    Capture an image first to identify objects...
+                </div>
+                <div class="status" id="identifyStatus"></div>
+            </div>
+        </div>
+
+        <!-- Cell 3: Audio Input -->
+        <div class="cell">
+            <div class="cell-header">
+                <span><span class="cell-number">[3]</span> Audio Input</span>
+                <span>Record or Upload Voice</span>
+            </div>
+            <div class="cell-content">
+                <canvas class="audio-viz" id="audioViz"></canvas>
+                <div class="controls">
+                    <button class="btn" id="startRecord">Start Recording</button>
+                    <button class="btn btn-secondary hidden" id="stopRecord">Stop Recording</button>
+                    <label class="file-label">
+                        <input type="file" id="uploadAudio" accept="audio/*">
+                        Upload Audio
+                    </label>
+                </div>
+                <div class="status" id="audioStatus">No audio recorded</div>
+            </div>
+        </div>
+
+        <!-- Cell 4: Video Generation -->
+        <div class="cell">
+            <div class="cell-header">
+                <span><span class="cell-number">[4]</span> Video Generation</span>
+                <span>SadTalker Talking Head</span>
+            </div>
+            <div class="cell-content">
+                <button class="btn" id="generateBtn" disabled>Generate Video</button>
+                <div class="progress hidden" id="videoProgress">
+                    <div class="progress-bar" id="videoProgressBar">0%</div>
+                </div>
+                <div class="status" id="videoStatus">Need image + audio to generate video</div>
+            </div>
+        </div>
+
+        <!-- Cell 5: Result & Share -->
+        <div class="cell">
+            <div class="cell-header">
+                <span><span class="cell-number">[5]</span> Result</span>
+                <span>View & Share</span>
+            </div>
+            <div class="cell-content">
+                <video id="resultVideo" class="hidden" controls></video>
+                <div class="controls hidden" id="resultControls">
+                    <button class="btn" id="downloadBtn">Download Video</button>
+                    <button class="btn btn-secondary" id="shareBtn">Generate QR Code</button>
+                </div>
+                <div class="qr-container hidden" id="qrContainer">
+                    <div id="qrCode"></div>
+                    <div class="status">Scan to view on mobile</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        // State
+        let imageData = null;
+        let audioBlob = null;
+        let videoUrl = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let cameraStream = null;
+
+        // DOM Elements
+        const imageCanvas = document.getElementById('imageCanvas');
+        const imageCtx = imageCanvas.getContext('2d');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const cameraVideo = document.getElementById('cameraStream');
+        const startCameraBtn = document.getElementById('startCamera');
+        const captureImageBtn = document.getElementById('captureImage');
+        const uploadImageInput = document.getElementById('uploadImage');
+        const identifyBtn = document.getElementById('identifyBtn');
+        const identifyResult = document.getElementById('identifyResult');
+        const identifyStatus = document.getElementById('identifyStatus');
+        const audioViz = document.getElementById('audioViz');
+        const audioVizCtx = audioViz.getContext('2d');
+        const startRecordBtn = document.getElementById('startRecord');
+        const stopRecordBtn = document.getElementById('stopRecord');
+        const uploadAudioInput = document.getElementById('uploadAudio');
+        const audioStatus = document.getElementById('audioStatus');
+        const generateBtn = document.getElementById('generateBtn');
+        const videoProgress = document.getElementById('videoProgress');
+        const videoProgressBar = document.getElementById('videoProgressBar');
+        const videoStatus = document.getElementById('videoStatus');
+        const resultVideo = document.getElementById('resultVideo');
+        const resultControls = document.getElementById('resultControls');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const qrContainer = document.getElementById('qrContainer');
+
+        // Cell 1: Camera & Image
+        startCameraBtn.addEventListener('click', async () => {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraVideo.srcObject = cameraStream;
+                cameraVideo.classList.remove('hidden');
+                startCameraBtn.classList.add('hidden');
+                captureImageBtn.classList.remove('hidden');
+            } catch (err) {
+                alert('Camera access denied: ' + err.message);
+            }
+        });
+
+        captureImageBtn.addEventListener('click', () => {
+            imageCanvas.width = cameraVideo.videoWidth;
+            imageCanvas.height = cameraVideo.videoHeight;
+            imageCtx.drawImage(cameraVideo, 0, 0);
+            imageData = imageCanvas.toDataURL('image/png');
+
+            imageCanvas.classList.remove('hidden');
+            imagePlaceholder.classList.add('hidden');
+            cameraVideo.classList.add('hidden');
+            captureImageBtn.classList.add('hidden');
+            startCameraBtn.classList.remove('hidden');
+
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+
+            identifyBtn.disabled = false;
+            checkGenerateReady();
+        });
+
+        uploadImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    imageCanvas.width = img.width;
+                    imageCanvas.height = img.height;
+                    imageCtx.drawImage(img, 0, 0);
+                    imageData = imageCanvas.toDataURL('image/png');
+
+                    imageCanvas.classList.remove('hidden');
+                    imagePlaceholder.classList.add('hidden');
+                    identifyBtn.disabled = false;
+                    checkGenerateReady();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Cell 2: Object Recognition
+        identifyBtn.addEventListener('click', async () => {
+            identifyBtn.disabled = true;
+            identifyStatus.textContent = 'Analyzing image...';
+            identifyResult.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('http://localhost:5050/api/vision/identify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageData })
+                });
+
+                const result = await response.json();
+                identifyResult.textContent = result.data.description || 'Could not identify objects';
+                identifyStatus.textContent = 'Complete';
+            } catch (err) {
+                identifyResult.textContent = 'Error: ' + err.message;
+                identifyStatus.textContent = 'Failed';
+            }
+
+            identifyBtn.disabled = false;
+        });
+
+        // Cell 3: Audio Recording
+        startRecordBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioStatus.textContent = `Recorded ${(audioBlob.size / 1024).toFixed(1)} KB`;
+                    checkGenerateReady();
+                };
+
+                mediaRecorder.start();
+                startRecordBtn.classList.add('hidden');
+                stopRecordBtn.classList.remove('hidden');
+                audioStatus.textContent = 'Recording...';
+
+                // Simple audio visualization
+                const audioContext = new AudioContext();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function drawViz() {
+                    if (mediaRecorder.state === 'recording') {
+                        requestAnimationFrame(drawViz);
+                        analyser.getByteFrequencyData(dataArray);
+
+                        audioVizCtx.fillStyle = '#0f0f0f';
+                        audioVizCtx.fillRect(0, 0, audioViz.width, audioViz.height);
+
+                        const barWidth = audioViz.width / dataArray.length;
+                        dataArray.forEach((value, i) => {
+                            const height = (value / 255) * audioViz.height;
+                            audioVizCtx.fillStyle = '#00ff88';
+                            audioVizCtx.fillRect(i * barWidth, audioViz.height - height, barWidth - 1, height);
+                        });
+                    }
+                }
+                drawViz();
+            } catch (err) {
+                alert('Microphone access denied: ' + err.message);
+            }
+        });
+
+        stopRecordBtn.addEventListener('click', () => {
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            stopRecordBtn.classList.add('hidden');
+            startRecordBtn.classList.remove('hidden');
+        });
+
+        uploadAudioInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            audioBlob = file;
+            audioStatus.textContent = `Uploaded ${(audioBlob.size / 1024).toFixed(1)} KB`;
+            checkGenerateReady();
+        });
+
+        // Cell 4: Video Generation
+        function checkGenerateReady() {
+            if (imageData && audioBlob) {
+                generateBtn.disabled = false;
+                videoStatus.textContent = 'Ready to generate!';
+            }
+        }
+
+        generateBtn.addEventListener('click', async () => {
+            generateBtn.disabled = true;
+            videoProgress.classList.remove('hidden');
+            videoStatus.textContent = 'Starting video generation...';
+
+            const formData = new FormData();
+            formData.append('image', dataURItoBlob(imageData));
+            formData.append('audio', audioBlob);
+
+            try {
+                const response = await fetch('http://localhost:5050/api/video/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('Video generation failed');
+
+                // Poll for progress
+                const result = await response.json();
+                const jobId = result.data.jobId;
+                pollProgress(jobId);
+            } catch (err) {
+                videoStatus.textContent = 'Error: ' + err.message;
+                videoProgress.classList.add('hidden');
+                generateBtn.disabled = false;
+            }
+        });
+
+        function pollProgress(jobId) {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`http://localhost:5050/api/video/status/${jobId}`);
+                    const result = await response.json();
+                    const data = result.data;
+
+                    videoProgressBar.style.width = data.progress + '%';
+                    videoProgressBar.textContent = data.progress + '%';
+                    videoStatus.textContent = data.status;
+
+                    if (data.status === 'completed' && data.videoUrl) {
+                        clearInterval(interval);
+                        videoUrl = 'http://localhost:5050' + data.videoUrl;
+                        showResult(videoUrl);
+                    } else if (data.status === 'failed') {
+                        clearInterval(interval);
+                        videoStatus.textContent = 'Error: ' + (data.error || 'Video generation failed');
+                        videoProgress.classList.add('hidden');
+                        generateBtn.disabled = false;
+                    }
+                } catch (err) {
+                    clearInterval(interval);
+                    videoStatus.textContent = 'Error polling progress';
+                }
+            }, 2000);
+        }
+
+        function showResult(url) {
+            resultVideo.src = url;
+            resultVideo.classList.remove('hidden');
+            resultControls.classList.remove('hidden');
+            videoStatus.textContent = 'Video generated successfully!';
+        }
+
+        // Cell 5: Result & Share
+        downloadBtn.addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = videoUrl;
+            a.download = 'digital-twin-' + Date.now() + '.mp4';
+            a.click();
+        });
+
+        shareBtn.addEventListener('click', () => {
+            qrContainer.innerHTML = '<div id="qrCode"></div><div class="status">Scan to view on mobile</div>';
+            qrContainer.classList.remove('hidden');
+            new QRCode(document.getElementById('qrCode'), {
+                text: window.location.origin + videoUrl,
+                width: 200,
+                height: 200
+            });
+        });
+
+        // Utilities
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+    </script>
+</body>
+</html>
