@@ -1,385 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeathToData - Search without surveillance</title>
-    <meta name="description" content="Privacy-first search engine. No tracking, no profiling, no surveillance.">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #3498db;
-            --bg: #ffffff;
-            --text: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Search & Earn VIBES - DeathToData</title>
+  <meta name="description" content="Privacy-first search where you earn 0.2 VIBES per query. No tracking, no surveillance."/>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <meta name="theme-color" content="#fb0044"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="assets/deathtodata.css"/>
 
-        header {
-            padding: 20px 40px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  <style>
+    /* Page-specific styles for search.html */
+    .search-container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
+    .search-box-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
 
-        .logo span {
-            color: var(--secondary);
-        }
+    .search-box {
+      width: 100%;
+      padding: 18px 120px 18px 24px;
+      font-size: 18px;
+    }
 
-        nav a {
-            margin-left: 2rem;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-        }
+    .search-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fb0044;
+      border: none;
+      color: #000;
+      padding: 10px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
 
-        nav a:hover {
-            color: var(--accent);
-        }
+    .search-btn:hover {
+      background: #ff1a5e;
+      box-shadow: 0 0 16px rgba(251, 0, 68, 0.7);
+    }
 
-        .search-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 60px 20px 40px;
-        }
+    .earn-notice {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin-top: 12px;
+    }
 
-        .search-box-wrapper {
-            width: 100%;
-            max-width: 650px;
-            margin-bottom: 30px;
-        }
+    /* VIBES notification */
+    .vibes-notification {
+      position: fixed;
+      top: 100px;
+      right: 40px;
+      background: rgba(251, 0, 68, 0.2);
+      border: 1px solid #fb0044;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(251, 0, 68, 0.5);
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
 
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
+    .vibes-notification.show {
+      transform: translateX(0);
+    }
 
-        .search-box input {
-            width: 100%;
-            padding: 16px 50px 16px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 50px;
-            outline: none;
-            transition: all 0.3s;
-        }
+    .vibes-notification .amount {
+      font-size: 24px;
+      color: #fb0044;
+      font-weight: bold;
+    }
 
-        .search-box input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
-        }
+    /* Results */
+    .results-container {
+      margin-top: 40px;
+    }
 
-        .search-box button {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-size: 18px;
+      display: none;
+    }
 
-        .search-box button:hover {
-            background: var(--primary);
-        }
+    .loading.active {
+      display: block;
+    }
 
-        .privacy-note {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 40px;
-        }
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
 
-        .privacy-note strong {
-            color: var(--secondary);
-        }
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
 
-        .results {
-            width: 100%;
-            max-width: 800px;
-        }
+    .result-item {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(251, 0, 68, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            display: none;
-        }
+    .result-item:hover {
+      border-color: rgba(251, 0, 68, 0.5);
+      box-shadow: 0 0 16px rgba(251, 0, 68, 0.3);
+    }
 
-        .loading.active {
-            display: block;
-        }
+    .result-title {
+      font-size: 18px;
+      color: #fb0044;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
+    .result-title a {
+      color: #fb0044;
+      text-decoration: none;
+    }
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
+    .result-title a:hover {
+      text-decoration: underline;
+    }
 
-        .result-item {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
+    .result-url {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
 
-        .result-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px);
-        }
+    .result-snippet {
+      color: #ccc;
+      line-height: 1.6;
+      font-size: 14px;
+    }
 
-        .result-title {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-        }
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
 
-        .result-title a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
+    .no-results h3 {
+      color: #fb0044;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
 
-        .result-title a:hover {
-            color: var(--accent);
-            text-decoration: underline;
-        }
+    @media (max-width: 768px) {
+      .search-box {
+        padding-right: 100px;
+        font-size: 16px;
+      }
 
-        .result-url {
-            color: #2ecc71;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
+      .search-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
 
-        .result-snippet {
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .no-results h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #eee;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .stats {
-            text-align: center;
-            color: #999;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            nav a {
-                margin-left: 1rem;
-            }
-
-            .search-container {
-                padding: 30px 15px;
-            }
-        }
-    </style>
+      .vibes-notification {
+        right: 20px;
+        left: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="logo">Death<span>To</span>Data</a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="blog/">Blog</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
+  <!-- Matrix background -->
+  <canvas id="canvas"></canvas>
 
-    <div class="search-container">
-        <div class="search-box-wrapper">
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search without surveillance..."
-                    autofocus
-                    autocomplete="off"
-                >
-                <button id="searchBtn">Search</button>
-            </div>
-            <div class="privacy-note">
-                <strong>🔒 Privacy Promise:</strong> We don't track, profile, or sell your data. Ever.
-            </div>
-        </div>
-
-        <div class="loading" id="loading">Searching</div>
-        <div class="stats" id="stats"></div>
-        <div class="results" id="results"></div>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-link">
+      <img src="logo.jpeg" alt="DeathToData" class="logo-img">
+      <span class="logo-text">DEATH2DATA</span>
+    </a>
+    <div class="vibes-display">
+      <div class="vibes-balance">
+        <strong id="vibesBalance">0.0</strong> VIBES
+        <span class="usd-value">($<span id="usdValue">0.00</span>)</span>
+      </div>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
     </div>
+  </header>
 
-    <footer>
-        <p>&copy; 2026 DeathToData. Search without surveillance. Deal with it, Google.</p>
-        <p><small>Results powered by privacy-respecting APIs</small></p>
-    </footer>
+  <!-- Search container -->
+  <div class="search-container">
+    <div class="search-box-wrapper">
+      <input
+        type="text"
+        class="search-box"
+        id="searchInput"
+        placeholder="Search and earn VIBES..."
+        autofocus
+        autocomplete="off"
+      >
+      <button class="search-btn" id="searchBtn">SEARCH</button>
+    </div>
+    <p class="earn-notice">
+      Earn <strong>+0.2 VIBES</strong> per search · Privacy-first · No tracking
+    </p>
 
-    <script>
-const API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5051'
-  : 'https://wicked-geckos-do.loca.lt';
+    <!-- Loading -->
+    <div class="loading" id="loading">Searching</div>
 
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const results = document.getElementById('results');
-const loading = document.getElementById('loading');
-const stats = document.getElementById('stats');
+    <!-- Results -->
+    <div class="results-container" id="results"></div>
+  </div>
 
-// Get query from URL if present
-const urlParams = new URLSearchParams(window.location.search);
-const initialQuery = urlParams.get('q');
-if (initialQuery) {
-    searchInput.value = initialQuery;
-    performSearch(initialQuery);
-}
+  <!-- VIBES notification -->
+  <div class="vibes-notification" id="vibesNotification">
+    <div class="amount">+0.2 VIBES</div>
+    <div style="font-size: 14px; color: #ccc; margin-top: 4px;">Earned from search</div>
+  </div>
 
-// Handle search
-searchBtn.addEventListener('click', () => {
-    const query = searchInput.value.trim();
-    if (query) {
+  <!-- Footer -->
+  <footer>
+    <p><strong>Deal with it, Google.</strong></p>
+    <p>&copy; 2026 DeathToData. Every search is a vote against surveillance capitalism.</p>
+  </footer>
+
+  <!-- Shared JavaScript -->
+  <script src="assets/deathtodata.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script>
+    // Search handling
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const results = document.getElementById('results');
+    const loading = document.getElementById('loading');
+
+    // Get query from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q');
+    if (initialQuery) {
+      searchInput.value = initialQuery;
+      performSearch(initialQuery);
+    }
+
+    // Search button
+    searchBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (query) {
         performSearch(query);
         updateURL(query);
-    }
-});
+      }
+    });
 
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
+    // Enter key
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
         const query = searchInput.value.trim();
         if (query) {
-            performSearch(query);
-            updateURL(query);
+          performSearch(query);
+          updateURL(query);
         }
+      }
+    });
+
+    function updateURL(query) {
+      const url = new URL(window.location);
+      url.searchParams.set('q', query);
+      window.history.pushState({}, '', url);
     }
-});
 
-function updateURL(query) {
-    const url = new URL(window.location);
-    url.searchParams.set('q', query);
-    window.history.pushState({}, '', url);
-}
+    async function performSearch(query) {
+      loading.classList.add('active');
+      results.innerHTML = '';
+      searchBtn.disabled = true;
 
-async function performSearch(query) {
-    loading.classList.add('active');
-    results.innerHTML = '';
-    stats.textContent = '';
+      const startTime = Date.now();
 
-    const startTime = Date.now();
-
-    try {
+      try {
         const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`);
 
         if (!response.ok) {
-            throw new Error('Search failed');
+          throw new Error('Search failed');
         }
 
         const data = await response.json();
         const searchTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
         loading.classList.remove('active');
+        searchBtn.disabled = false;
+
+        // Award VIBES
+        awardVibes(0.2);
 
         if (data.results && data.results.length > 0) {
-            stats.textContent = `About ${data.results.length} results (${searchTime} seconds)`;
-            displayResults(data.results);
+          displayResults(data.results, searchTime);
         } else {
-            results.innerHTML = `
-                <div class="no-results">
-                    <h3>No results found for "${query}"</h3>
-                    <p>Try different keywords or check your spelling.</p>
-                </div>
-            `;
+          results.innerHTML = `
+            <div class="no-results">
+              <h3>No results found</h3>
+              <p>Try different keywords or check your spelling.</p>
+            </div>
+          `;
         }
 
-    } catch (error) {
+      } catch (error) {
         loading.classList.remove('active');
+        searchBtn.disabled = false;
         results.innerHTML = `
-            <div class="no-results">
-                <h3>Search Error</h3>
-                <p>Could not connect to search service. Make sure the API is running on port 5051.</p>
-                <p style="color: #e74c3c; margin-top: 10px;">Error: ${error.message}</p>
-            </div>
+          <div class="no-results">
+            <h3>Search Error</h3>
+            <p>Could not connect to search service.</p>
+            <p style="color: #fb0044; margin-top: 12px; font-size: 12px;">
+              ${error.message}
+            </p>
+            <p style="margin-top: 12px; font-size: 12px;">
+              Make sure backend is running: <code>./start-deathtodata-simple.sh</code>
+            </p>
+          </div>
         `;
+      }
     }
-}
 
-function displayResults(searchResults) {
-    results.innerHTML = searchResults.map(result => `
+    function displayResults(searchResults, searchTime) {
+      const header = `<p style="text-align: center; color: #888; margin-bottom: 20px; font-size: 14px;">About ${searchResults.length} results (${searchTime}s)</p>`;
+      const resultsHTML = searchResults.map(result => `
         <div class="result-item">
-            <div class="result-title">
-                <a href="${result.url}" target="_blank" rel="noopener noreferrer">
-                    ${escapeHtml(result.title || 'Untitled')}
-                </a>
-            </div>
-            <div class="result-url">${escapeHtml(result.url)}</div>
-            <div class="result-snippet">${escapeHtml(result.snippet || 'No description available.')}</div>
+          <div class="result-title">
+            <a href="${escapeHtml(result.url)}" target="_blank" rel="noopener noreferrer">
+              ${escapeHtml(result.title || 'Untitled')}
+            </a>
+          </div>
+          <div class="result-url">${escapeHtml(result.url)}</div>
+          <div class="result-snippet">${escapeHtml(result.snippet || 'No description available.')}</div>
         </div>
-    `).join('');
-}
+      `).join('');
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-</script>
+      results.innerHTML = header + resultsHTML;
+    }
+  </script>
 
 </body>
 </html>

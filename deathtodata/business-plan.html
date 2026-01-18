@@ -1,188 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Plan - DeathToData</title>
-    <meta name="description" content="DeathToData business plan and strategy">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #f39c12;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Plan - DeathToData</title>
+  <meta name="description" content="DeathToData business plan and strategy - Building the revolution">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#fb0044">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="assets/deathtodata.css">
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f9f9f9;
-        }
+  <style>
+    /* Page-specific styles for business-plan.html */
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
+    article {
+      padding: 40px;
+    }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+    article h2 {
+      font-size: 32px;
+      text-align: center;
+    }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+    article h3 {
+      font-size: 22px;
+      margin-top: 32px;
+    }
 
-        nav {
-            background: var(--secondary);
-            padding: 1rem;
-            text-align: center;
-        }
+    .back-links {
+      display: flex;
+      gap: 20px;
+      margin-top: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1rem;
-            font-weight: 500;
-        }
+    .back-link {
+      display: inline-block;
+      background: rgba(251, 0, 68, 0.1);
+      border: 1px solid rgba(251, 0, 68, 0.3);
+      border-radius: 4px;
+      padding: 12px 24px;
+      color: #fb0044;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
 
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        main {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .content-block, article {
-            background: white;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .content-block h2, article h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .content-block h3, article h3 {
-            color: var(--secondary);
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .content-block p, article p {
-            margin-bottom: 1rem;
-        }
-
-        .content-block ul, article ul {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .content-block li, article li {
-            margin-bottom: 0.5rem;
-        }
-
-        .meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-        }
-
-        .cta {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 1rem;
-            font-weight: 600;
-        }
-
-        .cta:hover {
-            background: var(--secondary);
-        }
-
-        footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-            main {
-                padding: 0 0.5rem;
-            }
-        }
-    </style>
+    .back-link:hover {
+      background: rgba(251, 0, 68, 0.2);
+      box-shadow: 0 0 12px rgba(251, 0, 68, 0.3);
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>DeathToData</h1>
-        <p>Search without surveillance. Deal with it, Google.</p>
-    </header>
+  <!-- Matrix background -->
+  <canvas id="canvas"></canvas>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="blog/">Blog</a>
-        <a href="pitch-deck.html">Pitch Deck</a>
-        <a href="business-plan.html">Business Plan</a>
-    </nav>
-    
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-link">
+      <img src="logo.jpeg" alt="DeathToData" class="logo-img">
+      <span class="logo-text">DEATH2DATA</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="search.html" class="nav-link">Search</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="pitch-deck.html" class="nav-link">Pitch Deck</a>
+    </div>
+  </header>
 
-    <main>
-        <article>
-            <h2>Business Plan</h2>
-            <p>DeathToData Business Plan</p>
-<p>Executive Summary DeathToData is a privacy-first search engine that puts users' anonymity and surveillance-free search at its core. Our mission is to provide a secure and transparent search experience, empowering users to explore the internet without being tracked or profiled. With our bold tagline "Search without surveillance. Deal with it, Google," we're disrupting the status quo of surveillance capitalism and reclaiming the internet as a space for anonymous exploration.</p>
-<p>Market Analysis The search engine market is highly competitive, but there's a growing demand for privacy-focused options. As users become increasingly aware of online tracking and data collection, they're seeking alternatives that prioritize their online security. Our target audience consists of individuals who value their digital privacy and are willing to pay for a secure search experience.</p>
-<p>According to recent surveys, over 70% of internet users are concerned about online tracking, and over 50% would switch to a privacy-focused search engine if given the option. The market size for privacy-focused search engines may be small now, but it has significant growth potential as more users join the movement against surveillance capitalism.</p>
-<p>Competitive Advantage DeathToData's unique selling proposition is our commitment to anonymity by default. We'll never track or profile our users' searches, ensuring their data remains private and secure. Our transparency in data handling is unparalleled, with clear policies and practices for protecting user data.</p>
-<p>Our competitive advantages include:</p>
-<p><em> Strong focus on user privacy and security </em> Advanced encryption methods to protect user data <ul><li>Partnerships with organizations promoting digital rights</li></ul></p>
-<p>By partnering with like-minded organizations, we can ensure our search engine not only protects user data but also supports a broader movement towards online freedom and transparency.</p>
-<p>Revenue Strategy Our business model is built on advertising-free search results, sponsored content from trusted sources, and premium features for power users. We'll offer a free version of our search engine with basic features, as well as a paid subscription for premium features and an ad-free experience.</p>
-<p>Our pricing strategy balances revenue needs with user affordability. The free version will be available to all users, while the paid subscription will target power users who require advanced search filters and other premium features.</p>
-<p>Financial Projections We estimate our initial revenue streams will come from advertising revenue, sponsored content, and premium feature sales. Our projected expenses include development costs for the search engine and features, marketing and advertising expenses, and server and infrastructure costs.</p>
-<p>Our break-even analysis indicates we can reach profitability within 12-18 months of launch, based on conservative estimates of user acquisition and retention rates.</p>
-<p>Roadmap In the short term (0-12 months), our focus will be on developing the core search engine and feature set, establishing partnerships with organizations promoting digital rights, and launching a beta version for user testing and feedback.</p>
-<p>In the mid-term (1-2 years), we'll expand our marketing efforts, develop new premium features, and explore strategic partnerships with other companies that share our values.</p>
-<p>In the long term (2-5 years), we aim to establish DeathToData as a leading player in the privacy-focused search engine market, with a strong brand reputation and a loyal user base.</p>
-        </article>
-        <div class="content-block">
-            <p><a href="index.html">&larr; Back to Home</a></p>
-            <p><a href="pitch-deck.html">View Pitch Deck &rarr;</a></p>
-        </div>
-    </main>
+  <!-- Main content -->
+  <main>
+    <article>
+      <h2>💀 DeathToData Business Plan</h2>
 
+      <h3>Executive Summary</h3>
+      <p>DeathToData is a privacy-first search engine that puts users' anonymity and surveillance-free search at its core. Our mission is to provide a secure and transparent search experience, empowering users to explore the internet without being tracked or profiled. With our bold tagline <strong>"Search without surveillance. Deal with it, Google,"</strong> we're disrupting the status quo of surveillance capitalism and reclaiming the internet as a space for anonymous exploration.</p>
 
-    <footer>
-        <p>&copy; 2026 DeathToData. Search without surveillance. Deal with it, Google.</p>
-        <p><small>Generated with local AI - No API costs, fully self-sovereign</small></p>
-    </footer>
-    
+      <p><strong>Key differentiators:</strong></p>
+      <ul>
+        <li><em>Users get paid</em> - 0.2 VIBES per search ($42-50/year average)</li>
+        <li><em>Complete privacy</em> - No tracking, no profiling, no data collection</li>
+        <li><em>Open source</em> - Transparent, auditable code</li>
+        <li><em>Decentralized</em> - No single point of control or failure</li>
+      </ul>
+
+      <h3>Market Analysis</h3>
+      <p>The search engine market is highly competitive, but there's a growing demand for privacy-focused options. As users become increasingly aware of online tracking and data collection, they're seeking alternatives that prioritize their online security. Our target audience consists of individuals who value their digital privacy and are willing to engage with a platform that respects their data.</p>
+
+      <p>According to recent surveys, over <strong>70% of internet users</strong> are concerned about online tracking, and over <strong>50% would switch</strong> to a privacy-focused search engine if given the option. The market size for privacy-focused search engines may be small now, but it has significant growth potential as more users join the movement against surveillance capitalism.</p>
+
+      <p><strong>Market opportunity:</strong></p>
+      <ul>
+        <li>Global search market: <em>$200B annually</em></li>
+        <li>Privacy-conscious users: <em>500M+ worldwide</em></li>
+        <li>Average revenue per user (Google): <em>$80/year</em></li>
+        <li>DeathToData potential: <em>$10B+ addressable market</em></li>
+      </ul>
+
+      <h3>Competitive Advantage</h3>
+      <p>DeathToData's unique selling proposition is our commitment to <strong>anonymity by default</strong>. We'll never track or profile our users' searches, ensuring their data remains private and secure. Our transparency in data handling is unparalleled, with clear policies and practices for protecting user data.</p>
+
+      <p>Our competitive advantages include:</p>
+      <ul>
+        <li><em>Strong focus on user privacy and security</em></li>
+        <li><em>Advanced encryption methods to protect user data</em></li>
+        <li><em>Partnerships with organizations promoting digital rights</em></li>
+        <li><em>VIBES economy</em> - Users earn real value for their searches</li>
+        <li><em>Community-driven development</em> - Open source, transparent roadmap</li>
+      </ul>
+
+      <p>By partnering with like-minded organizations, we can ensure our search engine not only protects user data but also supports a broader movement towards online freedom and transparency.</p>
+
+      <h3>Revenue Strategy</h3>
+      <p>Our business model is built on <strong>sustainable, ethical revenue streams</strong> that don't rely on surveillance:</p>
+
+      <ul>
+        <li><em>Privacy-first ads</em> - Contextual, not behavioral (no tracking)</li>
+        <li><em>Premium features</em> - Advanced search filters, API access</li>
+        <li><em>Partnerships</em> - Privacy-focused companies and organizations</li>
+        <li><em>VIBES ecosystem</em> - Transaction fees on marketplace</li>
+      </ul>
+
+      <p>Our pricing strategy balances revenue needs with user affordability. The free version will be available to all users, while the paid subscription will target power users who require advanced search filters and other premium features.</p>
+
+      <p><strong>Revenue projections:</strong></p>
+      <ul>
+        <li>Year 1: <em>$500K</em> (beta, early adopters)</li>
+        <li>Year 2: <em>$5M</em> (growth phase, partnerships)</li>
+        <li>Year 3: <em>$25M</em> (market expansion, premium features)</li>
+        <li>Year 5: <em>$100M+</em> (mainstream adoption)</li>
+      </ul>
+
+      <h3>Financial Projections</h3>
+      <p>We estimate our initial revenue streams will come from contextual advertising, sponsored content from trusted sources, and premium feature sales. Our projected expenses include development costs for the search engine and features, marketing and community building, and server and infrastructure costs.</p>
+
+      <p>Our break-even analysis indicates we can reach profitability within <strong>12-18 months of launch</strong>, based on conservative estimates of user acquisition and retention rates.</p>
+
+      <p><strong>Cost structure:</strong></p>
+      <ul>
+        <li>Development: <em>$200K/year</em> (2-3 engineers)</li>
+        <li>Infrastructure: <em>$50K/year</em> (servers, CDN)</li>
+        <li>Marketing: <em>$100K/year</em> (community building, content)</li>
+        <li>Operations: <em>$50K/year</em> (legal, admin)</li>
+      </ul>
+
+      <h3>Roadmap</h3>
+      <p><strong>Short term (0-12 months):</strong></p>
+      <ul>
+        <li>Develop core search engine and VIBES economy</li>
+        <li>Establish partnerships with digital rights organizations</li>
+        <li>Launch beta version for user testing and feedback</li>
+        <li>Build community of early adopters and advocates</li>
+      </ul>
+
+      <p><strong>Mid-term (1-2 years):</strong></p>
+      <ul>
+        <li>Expand marketing efforts and user acquisition</li>
+        <li>Develop premium features and API access</li>
+        <li>Explore strategic partnerships with privacy-focused companies</li>
+        <li>International expansion (EU, Asia)</li>
+      </ul>
+
+      <p><strong>Long-term (2-5 years):</strong></p>
+      <ul>
+        <li>Establish DeathToData as a leading privacy-first search engine</li>
+        <li>Build strong brand reputation and loyal user base</li>
+        <li>Expand VIBES ecosystem (marketplace, rewards program)</li>
+        <li>Challenge Google's dominance in privacy-conscious markets</li>
+      </ul>
+
+      <h3>Team & Execution</h3>
+      <p>Our team is committed to building a sustainable alternative to surveillance capitalism. We're driven by the belief that <strong>privacy is a fundamental human right</strong>, and we're dedicated to making the internet a safer, more transparent place.</p>
+
+      <p><strong>Key roles:</strong></p>
+      <ul>
+        <li><em>Engineering</em> - Search algorithms, privacy architecture</li>
+        <li><em>Product</em> - User experience, feature development</li>
+        <li><em>Community</em> - User support, advocacy, education</li>
+        <li><em>Business</em> - Partnerships, revenue, growth</li>
+      </ul>
+
+      <h3>The Revolution Starts Now</h3>
+      <p>In the long term, we aim to establish DeathToData as a leading player in the privacy-focused search engine market, with a strong brand reputation and a loyal user base. We're not just building a company – <strong>we're building a movement</strong>.</p>
+
+      <p style="margin-top: 32px; text-align: center; font-size: 20px;">
+        <strong>Search without surveillance.</strong><br>
+        <strong>Get paid for your data.</strong><br>
+        <strong>Deal with it, Google.</strong>
+      </p>
+    </article>
+
+    <div class="back-links">
+      <a href="index.html" class="back-link">&larr; Back to Home</a>
+      <a href="pitch-deck.html" class="back-link">View Pitch Deck &rarr;</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Deal with it, Google.</strong></p>
+    <p>&copy; 2026 DeathToData. Every search is a vote against surveillance capitalism.</p>
+    <p style="margin-top: 12px; font-size: 12px;">
+      💀 Generated with local AI - No API costs, fully self-sovereign
+    </p>
+  </footer>
+
+  <!-- Shared JavaScript -->
+  <script src="assets/deathtodata.js"></script>
+
 </body>
 </html>

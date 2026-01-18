@@ -1,386 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeathToData Dashboard - Your Privacy Command Center</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #f39c12;
-            --unread: #3498db;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Dashboard - DeathToData</title>
+  <meta name="description" content="Your DeathToData command center. Track VIBES, messages, and the revolution.">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#fb0044">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
-            line-height: 1.6;
-            color: #333;
-            background: #f9f9f9;
-        }
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="assets/deathtodata.css">
 
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  <style>
+    /* Page-specific styles for dashboard.html */
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        header h1 {
-            font-size: 1.8rem;
-        }
+    .login-panel {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(251, 0, 68, 0.3);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-        .user-info {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
+    .login-panel h2 {
+      color: #fb0044;
+      text-shadow: 0 0 12px #fb0044;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
 
-        nav {
-            background: var(--secondary);
-            padding: 1rem;
-            text-align: center;
-        }
+    .login-panel input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1rem;
-            font-weight: 500;
-        }
+    .login-panel button {
+      padding: 12px 32px;
+    }
 
-        nav a:hover {
-            text-decoration: underline;
-        }
+    #login-message {
+      margin-top: 16px;
+      color: #fb0044;
+    }
 
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
 
-        .panel {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    .panel h2 {
+      border-bottom: 1px solid rgba(251, 0, 68, 0.2);
+      padding-bottom: 12px;
+    }
 
-        .panel h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--secondary);
-        }
+    .message {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(251, 0, 68, 0.2);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-        .login-panel {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem;
-        }
+    .message:hover {
+      border-color: rgba(251, 0, 68, 0.5);
+      box-shadow: 0 0 12px rgba(251, 0, 68, 0.2);
+    }
 
-        .login-panel input {
-            padding: 0.8rem;
-            font-size: 1rem;
-            width: 300px;
-            border: 2px solid var(--primary);
-            border-radius: 4px;
-            margin-right: 1rem;
-        }
+    .message.unread {
+      border-color: rgba(251, 0, 68, 0.6);
+      background: rgba(251, 0, 68, 0.05);
+    }
 
-        .login-panel button {
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-        }
+    .message-subject {
+      font-weight: bold;
+      color: #fb0044;
+      margin-bottom: 8px;
+    }
 
-        .login-panel button:hover {
-            background: var(--secondary);
-        }
+    .message-date {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
 
-        .message {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #ddd;
-            background: #f9f9f9;
-            cursor: pointer;
-        }
+    .message-body {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(251, 0, 68, 0.2);
+      color: #ccc;
+      line-height: 1.6;
+    }
 
-        .message.unread {
-            border-left-color: var(--unread);
-            background: #e3f2fd;
-            font-weight: 500;
-        }
+    .message.expanded .message-body {
+      display: block;
+    }
 
-        .message-subject {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
+    .feed-item {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(251, 0, 68, 0.2);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
 
-        .message-date {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
+    .feed-item:hover {
+      border-color: rgba(251, 0, 68, 0.5);
+      box-shadow: 0 0 12px rgba(251, 0, 68, 0.2);
+    }
 
-        .message-body {
-            display: none;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid #ddd;
-        }
+    .feed-author {
+      font-weight: bold;
+      color: #fb0044;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
 
-        .message.expanded .message-body {
-            display: block;
-        }
+    .feed-title {
+      font-weight: bold;
+      color: #e6e6e6;
+      margin-bottom: 8px;
+    }
 
-        .feed-item {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #eee;
-        }
+    .feed-content {
+      color: #ccc;
+      font-size: 14px;
+      line-height: 1.6;
+    }
 
-        .feed-item:last-child {
-            border-bottom: none;
-        }
+    .feed-meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+    }
 
-        .feed-author {
-            font-weight: bold;
-            color: var(--secondary);
-            font-size: 0.9rem;
-        }
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
 
-        .feed-title {
-            font-weight: 600;
-            margin: 0.5rem 0;
-            color: var(--primary);
-        }
-
-        .feed-content {
-            color: #555;
-            font-size: 0.95rem;
-        }
-
-        .feed-meta {
-            font-size: 0.8rem;
-            color: #999;
-            margin-top: 0.5rem;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .error {
-            color: var(--secondary);
-            font-weight: bold;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: #999;
-        }
-
-        @media (max-width: 768px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-            header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-    </style>
+      .login-panel {
+        padding: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>DeathToData Dashboard</h1>
-        <div class="user-info" id="user-info">Not logged in</div>
-    </header>
+  <!-- Matrix background -->
+  <canvas id="canvas"></canvas>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="blog/">Blog</a>
-        <a href="pitch-deck.html">Pitch Deck</a>
-        <a href="business-plan.html">Business Plan</a>
-        <a href="#" id="logout-btn" class="hidden">Logout</a>
-    </nav>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-link">
+      <img src="logo.jpeg" alt="DeathToData" class="logo-img">
+      <span class="logo-text">DEATH2DATA</span>
+    </a>
+    <div class="user-info">
+      <div class="vibes-balance">
+        <strong id="vibesBalance">0.0</strong> VIBES
+        <span class="usd-value">($<span id="usdValue">0.00</span>)</span>
+      </div>
+      <a href="search.html" class="nav-link">Search</a>
+      <a href="#" class="nav-link hidden" id="logout-btn">Logout</a>
+    </div>
+  </header>
 
-    <main>
-        <!-- Login Panel (shown when not authenticated) -->
-        <div class="panel login-panel" id="login-panel">
-            <h2>Access Your Dashboard</h2>
-            <p style="margin: 1.5rem 0;">Enter your email to view your messages and updates</p>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Enter your email" required>
-                <button type="submit">Access Dashboard</button>
-            </form>
-            <p id="login-message" style="margin-top: 1rem; font-weight: bold;"></p>
-        </div>
+  <!-- Main content -->
+  <main>
+    <!-- Login Panel -->
+    <div class="login-panel" id="login-panel">
+      <h2>Access Your Dashboard</h2>
+      <p style="color: #888; margin-bottom: 24px;">
+        Enter your email to view your messages and updates
+      </p>
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="your@email.com" required autocomplete="email">
+        <br>
+        <button type="submit" class="primary">ACCESS DASHBOARD</button>
+      </form>
+      <p id="login-message"></p>
+    </div>
 
-        <!-- Messages Panel (shown when authenticated) -->
-        <div class="panel hidden" id="messages-panel">
-            <h2>📬 Your Messages</h2>
-            <div id="messages-container"></div>
-        </div>
+    <!-- Dashboard Grid (shown when logged in) -->
+    <div class="dashboard-grid hidden" id="dashboard-grid">
+      <!-- Messages Panel -->
+      <div class="panel" id="messages-panel">
+        <h2>📬 Your Messages</h2>
+        <div id="messages-container"></div>
+      </div>
 
-        <!-- Internal Feed Panel (shown when authenticated) -->
-        <div class="panel hidden" id="feed-panel">
-            <h2>📡 Internal Feed</h2>
-            <div id="feed-container"></div>
-        </div>
-    </main>
+      <!-- Internal Feed Panel -->
+      <div class="panel" id="feed-panel">
+        <h2>📡 Internal Feed</h2>
+        <div id="feed-container"></div>
+      </div>
+    </div>
+  </main>
 
-    <script>
-const API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5051'
-  : 'https://wicked-geckos-do.loca.lt';
+  <!-- Footer -->
+  <footer>
+    <p><strong>Deal with it, Google.</strong></p>
+    <p>&copy; 2026 DeathToData. Every search is a vote against surveillance capitalism.</p>
+  </footer>
 
-let currentUserEmail = localStorage.getItem('deathtodata_user');
+  <!-- Shared JavaScript -->
+  <script src="assets/deathtodata.js"></script>
 
-// Initialize dashboard
-if (currentUserEmail) {
-    showDashboard(currentUserEmail);
-}
+  <!-- Page-specific JavaScript -->
+  <script>
+    // Current user
+    let currentUserEmail = localStorage.getItem('deathtodata_user');
 
-// Login form handler
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const msgEl = document.getElementById('login-message');
+    // Initialize dashboard
+    if (currentUserEmail) {
+      showDashboard(currentUserEmail);
+    }
 
-    msgEl.textContent = 'Loading...';
-    msgEl.style.color = '#666';
+    // Login form handler
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const msgEl = document.getElementById('login-message');
 
-    try {
-        // Check if user exists
+      msgEl.textContent = 'Loading...';
+      msgEl.style.color = '#888';
+
+      try {
         const response = await fetch(`${API_URL}/api/user/${email}`);
 
         if (response.ok) {
-            localStorage.setItem('deathtodata_user', email);
-            showDashboard(email);
+          localStorage.setItem('deathtodata_user', email);
+          showDashboard(email);
         } else {
-            msgEl.style.color = '#e74c3c';
-            msgEl.textContent = '✗ Email not found. Please sign up first on the homepage.';
+          msgEl.style.color = '#fb0044';
+          msgEl.textContent = '✗ Email not found. Sign up first on the homepage.';
         }
-    } catch (err) {
-        msgEl.style.color = '#e74c3c';
-        msgEl.textContent = '✗ Could not connect to server. Make sure the API is running on port 5051.';
-    }
-});
+      } catch (err) {
+        msgEl.style.color = '#fb0044';
+        msgEl.textContent = '✗ Could not connect to server. Make sure backend is running.';
+        console.error(err);
+      }
+    });
 
-// Logout handler
-document.getElementById('logout-btn').addEventListener('click', (e) => {
-    e.preventDefault();
-    localStorage.removeItem('deathtodata_user');
-    location.reload();
-});
+    // Logout handler
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('deathtodata_user');
+      location.reload();
+    });
 
-async function showDashboard(email) {
-    currentUserEmail = email;
+    async function showDashboard(email) {
+      currentUserEmail = email;
 
-    // Update UI
-    document.getElementById('user-info').textContent = `Logged in as: ${email}`;
-    document.getElementById('login-panel').classList.add('hidden');
-    document.getElementById('messages-panel').classList.remove('hidden');
-    document.getElementById('feed-panel').classList.remove('hidden');
-    document.getElementById('logout-btn').classList.remove('hidden');
+      // Update UI
+      document.getElementById('login-panel').classList.add('hidden');
+      document.getElementById('dashboard-grid').classList.remove('hidden');
+      document.getElementById('logout-btn').classList.remove('hidden');
 
-    // Load data
-    await Promise.all([
+      // Load data
+      await Promise.all([
         loadMessages(email),
         loadFeed()
-    ]);
-}
+      ]);
+    }
 
-async function loadMessages(email) {
-    const container = document.getElementById('messages-container');
-    container.innerHTML = '<p class="empty-state">Loading messages...</p>';
+    async function loadMessages(email) {
+      const container = document.getElementById('messages-container');
+      container.innerHTML = '<p class="empty-state">Loading messages...</p>';
 
-    try {
+      try {
         const response = await fetch(`${API_URL}/api/messages/${email}`);
         const messages = await response.json();
 
         if (messages.length === 0) {
-            container.innerHTML = '<div class="empty-state">No messages yet. Welcome to DeathToData!</div>';
-            return;
+          container.innerHTML = '<div class="empty-state">No messages yet. Welcome to the revolution.</div>';
+          return;
         }
 
         container.innerHTML = messages.map(msg => `
-            <div class="message ${msg.read ? '' : 'unread'}" data-id="${msg.id}">
-                <div class="message-subject">${msg.subject}</div>
-                <div class="message-date">${new Date(msg.created_at).toLocaleString()}</div>
-                <div class="message-body">${msg.body}</div>
-            </div>
+          <div class="message ${msg.read ? '' : 'unread'}" data-id="${msg.id}">
+            <div class="message-subject">${escapeHtml(msg.subject)}</div>
+            <div class="message-date">${new Date(msg.created_at).toLocaleString()}</div>
+            <div class="message-body">${escapeHtml(msg.body)}</div>
+          </div>
         `).join('');
 
-        // Add click handlers to expand/collapse messages
+        // Add click handlers
         container.querySelectorAll('.message').forEach(msgEl => {
-            msgEl.addEventListener('click', async () => {
-                msgEl.classList.toggle('expanded');
+          msgEl.addEventListener('click', async () => {
+            msgEl.classList.toggle('expanded');
 
-                // Mark as read when expanded
-                if (msgEl.classList.contains('expanded') && msgEl.classList.contains('unread')) {
-                    const msgId = msgEl.dataset.id;
-                    await fetch(`${API_URL}/api/messages/${msgId}/read`, { method: 'POST' });
-                    msgEl.classList.remove('unread');
-                }
-            });
+            // Mark as read
+            if (msgEl.classList.contains('expanded') && msgEl.classList.contains('unread')) {
+              const msgId = msgEl.dataset.id;
+              await fetch(`${API_URL}/api/messages/${msgId}/read`, { method: 'POST' });
+              msgEl.classList.remove('unread');
+            }
+          });
         });
-    } catch (err) {
+      } catch (err) {
         container.innerHTML = '<div class="error">Error loading messages</div>';
+        console.error(err);
+      }
     }
-}
 
-async function loadFeed() {
-    const container = document.getElementById('feed-container');
-    container.innerHTML = '<p class="empty-state">Loading feed...</p>';
+    async function loadFeed() {
+      const container = document.getElementById('feed-container');
+      container.innerHTML = '<p class="empty-state">Loading feed...</p>';
 
-    try {
+      try {
         const response = await fetch(`${API_URL}/api/feed`);
         const feed = await response.json();
 
         if (feed.length === 0) {
-            container.innerHTML = '<div class="empty-state">No feed items yet.</div>';
-            return;
+          container.innerHTML = '<div class="empty-state">No feed items yet.</div>';
+          return;
         }
 
         container.innerHTML = feed.map(item => `
-            <div class="feed-item">
-                <div class="feed-author">${item.author}</div>
-                <div class="feed-title">${item.title}</div>
-                <div class="feed-content">${item.content}</div>
-                <div class="feed-meta">
-                    ${item.category ? `[${item.category}]` : ''} •
-                    ${new Date(item.created_at).toLocaleString()}
-                </div>
+          <div class="feed-item">
+            <div class="feed-author">${escapeHtml(item.author)}</div>
+            <div class="feed-title">${escapeHtml(item.title)}</div>
+            <div class="feed-content">${escapeHtml(item.content)}</div>
+            <div class="feed-meta">
+              ${item.category ? `[${escapeHtml(item.category)}]` : ''} •
+              ${new Date(item.created_at).toLocaleString()}
             </div>
+          </div>
         `).join('');
-    } catch (err) {
+      } catch (err) {
         container.innerHTML = '<div class="error">Error loading feed</div>';
+        console.error(err);
+      }
     }
-}
-</script>
+  </script>
 
 </body>
 </html>

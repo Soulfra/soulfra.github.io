@@ -1,279 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeathToData - Search without surveillance. Deal with it, Google.</title>
-    <meta name="description" content="Privacy-first search engine that doesn't track, profile, or sell your data. We believe search should be anonymous and surveillance-free.">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e74c3c;
-            --accent: #f39c12;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>DeathToData - You Get Paid. Not Google.</title>
+  <meta name="description" content="Privacy-first search where YOU get paid. Earn VIBES for every search. Deal with it, Google."/>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <meta name="theme-color" content="#fb0044"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f9f9f9;
-        }
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="assets/deathtodata.css"/>
 
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
+  <style>
+    /* Page-specific styles for index.html */
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+    .logo {
+      width: 200px;
+      height: auto;
+      margin-bottom: 30px;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+      animation: logoGlow 3s ease-in-out infinite alternate;
+    }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+    @keyframes logoGlow {
+      from {
+        filter: brightness(0) invert(1) drop-shadow(0 0 10px #fb0044);
+      }
+      to {
+        filter: brightness(0) invert(1) drop-shadow(0 0 30px #fb0044);
+      }
+    }
 
-        nav {
-            background: var(--secondary);
-            padding: 1rem;
-            text-align: center;
-        }
+    .tagline {
+      font-size: clamp(14px, 3vw, 18px);
+      font-weight: bold;
+      color: #fb0044;
+      text-shadow: 0 0 12px #fb0044;
+      margin-bottom: 40px;
+    }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1rem;
-            font-weight: 500;
-        }
+    .value-prop {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #ccc;
+    }
 
-        nav a:hover {
-            text-decoration: underline;
-        }
+    /* Economics table */
+    .economics {
+      max-width: 500px;
+      margin: 40px auto;
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(251, 0, 68, 0.3);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: left;
+    }
 
-        main {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+    .economics h3 {
+      color: #fb0044;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
 
-        .content-block, article {
-            background: white;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    .econ-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(251, 0, 68, 0.1);
+    }
 
-        .content-block h2, article h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
+    .econ-row:last-child {
+      border-bottom: none;
+    }
 
-        .content-block h3, article h3 {
-            color: var(--secondary);
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
+    .econ-label {
+      color: #888;
+    }
 
-        .content-block p, article p {
-            margin-bottom: 1rem;
-        }
+    .econ-value {
+      color: #fb0044;
+      font-weight: bold;
+    }
 
-        .content-block ul, article ul {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
+    /* CTA buttons */
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
 
-        .content-block li, article li {
-            margin-bottom: 0.5rem;
-        }
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 60px auto;
+    }
 
-        .meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-        }
+    .feature {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(251, 0, 68, 0.2);
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
 
-        .cta {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 1rem;
-            font-weight: 600;
-        }
+    .feature:hover {
+      border-color: rgba(251, 0, 68, 0.5);
+      box-shadow: 0 0 16px rgba(251, 0, 68, 0.3);
+    }
 
-        .cta:hover {
-            background: var(--secondary);
-        }
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
 
-        footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
+    .feature-title {
+      color: #fb0044;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-            main {
-                padding: 0 0.5rem;
-            }
-        }
-    </style>
+    .feature-desc {
+      color: #999;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .logo {
+        width: 150px;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        margin: 40px auto;
+      }
+
+      button, .btn {
+        width: 100%;
+      }
+
+      .economics {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>DeathToData</h1>
-        <p>Search without surveillance. Deal with it, Google.</p>
-    </header>
+  <!-- Matrix background -->
+  <canvas id="canvas"></canvas>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="search.html" style="font-weight: 700; color: #3498db;">Search</a>
-        <a href="blog/">Blog</a>
-        <a href="pitch-deck.html">Pitch Deck</a>
-        <a href="dashboard.html">Dashboard</a>
-    </nav>
-    
+  <div class="container">
+    <!-- Logo -->
+    <img src="logo.jpeg" alt="DeathToData" class="logo">
 
-    <main>
-        <!-- HERO SEARCH BOX -->
-        <div class="content-block" style="text-align: center; padding: 3rem 2rem;">
-            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Search Without Surveillance</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; color: #666;">
-                Privacy-first web search. No tracking, no profiling, no bullshit.
-            </p>
+    <!-- Hero -->
+    <h1>You weren't crazy for feeling everything.</h1>
+    <p class="tagline">Enter the protocol. We built something different.</p>
 
-            <div style="max-width: 650px; margin: 0 auto;">
-                <form id="heroSearchForm" style="position: relative; margin-bottom: 1rem;">
-                    <input
-                        type="text"
-                        id="heroSearchInput"
-                        placeholder="Search the web privately..."
-                        style="width: 100%; padding: 16px 120px 16px 20px; font-size: 16px; border: 2px solid #ddd; border-radius: 50px; outline: none;"
-                    >
-                    <button
-                        type="submit"
-                        style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: #3498db; color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 600;"
-                    >
-                        Search
-                    </button>
-                </form>
-                <p style="font-size: 0.85rem; color: #999;">
-                    Or <a href="search.html" style="color: #3498db;">visit full search page</a>
-                </p>
-            </div>
+    <div class="value-prop">
+      Every Google search makes them <strong>$0.23</strong>.<br>
+      You make: <strong>$0.00</strong>.<br><br>
+      On DeathToData, you earn <strong>0.2 VIBES per search</strong>.<br>
+      Annual value: <strong>$42-50/year</strong>.<br><br>
+      <strong>You get paid. Not Google.</strong>
+    </div>
+
+    <!-- Economics -->
+    <div class="economics">
+      <h3>💰 VIBES Economy</h3>
+      <div class="econ-row">
+        <span class="econ-label">Search query</span>
+        <span class="econ-value">+0.2 VIBES</span>
+      </div>
+      <div class="econ-row">
+        <span class="econ-label">Reflection</span>
+        <span class="econ-value">+1.0 VIBES</span>
+      </div>
+      <div class="econ-row">
+        <span class="econ-label">1 VIBES =</span>
+        <span class="econ-value">$0.15 USD</span>
+      </div>
+      <div class="econ-row">
+        <span class="econ-label">Your annual earnings</span>
+        <span class="econ-value">$42-50</span>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-buttons">
+      <button class="primary" onclick="window.location.href='search.html'">
+        Start Searching (Earn VIBES)
+      </button>
+      <a href="dashboard.html" class="btn">Dashboard</a>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">💀</div>
+        <div class="feature-title">Death to Surveillance</div>
+        <div class="feature-desc">
+          No tracking. No profiling. No selling your data. Privacy by default.
         </div>
+      </div>
 
-        <div class="content-block">
-            <h2>Why DeathToData?</h2>
-<p>DeathToData is a privacy-first search engine that redefines the online search experience. Our mission is to provide an anonymous and surveillance-free search platform that puts users in control of their data.</p>
-<h3>Why Choose DeathToData?</h3>
-<p><strong>Complete Anonymity</strong>: We don't track, profile, or sell your data. Ever.</p>
-<p><strong>Transparent Operations</strong>: Open about our data handling practices and committed to user privacy.</p>
-<p><strong>No Behavioral Profiling</strong>: Your searches remain private and are never used for targeted advertising.</p>
-<p><strong>End-to-End Encryption</strong>: Advanced encryption ensures your data stays secure.</p>
-<h3>Deal with it, Google.</h3>
-<p>We're challenging surveillance capitalism and offering a radical alternative to traditional search engines. Join us in reclaiming online privacy as a fundamental right.</p>
-            <a href="blog/" class="cta">Read Our Blog</a>
-            <a href="pitch-deck.html" class="cta">View Pitch Deck</a>
+      <div class="feature">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">You Get Paid</div>
+        <div class="feature-desc">
+          Earn 0.2 VIBES per search. Annual value: $42-50. Your data, your money.
         </div>
+      </div>
 
-        <div class="content-block">
-            <h2>Join the Privacy Revolution</h2>
-            <p>Be the first to know when DeathToData launches. No spam, no tracking, just updates about our privacy-first search engine.</p>
-
-            <form id="signup-form" style="margin-top: 1.5rem;">
-                <input type="email" id="email" placeholder="Enter your email" required
-                       style="padding: 0.8rem; font-size: 1rem; width: 300px; border: 2px solid #2c3e50; border-radius: 4px;">
-                <button type="submit" class="cta" style="margin-left: 1rem; cursor: pointer; border: none;">Join Waitlist</button>
-            </form>
-
-            <p id="signup-message" style="margin-top: 1rem; font-weight: bold;"></p>
+      <div class="feature">
+        <div class="feature-icon">🔓</div>
+        <div class="feature-title">Open Source</div>
+        <div class="feature-desc">
+          Transparent, auditable code. See exactly what we're doing. No secrets.
         </div>
-    </main>
+      </div>
 
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">No Bullshit</div>
+        <div class="feature-desc">
+          No ads, no bloat, no accounts required. Just search and get paid.
+        </div>
+      </div>
+    </div>
 
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 DeathToData. Search without surveillance. Deal with it, Google.</p>
-        <p><small>Generated with local AI - No API costs, fully self-sovereign</small></p>
+      <p><strong>Deal with it, Google.</strong></p>
+      <p>&copy; 2026 DeathToData. Every search is a vote against surveillance capitalism.</p>
+      <p style="margin-top: 20px; font-size: 12px;">
+        💀 This is the revolution. Let's kill surveillance capitalism.
+      </p>
     </footer>
+  </div>
 
-    <script>
-const API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5051'
-  : 'https://wicked-geckos-do.loca.lt';
-
-// Hero search form handler
-document.getElementById('heroSearchForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const query = document.getElementById('heroSearchInput').value.trim();
-  if (query) {
-    window.location.href = `search.html?q=${encodeURIComponent(query)}`;
-  }
-});
-
-// Email signup form handler
-document.getElementById('signup-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const msgEl = document.getElementById('signup-message');
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-
-  // Disable form during submission
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Joining...';
-
-  try {
-    const response = await fetch(`${API_URL}/api/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source: 'landing-page' })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      msgEl.style.color = '#2ecc71';
-      msgEl.textContent = '✓ ' + data.message;
-      document.getElementById('email').value = '';
-
-      // Redirect to dashboard after 2 seconds
-      setTimeout(() => {
-        window.location.href = '/dashboard.html';
-      }, 2000);
-    } else {
-      msgEl.style.color = '#e74c3c';
-      msgEl.textContent = '✗ ' + (data.error || 'Something went wrong');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Join Waitlist';
-    }
-  } catch (err) {
-    msgEl.style.color = '#e74c3c';
-    msgEl.textContent = '✗ Could not connect to server. Make sure the API is running on port 5051.';
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Join Waitlist';
-  }
-});
-</script>
+  <!-- Shared JavaScript -->
+  <script src="assets/deathtodata.js"></script>
 
 </body>
 </html>
