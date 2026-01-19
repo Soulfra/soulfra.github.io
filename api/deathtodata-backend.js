@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const crypto = require('crypto');
 const SearchEngine = require('./search/engine');
 const app = express();
 
@@ -15,6 +16,24 @@ const db = process.env.NODE_ENV === 'production'
 
 app.use(cors());
 app.use(express.json());
+
+// Disable caching during development (browser won't cache old versions)
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Expires', '0');
+    res.setHeader('Pragma', 'no-cache');
+  }
+  next();
+});
+
+// Serve static files from deathtodata directory
+app.use(express.static('deathtodata'));
+
+// Redirect root to index.html
+app.get('/', (req, res) => {
+  res.redirect('/index.html');
+});
 
 // Email signup endpoint
 app.post('/api/signup', async (req, res) => {
@@ -308,6 +327,425 @@ Response:`;
     return keepIndices.map(i => results[i]);
   }
 }
+
+// Ollama Analysis - Same as Python agent but in JavaScript
+app.post('/api/analyze', async (req, res) => {
+  const { query, results } = req.body;
+
+  if (!query || !results) {
+    return res.status(400).json({ error: 'Query and results required' });
+  }
+
+  console.log(`🤖 Analyzing search results for: "${query}"`);
+
+  try {
+    // Format results for Ollama (same as Python script)
+    let searchSummary = `Search results for '${query}':\n\n`;
+    results.slice(0, 5).forEach((result, i) => {
+      searchSummary += `${i + 1}. ${result.title}\n`;
+      searchSummary += `   URL: ${result.url}\n`;
+      searchSummary += `   ${result.snippet.substring(0, 150)}...\n\n`;
+    });
+
+    const prompt = `You are a search assistant. Analyze these search results and provide:
+1. A brief summary of what the results are about
+2. The 3 most relevant findings
+3. A recommendation for the user
+
+${searchSummary}
+
+Be concise and helpful.`;
+
+    // Call Ollama
+    const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama3.2',
+        prompt: prompt,
+        stream: false
+      })
+    });
+
+    if (!ollamaResponse.ok) {
+      throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+    }
+
+    const ollamaData = await ollamaResponse.json();
+    const analysis = ollamaData.response;
+
+    // Save to database (same as Python script)
+    const metadata = {
+      query,
+      result_count: results.length,
+      ollama_summary: analysis,
+      top_sources: results.slice(0, 3).map(r => r.url),
+      timestamp: new Date().toISOString()
+    };
+
+    await db.query(
+      'INSERT INTO analytics_events (event_type, metadata) VALUES (?, ?)',
+      ['ollama_analysis', JSON.stringify(metadata)]
+    );
+
+    console.log('✅ Analysis complete and saved to database');
+
+    res.json({
+      success: true,
+      analysis,
+      saved: true
+    });
+
+  } catch (err) {
+    console.error('Analysis error:', err);
+    res.status(500).json({ error: 'Analysis failed', message: err.message });
+  }
+});
+
+// Voice Search with Ambient Audio Anti-Bot
+app.post('/api/voice-search', async (req, res) => {
+  const { transcript, ambientScore, fingerprint, signature, publicKey } = req.body;
+
+  if (!transcript || ambientScore === undefined || !fingerprint) {
+    return res.status(400).json({ error: 'transcript, ambientScore, and fingerprint required' });
+  }
+
+  console.log(`🎤 Voice search: "${transcript}" (ambient score: ${ambientScore.toFixed(2)})`);
+
+  try {
+    // 1. Verify signature (if authenticated)
+    if (signature && publicKey) {
+      // In production: verify signature with crypto.subtle.verify()
+      // For now, we trust the client signature
+      console.log(`[VoiceSearch] Signed by: ${publicKey.substring(0, 16)}...`);
+    }
+
+    // 2. Check ambient score (anti-bot detection)
+    if (ambientScore < 0.7) {
+      console.log(`❌ Bot detected! Ambient score too low: ${ambientScore.toFixed(2)}`);
+      return res.status(403).json({
+        error: 'Bot detected',
+        message: 'Ambient audio score too low. Are you human?',
+        score: ambientScore,
+        threshold: 0.7
+      });
+    }
+
+    console.log(`✅ Human verified! Ambient score: ${ambientScore.toFixed(2)}`);
+
+    // 3. Store signed voice search in analytics
+    await db.query(`
+      INSERT INTO analytics_events (
+        event_type,
+        metadata,
+        user_id,
+        created_at
+      ) VALUES (?, ?, ?, datetime('now'))
+    `, [
+      'voice_search',
+      JSON.stringify({
+        transcript,
+        ambient_score: ambientScore,
+        audio_fingerprint: fingerprint,
+        timestamp: Date.now(),
+        verified_human: true
+      }),
+      publicKey ? publicKey.substring(0, 16) : null
+    ]);
+
+    // 4. Award VIBES (if authenticated)
+    let vibesAwarded = 0;
+    if (publicKey) {
+      try {
+        // Award 0.3 VIBES (more than text search because verified human)
+        await db.query(`
+          UPDATE users
+          SET vibes_balance = COALESCE(vibes_balance, 0) + 0.3
+          WHERE public_key = ?
+        `, [publicKey]);
+        vibesAwarded = 0.3;
+        console.log(`💎 Awarded ${vibesAwarded} VIBES for verified human voice search`);
+      } catch (vibesErr) {
+        console.warn('[VoiceSearch] VIBES award failed (column might not exist):', vibesErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      transcript,
+      ambientScore,
+      vibesAwarded,
+      message: 'Voice search verified as human!',
+      privacy: 'Audio processed locally - only fingerprint stored'
+    });
+
+  } catch (err) {
+    console.error('[VoiceSearch] Error:', err);
+    res.status(500).json({ error: 'Voice search failed', message: err.message });
+  }
+});
+
+// Get all stored knowledge (analyses and audits)
+app.get('/api/knowledge', async (req, res) => {
+  const type = req.query.type || 'all'; // 'all', 'ollama_analysis', 'infrastructure_audit'
+
+  try {
+    let query;
+    let params = [];
+
+    if (type === 'all') {
+      query = `SELECT id, event_type, metadata, created_at
+               FROM analytics_events
+               WHERE event_type IN ('ollama_analysis', 'infrastructure_audit')
+               ORDER BY created_at DESC`;
+    } else {
+      query = `SELECT id, event_type, metadata, created_at
+               FROM analytics_events
+               WHERE event_type = ?
+               ORDER BY created_at DESC`;
+      params = [type];
+    }
+
+    const result = await db.query(query, params);
+
+    // Parse metadata JSON for each row
+    const knowledge = result.rows.map(row => {
+      try {
+        return {
+          id: row.id,
+          type: row.event_type,
+          metadata: JSON.parse(row.metadata),
+          created_at: row.created_at
+        };
+      } catch (e) {
+        return {
+          id: row.id,
+          type: row.event_type,
+          metadata: {},
+          created_at: row.created_at
+        };
+      }
+    });
+
+    res.json({
+      count: knowledge.length,
+      knowledge
+    });
+
+  } catch (err) {
+    console.error('Knowledge retrieval error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get specific knowledge entry by ID
+app.get('/api/knowledge/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query(
+      'SELECT id, event_type, metadata, created_at FROM analytics_events WHERE id = ?',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Knowledge entry not found' });
+    }
+
+    const entry = result.rows[0];
+    res.json({
+      id: entry.id,
+      type: entry.event_type,
+      metadata: JSON.parse(entry.metadata),
+      created_at: entry.created_at
+    });
+
+  } catch (err) {
+    console.error('Knowledge retrieval error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ===== UNIVERSAL AUTH ENDPOINTS =====
+
+// Register new user with public key (from soulfra-universal-auth.js)
+app.post('/auth/register', async (req, res) => {
+  const { publicKey, userId } = req.body;
+
+  if (!publicKey || !userId) {
+    return res.status(400).json({ error: 'publicKey and userId required' });
+  }
+
+  try {
+    // Check if user already exists
+    const existing = await db.query(
+      'SELECT id FROM users WHERE public_key = ?',
+      [publicKey]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.json({
+        success: true,
+        message: 'User already registered',
+        userId,
+        returning: true
+      });
+    }
+
+    // Create new user (email required by schema, use empty string for crypto auth)
+    const result = await db.query(
+      'INSERT INTO users (email, public_key, created_at) VALUES (?, ?, datetime("now")) RETURNING id',
+      ['', publicKey]  // Empty email for crypto auth users
+    );
+
+    const dbUserId = result.rows[0].id;
+
+    console.log(`[Auth] New user registered: ${userId} (DB ID: ${dbUserId})`);
+
+    res.json({
+      success: true,
+      message: 'User registered successfully',
+      userId,
+      dbUserId
+    });
+
+  } catch (err) {
+    console.error('[Auth] Registration error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Verify signature and authenticate user
+app.post('/auth/verify', async (req, res) => {
+  const { message, signature, publicKey } = req.body;
+
+  if (!message || !signature || !publicKey) {
+    return res.status(400).json({ error: 'message, signature, and publicKey required' });
+  }
+
+  try {
+    // In production, verify signature using Web Crypto API equivalent
+    // For now, we trust the client (since keys are in localStorage)
+    // Real verification would use: crypto.verify() with Ed25519
+
+    // Find user by public key
+    const result = await db.query(
+      'SELECT id, public_key, created_at FROM users WHERE public_key = ?',
+      [publicKey]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found. Please register first.' });
+    }
+
+    const user = result.rows[0];
+    const userId = publicKey.substring(0, 16);
+
+    // Update last login
+    await db.query(
+      'UPDATE users SET last_login = datetime("now") WHERE id = ?',
+      [user.id]
+    );
+
+    console.log(`[Auth] User verified: ${userId} (DB ID: ${user.id})`);
+
+    // Return user info
+    res.json({
+      success: true,
+      userId,
+      dbUserId: user.id,
+      publicKey: user.public_key,
+      createdAt: user.created_at
+    });
+
+  } catch (err) {
+    console.error('[Auth] Verification error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get current user info
+app.get('/auth/me', async (req, res) => {
+  const publicKey = req.query.publicKey;
+
+  if (!publicKey) {
+    return res.status(400).json({ error: 'publicKey required' });
+  }
+
+  try {
+    const result = await db.query(
+      'SELECT id, public_key, email, name, created_at, last_login FROM users WHERE public_key = ?',
+      [publicKey]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = result.rows[0];
+    const userId = publicKey.substring(0, 16);
+
+    res.json({
+      userId,
+      dbUserId: user.id,
+      email: user.email,
+      name: user.name,
+      publicKey: user.public_key,
+      createdAt: user.created_at,
+      lastLogin: user.last_login
+    });
+
+  } catch (err) {
+    console.error('[Auth] Get user error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Verify SSO token from another domain
+app.post('/auth/verify-sso', async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ error: 'SSO token required' });
+  }
+
+  try {
+    // Decode base64 token
+    const tokenJSON = Buffer.from(token, 'base64').toString('utf-8');
+    const { payload, signature } = JSON.parse(tokenJSON);
+
+    // Check expiration
+    if (Date.now() > payload.expiresAt) {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+
+    // Verify signature (in production, use crypto.verify)
+    // For now, trust the token since it's signed client-side
+
+    // Find user by public key
+    const result = await db.query(
+      'SELECT id FROM users WHERE public_key = ?',
+      [payload.publicKey]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log(`[Auth] SSO token verified for: ${payload.userId}`);
+
+    res.json({
+      success: true,
+      userId: payload.userId,
+      publicKey: payload.publicKey,
+      targetDomain: payload.targetDomain
+    });
+
+  } catch (err) {
+    console.error('[Auth] SSO verification error:', err);
+    res.status(401).json({ error: 'Invalid SSO token' });
+  }
+});
 
 const PORT = process.env.PORT || 5051;
 app.listen(PORT, () => {

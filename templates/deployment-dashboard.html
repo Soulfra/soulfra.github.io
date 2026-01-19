@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Dashboard - One-Click Deploys</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --bg: #f5f7fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            line-height: 1.6;
+            color: #333;
+            background: var(--bg);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .deploy-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .deploy-form select,
+        .deploy-form input,
+        .deploy-form button {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .deploy-form button {
+            background: var(--success);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .deploy-form button:hover {
+            background: #229954;
+        }
+
+        .deploy-form button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .template-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .template-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .template-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .template-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .template-card .usage {
+            background: #f9f9f9;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .deployments {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .deployments h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .deployment-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .deployment-item:hover {
+            background: #f9f9f9;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-live {
+            background: var(--success);
+        }
+
+        .status-deploying {
+            background: var(--warning);
+        }
+
+        .status-error {
+            background: var(--secondary);
+        }
+
+        .status-offline {
+            background: #95a5a6;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .deployment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .deployment-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .deployment-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .deployment-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .deployment-links a,
+        .deployment-links button {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .deployment-links a {
+            background: var(--info);
+            color: white;
+        }
+
+        .deployment-links a:hover {
+            background: #2980b9;
+        }
+
+        .deployment-links button {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .deployment-links button:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .logs {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logs h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .log-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .log-output:empty::before {
+            content: 'No deployment logs yet. Run a deployment to see output here...';
+            color: #666;
+        }
+
+        .log-line {
+            margin-bottom: 0.3rem;
+        }
+
+        .log-info { color: #4ec9b0; }
+        .log-success { color: #6a9955; }
+        .log-warning { color: #dcdcaa; }
+        .log-error { color: #f48771; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+            .deployment-item {
+                grid-template-columns: 1fr;
+            }
+            .deploy-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚀 Deployment Dashboard</h1>
+        <p>One-click deploys for static sites, Express apps, and WordPress</p>
+    </header>
+
+    <div class="container">
+        <!-- Quick Deploy Form -->
+        <div class="controls">
+            <h2 style="margin-bottom: 1rem; color: var(--primary);">Quick Deploy</h2>
+            <form class="deploy-form" id="deploy-form">
+                <select id="deploy-type" required>
+                    <option value="">Select deployment type...</option>
+                    <option value="static">Static Site (HTML/CSS/JS)</option>
+                    <option value="express">Express/Node.js App</option>
+                    <option value="wordpress">WordPress Site</option>
+                </select>
+                <input type="text" id="deploy-path" placeholder="Directory path (e.g., ~/my-site)" required>
+                <input type="text" id="deploy-domain" placeholder="Domain (e.g., mysite.com)" required>
+                <input type="text" id="deploy-server" placeholder="Server IP (optional for static)">
+                <button type="submit">Deploy Now</button>
+            </form>
+        </div>
+
+        <!-- Template Documentation -->
+        <div class="templates-grid">
+            <div class="template-card">
+                <h3><span class="icon">📄</span> Static Sites</h3>
+                <p>Deploy any HTML/CSS/JS website to GitHub Pages with automatic SSL</p>
+                <div class="usage">./deploy-static.sh ~/my-site mysite</div>
+                <strong>What it deploys:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #666;">
+                    <li>Static HTML websites</li>
+                    <li>Single-page applications</li>
+                    <li>Documentation sites</li>
+                    <li>Landing pages</li>
+                </ul>
+            </div>
+
+            <div class="template-card">
+                <h3><span class="icon">⚡</span> Express Apps</h3>
+                <p>Deploy Node.js/Express applications to VPS with PM2, nginx, and SSL</p>
+                <div class="usage">./deploy-express.sh ~/my-api myapi.com 1.2.3.4</div>
+                <strong>What it includes:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #666;">
+                    <li>PM2 process management</li>
+                    <li>Nginx reverse proxy</li>
+                    <li>Auto-restart on crashes</li>
+                    <li>Let's Encrypt SSL</li>
+                </ul>
+            </div>
+
+            <div class="template-card">
+                <h3><span class="icon">📝</span> WordPress</h3>
+                <p>Install fresh WordPress with LAMP stack, security plugins, and auto-updates</p>
+                <div class="usage">./deploy-wordpress.sh myblog.com 1.2.3.4</div>
+                <strong>What it includes:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #666;">
+                    <li>LAMP stack setup</li>
+                    <li>Wordfence security</li>
+                    <li>UpdraftPlus backups</li>
+                    <li>Auto-updates enabled</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Active Deployments -->
+        <div class="deployments">
+            <h2>Active Deployments</h2>
+            <div id="deployments-list">
+                <div class="deployment-item">
+                    <div class="status-indicator status-live"></div>
+                    <div class="deployment-info">
+                        <div class="deployment-name">DeathToData</div>
+                        <div class="deployment-meta">
+                            Type: Static Site | Deployed: 2026-01-16 | GitHub Pages
+                        </div>
+                    </div>
+                    <div class="deployment-links">
+                        <a href="https://deathtodata.com" target="_blank">Visit Site</a>
+                        <a href="https://github.com/Soulfra/deathtodata.github.io" target="_blank">Repo</a>
+                        <button onclick="viewLogs('deathtodata')">Logs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Logs -->
+        <div class="logs">
+            <h2>Deployment Logs</h2>
+            <div class="log-output" id="log-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated deployment tracking
+        const deployments = [
+            {
+                name: 'DeathToData',
+                type: 'Static Site',
+                domain: 'deathtodata.com',
+                status: 'live',
+                deployed: '2026-01-16',
+                repo: 'https://github.com/Soulfra/deathtodata.github.io',
+                url: 'https://deathtodata.com'
+            }
+        ];
+
+        // Render deployments
+        function renderDeployments() {
+            const container = document.getElementById('deployments-list');
+
+            if (deployments.length === 0) {
+                container.innerHTML = '<div class="empty-state">No deployments yet. Use the form above to deploy your first site!</div>';
+                return;
+            }
+
+            container.innerHTML = deployments.map(dep => `
+                <div class="deployment-item">
+                    <div class="status-indicator status-${dep.status}"></div>
+                    <div class="deployment-info">
+                        <div class="deployment-name">${dep.name}</div>
+                        <div class="deployment-meta">
+                            Type: ${dep.type} | Deployed: ${dep.deployed} | ${dep.status === 'live' ? 'Live' : 'Deploying...'}
+                        </div>
+                    </div>
+                    <div class="deployment-links">
+                        <a href="${dep.url}" target="_blank">Visit Site</a>
+                        ${dep.repo ? `<a href="${dep.repo}" target="_blank">Repo</a>` : ''}
+                        <button onclick="viewLogs('${dep.name.toLowerCase()}')">Logs</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle deployment form
+        document.getElementById('deploy-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const type = document.getElementById('deploy-type').value;
+            const path = document.getElementById('deploy-path').value;
+            const domain = document.getElementById('deploy-domain').value;
+            const server = document.getElementById('deploy-server').value;
+
+            const logOutput = document.getElementById('log-output');
+            logOutput.innerHTML = '';
+
+            function addLog(message, level = 'info') {
+                const line = document.createElement('div');
+                line.className = `log-line log-${level}`;
+                line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logOutput.appendChild(line);
+                logOutput.scrollTop = logOutput.scrollHeight;
+            }
+
+            addLog('Starting deployment...', 'info');
+            addLog(`Type: ${type}`, 'info');
+            addLog(`Directory: ${path}`, 'info');
+            addLog(`Domain: ${domain}`, 'info');
+
+            if (server) {
+                addLog(`Server: ${server}`, 'info');
+            }
+
+            // Build command based on type
+            let command;
+            switch(type) {
+                case 'static':
+                    command = `./templates/deploy-static.sh "${path}" "${domain.replace('.com', '')}"`;
+                    break;
+                case 'express':
+                    if (!server) {
+                        addLog('ERROR: Server IP required for Express deployments', 'error');
+                        return;
+                    }
+                    command = `./templates/deploy-express.sh "${path}" "${domain}" "${server}"`;
+                    break;
+                case 'wordpress':
+                    if (!server) {
+                        addLog('ERROR: Server IP required for WordPress deployments', 'error');
+                        return;
+                    }
+                    command = `./templates/deploy-wordpress.sh "${domain}" "${server}"`;
+                    break;
+            }
+
+            addLog(`Command: ${command}`, 'info');
+            addLog('', 'info');
+            addLog('To run this deployment, copy the command above and run it in your terminal.', 'warning');
+            addLog('', 'info');
+            addLog('NOTE: This dashboard currently displays commands only.', 'warning');
+            addLog('For full automation, you need to connect this to a backend that can execute shell commands.', 'warning');
+            addLog('', 'info');
+            addLog('What the deployment will do:', 'success');
+
+            if (type === 'static') {
+                addLog('✓ Create GitHub repository', 'success');
+                addLog('✓ Push your code', 'success');
+                addLog('✓ Enable GitHub Pages', 'success');
+                addLog('✓ Configure SSL (automatic)', 'success');
+                addLog('✓ Add CNAME for custom domain', 'success');
+            } else if (type === 'express') {
+                addLog('✓ Install Node.js on server', 'success');
+                addLog('✓ Clone repository', 'success');
+                addLog('✓ Configure PM2 process manager', 'success');
+                addLog('✓ Set up nginx reverse proxy', 'success');
+                addLog('✓ Install SSL with Let\'s Encrypt', 'success');
+            } else if (type === 'wordpress') {
+                addLog('✓ Install LAMP stack', 'success');
+                addLog('✓ Download WordPress', 'success');
+                addLog('✓ Create database and user', 'success');
+                addLog('✓ Configure Apache', 'success');
+                addLog('✓ Install SSL with Let\'s Encrypt', 'success');
+                addLog('✓ Install security plugins', 'success');
+            }
+        });
+
+        // View logs function
+        function viewLogs(deploymentName) {
+            const logOutput = document.getElementById('log-output');
+            logOutput.innerHTML = '';
+
+            function addLog(message, level = 'info') {
+                const line = document.createElement('div');
+                line.className = `log-line log-${level}`;
+                line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logOutput.appendChild(line);
+            }
+
+            if (deploymentName === 'deathtodata') {
+                addLog('Deployment History for DeathToData', 'info');
+                addLog('', 'info');
+                addLog('Step 1/5: Creating GitHub repository...', 'info');
+                addLog('✓ Created repository Soulfra/deathtodata.github.io', 'success');
+                addLog('', 'info');
+                addLog('Step 2/5: Copying files to temp directory...', 'info');
+                addLog('✓ Files copied successfully', 'success');
+                addLog('', 'info');
+                addLog('Step 3/5: Initializing git and committing...', 'info');
+                addLog('✓ Git initialized and committed', 'success');
+                addLog('', 'info');
+                addLog('Step 4/5: Adding CNAME...', 'info');
+                addLog('✓ CNAME added for deathtodata.com', 'success');
+                addLog('', 'info');
+                addLog('Step 5/5: Pushing to GitHub...', 'info');
+                addLog('✓ Code pushed to GitHub', 'success');
+                addLog('', 'info');
+                addLog('Deployment Complete!', 'success');
+                addLog('Repository: https://github.com/Soulfra/deathtodata.github.io', 'info');
+                addLog('Live URL: https://deathtodata.com', 'info');
+            }
+        }
+
+        // Initialize
+        renderDeployments();
+    </script>
+</body>
+</html>

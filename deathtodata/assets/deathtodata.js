@@ -3,10 +3,8 @@
  * Matrix animation, VIBES tracking, PWA registration
  */
 
-// API URL configuration
-const API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5051'
-  : 'https://kylie-lilylike-lowly.ngrok-free.dev';
+// API URL configuration (always use localhost for local development)
+const API_URL = 'http://localhost:5051';
 
 // VIBES Management
 let vibesBalance = parseFloat(localStorage.getItem('vibes') || '0');
@@ -92,12 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // PWA Service Worker Registration
-if ('serviceWorker' in navigator) {
+// Disabled on localhost for development (prevents aggressive caching)
+if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
       .then(reg => console.log('✅ DeathToData PWA: Service Worker registered'))
       .catch(err => console.error('❌ Service Worker failed:', err));
   });
+} else if (window.location.hostname === 'localhost') {
+  console.log('🚫 Service Worker disabled on localhost (development mode)');
+  // Unregister any existing service workers
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (let registration of registrations) {
+        registration.unregister();
+        console.log('🗑️ Unregistered old service worker');
+      }
+    });
+  }
 }
 
 // Utility: HTML escaping for user-generated content

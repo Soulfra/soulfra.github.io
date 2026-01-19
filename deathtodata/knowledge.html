@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Knowledge Base - DeathToData</title>
+  <meta name="description" content="Browse everything you've learned through DeathToData searches and Ollama analyses."/>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <meta name="theme-color" content="#fb0044"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="assets/deathtodata.css"/>
+
+  <style>
+    .knowledge-container {
+      max-width: 1400px;
+      margin: 60px auto 120px;
+      padding: 0 20px;
+    }
+
+    .page-title {
+      text-align: center;
+      color: #fb0044;
+      font-size: 48px;
+      margin-bottom: 16px;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 20px rgba(251, 0, 68, 0.5);
+      letter-spacing: 2px;
+    }
+
+    .page-subtitle {
+      text-align: center;
+      color: #aaa;
+      font-size: 18px;
+      margin-bottom: 60px;
+      font-weight: 300;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 24px 40px;
+      background: rgba(251, 0, 68, 0.05);
+      border: 2px solid rgba(251, 0, 68, 0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      min-width: 160px;
+    }
+
+    .stat:hover {
+      border-color: #fb0044;
+      box-shadow: 0 0 24px rgba(251, 0, 68, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .stat-value {
+      font-size: 48px;
+      color: #fb0044;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(251, 0, 68, 0.05);
+      border: 2px solid rgba(251, 0, 68, 0.2);
+      color: #888;
+      padding: 12px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .filter-btn:hover {
+      background: rgba(251, 0, 68, 0.1);
+      border-color: rgba(251, 0, 68, 0.5);
+      color: #ccc;
+      transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+      background: rgba(251, 0, 68, 0.15);
+      border-color: #fb0044;
+      color: #fb0044;
+      box-shadow: 0 0 16px rgba(251, 0, 68, 0.3);
+    }
+
+    .knowledge-list {
+      display: grid;
+      gap: 32px;
+    }
+
+    .knowledge-item {
+      background: linear-gradient(135deg, rgba(251, 0, 68, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
+      border: 2px solid rgba(251, 0, 68, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .knowledge-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #fb0044, #ff1a5e);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .knowledge-item:hover {
+      border-color: #fb0044;
+      box-shadow: 0 8px 32px rgba(251, 0, 68, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .knowledge-item:hover::before {
+      transform: scaleX(1);
+    }
+
+    .knowledge-item.expanded {
+      background: linear-gradient(135deg, rgba(251, 0, 68, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
+      border-color: #fb0044;
+    }
+
+    .knowledge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 16px;
+      gap: 24px;
+    }
+
+    .knowledge-query {
+      color: #fb0044;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    .knowledge-date {
+      color: #666;
+      font-size: 13px;
+      white-space: nowrap;
+      font-family: 'Courier New', monospace;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .knowledge-meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #888;
+      flex-wrap: wrap;
+    }
+
+    .knowledge-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .knowledge-summary {
+      color: #ccc;
+      line-height: 1.8;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .knowledge-summary.collapsed {
+      max-height: 120px;
+      overflow: hidden;
+      position: relative;
+      -webkit-mask-image: linear-gradient(180deg, black 60%, transparent 100%);
+      mask-image: linear-gradient(180deg, black 60%, transparent 100%);
+    }
+
+    .knowledge-summary strong {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .knowledge-summary em {
+      color: #fb0044;
+      font-style: italic;
+    }
+
+    .knowledge-summary h1, .knowledge-summary h2, .knowledge-summary h3 {
+      color: #fb0044;
+      margin: 16px 0 8px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .knowledge-summary ul, .knowledge-summary ol {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+
+    .knowledge-summary li {
+      margin: 6px 0;
+    }
+
+    .knowledge-summary code {
+      background: rgba(251, 0, 68, 0.1);
+      color: #fb0044;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .expand-indicator {
+      text-align: center;
+      margin-top: 16px;
+      color: #fb0044;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .knowledge-item.expanded .expand-indicator {
+      opacity: 0.6;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: #888;
+      font-size: 18px;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 120px 20px;
+      color: #888;
+    }
+
+    .empty-state h3 {
+      color: #fb0044;
+      font-size: 32px;
+      margin-bottom: 20px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .empty-state p {
+      margin-bottom: 32px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .empty-state .button {
+      display: inline-block;
+      padding: 16px 48px;
+      background: #fb0044;
+      color: #000;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .empty-state .button:hover {
+      background: #ff1a5e;
+      box-shadow: 0 0 24px rgba(251, 0, 68, 0.6);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 32px;
+      }
+
+      .stats-bar {
+        gap: 20px;
+      }
+
+      .stat {
+        padding: 20px 30px;
+        min-width: 120px;
+      }
+
+      .stat-value {
+        font-size: 36px;
+      }
+
+      .knowledge-header {
+        flex-direction: column;
+      }
+
+      .knowledge-query {
+        font-size: 20px;
+      }
+
+      .knowledge-item {
+        padding: 24px;
+      }
+
+      .knowledge-meta {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Matrix background -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-link">
+      <img src="logo.jpeg" alt="DeathToData" class="logo-img">
+      <span class="logo-text">DEATH2DATA</span>
+    </a>
+    <div class="vibes-display">
+      <div class="vibes-balance">
+        <strong id="vibesBalance">0.0</strong> VIBES
+        <span class="usd-value">($<span id="usdValue">0.00</span>)</span>
+      </div>
+      <button id="authBtn" class="nav-link" style="background: none; border: 1px solid rgba(251, 0, 68, 0.5); padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: all 0.3s ease;">
+        🔐 <span id="authStatus">Authenticate</span>
+      </button>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Knowledge container -->
+  <div class="knowledge-container">
+    <h1 class="page-title">📚 KNOWLEDGE BASE</h1>
+    <p class="page-subtitle">Everything you've learned, stored forever</p>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value" id="totalCount">0</div>
+        <div class="stat-label">Total Learnings</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="analysisCount">0</div>
+        <div class="stat-label">Analyses</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="auditCount">0</div>
+        <div class="stat-label">Audits</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="ollama_analysis">Search Analyses</button>
+      <button class="filter-btn" data-filter="infrastructure_audit">Audits</button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">Loading knowledge base</div>
+
+    <!-- Knowledge list -->
+    <div class="knowledge-list" id="knowledgeList"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Your institutional memory, stored locally.</strong></p>
+    <p>&copy; 2026 DeathToData. Knowledge that persists.</p>
+  </footer>
+
+  <!-- Universal Auth -->
+  <script src="soulfra-universal-auth.js"></script>
+
+  <!-- Shared JavaScript -->
+  <script src="assets/deathtodata.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script>
+    // Initialize universal auth
+    window.soulfraAuth = new SoulfraUniversalAuth();
+
+    // Try to load existing identity
+    const identity = window.soulfraAuth.loadIdentity();
+    if (identity) {
+      console.log('[DeathToData] User authenticated:', identity.userId);
+      document.getElementById('authStatus').textContent = identity.userId;
+      document.getElementById('authBtn').style.borderColor = '#fb0044';
+    }
+
+    // Auth button handler
+    document.getElementById('authBtn').addEventListener('click', async () => {
+      if (window.soulfraAuth.userId) {
+        // Already authenticated - show export option
+        const shouldExport = confirm('You are authenticated as ' + window.soulfraAuth.userId + '\n\nExport your identity keys for backup?');
+        if (shouldExport) {
+          const exported = window.soulfraAuth.exportIdentity();
+          const blob = new Blob([exported], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'soulfra-identity-' + window.soulfraAuth.userId + '.json';
+          a.click();
+        }
+      } else {
+        // Generate new identity
+        const btn = document.getElementById('authBtn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Generating keys...';
+
+        try {
+          const keys = await window.soulfraAuth.generateKeyPair();
+          window.soulfraAuth.storeIdentity('', ''); // Empty email/name for now
+
+          // Register with backend
+          try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: keys.publicKey,
+                userId: keys.userId
+              })
+            });
+
+            const data = await response.json();
+            console.log('[DeathToData] Registration:', data);
+          } catch (regError) {
+            console.warn('[DeathToData] Backend registration failed (continuing anyway):', regError);
+          }
+
+          document.getElementById('authStatus').textContent = keys.userId;
+          btn.style.borderColor = '#fb0044';
+          btn.innerHTML = '🔐 <span id="authStatus">' + keys.userId + '</span>';
+
+          alert('✅ Authenticated!\n\nYour User ID: ' + keys.userId + '\n\nThis works across all Soulfra sites.\n\nYour keys are stored locally and never sent to the server.');
+        } catch (error) {
+          console.error('[DeathToData] Auth failed:', error);
+          alert('Failed to generate keys: ' + error.message);
+          btn.innerHTML = '🔐 <span id="authStatus">Authenticate</span>';
+        } finally {
+          btn.disabled = false;
+        }
+      }
+    });
+  </script>
+
+  <script>
+    let allKnowledge = [];
+    let currentFilter = 'all';
+
+    // Load knowledge on page load
+    loadKnowledge();
+
+    // Filter button handlers
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const filter = e.target.dataset.filter;
+        filterKnowledge(filter, e.target);
+      });
+    });
+
+    async function loadKnowledge() {
+      const loading = document.getElementById('loading');
+      const knowledgeList = document.getElementById('knowledgeList');
+
+      loading.style.display = 'block';
+      knowledgeList.innerHTML = '';
+
+      try {
+        const response = await fetch(`${API_URL}/api/knowledge`);
+
+        if (!response.ok) {
+          throw new Error('Failed to load knowledge');
+        }
+
+        const data = await response.json();
+        allKnowledge = data.knowledge;
+
+        // Update stats
+        document.getElementById('totalCount').textContent = allKnowledge.length;
+        document.getElementById('analysisCount').textContent =
+          allKnowledge.filter(k => k.type === 'ollama_analysis').length;
+        document.getElementById('auditCount').textContent =
+          allKnowledge.filter(k => k.type === 'infrastructure_audit').length;
+
+        loading.style.display = 'none';
+
+        if (allKnowledge.length === 0) {
+          showEmptyState();
+        } else {
+          displayKnowledge(allKnowledge);
+        }
+
+      } catch (error) {
+        loading.style.display = 'none';
+        knowledgeList.innerHTML = `
+          <div class="empty-state">
+            <h3>⚠️ Error Loading Knowledge</h3>
+            <p>${error.message}</p>
+            <p>Make sure backend is running: <code>node api/deathtodata-backend.js</code></p>
+          </div>
+        `;
+      }
+    }
+
+    function filterKnowledge(type, button) {
+      currentFilter = type;
+
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
+
+      // Filter knowledge
+      const filtered = type === 'all'
+        ? allKnowledge
+        : allKnowledge.filter(k => k.type === type);
+
+      displayKnowledge(filtered);
+    }
+
+    function displayKnowledge(knowledge) {
+      const knowledgeList = document.getElementById('knowledgeList');
+
+      if (knowledge.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      const html = knowledge.map(item => {
+        if (item.type === 'ollama_analysis') {
+          return renderAnalysis(item);
+        } else if (item.type === 'infrastructure_audit') {
+          return renderAudit(item);
+        }
+        return '';
+      }).join('');
+
+      knowledgeList.innerHTML = html;
+
+      // Add click handlers for expand/collapse
+      document.querySelectorAll('.knowledge-item').forEach(item => {
+        item.addEventListener('click', () => {
+          toggleExpand(item);
+        });
+      });
+    }
+
+    function toggleExpand(element) {
+      const summary = element.querySelector('.knowledge-summary');
+      const indicator = element.querySelector('.expand-indicator');
+
+      element.classList.toggle('expanded');
+      summary.classList.toggle('collapsed');
+
+      if (element.classList.contains('expanded')) {
+        indicator.textContent = '▲ Click to collapse';
+      } else {
+        indicator.textContent = '▼ Click to expand';
+      }
+    }
+
+    function renderAnalysis(item) {
+      const { query, ollama_summary, result_count, top_sources } = item.metadata;
+      const date = new Date(item.created_at).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+      const time = new Date(item.created_at).toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      // Format summary with markdown
+      const summary = ollama_summary || 'No summary available';
+      const formattedSummary = formatMarkdown(summary);
+
+      return `
+        <div class="knowledge-item">
+          <div class="knowledge-header">
+            <div class="knowledge-query">🔍 ${escapeHtml(query)}</div>
+            <div class="knowledge-date">${date} · ${time}</div>
+          </div>
+          <div class="knowledge-meta">
+            <span>📊 ${result_count} results</span>
+            <span>🧠 Ollama Analysis</span>
+            <span>💾 Saved</span>
+          </div>
+          <div class="knowledge-summary collapsed">
+            ${formattedSummary}
+          </div>
+          <div class="expand-indicator">▼ Click to expand</div>
+        </div>
+      `;
+    }
+
+    function renderAudit(item) {
+      const { audit_type, ollama_analysis } = item.metadata;
+      const date = new Date(item.created_at).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+      const time = new Date(item.created_at).toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      const analysis = ollama_analysis || 'No analysis available';
+      const formattedAnalysis = formatMarkdown(analysis);
+
+      return `
+        <div class="knowledge-item">
+          <div class="knowledge-header">
+            <div class="knowledge-query">🔍 ${escapeHtml(audit_type.replace(/_/g, ' ').toUpperCase())}</div>
+            <div class="knowledge-date">${date} · ${time}</div>
+          </div>
+          <div class="knowledge-meta">
+            <span>🛠️ Infrastructure Audit</span>
+            <span>💾 Saved</span>
+          </div>
+          <div class="knowledge-summary collapsed">
+            ${formattedAnalysis}
+          </div>
+          <div class="expand-indicator">▼ Click to expand</div>
+        </div>
+      `;
+    }
+
+    function formatMarkdown(text) {
+      // Convert markdown to HTML
+      let formatted = escapeHtml(text);
+
+      // Bold **text**
+      formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Italic *text*
+      formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+      // Headers ### text
+      formatted = formatted.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+      formatted = formatted.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+      formatted = formatted.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+
+      // Code `text`
+      formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      // Line breaks
+      formatted = formatted.replace(/\n\n/g, '<br><br>');
+      formatted = formatted.replace(/\n/g, '<br>');
+
+      // Numbered lists 1. 2. 3.
+      formatted = formatted.replace(/(\d+)\.\s/g, '<br><strong>$1.</strong> ');
+
+      return formatted;
+    }
+
+    function showEmptyState() {
+      const knowledgeList = document.getElementById('knowledgeList');
+      knowledgeList.innerHTML = `
+        <div class="empty-state">
+          <h3>📚 No Knowledge Yet</h3>
+          <p>Start searching and asking Ollama to build your knowledge base!</p>
+          <p>Every search you analyze gets stored here forever.</p>
+          <p style="margin-top: 40px;">
+            <a href="search.html" class="button">Start Searching</a>
+          </p>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>

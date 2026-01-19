@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- App Info -->
+  <title>PWA App</title>
+  <meta name="description" content="iOS Progressive Web App">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS Specific -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PWA App">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#667eea">
+
+  <!-- Disable tap highlight on iOS -->
+  <meta name="format-detection" content="telephone=no">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      /* iOS Safe Areas */
+      --safe-area-inset-top: env(safe-area-inset-top);
+      --safe-area-inset-bottom: env(safe-area-inset-bottom);
+      --safe-area-inset-left: env(safe-area-inset-left);
+      --safe-area-inset-right: env(safe-area-inset-right);
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* iOS Safe Area Support */
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--safe-area-inset-top);
+      padding-bottom: var(--safe-area-inset-bottom);
+      padding-left: var(--safe-area-inset-left);
+      padding-right: var(--safe-area-inset-right);
+    }
+
+    /* Header */
+    .app-header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .app-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .app-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Content */
+    .app-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Card */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      color: #333;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    .card p {
+      line-height: 1.6;
+      color: #666;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 12px;
+      -webkit-appearance: none;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+      background: #5568d3;
+    }
+
+    /* Input */
+    .input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-top: 8px;
+      -webkit-appearance: none;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* Footer */
+    .app-footer {
+      padding: 16px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 0.85rem;
+    }
+
+    /* Install Prompt */
+    .install-prompt {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: white;
+      color: #333;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+
+    .install-prompt.visible {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .install-prompt h3 {
+      margin-bottom: 8px;
+      color: #667eea;
+    }
+
+    .install-prompt p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .install-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .install-buttons button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .install-yes {
+      background: #667eea;
+      color: white;
+    }
+
+    .install-no {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="app-title">PWA App</div>
+      <div class="app-subtitle">iOS Progressive Web App</div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+      <div class="card">
+        <h2>Welcome!</h2>
+        <p>This is an iOS-ready Progressive Web App template. It works on iPhone, iPad, Android, and desktop.</p>
+        <p style="margin-top: 12px;">
+          <strong>Try this:</strong> Tap the Share button in Safari and select "Add to Home Screen" to install this as an app.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Features</h2>
+        <p>✅ Standalone mode (no browser UI)</p>
+        <p>✅ Works offline (service worker)</p>
+        <p>✅ iOS safe area support (notch!)</p>
+        <p>✅ Smooth animations</p>
+        <p>✅ Touch-optimized</p>
+        <button class="btn" onclick="testOffline()">Test Offline Mode</button>
+      </div>
+
+      <div class="card">
+        <h2>Customize This</h2>
+        <p>Edit <code>index.html</code>, <code>manifest.json</code>, and <code>sw.js</code> to build your app.</p>
+        <input type="text" class="input" placeholder="Try typing something...">
+        <button class="btn" onclick="alert('Button works!')">Click Me</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer">
+      <div id="status">Online</div>
+      <div style="opacity: 0.7; margin-top: 4px;">iOS PWA Template</div>
+    </div>
+  </div>
+
+  <!-- Install Prompt (iOS Safari) -->
+  <div class="install-prompt" id="installPrompt">
+    <h3>📱 Install App</h3>
+    <p>Add this app to your home screen for the best experience!</p>
+    <div class="install-buttons">
+      <button class="install-yes" onclick="showInstallInstructions()">How?</button>
+      <button class="install-no" onclick="hideInstallPrompt()">Later</button>
+    </div>
+  </div>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('✅ Service Worker registered'))
+          .catch(err => console.error('❌ Service Worker failed:', err));
+      });
+    }
+
+    // Check if standalone (installed)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                      || window.navigator.standalone
+                      || document.referrer.includes('android-app://');
+
+    console.log('Standalone mode:', isStandalone);
+
+    // Show install prompt if not installed (iOS Safari only)
+    if (!isStandalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      setTimeout(() => {
+        const prompt = document.getElementById('installPrompt');
+        if (!localStorage.getItem('installPromptDismissed')) {
+          prompt.classList.add('visible');
+        }
+      }, 3000);
+    }
+
+    function hideInstallPrompt() {
+      document.getElementById('installPrompt').classList.remove('visible');
+      localStorage.setItem('installPromptDismissed', 'true');
+    }
+
+    function showInstallInstructions() {
+      alert(`To install this app:\n\n1. Tap the Share button (📤)\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"\n\nThe app will appear on your home screen!`);
+      hideInstallPrompt();
+    }
+
+    // Online/Offline status
+    function updateStatus() {
+      const status = document.getElementById('status');
+      if (navigator.onLine) {
+        status.textContent = 'Online ✅';
+        status.style.color = '#4ade80';
+      } else {
+        status.textContent = 'Offline 📴';
+        status.style.color = '#f87171';
+      }
+    }
+
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+
+    // Test offline mode
+    function testOffline() {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        alert('✅ Service Worker is active!\n\nTry turning on airplane mode and refreshing the page - it should still work.');
+      } else {
+        alert('⏳ Service Worker is loading...\n\nRefresh the page and try again.');
+      }
+    }
+
+    // Log app info
+    console.log('📱 iOS PWA Template');
+    console.log('Viewport:', window.innerWidth, 'x', window.innerHeight);
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Standalone:', isStandalone);
+  </script>
+
+</body>
+</html>

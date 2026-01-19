@@ -1,0 +1,43 @@
+{
+  "id": "soulfra-a96e87fe7ff6ab9c",
+  "domain": "soulfra",
+  "name": "Soulfra",
+  "tagline": "Your keys. Your identity. Period.",
+  "category": "Identity & Security",
+  "mission": "Self-sovereign identity and zero-knowledge authentication. We believe your identity belongs to you—not corporations, not governments, not anyone else.",
+  "focus": [
+    "Self-sovereign identity (SSI)",
+    "Zero-knowledge proofs",
+    "Decentralized authentication",
+    "Public key infrastructure (PKI)",
+    "Identity verification without surveillance",
+    "Cryptographic key management",
+    "Blockchain-based identity",
+    "Privacy-preserving credentials"
+  ],
+  "values": [
+    "Privacy by default",
+    "User ownership of data",
+    "No central authority",
+    "Cryptographic proof over trust",
+    "Open source and transparent"
+  ],
+  "technologies": [
+    "Web3 wallets",
+    "Zero-knowledge SNARKs",
+    "Decentralized identifiers (DIDs)",
+    "Verifiable credentials",
+    "Public/private key cryptography",
+    "Ethereum smart contracts",
+    "IPFS for decentralized storage"
+  ],
+  "useCases": [
+    "Login without passwords (private keys)",
+    "Prove age without revealing birthdate",
+    "Verify credentials without sharing documents",
+    "Anonymous authentication",
+    "Cross-platform identity portability"
+  ],
+  "version": 1,
+  "createdAt": "2026-01-16T16:59:04.642Z"
+}

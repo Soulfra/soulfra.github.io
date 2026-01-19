@@ -32,8 +32,41 @@
 
     .search-box {
       width: 100%;
-      padding: 18px 120px 18px 24px;
+      padding: 18px 200px 18px 24px;
       font-size: 18px;
+    }
+
+    .voice-btn {
+      position: absolute;
+      right: 120px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(251, 0, 68, 0.1);
+      border: 2px solid rgba(251, 0, 68, 0.3);
+      color: #fb0044;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      line-height: 1;
+    }
+
+    .voice-btn:hover {
+      background: rgba(251, 0, 68, 0.2);
+      border-color: #fb0044;
+      box-shadow: 0 0 12px rgba(251, 0, 68, 0.5);
+    }
+
+    .voice-btn.recording {
+      background: #fb0044;
+      border-color: #fb0044;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
 
     .search-btn {
@@ -173,6 +206,71 @@
       margin-bottom: 12px;
     }
 
+    /* Ollama Analysis */
+    .ollama-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .ask-ollama-btn {
+      background: rgba(251, 0, 68, 0.1);
+      border: 2px solid #fb0044;
+      color: #fb0044;
+      padding: 12px 32px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ask-ollama-btn:hover {
+      background: rgba(251, 0, 68, 0.2);
+      box-shadow: 0 0 16px rgba(251, 0, 68, 0.5);
+    }
+
+    .ask-ollama-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .ollama-analysis {
+      margin-top: 24px;
+      padding: 24px;
+      background: rgba(251, 0, 68, 0.05);
+      border: 1px solid rgba(251, 0, 68, 0.3);
+      border-radius: 8px;
+      text-align: left;
+      line-height: 1.8;
+    }
+
+    .ollama-analysis h3 {
+      color: #fb0044;
+      font-size: 18px;
+      margin-bottom: 16px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .ollama-analysis p {
+      color: #ccc;
+      margin-bottom: 12px;
+    }
+
+    .ollama-analysis strong {
+      color: #fff;
+    }
+
+    .ollama-loading {
+      color: #888;
+      font-size: 14px;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
     @media (max-width: 768px) {
       .search-box {
         padding-right: 100px;
@@ -207,6 +305,9 @@
         <strong id="vibesBalance">0.0</strong> VIBES
         <span class="usd-value">($<span id="usdValue">0.00</span>)</span>
       </div>
+      <button id="authBtn" class="nav-link" style="background: none; border: 1px solid rgba(251, 0, 68, 0.5); padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: all 0.3s ease;">
+        🔐 <span id="authStatus">Authenticate</span>
+      </button>
       <a href="dashboard.html" class="nav-link">Dashboard</a>
     </div>
   </header>
@@ -218,14 +319,17 @@
         type="text"
         class="search-box"
         id="searchInput"
-        placeholder="Search and earn VIBES..."
+        placeholder="Search and earn VIBES... or click 🎤 to speak"
         autofocus
         autocomplete="off"
       >
+      <button class="voice-btn" id="voiceBtn" title="Voice search (speak your query)">
+        🎤
+      </button>
       <button class="search-btn" id="searchBtn">SEARCH</button>
     </div>
     <p class="earn-notice">
-      Earn <strong>+0.2 VIBES</strong> per search · Privacy-first · No tracking
+      Earn <strong>+0.2 VIBES</strong> per search · <strong>+0.3 VIBES</strong> for voice (verified human) · Privacy-first · No tracking
     </p>
 
     <!-- Loading -->
@@ -247,10 +351,85 @@
     <p>&copy; 2026 DeathToData. Every search is a vote against surveillance capitalism.</p>
   </footer>
 
+  <!-- Universal Auth -->
+  <script src="soulfra-universal-auth.js?v=2"></script>
+
+  <!-- Voice Search -->
+  <script src="voice-search.js?v=2"></script>
+
   <!-- Shared JavaScript -->
-  <script src="assets/deathtodata.js"></script>
+  <script src="assets/deathtodata.js?v=2"></script>
 
   <!-- Page-specific JavaScript -->
+  <script>
+    // Initialize universal auth
+    window.soulfraAuth = new SoulfraUniversalAuth();
+
+    // Try to load existing identity
+    const identity = window.soulfraAuth.loadIdentity();
+    if (identity) {
+      console.log('[DeathToData] User authenticated:', identity.userId);
+      document.getElementById('authStatus').textContent = identity.userId;
+      document.getElementById('authBtn').style.borderColor = '#fb0044';
+    }
+
+    // Auth button handler
+    document.getElementById('authBtn').addEventListener('click', async () => {
+      if (window.soulfraAuth.userId) {
+        // Already authenticated - show export option
+        const shouldExport = confirm('You are authenticated as ' + window.soulfraAuth.userId + '\n\nExport your identity keys for backup?');
+        if (shouldExport) {
+          const exported = window.soulfraAuth.exportIdentity();
+          const blob = new Blob([exported], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'soulfra-identity-' + window.soulfraAuth.userId + '.json';
+          a.click();
+        }
+      } else {
+        // Generate new identity
+        const btn = document.getElementById('authBtn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Generating keys...';
+
+        try {
+          const keys = await window.soulfraAuth.generateKeyPair();
+          window.soulfraAuth.storeIdentity('', ''); // Empty email/name for now
+
+          // Register with backend
+          try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: keys.publicKey,
+                userId: keys.userId
+              })
+            });
+
+            const data = await response.json();
+            console.log('[DeathToData] Registration:', data);
+          } catch (regError) {
+            console.warn('[DeathToData] Backend registration failed (continuing anyway):', regError);
+          }
+
+          document.getElementById('authStatus').textContent = keys.userId;
+          btn.style.borderColor = '#fb0044';
+          btn.innerHTML = '🔐 <span id="authStatus">' + keys.userId + '</span>';
+
+          alert('✅ Authenticated!\n\nYour User ID: ' + keys.userId + '\n\nThis works across all Soulfra sites.\n\nYour keys are stored locally and never sent to the server.');
+        } catch (error) {
+          console.error('[DeathToData] Auth failed:', error);
+          alert('Failed to generate keys: ' + error.message);
+          btn.innerHTML = '🔐 <span id="authStatus">Authenticate</span>';
+        } finally {
+          btn.disabled = false;
+        }
+      }
+    });
+  </script>
+
   <script>
     // Search handling
     const searchInput = document.getElementById('searchInput');
@@ -344,7 +523,15 @@
       }
     }
 
+    // Store last search results for Ollama analysis
+    let lastSearchResults = null;
+    let lastSearchQuery = null;
+
     function displayResults(searchResults, searchTime) {
+      // Store for Ollama analysis
+      lastSearchResults = searchResults;
+      lastSearchQuery = searchInput.value.trim();
+
       const header = `<p style="text-align: center; color: #888; margin-bottom: 20px; font-size: 14px;">About ${searchResults.length} results (${searchTime}s)</p>`;
       const resultsHTML = searchResults.map(result => `
         <div class="result-item">
@@ -358,8 +545,196 @@
         </div>
       `).join('');
 
-      results.innerHTML = header + resultsHTML;
+      // Add Ollama analysis section
+      const ollamaSection = `
+        <div class="ollama-section" id="ollamaSection">
+          <button class="ask-ollama-btn" id="askOllamaBtn" onclick="askOllama()">
+            <span>🤖</span>
+            <span>Ask Ollama to Explain</span>
+          </button>
+          <div id="ollamaAnalysis"></div>
+        </div>
+      `;
+
+      results.innerHTML = header + resultsHTML + ollamaSection;
     }
+
+    async function askOllama() {
+      if (!lastSearchResults || !lastSearchQuery) {
+        alert('No search results to analyze');
+        return;
+      }
+
+      const btn = document.getElementById('askOllamaBtn');
+      const analysisDiv = document.getElementById('ollamaAnalysis');
+
+      btn.disabled = true;
+      analysisDiv.innerHTML = '<p class="ollama-loading">🤖 Asking Ollama to analyze results...</p>';
+
+      try {
+        const response = await fetch(`${API_URL}/api/analyze`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: lastSearchQuery,
+            results: lastSearchResults
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Analysis failed');
+        }
+
+        const data = await response.json();
+
+        // Format analysis with markdown-like styling
+        const formattedAnalysis = formatAnalysis(data.analysis);
+
+        analysisDiv.innerHTML = `
+          <div class="ollama-analysis">
+            <h3>💬 Ollama's Analysis</h3>
+            ${formattedAnalysis}
+            <p style="color: #666; font-size: 12px; margin-top: 16px; font-style: italic;">
+              💾 Analysis saved to knowledge base · <a href="knowledge.html" style="color: #fb0044;">View all learnings</a>
+            </p>
+          </div>
+        `;
+
+      } catch (error) {
+        analysisDiv.innerHTML = `
+          <div class="ollama-analysis">
+            <h3 style="color: #ff4444;">⚠️ Analysis Error</h3>
+            <p>${error.message}</p>
+            <p style="font-size: 12px; color: #666; margin-top: 12px;">
+              Make sure Ollama is running: <code>ollama serve</code>
+            </p>
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function formatAnalysis(text) {
+      // Simple formatting: convert numbered lists and bolding
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+
+      return `<p>${formatted}</p>`;
+    }
+
+    // ===== VOICE SEARCH =====
+    const voiceBtn = document.getElementById('voiceBtn');
+    const voiceSearch = new VoiceSearch();
+    let isRecording = false;
+
+    voiceBtn.addEventListener('click', async () => {
+      if (!isRecording) {
+        // Start recording
+        try {
+          await voiceSearch.startRecording();
+          isRecording = true;
+          voiceBtn.classList.add('recording');
+          voiceBtn.textContent = '⏹️';
+          voiceBtn.title = 'Click to stop recording';
+
+          // Show feedback
+          loading.classList.add('active');
+          loading.textContent = 'Recording... speak your search query';
+
+        } catch (err) {
+          console.error('[Voice] Failed to start recording:', err);
+          alert('Failed to access microphone. Please allow microphone access.');
+        }
+
+      } else {
+        // Stop recording and process
+        voiceBtn.disabled = true;
+        loading.textContent = 'Processing voice...';
+
+        try {
+          const result = await voiceSearch.stopRecording();
+
+          isRecording = false;
+          voiceBtn.classList.remove('recording');
+          voiceBtn.textContent = '🎤';
+          voiceBtn.title = 'Voice search (speak your query)';
+          voiceBtn.disabled = false;
+
+          console.log('[Voice] Result:', result);
+
+          // Check ambient score (anti-bot)
+          if (result.ambientScore < 0.7) {
+            loading.classList.remove('active');
+            alert(`Anti-bot check failed!\n\nAmbient score: ${result.ambientScore.toFixed(2)}\n\nYou might be in too quiet environment, or using synthetic voice.\n\nTry speaking in a normal room with some background noise.`);
+            return;
+          }
+
+          // Check if we got a transcript
+          if (!result.transcript || result.transcript.trim().length === 0) {
+            loading.classList.remove('active');
+            alert('Could not understand speech. Please try again.');
+            return;
+          }
+
+          // Put transcript in search box
+          searchInput.value = result.transcript;
+
+          // Sign the voice search if authenticated
+          if (window.soulfraAuth && window.soulfraAuth.userId) {
+            const message = JSON.stringify({
+              transcript: result.transcript,
+              ambientScore: result.ambientScore,
+              fingerprint: result.fingerprint,
+              timestamp: Date.now()
+            });
+
+            const signature = await window.soulfraAuth.signMessage(message);
+
+            // Send signed voice search to backend
+            await fetch(`${API_URL}/api/voice-search`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transcript: result.transcript,
+                ambientScore: result.ambientScore,
+                fingerprint: result.fingerprint,
+                signature: signature,
+                publicKey: window.soulfraAuth.publicKey
+              })
+            });
+
+            console.log('[Voice] Signed voice search sent to backend');
+          }
+
+          // Execute search with transcript
+          await performSearch(result.transcript);
+
+          // Show success with ambient score
+          const vibesMsg = `+0.3 VIBES\n\nVerified human!\nAmbient score: ${(result.ambientScore * 100).toFixed(0)}%`;
+          setTimeout(() => {
+            const notification = document.getElementById('vibesNotification');
+            notification.querySelector('.amount').textContent = '+0.3 VIBES';
+            notification.querySelector('div:last-child').innerHTML = `Verified human (${(result.ambientScore * 100).toFixed(0)}% score)`;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+          }, 500);
+
+        } catch (err) {
+          console.error('[Voice] Failed to process:', err);
+          loading.classList.remove('active');
+          voiceBtn.classList.remove('recording');
+          voiceBtn.textContent = '🎤';
+          voiceBtn.disabled = false;
+          isRecording = false;
+          alert('Voice search failed. Please try again.');
+        }
+      }
+    });
   </script>
 
 </body>

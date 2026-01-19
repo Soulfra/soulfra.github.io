@@ -1,7 +1,7 @@
 // DeathToData Service Worker
 // Enables offline search and fast loading
 
-const CACHE_NAME = 'deathtodata-v1';
+const CACHE_NAME = 'deathtodata-v2'; // Increment version to force cache refresh
 const urlsToCache = [
   './',
   './index.html',
